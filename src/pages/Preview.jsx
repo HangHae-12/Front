@@ -1,8 +1,9 @@
+import NavBar from "../components/NavBar";
 
 const Preview = () => {
   return (
     <>
-      
+      <NavBar/>
     </>
   );
 };

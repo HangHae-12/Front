@@ -7,6 +7,12 @@ const GlobalStyle = createGlobalStyle`
   *{
     box-sizing: border-box;
   }
+
+  body {
+    background-color: ${({ theme }) => theme.color.gray_5};
+    
+    
+  }
 `;
 
 export default GlobalStyle;
