@@ -7,13 +7,14 @@ const color = {
   gray_3: "#ededed",
   gray_4: "#f0f0f0",
   gray_5: "#f3f3f3",
-  // gray color는 디자이너님께서 디자인 시스템 완성하시면 추가하겠습니다.
-  blue: "#3aggff",
+  blue: "#3a66ff",
   red: "#ff3636",
   green: "#31bb00",
   orenge: "#ff852d",
   darkYellow: "#d1bf20",
 };
+
+// gray color는 디자이너님께서 디자인 시스템 완성하시면 추가하겠습니다.
 
 const defaultTheme = {
   color,
