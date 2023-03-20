@@ -1,9 +1,9 @@
-import api from "../axios";
+import instance from "../instance";
 
 
 export const getClassesPage = async (id) => {
     try {
-      const response = await api.get(`/common/classes/${id}`);
+      const response = await instance.get(`/common/classes/${id}`);
       return response;
     } catch (error) {}
   };
