@@ -11,11 +11,11 @@ const NavBar = () => {
       </StyledLogoWrapper>
       <StyledBrandWrapper>
         {/* 버튼 컴포넌트로 리펙토링 할 부분 */}
-        <button className="brand">
+        <button className="btn-brand">
           <img src={DUMMY_IMG_SRC} alt="브랜드 로고" />
           <p>스파르타 유치원</p>
         </button>
-        <button className="bellBtn">
+        <button className="btn-bell">
           <AiOutlineBell />
         </button>
       </StyledBrandWrapper>
@@ -32,7 +32,7 @@ const StyledHeaderContainer = styled.header`
   display: flex;
   width: 100%;
   height: 80px;
-  padding: 40px;
+  padding: 0 40px;
   background-color: ${({ theme }) => theme.color.white};
   flex-direction: row;
   justify-content: space-between;
@@ -45,8 +45,8 @@ const StyledLogoWrapper = styled.div`
   align-items: center;
   gap: 10px;
   img {
-    width: 48px;
-    height: 48px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
   }
 `;
@@ -56,23 +56,23 @@ const StyledBrandWrapper = styled.div`
   align-items: center;
   gap: 10px;
 
-  .brand {
+  .btn-brand {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0px 24px;
+    padding: 16px 24px;
     width: 190px;
     height: 48px;
     border: none;
     border-radius: 24px;
     img {
-      width: 48px;
-      height: 48px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
     }
   }
 
-  .bellBtn {
+  .btn-bell {
     width: 48px;
     height: 48px;
     border-radius: 50%;

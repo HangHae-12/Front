@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { FaSchool } from "react-icons/fa";
 import { HiUserCircle } from "react-icons/hi";
-
 import { DUMMY_PROFILE_IMG_SRC } from "../assets";
 
 const SideBar = () => {
@@ -36,8 +35,8 @@ const StyledSideBarContainer = styled.aside`
   width: 180px;
   height: 100%;
   padding: calc(80px + 30px) 20px 0px 20px;
-  background-color: ${({ theme }) => theme.color.white};
   border: 1px solid ${({ theme }) => theme.color.gray_3};
+  background-color: ${({ theme }) => theme.color.white};
 `;
 
 const StyledUserProfileWrapper = styled.div`
@@ -58,6 +57,10 @@ const StyledUserProfileWrapper = styled.div`
     font-size: 12px;
     color: ${({ theme }) => theme.color.gray_1};
     margin: 10px 0px 5px 0px;
+  }
+
+  h4 {
+    font-size: 14px;
   }
 `;
 
@@ -86,7 +89,6 @@ const StyledSideBarBtnWrapper = styled.div`
     gap: 10px;
     background-color: ${({ theme }) => theme.color.blue};
     color: ${({ theme }) => theme.color.white};
-
   }
 
   .btn-profile {
