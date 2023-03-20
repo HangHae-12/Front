@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
+// import AddCircleIcon from "@mui/icons-material/AddCircle";
+import { GrAddCircle } from "react-icons/gr";
 import { useParams } from "react-router-dom";
 import { useState } from "react";
 import { getClassesPage } from "../../api/classes/classes";
@@ -58,7 +59,8 @@ function TeacherInformation() {
                   id="upload-img-label"
                   style={{ display: "block" }}
                 >
-                  <AddCircleIcon color="disabled" sx={{ fontSize: 100 }} />
+                  {/* <AddCircleIcon color="disabled" sx={{ fontSize: 100 }} /> */}
+                  <GrAddCircle/>
                   <StTeacherImage>
                     <input
                       type="file"
@@ -123,7 +125,8 @@ function TeacherInformation() {
             <StLeftWrapper>
               <div>담임선생님</div>
               <StIconWrapper>
-                <AddCircleIcon color="disabled" sx={{ fontSize: 100 }} />
+                {/* <AddCircleIcon color="disabled" sx={{ fontSize: 100 }} /> */}
+                <GrAddCircle/>
               </StIconWrapper>
               <StSpan marginLeft="0px">황재연</StSpan>
             </StLeftWrapper>
@@ -166,11 +169,10 @@ export default TeacherInformation;
 
 const StInfomation = styled.div`
   padding: 7px 133px 16px 36px;
-  background: #FFFFFF;
+  background: #ffffff;
   border-radius: 8px;
   gap: 20px;
   width: 1000px;
-
 
   @media screen and (max-width: 600px) {
     width: 100%;
