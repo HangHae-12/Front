@@ -1,12 +1,15 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+
 
 
 function ClassButton() {
   const [selectedClass, setSelectedClass] = useState('none');
   const [color, setColor] = useState('blue');
   const navigate = useNavigate();
+  const { id } = useParams();
+
 
 
   const handleClassClick = (id) => {
