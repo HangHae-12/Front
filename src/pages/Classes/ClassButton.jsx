@@ -1,12 +1,16 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { useNavigate, useParams } from "react-router-dom";
+import TeacherInformation from './TeacherInformation';
+import ClassMember from './ClassMember';
+import Gallery from './Gallery';
 
 
 
 function ClassButton() {
   const [selectedClass, setSelectedClass] = useState('none');
   const [color, setColor] = useState('blue');
+  const [isMember, setIsMember] = useState(true);
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -22,6 +26,7 @@ function ClassButton() {
   }
 
   return (
+    <>
     <StyledButtonWrapper>
       <StyledClassButton
         onClick={() => handleClassClick(1)}
@@ -46,6 +51,17 @@ function ClassButton() {
         창의반
       </StyledClassButton>
     </StyledButtonWrapper>
+    <TeacherInformation />
+    <button
+      onClick={() => setIsMember(true)}
+    >
+      아이들</button>
+    <button
+      onClick={() => setIsMember(false)}
+      >
+      갤러리</button>
+    {isMember ? <ClassMember /> : <Gallery />}
+    </>
   )
 }
 

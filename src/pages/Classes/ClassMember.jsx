@@ -1,8 +1,27 @@
 import React from 'react'
 import styled from 'styled-components'
+import { useParams } from "react-router-dom";
+import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
+import { getClassesMember } from '../../api/classes/classes';
 
 
 function ClassMember() {
+  const queryClient = useQueryClient();
+  const { id } = useParams();
+
+  const { isLoading, isError, data } = useQuery(
+    ["classesMember"],
+    () => getClassesMember(id),
+    {
+      onSuccess: (data) => {
+        console.log(data);
+      },
+      onError: () => {
+        console.log("error");
+      },
+    }
+  );
+
   const cards = [];
   for (let i = 0; i < 32; i++) {
     cards.push(
@@ -15,22 +34,25 @@ function ClassMember() {
   }
   return (
     <>
-    <button>아이들</button>
-    <button>갤러리</button>
-
     <StyledChildrenWrapper>
         <StyledChildernHeader>
             <div>총 32명</div>
+            {/* <div>총 {data.length}명</div> */}
             <button style={{marginLeft: "auto"}}>인원 추가</button>
             <input style={{marginLeft: "10px"}}></input>
         </StyledChildernHeader>
         <StyledChildrenContainer>
           {cards}
-          {/* <StyledChildrenCard>
+          {/* {data?.map((item) => {
+            return (
+              <StyledChildrenCard key={item.data.childId}>
             <StyledChildrenImage 
-              src='https://blog.kakaocdn.net/dn/drkKUz/btrKzPmA6Xi/cLjppsVnQYYF2dggTuvCf0/img.png'/>
-            김민지
-          </StyledChildrenCard> */}
+              src={item.data.imageUrl}
+              />
+            {item.data.name}
+          </StyledChildrenCard>
+            );
+          })} */}
         </StyledChildrenContainer>
     </StyledChildrenWrapper>
     </>
