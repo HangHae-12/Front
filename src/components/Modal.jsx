@@ -1,7 +1,5 @@
-import React, { createContext, useState } from "react";
+import { createPortal } from "react-dom";
 import styled from "styled-components";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { modalState } from "../atom/modalAtoms";
 import useModal from "../hooks/useModal";
 
 const StyledModal = {
@@ -12,7 +10,7 @@ const StyledModal = {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
-    display: ${({ isOpen }) => (isOpen ? "flex" : "none")};
+    display: flex;
     justify-content: center;
     align-items: center;
     z-index: 999;
@@ -66,22 +64,25 @@ const Modal = ({ canCloseOnOverlayClick = true }) => {
     }
   };
 
-  return (
-    <>
-      {modalState.isOpen ? (
-        <StyledModal.Overlay onClick={handleOverlayClick}>
-          <StyledModal.Container onClick={(e) => e.stopPropagation()}>
-            <StyledModal.CloseButton onClick={closeModal}>
-              &times;
-            </StyledModal.CloseButton>
-
-            <StyledModal.Title>{modalState.title}</StyledModal.Title>
-            <StyledModal.Contents>{modalState.contents}</StyledModal.Contents>
-          </StyledModal.Container>
-        </StyledModal.Overlay>
-      ) : null}
-    </>
-  );
+  return modalState.isOpen
+    ? createPortal(
+        <>
+          <StyledModal.Overlay
+            onClick={handleOverlayClick}
+            canCloseOnOverlayClick={canCloseOnOverlayClick}
+          >
+            <StyledModal.Container onClick={(e) => e.stopPropagation()}>
+              <StyledModal.CloseButton onClick={closeModal}>
+                &times;
+              </StyledModal.CloseButton>
+              <StyledModal.Title>{modalState.title}</StyledModal.Title>
+              <StyledModal.Contents>{modalState.contents}</StyledModal.Contents>
+            </StyledModal.Container>
+          </StyledModal.Overlay>
+        </>,
+        document.getElementById("modal-root")
+      )
+    : null;
 };
 
 export default Modal;

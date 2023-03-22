@@ -46,7 +46,7 @@ const Preview = () => {
 
       <div>
         <button onClick={() => openModal(modalData)}>Open Modal</button>
-        <Modal />
+        <Modal canCloseOnOverlayClick={false} />
       </div>
     </>
   );
