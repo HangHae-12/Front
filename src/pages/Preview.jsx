@@ -4,9 +4,6 @@ import Card from "../components/Card";
 import { useRecoilState } from "recoil";
 import { modalState } from "../atom/modalAtoms";
 import Modal from "../components/Modal";
-import Header from "../components/Header";
-import SideBar from "../components/SideBar";
-import Parent from "./Parent";
 import useModal from "../hooks/useModal";
 
 const Preview = () => {
