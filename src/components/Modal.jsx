@@ -2,6 +2,7 @@ import React, { createContext, useState } from "react";
 import styled from "styled-components";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { modalState } from "../atom/modalAtoms";
+import useModal from "../hooks/useModal";
 
 const StyledModal = {
   Overlay: styled.div`
@@ -29,15 +30,19 @@ const StyledModal = {
 
   Header: styled.div`
     display: flex;
-    justify-content: space-between;
+    height: 15px;
+    padding-right: 25px;
     align-items: center;
-    margin-bottom: 20px;
   `,
 
   Title: styled.h2`
     font-size: 24px;
     font-weight: 700;
     margin: 0;
+  `,
+
+  Contents: styled.div`
+    margin-top: 10px;
   `,
 
   CloseButton: styled.button`
@@ -52,31 +57,30 @@ const StyledModal = {
   `,
 };
 
-const Modal = ({
-  children,
-  isOpen,
-  onClose,
-  title,
-  canCloseOnOverlayClick = true,
-}) => {
+const Modal = ({ canCloseOnOverlayClick = true }) => {
+  const { modalState, closeModal } = useModal();
+  console.log(modalState);
   const handleOverlayClick = (e) => {
     if (canCloseOnOverlayClick) {
-      onClose(e);
+      closeModal(e);
     }
   };
 
   return (
-    <StyledModal.Overlay isOpen={isOpen} onClick={handleOverlayClick}>
-      <StyledModal.Container onClick={(e) => e.stopPropagation()}>
-        <StyledModal.CloseButton onClick={onClose}>
-          &times;
-        </StyledModal.CloseButton>
-        <StyledModal.Header>
-          <StyledModal.Title>{title}</StyledModal.Title>
-        </StyledModal.Header>
-        {children}
-      </StyledModal.Container>
-    </StyledModal.Overlay>
+    <>
+      {modalState.isOpen ? (
+        <StyledModal.Overlay onClick={handleOverlayClick}>
+          <StyledModal.Container onClick={(e) => e.stopPropagation()}>
+            <StyledModal.CloseButton onClick={closeModal}>
+              &times;
+            </StyledModal.CloseButton>
+
+            <StyledModal.Title>{modalState.title}</StyledModal.Title>
+            <StyledModal.Contents>{modalState.contents}</StyledModal.Contents>
+          </StyledModal.Container>
+        </StyledModal.Overlay>
+      ) : null}
+    </>
   );
 };
 

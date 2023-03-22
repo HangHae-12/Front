@@ -1,23 +1,31 @@
 import styled from "styled-components";
 import { DUMMY_IMG_SRC } from "../assets";
 import Card from "../components/Card";
+import { useRecoilState } from "recoil";
+import { modalState } from "../atom/modalAtoms";
+import Modal from "../components/Modal";
 import Header from "../components/Header";
 import SideBar from "../components/SideBar";
 import Parent from "./Parent";
+import useModal from "../hooks/useModal";
 
 const Preview = () => {
+  const { openModal } = useModal();
+
+  const modalData = {
+    title: "modal",
+    contents: "modal",
+    callback: () => alert("modal"),
+  };
   return (
     <>
-      {/* <Header />
-      <SideBar />
-      <Parent /> */}
       <Card>
         <Card.Header isClosedIcon={true}>
           <Card.Title>Good</Card.Title>
         </Card.Header>
         <Card.Contents>
           <StyledDiv>
-            GoodGoodGoodGoodGoodGoodGoodGoodGoodGoodGoodGoodGoodGoodGoodGoodGoodGoodGoodGoodGoodGoodGoodGoodGoodGoodGoodGoodGoodGoodGoodGoodGoodGoodGoodGood
+            GoodGoodGoodGoodGoodGoodGoodGoodGoodGoodGoodGoodGood
           </StyledDiv>
         </Card.Contents>
       </Card>
@@ -38,6 +46,11 @@ const Preview = () => {
           </StyledWrapper>
         </Card.Contents>
       </Card>
+
+      <div>
+        <button onClick={() => openModal(modalData)}>Open Modal</button>
+        <Modal />
+      </div>
     </>
   );
 };
