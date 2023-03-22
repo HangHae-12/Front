@@ -1,14 +1,14 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import instance from "../../../api/instance";
-import { SignAPI } from "../../../api/signAPI";
 
 // const { Kakao } = window;
 // Kakao.init(process.env.REACT_APP_KAKAO_API_KEY);
 
 const KakaoLogin = () => {
   const location = useLocation();
-  const code = location.search.split("=")[1];
+  // const code = location.search.split("=")[1];
+  const code = new URL(document.location.toString()).searchParams.get("code");
   const authKakao = async () => {
     try {
       const res = await instance.get(`auth/kakao/callback?code=${code}`);
