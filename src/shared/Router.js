@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import { PAGE } from "../helpers/pages";
-import Host from "../pages/Host/host";
+import Host from "../pages/Host/Host";
 import Preview from "../pages/Preview";
 import Classes from "../pages/Classes/Classes";
 
