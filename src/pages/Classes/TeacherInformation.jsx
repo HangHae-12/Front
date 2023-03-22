@@ -1,11 +1,10 @@
 import React from "react";
 import styled from "styled-components";
-// import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { GrAddCircle } from "react-icons/gr";
 import { useParams } from "react-router-dom";
 import { useState } from "react";
-import { getClassesPage } from "../../api/classes/classes";
-import { useQueryClient, useQuery } from "@tanstack/react-query";
+import { getClassesPage, setClassesTeacher } from "../../api/classes/classes";
+import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 
 function TeacherInformation() {
   const queryClient = useQueryClient();
@@ -13,6 +12,10 @@ function TeacherInformation() {
   const [preview, setPreview] = useState("");
   const [image, setImage] = useState("");
   const { id } = useParams();
+
+  const handleChange = () => {
+    setEditMode(true);
+  };
 
   const { isLoading, isError, data } = useQuery(
     ["ClassesPage"],
@@ -27,12 +30,24 @@ function TeacherInformation() {
     }
   );
 
-  const handleSave = () => {
-    setEditMode(false);
-  };
+  const setTeacherMutation = useMutation(setClassesTeacher, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("ClassesPage");
+    },
+  })
 
-  const handleChange = () => {
-    setEditMode(true);
+  const handleSave = async (id) => {
+    const formData = new FormData();
+    formData.append("image", image);
+
+    const payload ={
+      id: id,
+      image: formData.get("image"),
+    }
+    setEditMode(false);
+    console.log(payload);
+    for (const keyValue of formData) console.log(keyValue);
+    setTeacherMutation.mutate(payload);
   };
 
   const saveImgFile = (e) => {
@@ -59,8 +74,7 @@ function TeacherInformation() {
                   id="upload-img-label"
                   style={{ display: "block" }}
                 >
-                  {/* <AddCircleIcon color="disabled" sx={{ fontSize: 100 }} /> */}
-                  <GrAddCircle/>
+                <GrAddCircle  style={{ fontSize: 90 }}/>
                   <StTeacherImage>
                     <input
                       type="file"
@@ -116,7 +130,7 @@ function TeacherInformation() {
                 </div>
               </StInputWrapper>
             </StBox>
-            <StButton onClick={handleSave}>저장하기</StButton>
+            <StButton onClick={(e) => handleSave(id)}>저장하기</StButton>
           </StContentWrapper>
         </StInfomation>
       ) : (
@@ -125,8 +139,7 @@ function TeacherInformation() {
             <StLeftWrapper>
               <div>담임선생님</div>
               <StIconWrapper>
-                {/* <AddCircleIcon color="disabled" sx={{ fontSize: 100 }} /> */}
-                <GrAddCircle/>
+                <GrAddCircle  style={{ fontSize: 90 }}/>
               </StIconWrapper>
               <StSpan marginLeft="0px">황재연</StSpan>
             </StLeftWrapper>
@@ -172,7 +185,7 @@ const StInfomation = styled.div`
   background: #ffffff;
   border-radius: 8px;
   gap: 20px;
-  width: 1000px;
+  width: 1190px;
 
   @media screen and (max-width: 600px) {
     width: 100%;
