@@ -1,10 +1,38 @@
 import styled from "styled-components";
 import { IoClose } from "react-icons/io5";
 
+const Card = ({ children, width, bgcolor, padding }) => {
+  return (
+    <StyledCard.Container width={width} bgcolor={bgcolor} padding={padding}>
+      {children}
+    </StyledCard.Container>
+  );
+};
+
+const Header = ({ children, isClosedIcon }) => {
+  return (
+    <StyledCard.Header>
+      {children}
+      {isClosedIcon ? (
+        <StyledCard.Icon>
+          <IoClose />
+        </StyledCard.Icon>
+      ) : null}
+    </StyledCard.Header>
+  );
+};
+const Title = ({ children }) => {
+  return <StyledCard.Title>{children}</StyledCard.Title>;
+};
+
+const Contents = ({ children }) => {
+  return <StyledCard.Content>{children}</StyledCard.Content>;
+};
+
 const StyledCard = {
   Container: styled.div`
     max-width: ${({ width }) => width || "min-content"};
-    height: ${({ height }) => height || "min-content"};
+    max-height: ${({ height }) => height || "min-content"};
     background-color: ${({ theme, bgcolor }) => bgcolor || theme.color.white};
     border-radius: 8px;
     padding: ${({ padding }) => padding || "2px"};
@@ -43,34 +71,6 @@ const StyledCard = {
     white-space: normal;
     overflow-wrap: break-word;
   `,
-};
-
-const Card = ({ children, width, bgcolor, padding }) => {
-  return (
-    <StyledCard.Container width={width} bgcolor={bgcolor} padding={padding}>
-      {children}
-    </StyledCard.Container>
-  );
-};
-
-const Header = ({ children, isClosedIcon }) => {
-  return (
-    <StyledCard.Header>
-      {children}
-      {isClosedIcon ? (
-        <StyledCard.Icon>
-          <IoClose />
-        </StyledCard.Icon>
-      ) : null}
-    </StyledCard.Header>
-  );
-};
-const Title = ({ children }) => {
-  return <StyledCard.Title>{children}</StyledCard.Title>;
-};
-
-const Contents = ({ children }) => {
-  return <StyledCard.Content>{children}</StyledCard.Content>;
 };
 
 Card.Header = Header;

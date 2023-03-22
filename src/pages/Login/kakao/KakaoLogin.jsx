@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import instance from "../../../api/instance";
 import { SignAPI } from "../../../api/signAPI";
 
 // const { Kakao } = window;
@@ -7,12 +8,18 @@ import { SignAPI } from "../../../api/signAPI";
 
 const KakaoLogin = () => {
   const location = useLocation();
-
+  const code = location.search.split("=")[1];
   const authKakao = async () => {
-    const code = location.search.split("=")[1];
-    const loginError = location.search.includes("error");
-    const response = await SignAPI.requestKakaoToken(code);
-    console.log(response);
+    try {
+      const res = await instance.get(`auth/kakao/callback?code=${code}`);
+      console.log(res);
+    } catch (error) {
+      console.error(error);
+    }
+
+    // const loginError = location.search.includes("error");
+    // const response = await SignAPI.requestKakaoToken(code);
+    // console.log(response);
   };
 
   useEffect(() => {

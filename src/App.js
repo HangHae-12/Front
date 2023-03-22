@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "styled-components";
+import { RecoilRoot } from "recoil";
 import GlobalStyle from "./styles/globalstyle";
 import Router from "./shared/Router";
 import theme from "./styles/theme";
@@ -10,8 +11,10 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider theme={theme}>
-        <GlobalStyle />
-        <Router />
+        <RecoilRoot>
+          <GlobalStyle />
+          <Router />
+        </RecoilRoot>
       </ThemeProvider>
     </QueryClientProvider>
   );
