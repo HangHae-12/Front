@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
-import { getClassesMember } from "../../api/classes/classes";
+import { getClassesMember } from "../../api/classes";
 
 function ClassMember() {
   const queryClient = useQueryClient();

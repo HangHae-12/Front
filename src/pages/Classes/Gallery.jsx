@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
-import { getClassesGallery, getSearchGallery } from "../../api/classes/classes";
+import { getClassesGallery, getSearchGallery } from "../../api/classes";
 import Pagination from "react-js-pagination";
 
 function Gallery() {
