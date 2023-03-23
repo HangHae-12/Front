@@ -1,8 +1,7 @@
 import styled from "styled-components";
 import { DUMMY_IMG_SRC } from "../assets";
 import Card from "../components/Card";
-import { useRecoilState } from "recoil";
-import { modalState } from "../atom/modalAtoms";
+
 import Modal from "../components/Modal";
 import useModal from "../hooks/useModal";
 
@@ -13,6 +12,11 @@ const Preview = () => {
     title: "modal",
     contents: "modal",
     callback: () => alert("modal"),
+  };
+
+  const modalOption = {
+    // canCloseOnOverlayClick: false,
+    isCloseButton: false,
   };
   return (
     <>
@@ -46,7 +50,7 @@ const Preview = () => {
 
       <div>
         <button onClick={() => openModal(modalData)}>Open Modal</button>
-        <Modal canCloseOnOverlayClick={false} />
+        <Modal modalOption={modalOption} />
       </div>
     </>
   );
