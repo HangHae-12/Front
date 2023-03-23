@@ -70,6 +70,14 @@ function Gallery() {
   //   setCurrentPage(pageNumber);
   // };
 
+  const datechange = (date) => {
+    setStartDate(date)
+    console.log(dateToString(startDate), dateToString(endDate))
+  }
+  const dateToString = (date) => {
+    return date.getFullYear() + '-' + (date.getMonth() + 1).toString().padStart(2, '0') + '-' + date.getDate().toString().padStart(2, '0')
+  }
+
   const cards = [];
   for (let i = 0; i < 15; i++) {
     cards.push(
@@ -92,7 +100,7 @@ function Gallery() {
           <DatePicker
         showIcon
         selected={startDate}
-        onChange={(date) => setStartDate(date)}
+        onChange={(date) => datechange(date)}
         selectsStart
         startDate={startDate}
         endDate={endDate}
