@@ -1,10 +1,8 @@
 import axios from "axios";
+import { ENV } from "../helpers/envs";
 
 const instance = axios.create({
-  baseURL: `${process.env.REACT_APP_TODOS}`,
-  headers: {
-    "Access-Control-Allow-Origin": "*",
-  },
+  baseURL: `${ENV.Main_server}`,
 });
 
 instance.interceptors.request.use(
