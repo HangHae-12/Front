@@ -6,7 +6,7 @@ import {
   useQuery,
   useInfiniteQuery,
 } from "@tanstack/react-query";
-import { getClassesGallery, getSearchGallery } from "../../api/classes/classes";
+import { getClassesGallery, getSearchGallery } from "../../api/classes";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Pagination from "react-js-pagination";
@@ -18,8 +18,6 @@ function Gallery() {
   // const [currentPage, setCurrentPage] = useState(1);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-
-
 
   // react-js-pagination
   // const { data } = useQuery(
@@ -71,12 +69,18 @@ function Gallery() {
   // };
 
   const datechange = (date) => {
-    setStartDate(date)
-    console.log(dateToString(startDate), dateToString(endDate))
-  }
+    setStartDate(date);
+    console.log(dateToString(startDate), dateToString(endDate));
+  };
   const dateToString = (date) => {
-    return date.getFullYear() + '-' + (date.getMonth() + 1).toString().padStart(2, '0') + '-' + date.getDate().toString().padStart(2, '0')
-  }
+    return (
+      date.getFullYear() +
+      "-" +
+      (date.getMonth() + 1).toString().padStart(2, "0") +
+      "-" +
+      date.getDate().toString().padStart(2, "0")
+    );
+  };
 
   const cards = [];
   for (let i = 0; i < 15; i++) {
@@ -97,26 +101,26 @@ function Gallery() {
         <StyledGalleryHeader>
           <button>전체기간</button>
           <div>
-          <DatePicker
-        showIcon
-        selected={startDate}
-        onChange={(date) => datechange(date)}
-        selectsStart
-        startDate={startDate}
-        endDate={endDate}
-      />
-      </div>
-      <div>
-      <DatePicker
-        showIcon
-        selected={endDate}
-        onChange={(date) => setEndDate(date)}
-        selectsEnd
-        startDate={startDate}
-        endDate={endDate}
-        minDate={startDate}
-      />
-      </div>
+            <DatePicker
+              showIcon
+              selected={startDate}
+              onChange={(date) => datechange(date)}
+              selectsStart
+              startDate={startDate}
+              endDate={endDate}
+            />
+          </div>
+          <div>
+            <DatePicker
+              showIcon
+              selected={endDate}
+              onChange={(date) => setEndDate(date)}
+              selectsEnd
+              startDate={startDate}
+              endDate={endDate}
+              minDate={startDate}
+            />
+          </div>
           <button style={{ marginLeft: "auto" }}>사진등록</button>
           <input
             style={{ marginLeft: "10px" }}
