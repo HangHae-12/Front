@@ -52,6 +52,7 @@ const Preview = () => {
         <button onClick={() => openModal(modalData)}>Open Modal</button>
         <Modal modalOption={modalOption} />
       </div>
+      <StyledAA />
     </>
   );
 };
@@ -74,4 +75,10 @@ const StyledWrapper = styled.div`
     justify-content: space-between;
     margin-top: 10px;
   }
+`;
+
+const StyledAA = styled.div`
+  width: 100px;
+  height: 100px;
+  background-color: ${({ theme }) => theme.color.primary};
 `;

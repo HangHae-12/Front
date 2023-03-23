@@ -1,4 +1,9 @@
+import { transColor } from "../utils/transColor";
+
 const color = {
+  primary: "#56bea4",
+  primary_l30: transColor.lighten("#56bea4", 0.3),
+
   black: "#000000",
   white: "#ffffff",
   gray_0: "#808080",

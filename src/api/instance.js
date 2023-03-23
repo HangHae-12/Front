@@ -2,7 +2,7 @@ import axios from "axios";
 import { ENV } from "../helpers/envs";
 
 const instance = axios.create({
-  baseURL: `${ENV.Main_server}`,
+  baseURL: `${ENV.main_server}`,
 });
 
 instance.interceptors.request.use(

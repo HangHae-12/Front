@@ -15,9 +15,9 @@ const Router = () => {
         <Route path="/preview" element={<Preview />} />
         <Route path="/common/classes" element={<Classes />} />
         <Route path="/common/classes/:id" element={<Classes />} />
-        <Route path="/preview" element={PAGE.Preview} />
-        <Route path="/login" element={PAGE.Login} />
-        <Route path="/api/user/kakao/callback" element={PAGE.KakaoLogin} />
+        <Route path="/preview" element={PAGE.preview} />
+        <Route path="/login" element={PAGE.login} />
+        <Route path="/api/user/kakao/callback" element={PAGE.kakaoLogin} />
       </Routes>
     </BrowserRouter>
   );
