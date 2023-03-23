@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useNavigate,useParams } from "react-router-dom";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import { HostAPI } from "../../api/hostAPI";
+import textVariants from "../../styles/textVariants";
 
 const ClassButtonGroup = () => {
   const queryClient = useQueryClient();
@@ -30,156 +31,208 @@ const ClassButtonGroup = () => {
   }
   
 
-    return (
-      <Layout>
-      <TopLeftButtons>
-        <button onClick={loadClassroom(1)}>새빛반</button>
-        <button onClick={loadClassroom(2)}>힘찬반</button>
-        <button onClick={loadClassroom(3)}>창의반</button>
-        <button onClick={loadAllClassroom()}>모든반</button>
-      </TopLeftButtons>
-      <AttendanceInfo>
+  return (
+    <Container>
+      <LeftContainer>
+        {/* Left Navigation Bar */}
+      </LeftContainer>
+      <RightContainer>
+        <AttendanceHeader>출결 관리</AttendanceHeader>
         <div>
-          오늘의 날짜
+          <ClassButton>모든반</ClassButton>
+          <ClassButton>새빛반</ClassButton>
+          <ClassButton>동동반</ClassButton>
+          <ClassButton>빗살반</ClassButton>
+        </div>
+        <InfoRow>
+          <InfoLabel>날짜</InfoLabel>
+          <InfoValue>2023년 3월 23일 (수)</InfoValue>
+        </InfoRow>
+        <InfoRow>
+          <InfoLabel>총원</InfoLabel>
+          <InfoValue>20명</InfoValue>
+        </InfoRow>
+        <InfoRow>
+          <InfoLabel>등원</InfoLabel>
+          <InfoValue>12명</InfoValue>
+        </InfoRow>
+        <InfoRow>
+          <InfoLabel>미등원</InfoLabel>
+          <InfoValue>6명</InfoValue>
+        </InfoRow>
+        <InfoRow>
+          <InfoLabel>결석</InfoLabel>
+          <InfoValue>2명</InfoValue>
+        </InfoRow>
+        
+        <div>
+          <AttendanceButton status="등원">등원 인원</AttendanceButton>
+          <AttendanceButton status="미등원">하원 인원</AttendanceButton>
         </div>
         <div>
-          <div>
-            전체 인원수
-          </div>
-          <div>
-            등원 인원수
-          </div>
-          <div>
-            미등원 인원수
-          </div>
-          <div>
-            하원 인원수
-          </div>
-          <div>
-            결석 인원수
-          </div>
+          <TimeButton>전체시간</TimeButton>
+          <TimeButton>07시~08시</TimeButton>
+          <TimeButton>08시~09시</TimeButton>
+          <TimeButton>09시~10시</TimeButton>
         </div>
-      </AttendanceInfo>
-      <div style={{ display: 'flex', marginTop: '20px' }}>
-        <ScheduleButton>등원일정</ScheduleButton>
-        <ScheduleButton>하원일정</ScheduleButton>
-      </div>
-      <div style={{ display: 'flex', marginTop: '20px' }}>
-        {[...Array(16)].map((_, index) => (
-          <TimeButton key={index}>{index + 7}</TimeButton>
-        ))}
-      </div>
-      <SearchBar placeholder="검색" />
-      <GridContainer>
-        {[...Array(24)].map((_, index) => (
-          <GridItem key={index}>
-            <img src={`https://i.pravatar.cc/150?img=${index}`} alt="프로필" style={{ borderRadius: '50%' }} />
-            <div style={{ marginTop: '10px' }}>
-              이름
-            </div>
-            <div style={{ marginTop: '10px' }}>
-              등원 상태
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px', width: '100%' }}>
-              <div>
-                등원시간
-              </div>
-              <div>
-                하원시간
-              </div>
-            </div>
-            <AttendanceButton>등하원 처리</AttendanceButton>
-          </GridItem>
-        ))}
-      </GridContainer>
-    </Layout>
-    );
+        <StudentGrid>
+          <StudentCard>
+            
+            <StudentProfile></StudentProfile>
+            <StudentName>ddd</StudentName>
+            <StudentStatus>미등원</StudentStatus>
+            <StudentInfo>
+            </StudentInfo>
+          </StudentCard>
+        </StudentGrid>
+        <Pagination>
+          <PaginationButton>1</PaginationButton>
+          <PaginationButton>2</PaginationButton>
+          <PaginationButton>3</PaginationButton>
+        </Pagination>
+      </RightContainer>
+    </Container>
+  );
   };
   
   export default ClassButtonGroup;
 
-  const TopLeftButtons = styled.div`
+  const Container = styled.div`
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 200px;
-  height: 50px;
-  background-color: #f1f1f1;
-  padding: 10px;
-  border-radius: 5px;
+  flex-direction: row;
 `;
 
-// 등하원 상태 정보를 담고 있는 컴포넌트
-const AttendanceInfo = styled.div`
+const LeftContainer = styled.div`
+  width: 200px;
+  height: 100vh;
+  background-color: ${({ theme }) => theme.color.grayScale[200]};
+`;
+
+const RightContainer = styled.div`
+  flex-grow: 1;
+  padding: 20px;
+`;
+
+const AttendanceHeader = styled.h2`
+  ${textVariants.H2_Bold}
+  margin-bottom: 20px;
+`;
+
+const ClassButton = styled.button`
+  ${textVariants.Body1_Bold}
+  background-color: ${({ theme }) => theme.color.primary};
+  color: ${({ theme }) => theme.color.white};
+  border: none;
+  border-radius: 4px;
+  padding: 10px;
+  margin-right: 10px;
+
+  &:last-child {
+    margin-right: 0;
+  }
+`;
+
+const InfoRow = styled.div`
   display: flex;
-  justify-content: space-between;
+  flex-direction: row;
   align-items: center;
-  width: 200px;
-  height: 50px;
-  background-color: #f1f1f1;
-  padding: 10px;
-  border-radius: 5px;
-  margin-top: 20px;
+  margin-bottom: 10px;
 `;
 
-// 등하원일정 버튼 컴포넌트
-const ScheduleButton = styled.button`
-  width: 100px;
-  height: 30px;
-  background-color: #f1f1f1;
-  border-radius: 5px;
-  margin-right: 10px;
+const InfoLabel = styled.div`
+  ${textVariants.Body3_SemiBold}
+  width: 80px;
 `;
 
-// 시간별 버튼 컴포넌트
-const TimeButton = styled.button`
-  width: 50px;
-  height: 30px;
-  background-color: #f1f1f1;
-  border-radius: 5px;
-  margin-right: 10px;
+const InfoValue = styled.div`
+  ${textVariants.Body3_Regular}
 `;
 
-// 검색바 컴포넌트
-const SearchBar = styled.input`
-  width: 200px;
-  height: 30px;
-  border-radius: 5px;
-  margin-top: 20px;
-`;
-
-// 프로필과 이름, 등하원 상태 등이 담긴 그리드 컴포넌트
-const GridContainer = styled.div`
+const StudentGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: repeat(6, 1fr);
-  gap: 10px;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(5, auto);
+  grid-gap: 20px;
   margin-top: 20px;
 `;
 
-// 각각의 아이템을 담고 있는 그리드 아이템 컴포넌트
-const GridItem = styled.div`
+const StudentCard = styled.div`
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  flex-direction: row;
   align-items: center;
-  background-color: #f1f1f1;
-  border-radius: 5px;
   padding: 10px;
+  border: 1px solid ${({ theme }) => theme.color.grayScale[300]};
+  border-radius: 4px;
 `;
 
-// 등하원 처리 버튼 컴포넌트
-const AttendanceButton = styled.button`
-  width: 100%;
-  height: 30px;
-  background-color: #f1f1f1;
-  border-radius: 5px;
-  margin-top: 10px;
+const StudentProfile = styled.div`
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: ${({ theme }) => theme.color.grayScale[400]};
+  margin-right: 10px;
 `;
 
-// 전체 레이아웃 컴포넌트
-const Layout = styled.div`
+const StudentInfo = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
+`;
+
+const StudentName = styled.div`
+  ${textVariants.Body1_SemiBold}
+`;
+
+const StudentStatus = styled.div`
+  ${textVariants.Body3_Regular}
+  color: ${({ status, theme }) =>
+    status === "미등원"
+      ? theme.color.red
+      : status === "등원"
+      ? theme.color.green
+      : theme.color.black};
+`;
+
+const AttendanceButton = styled.button`
+  ${textVariants.Body2_SemiBold}
+  background-color: ${({ status, theme }) =>
+    status === "등원" ? theme.color.green : theme.color.grayScale[300]};
+  color: ${({ status, theme }) =>
+    status === "등원" ? theme.color.white : theme.color.grayScale[800]};
+  border: none;
+  border-radius: 4px;
+  padding: 10px;
+  margin-left: auto;
+`;
+
+const TimeButton = styled.button`
+  ${textVariants.Body2_SemiBold}
+  background-color: ${({ theme }) => theme.color.grayScale[300]};
+  color: ${({ theme }) => theme.color.grayScale[800]};
+  border: none;
+  border-radius: 4px;
+  padding: 10px;
+  margin-right: 10px;
+  &:last-child {
+    margin-right: 0;
+  }
+`;
+
+const Pagination = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+`;
+
+const PaginationButton = styled.button`
+  ${textVariants.Body2_SemiBold}
+  background-color: ${({ theme }) => theme.color.grayScale[300]};
+  color: ${({ theme }) => theme.color.grayScale[800]};
+  border: none;
+  border-radius: 4px;
+  padding: 10px;
+  margin-right: 10px;
+
+  &:last-child {
+    margin-right: 0;
+  }
 `;
