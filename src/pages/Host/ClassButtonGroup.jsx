@@ -4,7 +4,7 @@ import { useNavigate,useParams } from "react-router-dom";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import { HostAPI } from "../../api/hostAPI";
 import textVariants from "../../styles/textVariants";
-
+import SideBar from "../../components/SideBar";
 const ClassButtonGroup = () => {
   const queryClient = useQueryClient();
   const { classroomId } = useParams();
@@ -29,96 +29,141 @@ const ClassButtonGroup = () => {
   const loadClassroom = (id) => {
     navigate(`/${id}`)
   }
+
+  const [isAttendClick, setIsAttendClick] = useState(true);
+  const [isLeaveClick, setIsLeaveClick] = useState(false);
   
+  const [selectedButton, setSelectedButton] = useState("모든반");
 
   return (
-    <Container>
-      <LeftContainer>
-        {/* Left Navigation Bar */}
-      </LeftContainer>
-      <RightContainer>
-        <AttendanceHeader>출결 관리</AttendanceHeader>
+    <StyledContainer>
+      <StyledLeftContainer>
+        <SideBar />
+      </StyledLeftContainer>
+      <StyledRightContainer>
+        <StyledAttendanceHeader>출결 관리</StyledAttendanceHeader>
         <div>
-          <ClassButton>모든반</ClassButton>
-          <ClassButton>새빛반</ClassButton>
-          <ClassButton>동동반</ClassButton>
-          <ClassButton>빗살반</ClassButton>
+          <StyledClassButton
+            selected={selectedButton === "모든반"}
+            onClick={() => setSelectedButton("모든반")}
+          >
+            모든반
+          </StyledClassButton>
+          <StyledClassButton
+            selected={selectedButton === "새빛반"}
+            onClick={() => setSelectedButton("새빛반")}
+          >
+            새빛반
+          </StyledClassButton>
+          <StyledClassButton
+            selected={selectedButton === "동동반"}
+            onClick={() => setSelectedButton("동동반")}
+          >
+            동동반
+          </StyledClassButton>
+          <StyledClassButton
+            selected={selectedButton === "빗살반"}
+            onClick={() => setSelectedButton("빗살반")}
+          >
+            빗살반
+          </StyledClassButton>
         </div>
-        <InfoRow>
-          <InfoLabel>날짜</InfoLabel>
-          <InfoValue>2023년 3월 23일 (수)</InfoValue>
-        </InfoRow>
-        <InfoRow>
-          <InfoLabel>총원</InfoLabel>
-          <InfoValue>20명</InfoValue>
-        </InfoRow>
-        <InfoRow>
-          <InfoLabel>등원</InfoLabel>
-          <InfoValue>12명</InfoValue>
-        </InfoRow>
-        <InfoRow>
-          <InfoLabel>미등원</InfoLabel>
-          <InfoValue>6명</InfoValue>
-        </InfoRow>
-        <InfoRow>
-          <InfoLabel>결석</InfoLabel>
-          <InfoValue>2명</InfoValue>
-        </InfoRow>
+        <StyledInfoContainer>
+          <StyledInfoRow>
+            <StyledInfoLabel>2023년 3월 23일</StyledInfoLabel>
+            <StyledInfoValue>수요일</StyledInfoValue>
+          </StyledInfoRow>
+          <StyledInfoRow>
+            <StyledInfoLabel>총원</StyledInfoLabel>
+            <StyledInfoValue>20명</StyledInfoValue>
+          </StyledInfoRow>
+          <StyledInfoRow>
+            <StyledInfoLabel>등원</StyledInfoLabel>
+            <StyledInfoValue>12명</StyledInfoValue>
+          </StyledInfoRow>
+          <StyledInfoRow>
+            <StyledInfoLabel>미등원</StyledInfoLabel>
+            <StyledInfoValue>6명</StyledInfoValue>
+          </StyledInfoRow>
+          <StyledInfoRow>
+            <StyledInfoLabel>결석</StyledInfoLabel>
+            <StyledInfoValue>2명</StyledInfoValue>
+          </StyledInfoRow>
+        </StyledInfoContainer>
+
         
         <div>
-          <AttendanceButton status="등원">등원 인원</AttendanceButton>
-          <AttendanceButton status="미등원">하원 인원</AttendanceButton>
+        <StyledAttendanceButton
+          status="등원"
+          isClick={isAttendClick}
+          onClick={() => {
+            setIsAttendClick(true);
+            setIsLeaveClick(false);
+          }}
+        >
+          등원 인원
+        </StyledAttendanceButton>
+        <StyledAttendanceButton
+          status="미등원"
+          isClick={isLeaveClick}
+          onClick={() => {
+            setIsLeaveClick(true);
+            setIsAttendClick(false);
+          }}
+        >
+          하원 인원
+        </StyledAttendanceButton>
         </div>
         <div>
-          <TimeButton>전체시간</TimeButton>
-          <TimeButton>07시~08시</TimeButton>
-          <TimeButton>08시~09시</TimeButton>
-          <TimeButton>09시~10시</TimeButton>
+          <StyledTimeButton>전체시간</StyledTimeButton>
+          <StyledTimeButton>07시~08시</StyledTimeButton>
+          <StyledTimeButton>08시~09시</StyledTimeButton>
+          <StyledTimeButton>09시~10시</StyledTimeButton>
         </div>
-        <StudentGrid>
-          <StudentCard>
+        <StyledStudentGrid>
+          <StyledStudentCard>
             
-            <StudentProfile></StudentProfile>
-            <StudentName>ddd</StudentName>
-            <StudentStatus>미등원</StudentStatus>
-            <StudentInfo>
-            </StudentInfo>
-          </StudentCard>
-        </StudentGrid>
-        <Pagination>
-          <PaginationButton>1</PaginationButton>
-          <PaginationButton>2</PaginationButton>
-          <PaginationButton>3</PaginationButton>
-        </Pagination>
-      </RightContainer>
-    </Container>
+            <StyledStudentProfile/>
+            <StyledStudentName>김민재</StyledStudentName>
+            <StyledStudentStatus status="미등원">미등원</StyledStudentStatus>
+            <StyledStudentInfo>
+            </StyledStudentInfo>
+          </StyledStudentCard>
+        </StyledStudentGrid>
+        <StyledPagination>
+          <StyledPaginationButton>1</StyledPaginationButton>
+          <StyledPaginationButton>2</StyledPaginationButton>
+          <StyledPaginationButton>3</StyledPaginationButton>
+        </StyledPagination>
+      </StyledRightContainer>
+    </StyledContainer>
   );
   };
   
   export default ClassButtonGroup;
 
-  const Container = styled.div`
+  const StyledContainer = styled.div`
   display: flex;
   flex-direction: row;
 `;
 
-const LeftContainer = styled.div`
+const StyledLeftContainer = styled.div`
   width: 200px;
   height: 100vh;
   background-color: ${({ theme }) => theme.color.grayScale[200]};
 `;
 
-const RightContainer = styled.div`
+const StyledRightContainer = styled.div`
   flex-grow: 1;
   padding: 20px;
 `;
 
-const AttendanceHeader = styled.h2`
+const StyledAttendanceHeader = styled.h2`
   ${textVariants.H2_Bold}
   margin-bottom: 20px;
 `;
 
-const ClassButton = styled.button`
+const StyledClassButton = styled.button`
   ${textVariants.Body1_Bold}
   background-color: ${({ theme }) => theme.color.primary};
   color: ${({ theme }) => theme.color.white};
@@ -132,23 +177,25 @@ const ClassButton = styled.button`
   }
 `;
 
-const InfoRow = styled.div`
+const StyledInfoContainer = styled.div`
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  align-items: center;
+  margin-bottom: 20px;
+`;
+const StyledInfoRow = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-bottom: 10px;
 `;
-
-const InfoLabel = styled.div`
+const StyledInfoLabel = styled.div`
   ${textVariants.Body3_SemiBold}
-  width: 80px;
 `;
-
-const InfoValue = styled.div`
+const StyledInfoValue = styled.div`
   ${textVariants.Body3_Regular}
 `;
 
-const StudentGrid = styled.div`
+const StyledStudentGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(5, auto);
@@ -156,7 +203,7 @@ const StudentGrid = styled.div`
   margin-top: 20px;
 `;
 
-const StudentCard = styled.div`
+const StyledStudentCard = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -165,7 +212,7 @@ const StudentCard = styled.div`
   border-radius: 4px;
 `;
 
-const StudentProfile = styled.div`
+const StyledStudentProfile = styled.div`
   width: 50px;
   height: 50px;
   border-radius: 50%;
@@ -173,16 +220,16 @@ const StudentProfile = styled.div`
   margin-right: 10px;
 `;
 
-const StudentInfo = styled.div`
+const StyledStudentInfo = styled.div`
   display: flex;
   flex-direction: column;
 `;
 
-const StudentName = styled.div`
+const StyledStudentName = styled.div`
   ${textVariants.Body1_SemiBold}
 `;
 
-const StudentStatus = styled.div`
+const StyledStudentStatus = styled.div`
   ${textVariants.Body3_Regular}
   color: ${({ status, theme }) =>
     status === "미등원"
@@ -192,19 +239,36 @@ const StudentStatus = styled.div`
       : theme.color.black};
 `;
 
-const AttendanceButton = styled.button`
+const StyledAttendanceButton = styled.button`
   ${textVariants.Body2_SemiBold}
-  background-color: ${({ status, theme }) =>
-    status === "등원" ? theme.color.green : theme.color.grayScale[300]};
-  color: ${({ status, theme }) =>
-    status === "등원" ? theme.color.white : theme.color.grayScale[800]};
+  background-color: ${({ theme, isClick }) =>
+    isClick
+        ? theme.color.green
+        : theme.color.grayScale[300]};
+  color: ${({ theme, isClick }) =>
+    isClick
+      
+        ? theme.color.white
+        : theme.color.grayScale[800]};
   border: none;
   border-radius: 4px;
   padding: 10px;
   margin-left: auto;
+
+  &:hover {
+    background-color: ${({ theme, isClick }) =>
+           theme.color.green_lighter}; 
+
+    color: ${({ theme, isClick }) =>
+      isClick
+          ? theme.color.white
+          : theme.color.grayScale[800]};
+  }
 `;
 
-const TimeButton = styled.button`
+
+
+const StyledTimeButton = styled.button`
   ${textVariants.Body2_SemiBold}
   background-color: ${({ theme }) => theme.color.grayScale[300]};
   color: ${({ theme }) => theme.color.grayScale[800]};
@@ -212,18 +276,25 @@ const TimeButton = styled.button`
   border-radius: 4px;
   padding: 10px;
   margin-right: 10px;
+
   &:last-child {
     margin-right: 0;
   }
+
+  &:hover {
+    background-color: #56BEA4;
+    color: ${({ theme }) => theme.color.white};
+  }
+
 `;
 
-const Pagination = styled.div`
+const StyledPagination = styled.div`
   display: flex;
   justify-content: center;
   margin-top: 20px;
 `;
 
-const PaginationButton = styled.button`
+const StyledPaginationButton = styled.button`
   ${textVariants.Body2_SemiBold}
   background-color: ${({ theme }) => theme.color.grayScale[300]};
   color: ${({ theme }) => theme.color.grayScale[800]};
