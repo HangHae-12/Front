@@ -1,19 +1,35 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
-import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
+import {
+  useQueryClient,
+  useQuery,
+  useInfiniteQuery,
+} from "@tanstack/react-query";
 import { getClassesGallery, getSearchGallery } from "../../api/classes/classes";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import Pagination from "react-js-pagination";
 
 function Gallery() {
   const queryClient = useQueryClient();
   const { id } = useParams();
   const [searchGallery, setSearchGallery] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
+  // const [currentPage, setCurrentPage] = useState(1);
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
 
+
+
+  // react-js-pagination
   // const { data } = useQuery(
-  //   ["classesGallery"],
-  //   () => getClassesGallery(id),
+  //   ["classesGallery", searchGallery, currentPage],
+  //   () => {
+  //     if (searchGallery) {
+  //       return getSearchGallery(searchGallery, currentPage, 15);
+  //     }
+  //     return getClassesGallery(id, currentPage, 15);
+  //   },
   //   {
   //     onSuccess: (data) => {
   //       console.log(data);
@@ -24,31 +40,25 @@ function Gallery() {
   //   }
   // );
 
-  // const {data : searchResult} = useQuery(
-  //   ["getSearchGallery", searchGallery],
-  //   () => getSearchGallery(searchGallery),
-  //   {
-  //     enabled: !!searchGallery,
-  //   }
-  // )
-
-  const { data } = useQuery(
-    ["classesGallery", searchGallery, currentPage],
-    () => {
-      if (searchGallery) {
-        return getSearchGallery(searchGallery, currentPage, 15);
-      }
-      return getClassesGallery(id, currentPage, 15);
-    },
-    {
-      onSuccess: (data) => {
-        console.log(data);
-      },
-      onError: () => {
-        console.log("error");
-      },
-    }
-  );
+  //인피니티쿼리
+  // const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+  //   useInfiniteQuery(
+  //     ["classesGallery", searchGallery],
+  //     async ({ pageParam = 1 }) => {
+  //       if (searchGallery) {
+  //         return getSearchGallery(searchGallery, pageParam, 15);
+  //       }
+  //       return getClassesGallery(id, pageParam, 15);
+  //     },
+  //     {
+  //       getNextPageParam: (lastPage) => {
+  //         if (lastPage.currentPage < lastPage.totalPages) {
+  //           return lastPage.currentPage + 1;
+  //         }
+  //         return false;
+  //       },
+  //     }
+  //   );
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -56,9 +66,9 @@ function Gallery() {
     queryClient.invalidateQueries(["classesGallery", searchGallery]);
   };
 
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
+  // const handlePageChange = (pageNumber) => {
+  //   setCurrentPage(pageNumber);
+  // };
 
   const cards = [];
   for (let i = 0; i < 15; i++) {
@@ -78,6 +88,27 @@ function Gallery() {
       <StyledGalleryWrapper>
         <StyledGalleryHeader>
           <button>전체기간</button>
+          <div>
+          <DatePicker
+        showIcon
+        selected={startDate}
+        onChange={(date) => setStartDate(date)}
+        selectsStart
+        startDate={startDate}
+        endDate={endDate}
+      />
+      </div>
+      <div>
+      <DatePicker
+        showIcon
+        selected={endDate}
+        onChange={(date) => setEndDate(date)}
+        selectsEnd
+        startDate={startDate}
+        endDate={endDate}
+        minDate={startDate}
+      />
+      </div>
           <button style={{ marginLeft: "auto" }}>사진등록</button>
           <input
             style={{ marginLeft: "10px" }}
@@ -100,7 +131,17 @@ function Gallery() {
             );
           })} */}
         </StyledGalleryContainer>
-        <PaginationContainer>
+        {/* <button
+          onClick={() => fetchNextPage()}
+          disabled={!hasNextPage || isFetchingNextPage}
+        >
+          {isFetchingNextPage
+            ? "Loading more..."
+            : hasNextPage
+            ? "Load more"
+            : "Nothing more to load"}
+        </button> */}
+        {/* <PaginationContainer>
           <Pagination
             activePage={currentPage}
             itemsCountPerPage={15}
@@ -113,7 +154,7 @@ function Gallery() {
             linkClass="page-link"
             activeClass="active"
           />
-        </PaginationContainer>
+        </PaginationContainer> */}
       </StyledGalleryWrapper>
     </>
   );
