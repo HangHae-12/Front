@@ -37,7 +37,7 @@ const StyledHeaderContainer = styled.header`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid ${({ theme }) => theme.color.gray_3};
+  border-bottom: 1px solid ${({ theme }) => theme.color.gray_300};
 `;
 
 const StyledLogoWrapper = styled.div`

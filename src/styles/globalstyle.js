@@ -39,7 +39,7 @@ const GlobalStyle = createGlobalStyle`
   }
 
   body {
-    background-color: ${({ theme }) => theme.color.gray_5};
+    background-color: ${({ theme }) => theme.color.gray_100};
     
     
   }

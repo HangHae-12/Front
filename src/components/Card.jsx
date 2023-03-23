@@ -48,7 +48,7 @@ const StyledCard = {
   Title: styled.span`
     font-weight: 900;
     font-size: 14px;
-    color: ${({ theme }) => theme.color.gray_2};
+    color: ${({ theme }) => theme.color.gray_200};
   `,
 
   Icon: styled.span`
@@ -60,7 +60,7 @@ const StyledCard = {
 
     &:hover {
       border-radius: 50px;
-      background-color: ${({ theme }) => theme.color.gray_3};
+      background-color: ${({ theme }) => theme.color.gray_300};
       cursor: pointer;
     }
   `,

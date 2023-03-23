@@ -1,26 +1,27 @@
+import { COLOR } from "../helpers/color";
 import { transColor } from "../utils/transColor";
 
 const color = {
-  primary: "#56bea4",
-  primary_l30: transColor.lighten("#56bea4", 0.3),
+  primary: COLOR.primary,
+  primary_l30: transColor.lighten(COLOR.primary, 0.3),
 
-  black: "#000000",
-  white: "#ffffff",
-  gray_0: "#808080",
-  gray_1: "#7e7e7e",
-  gray_2: "#d9d9d9",
-  gray_3: "#ededed",
-  gray_4: "#f0f0f0",
-  gray_5: "#f3f3f3",
-  gray_6: "#fafafa",
-  blue: "#3a66ff",
-  red: "#ff3636",
-  green: "#31bb00",
-  orenge: "#ff852d",
-  darkYellow: "#d1bf20",
+  black: COLOR.grayScale[900],
+  gray_800: COLOR.grayScale[800],
+  gray_700: COLOR.grayScale[700],
+  gray_600: COLOR.grayScale[600],
+  gray_500: COLOR.grayScale[500],
+  gray_400: COLOR.grayScale[400],
+  gray_300: COLOR.grayScale[300],
+  gray_200: COLOR.grayScale[200],
+  gray_100: COLOR.grayScale[100],
+  gray_50: COLOR.grayScale[50],
+  white: COLOR.grayScale[0],
+  blue: COLOR.blue,
+  red: COLOR.red,
+  orange: COLOR.orange,
+  yellow: COLOR.yellow,
+  green: transColor.lighten(COLOR.green, 0.4),
 };
-
-// gray color는 디자이너님께서 디자인 시스템 완성하시면 추가하겠습니다.
 
 const defaultTheme = {
   color,
