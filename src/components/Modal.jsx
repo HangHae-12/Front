@@ -1,6 +1,7 @@
 import { createPortal } from "react-dom";
 import styled from "styled-components";
 import useModal from "../hooks/useModal";
+import { textVariants } from "../styles/designSystem";
 
 const Modal = ({ modalOption = {} }) => {
   const { modalState, closeModal } = useModal();
