@@ -4,6 +4,7 @@ import Card from "../components/Card";
 
 import Modal from "../components/Modal";
 import useModal from "../hooks/useModal";
+import textVariants from "../styles/textVariants";
 
 const Preview = () => {
   const { openModal } = useModal();
@@ -52,7 +53,7 @@ const Preview = () => {
         <button onClick={() => openModal(modalData)}>Open Modal</button>
         <Modal modalOption={modalOption} />
       </div>
-      <StyledAA />
+      <StyledAA>faasfafsasfasfafs</StyledAA>
     </>
   );
 };

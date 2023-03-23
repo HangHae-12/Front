@@ -2,6 +2,7 @@ import { createPortal } from "react-dom";
 import styled from "styled-components";
 import useModal from "../hooks/useModal";
 
+
 const Modal = ({ modalOption = {} }) => {
   const { modalState, closeModal } = useModal();
 
@@ -71,6 +72,7 @@ const StyledModal = {
   `,
 
   Container: styled.div`
+    
     background-color: ${({ color, theme }) => color || theme.color.white};
     border-radius: 8px;
     padding: ${({ padding }) => padding || "10px"};

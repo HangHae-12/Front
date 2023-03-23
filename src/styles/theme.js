@@ -25,8 +25,26 @@ const color = {
   grayScale: grayScale,
 };
 
+const fontSize = {
+  h1: "30px",
+  h2: "20px",
+  body1: "16px",
+  body2: "14px",
+  body3: "12px",
+  caption: "10px",
+};
+
+const fontWeight = {
+  bold: 700,
+  semi_bold: 600,
+  medium: 500,
+  regular: 400,
+};
+
 const defaultTheme = {
-  color: color,
+  color,
+  fontSize,
+  fontWeight,
 };
 
 export default defaultTheme;
