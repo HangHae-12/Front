@@ -1,5 +1,26 @@
-import styled from 'styled-components'
-const Class = () => {
+import React, { useState } from "react";
+import styled from "styled-components";
+import { useParams } from "react-router-dom";
+import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
+import { getManageAPI,getManageScheduleAPI,getManageAbsentAPI } from "../../api/hostAPI";
+
+const ClassButtonGroup = () => {
+  const queryClient = useQueryClient();
+  const { classroomId } = useParams();
+
+  const { isLoading, isError, data } = useQuery(
+    ["getManage"],
+    () => getManageAPI(classroomId),
+    {
+      onSuccess: (data) => {
+        console.log(data);
+      },
+      onError: () => {
+        console.log("error");
+      },
+    }
+  );
+  
 
     return (
       <Layout>
@@ -67,7 +88,7 @@ const Class = () => {
     );
   };
   
-  export default Class;
+  export default ClassButtonGroup;
 
   const TopLeftButtons = styled.div`
   display: flex;

@@ -1,4 +1,4 @@
-import instance from "../instance";
+import instance from "./instance";
 
 export const getClassesPage = async (id) => {
   try {
