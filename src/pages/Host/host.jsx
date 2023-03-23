@@ -1,15 +1,8 @@
-import Header from "../../components/Header";
-import SideBar from "../../components/SideBar";
-import ClassButtonGroup from './ClassButtonGroup'
-
-const Host = () => {
+const host = () => {
 
     return (
-        <>
-        <SideBar />
-        <ClassButtonGroup/>
-        </>
+        <></>
     );
   };
   
-  export default Host;
+  export default host;
