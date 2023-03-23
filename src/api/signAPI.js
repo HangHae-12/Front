@@ -13,8 +13,8 @@ export const SignAPI = {
           },
           params: {
             grant_type: "authorization_code",
-            client_id: ENV.Kakao_key,
-            redirect_uri: ENV.Kakao_redirect,
+            client_id: ENV.kakao_key,
+            redirect_uri: ENV.kakao_redirect,
             code: code,
           },
         }

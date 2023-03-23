@@ -6,5 +6,6 @@ export const modalState = atom({
     isOpen: false,
     title: "",
     contents: "",
+    callback: null,
   },
 });

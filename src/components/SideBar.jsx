@@ -35,7 +35,7 @@ const StyledSideBarContainer = styled.aside`
   width: 180px;
   height: 100%;
   padding: calc(80px + 30px) 20px 0px 20px;
-  border: 1px solid ${({ theme }) => theme.color.gray_3};
+  border: 1px solid ${({ theme }) => theme.color.gray_300};
   background-color: ${({ theme }) => theme.color.white};
 `;
 
@@ -45,7 +45,7 @@ const StyledUserProfileWrapper = styled.div`
   height: 150px;
   flex-direction: column;
   align-items: center;
-  border-bottom: 1px solid ${({ theme }) => theme.color.gray_3};
+  border-bottom: 1px solid ${({ theme }) => theme.color.gray_300};
 
   img {
     width: 80px;
@@ -55,7 +55,7 @@ const StyledUserProfileWrapper = styled.div`
 
   p {
     font-size: 12px;
-    color: ${({ theme }) => theme.color.gray_1};
+    color: ${({ theme }) => theme.color.gray_100};
     margin: 10px 0px 5px 0px;
   }
 
@@ -96,7 +96,7 @@ const StyledSideBarBtnWrapper = styled.div`
     justify-content: center;
     align-items: center;
     gap: 10px;
-    background-color: ${({ theme }) => theme.color.gray_4};
-    color: ${({ theme }) => theme.color.gray_1};
+    background-color: ${({ theme }) => theme.color.gray_400};
+    color: ${({ theme }) => theme.color.gray_100};
   }
 `;
