@@ -1,16 +1,17 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { useParams } from "react-router-dom";
+import { useNavigate,useParams } from "react-router-dom";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
-import { getManageAPI,getManageScheduleAPI,getManageAbsentAPI } from "../../api/hostAPI";
+import { HostAPI } from "../../api/hostAPI";
 
 const ClassButtonGroup = () => {
   const queryClient = useQueryClient();
   const { classroomId } = useParams();
+  const navigate = useNavigate();
 
   const { isLoading, isError, data } = useQuery(
     ["getManage"],
-    () => getManageAPI(classroomId),
+    () => HostAPI.getManage(),
     {
       onSuccess: (data) => {
         console.log(data);
@@ -20,15 +21,22 @@ const ClassButtonGroup = () => {
       },
     }
   );
+  const loadAllClassroom = () => {
+    //모든반을 클릭했을 때 전체 데이터 조회되게
+  }
+  
+  const loadClassroom = (id) => {
+    navigate(`/${id}`)
+  }
   
 
     return (
       <Layout>
       <TopLeftButtons>
-        <button>새빛반</button>
-        <button>힘찬반</button>
-        <button>창의반</button>
-        <button>모든반</button>
+        <button onClick={loadClassroom(1)}>새빛반</button>
+        <button onClick={loadClassroom(2)}>힘찬반</button>
+        <button onClick={loadClassroom(3)}>창의반</button>
+        <button onClick={loadAllClassroom()}>모든반</button>
       </TopLeftButtons>
       <AttendanceInfo>
         <div>
