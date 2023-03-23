@@ -47,6 +47,21 @@ export const getSearchGallery = async (keyword, page, perPage) => {
   }
 };
 
+export const getSearchDateGallery = async (payload) => {
+  try {
+    const response = await instance.get(`api/common/classes/${payload.id}/image-posts`, {
+      params: {
+        start: payload.start,
+        end: payload.end,
+        page: payload.page
+      },
+    });
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const setClassesTeacher = async (payload) => {
   try {
     const response = await instance.put(

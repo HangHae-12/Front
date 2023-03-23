@@ -1,17 +1,22 @@
-import React from 'react'
+import React from "react";
 import styled from "styled-components";
-import ClassButton from './ClassButton'
+import SideBar from "../../components/SideBar";
+import ClassButton from "./ClassButton";
 
 function Class() {
   return (
-    <StyledClassesWrapper>
-    <ClassButton />
-    </StyledClassesWrapper>
-  )
+    <>
+      <SideBar />
+      <StyledClassesWrapper>
+        <ClassButton />
+      </StyledClassesWrapper>
+    </>
+  );
 }
 
-export default Class
+export default Class;
 
 const StyledClassesWrapper = styled.div`
-  background: #E5E5E5;
-`
+  background: #e5e5e5;
+  margin-left: 200px;
+`;
