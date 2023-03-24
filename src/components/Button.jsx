@@ -1,17 +1,20 @@
 import styled from "styled-components";
 import textVariants from "../styles/textVariants";
 
-const ClassButton = ({ selected, onClick, selectedButton}) => {
+const Button = {
+  ClassButton:({ selected, onClick, selectedButton}) => {
 
-  return (
-    <StyledClassButton selected={selected===selectedButton} onClick={onClick}>
-      {selected}
-    </StyledClassButton>
-  );
+    return (
+      <StyledClassButton selected={selected===selectedButton} onClick={onClick}>
+        {selected}
+      </StyledClassButton>
+    );
+  },
+
+  NormalButton:()=>{}
 };
 
-export default ClassButton;
-
+export default Button;
 const StyledClassButton = styled.button`
   ${textVariants.Body1_Bold}
   background-color: ${({ theme }) => theme.color.white};
@@ -33,7 +36,7 @@ const StyledClassButton = styled.button`
   &:last-child {
     margin-right: 0;
   }
-
+  //밑줄 표현 위해 가상선택자 사용
   &::after {
     content: "";
     position: absolute;

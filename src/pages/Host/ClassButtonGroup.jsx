@@ -4,7 +4,7 @@ import { useNavigate,useParams } from "react-router-dom";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import { HostAPI } from "../../api/hostAPI";
 import textVariants from "../../styles/textVariants";
-import ClassButton from '../../components/ClassButton';
+import Button from '../../components/Button';
 
 const ClassButtonGroup = () => {
   const queryClient = useQueryClient();
@@ -44,10 +44,14 @@ const handleButtonClick = (selected) => {
         <>
         <StyledAttendanceHeader>출결 관리</StyledAttendanceHeader>
         <StyledClassButtonGroup>
-        <ClassButton selected={"모든반"} selectedButton={selectedButton} onClick={() => handleButtonClick("모든반")} />
-        <ClassButton selected={"새빛반"} selectedButton={selectedButton} onClick={() => handleButtonClick("새빛반")} />
-        <ClassButton selected={"동동반"} selectedButton={selectedButton} onClick={() => handleButtonClick("동동반")} />
-        <ClassButton selected={"빗살반"} selectedButton={selectedButton} onClick={() => handleButtonClick("빗살반")} />
+        <Button.ClassButton selected={"모든반"} selectedButton={selectedButton} 
+                            onClick={() => handleButtonClick("모든반")} />
+        <Button.ClassButton selected={"새빛반"} selectedButton={selectedButton} 
+                            onClick={() => handleButtonClick("새빛반")} />
+        <Button.ClassButton selected={"동동반"} selectedButton={selectedButton} 
+                            onClick={() => handleButtonClick("동동반")} />
+        <Button.ClassButton selected={"빗살반"} selectedButton={selectedButton} 
+                            onClick={() => handleButtonClick("빗살반")} />
         </StyledClassButtonGroup>
         <StyledInfoContainer>
           <StyledInfoColomn>
