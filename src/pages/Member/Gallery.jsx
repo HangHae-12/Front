@@ -19,15 +19,9 @@ function Gallery() {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
 
-  //react-js-pagination
   const { data } = useQuery(
-    ["classesGallery", searchGallery, currentPage],
-    () => {
-      if (searchGallery) {
-        return MemberAPI.getSearchGallery(searchGallery, currentPage, 15);
-      }
-      return MemberAPI.getClassesGallery(id, currentPage, 15);
-    },
+    ["classesGallery"],
+    () => MemberAPI.getClassesGallery(id),
     {
       onSuccess: (data) => {
         console.log(data);
@@ -37,6 +31,25 @@ function Gallery() {
       },
     }
   );
+
+  //react-js-pagination
+  // const { data } = useQuery(
+  //   ["classesGallery", searchGallery, currentPage],
+  //   () => {
+  //     if (searchGallery) {
+  //       return MemberAPI.getSearchGallery(searchGallery, currentPage, 15);
+  //     }
+  //     return MemberAPI.getClassesGallery(id, currentPage, 15);
+  //   },
+  //   {
+  //     onSuccess: (data) => {
+  //       console.log(data);
+  //     },
+  //     onError: () => {
+  //       console.log("error");
+  //     },
+  //   }
+  // );
 
   //인피니티쿼리
   // const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
@@ -116,7 +129,7 @@ function Gallery() {
           />
         </StyledGalleryHeader>
         <StyledGalleryContainer>
-          {data?.map((item) => {
+          {/* {data?.map((item) => {
             return (
               <StyledGalleryCard key={item.data.imagePostId}>
             <StyledGalleryImage src={item.data.imageUrlList} />
@@ -127,7 +140,7 @@ function Gallery() {
             </StyledFont>
           </StyledGalleryCard>
             );
-          })}
+          })} */}
         </StyledGalleryContainer>
         {/* <button
           onClick={() => fetchNextPage()}
@@ -139,7 +152,7 @@ function Gallery() {
             ? "Load more"
             : "Nothing more to load"}
         </button> */}
-        <PaginationContainer>
+        {/* <PaginationContainer>
           <Pagination
             activePage={currentPage}
             itemsCountPerPage={15}
@@ -152,7 +165,7 @@ function Gallery() {
             linkClass="page-link"
             activeClass="active"
           />
-        </PaginationContainer>
+        </PaginationContainer> */}
       </StyledGalleryWrapper>
     </>
   );

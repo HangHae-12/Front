@@ -9,7 +9,7 @@ function ClassMember() {
   const { id } = useParams();
   const [searchMember, setSearchMember] = useState("");
 
-  const { isLoading, isError, data } = useQuery(
+  const { data } = useQuery(
     ["classesMember"],
     () => MemberAPI.getClassesMember(id),
     {
@@ -32,18 +32,17 @@ function ClassMember() {
     console.log(data.data.data);
   }
 
-  // const loadMemberSearch = data.data?.filter((item) =>
-  //   item.data.name.includes(searchMember)
-  // );
+  const loadMemberSearch = data?.data.data.filter((item) =>
+    item.name.includes(searchMember)
+  );
 
 
   return (
     <>
       <StyledChildrenWrapper>
         <StyledChildernHeader>
-          <div>총 32명</div>
-          {/* <div>총 {data.length}명</div> */}
-          <button onClick={handletest} style={{ marginLeft: "auto" }}>인원 추가</button>
+          <div>총 {data?.data.data.length}명</div>
+          <button style={{ marginLeft: "auto" }}>인원 추가</button>
           <input
             style={{ marginLeft: "10px" }}
             type="text"
@@ -52,26 +51,16 @@ function ClassMember() {
           ></input>
         </StyledChildernHeader>
         <StyledChildrenContainer>
-          {/* {loadMemberSearch?.map((item) => {
+          {loadMemberSearch?.map((item) => {
             return (
-              <StyledChildrenCard key={item.data.childId}>
+              <StyledChildrenCard key={item.childId}>
             <StyledChildrenImage 
-              src={item.data.imageUrl}
+              src={item.profileImageUrl}
               />
-            {item.data.name}
+            {item.name}
           </StyledChildrenCard>
             );
-          })} */}
-           {/* {data && data.map((item) => {
-            return (
-              <StyledChildrenCard key={item.data.childId}>
-              <StyledChildrenImage 
-              src={item.data.imageUrl}
-              />
-            {item.data.name}
-          </StyledChildrenCard>
-            );
-          })}  */}
+          })}
         </StyledChildrenContainer>
       </StyledChildrenWrapper>
     </>

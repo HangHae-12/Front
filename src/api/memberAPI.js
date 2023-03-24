@@ -17,14 +17,24 @@ export const MemberAPI = {
       console.log(error);
     }
   },
-  getClassesGallery: async (id, page, perPage) => {
+  // getClassesGallery: async (id, page, perPage) => {
+  //   try {
+  //     const response = await instance.get(`api/classes/${id}/gallery`, {
+  //       params: {
+  //         page,
+  //         perPage,
+  //       },
+  //     });
+  //     return response;
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // },
+  getClassesGallery: async (id) => {
     try {
-      const response = await instance.get(`api/classes/${id}/gallery`, {
-        params: {
-          page,
-          perPage,
-        },
-      });
+      const response = await instance.get(
+        `api/common/classes/${id}/image-posts`
+      );
       return response;
     } catch (error) {
       console.log(error);
@@ -32,7 +42,7 @@ export const MemberAPI = {
   },
   getSearchGallery: async (keyword, page, perPage) => {
     try {
-      const response = await instance.get("api/common/search/imagePosts", {
+      const response = await instance.get("api/common/search/image-posts", {
         params: {
           keyword,
           page,
@@ -64,10 +74,8 @@ export const MemberAPI = {
   setClassesTeacher: async (payload) => {
     try {
       const response = await instance.put(
-        `api/managers/${payload.id}/teacher-profiles`,
-        {
-          image: payload.image,
-        },
+        `api/managers/classes/${payload.id}/teacher-profiles`,
+        payload.formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
         }
