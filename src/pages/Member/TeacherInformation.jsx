@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { GrAddCircle } from "react-icons/gr";
 import { useParams } from "react-router-dom";
 import { useState } from "react";
-import { getClassesPage, setClassesTeacher } from "../../api/classes";
+import { MemberAPI } from "../../api/memberAPI";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 
 function TeacherInformation() {
@@ -19,7 +19,7 @@ function TeacherInformation() {
 
   const { isLoading, isError, data } = useQuery(
     ["ClassesPage"],
-    () => getClassesPage(id),
+    () => MemberAPI.getClassesPage(id),
     {
       onSuccess: (data) => {
         console.log(data);
@@ -30,7 +30,7 @@ function TeacherInformation() {
     }
   );
 
-  const setTeacherMutation = useMutation(setClassesTeacher, {
+  const setTeacherMutation = useMutation(MemberAPI.setClassesTeacher, {
     onSuccess: () => {
       queryClient.invalidateQueries("ClassesPage");
     },

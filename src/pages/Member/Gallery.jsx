@@ -6,7 +6,7 @@ import {
   useQuery,
   useInfiniteQuery,
 } from "@tanstack/react-query";
-import { getClassesGallery, getSearchGallery } from "../../api/classes";
+import { MemberAPI } from "../../api/memberAPI";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Pagination from "react-js-pagination";
@@ -15,28 +15,28 @@ function Gallery() {
   const queryClient = useQueryClient();
   const { id } = useParams();
   const [searchGallery, setSearchGallery] = useState("");
-  // const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
 
-  // react-js-pagination
-  // const { data } = useQuery(
-  //   ["classesGallery", searchGallery, currentPage],
-  //   () => {
-  //     if (searchGallery) {
-  //       return getSearchGallery(searchGallery, currentPage, 15);
-  //     }
-  //     return getClassesGallery(id, currentPage, 15);
-  //   },
-  //   {
-  //     onSuccess: (data) => {
-  //       console.log(data);
-  //     },
-  //     onError: () => {
-  //       console.log("error");
-  //     },
-  //   }
-  // );
+  //react-js-pagination
+  const { data } = useQuery(
+    ["classesGallery", searchGallery, currentPage],
+    () => {
+      if (searchGallery) {
+        return MemberAPI.getSearchGallery(searchGallery, currentPage, 15);
+      }
+      return MemberAPI.getClassesGallery(id, currentPage, 15);
+    },
+    {
+      onSuccess: (data) => {
+        console.log(data);
+      },
+      onError: () => {
+        console.log("error");
+      },
+    }
+  );
 
   //인피니티쿼리
   // const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
@@ -44,9 +44,9 @@ function Gallery() {
   //     ["classesGallery", searchGallery],
   //     async ({ pageParam = 1 }) => {
   //       if (searchGallery) {
-  //         return getSearchGallery(searchGallery, pageParam, 15);
+  //         return MemberAPI.getSearchGallery(searchGallery, pageParam, 15);
   //       }
-  //       return getClassesGallery(id, pageParam, 15);
+  //       return MemberAPI.getClassesGallery(id, pageParam, 15);
   //     },
   //     {
   //       getNextPageParam: (lastPage) => {
@@ -64,9 +64,9 @@ function Gallery() {
     queryClient.invalidateQueries(["classesGallery", searchGallery]);
   };
 
-  // const handlePageChange = (pageNumber) => {
-  //   setCurrentPage(pageNumber);
-  // };
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   const datechange = (date) => {
     setStartDate(date);
@@ -82,19 +82,6 @@ function Gallery() {
     );
   };
 
-  const cards = [];
-  for (let i = 0; i < 15; i++) {
-    cards.push(
-      <StyledGalleryCard key={i}>
-        <StyledGalleryImage src="https://blog.kakaocdn.net/dn/drkKUz/btrKzPmA6Xi/cLjppsVnQYYF2dggTuvCf0/img.png" />
-        <StyledTitleFont>제목</StyledTitleFont>
-        <StyledFont>
-          <StyledDateFont>2023.03.21 14:30</StyledDateFont>
-          <StyledDateFont>황재연</StyledDateFont>
-        </StyledFont>{" "}
-      </StyledGalleryCard>
-    );
-  }
   return (
     <>
       <StyledGalleryWrapper>
@@ -129,8 +116,7 @@ function Gallery() {
           />
         </StyledGalleryHeader>
         <StyledGalleryContainer>
-          {cards}
-          {/* {data?.map((item) => {
+          {data?.map((item) => {
             return (
               <StyledGalleryCard key={item.data.imagePostId}>
             <StyledGalleryImage src={item.data.imageUrlList} />
@@ -141,7 +127,7 @@ function Gallery() {
             </StyledFont>
           </StyledGalleryCard>
             );
-          })} */}
+          })}
         </StyledGalleryContainer>
         {/* <button
           onClick={() => fetchNextPage()}
@@ -153,7 +139,7 @@ function Gallery() {
             ? "Load more"
             : "Nothing more to load"}
         </button> */}
-        {/* <PaginationContainer>
+        <PaginationContainer>
           <Pagination
             activePage={currentPage}
             itemsCountPerPage={15}
@@ -166,7 +152,7 @@ function Gallery() {
             linkClass="page-link"
             activeClass="active"
           />
-        </PaginationContainer> */}
+        </PaginationContainer>
       </StyledGalleryWrapper>
     </>
   );

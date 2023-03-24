@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { PAGE } from "../helpers/pages";
 import Host from "../pages/Host/host";
 import Preview from "../pages/Preview";
-import Classes from "../pages/Classes/Classes";
+import Classes from "../pages/Member/Classes";
 
 const Router = () => {
   return (
