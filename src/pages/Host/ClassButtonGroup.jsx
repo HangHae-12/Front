@@ -69,10 +69,10 @@ const ClassButtonGroup = () => {
           </StyledClassButton>
         </div>
         <StyledInfoContainer>
-          <StyledInfoRow>
+          <StyledInfoColomn>
             <StyledInfoLabel>2023년 3월 23일</StyledInfoLabel>
             <StyledInfoValue>수요일</StyledInfoValue>
-          </StyledInfoRow>
+          </StyledInfoColomn>
           <StyledInfoRow>
             <StyledInfoLabel>총원</StyledInfoLabel>
             <StyledInfoValue>20명</StyledInfoValue>
@@ -188,11 +188,17 @@ const StyledInfoRow = styled.div`
   flex-direction: row;
   align-items: center;
 `;
+const StyledInfoColomn = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
 const StyledInfoLabel = styled.div`
-  ${textVariants.Body3_SemiBold}
+  ${textVariants.Body3_Regular}
 `;
 const StyledInfoValue = styled.div`
-  ${textVariants.Body3_Regular}
+  ${textVariants.Body3_SemiBold}
 `;
 
 const StyledStudentGrid = styled.div`
