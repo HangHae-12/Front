@@ -1,3 +1,5 @@
+import axios from "axios";
+import { useEffect } from "react";
 import styled from "styled-components";
 import { DUMMY_IMG_SRC } from "../assets";
 import Card from "../components/Card";
@@ -11,7 +13,11 @@ const Preview = () => {
 
   const modalData = {
     title: "modal",
-    contents: "modal",
+    contents: (
+      <div>
+        <script>console.log(1)</script>
+      </div>
+    ),
     callback: () => alert("modal"),
   };
 
@@ -53,7 +59,7 @@ const Preview = () => {
         <button onClick={() => openModal(modalData)}>Open Modal</button>
         <Modal modalOption={modalOption} />
       </div>
-      <StyledAA>faasfafsasfasfafs</StyledAA>
+      <StyledButtonContianer>faasfafsasfasfafs</StyledButtonContianer>
     </>
   );
 };
@@ -78,8 +84,9 @@ const StyledWrapper = styled.div`
   }
 `;
 
-const StyledAA = styled.div`
-  width: 100px;
+const StyledButtonContianer = styled.div`
+  width: 100%;
   height: 100px;
-  background-color: ${({ theme }) => theme.color.primary};
+  background-color: ${({ theme }) => theme.color.grayScale[100]};
+  border-radius: 5px;
 `;

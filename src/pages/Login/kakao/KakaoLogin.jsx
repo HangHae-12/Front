@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import instance from "../../../api/instance";
@@ -11,7 +12,10 @@ const KakaoLogin = () => {
   const code = new URL(document.location.toString()).searchParams.get("code");
   const authKakao = async () => {
     try {
-      const res = await instance.get(`auth/kakao/callback?code=${code}`);
+      // const res = await instance.get(`auth/kakao/callback?code=${code}`);
+      const res = await axios.get(
+        `https://my-frist-server.shop/auth/kakao/callback?code=${code}`
+      );
       console.log(res);
     } catch (error) {
       console.error(error);

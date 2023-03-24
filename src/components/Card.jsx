@@ -13,11 +13,11 @@ const Header = ({ children, isClosedIcon }) => {
   return (
     <StyledCard.Header>
       {children}
-      {isClosedIcon ? (
+      {isClosedIcon && (
         <StyledCard.Icon>
           <IoClose />
         </StyledCard.Icon>
-      ) : null}
+      )}
     </StyledCard.Header>
   );
 };
@@ -33,7 +33,8 @@ const StyledCard = {
   Container: styled.div`
     max-width: ${({ width }) => width || "min-content"};
     max-height: ${({ height }) => height || "min-content"};
-    background-color: ${({ theme, bgcolor }) => bgcolor || theme.color.white};
+    background-color: ${({ theme, bgcolor }) =>
+      bgcolor || theme.color.grayScale[50]};
     border-radius: 8px;
     padding: ${({ padding }) => padding || "2px"};
   `,
