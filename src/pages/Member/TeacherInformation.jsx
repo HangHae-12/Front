@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { GrAddCircle } from "react-icons/gr";
 import { useParams } from "react-router-dom";
 import { useState } from "react";
-import { getClassesPage, setClassesTeacher } from "../../api/classes";
+import { MemberAPI } from "../../api/memberAPI";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 
 function TeacherInformation() {
@@ -12,14 +12,22 @@ function TeacherInformation() {
   const [preview, setPreview] = useState("");
   const [image, setImage] = useState("");
   const { id } = useParams();
+  const [information, setInformation] = useState({
+    name: "",
+    gender: "",
+    birth: "",
+    phoneNumber: "",
+    email: "",
+    resolution: "",
+  });
 
   const handleChange = () => {
     setEditMode(true);
   };
 
-  const { isLoading, isError, data } = useQuery(
+  const { data } = useQuery(
     ["ClassesPage"],
-    () => getClassesPage(id),
+    () => MemberAPI.getClassesPage(id),
     {
       onSuccess: (data) => {
         console.log(data);
@@ -30,24 +38,35 @@ function TeacherInformation() {
     }
   );
 
-  const setTeacherMutation = useMutation(setClassesTeacher, {
+  const setTeacherMutation = useMutation(MemberAPI.setClassesTeacher, {
     onSuccess: () => {
       queryClient.invalidateQueries("ClassesPage");
     },
-  })
+  });
 
   const handleSave = async (id) => {
     const formData = new FormData();
-    formData.append("image", image);
+    formData.append("file", image);
+    const jsonData = JSON.stringify({
+      name: information.name,
+      gender: information.gender,
+      birth: information.birth,
+      phoneNumber: information.phoneNumber,
+      email: information.email,
+      resolution: information.resolution,
+    });
 
-    const payload ={
+    const jsonBlob = new Blob([jsonData], { type: "application/json" });
+    formData.append("data", jsonBlob);
+
+    const payload = {
       id: id,
-      image: formData.get("image"),
-    }
-    setEditMode(false);
-    console.log(payload);
-    for (const keyValue of formData) console.log(keyValue);
+      formData: formData,
+    };
     setTeacherMutation.mutate(payload);
+    setEditMode(false);
+    console.log(formData);
+    for (const keyValue of formData) console.log(keyValue);
   };
 
   const saveImgFile = (e) => {
@@ -59,6 +78,12 @@ function TeacherInformation() {
       setPreview(reader.result);
     };
     setImage(file);
+  };
+
+  const handleTest = (e) => {
+    e.preventDefault();
+    setInformation.name(e.target.value);
+    console.log(setInformation.name);
   };
 
   return (
@@ -74,7 +99,7 @@ function TeacherInformation() {
                   id="upload-img-label"
                   style={{ display: "block" }}
                 >
-                <GrAddCircle  style={{ fontSize: 90 }}/>
+                  <GrAddCircle style={{ fontSize: 90 }} />
                   <StTeacherImage>
                     <input
                       type="file"
@@ -101,31 +126,77 @@ function TeacherInformation() {
                   </StTeacherImage>
                 </label>
               </StIconWrapper>
-              <StInput marginLeft="0px" maxWidth="180px" />
+              <StInput
+                marginLeft="0px"
+                maxWidth="180px"
+                onChange={(e) =>
+                  setInformation({ ...information, name: e.target.value })
+                }
+              />
             </StLeftWrapper>
             <StBox>
               <StInputWrapper>
                 <StFont>선생님의 한마디 </StFont>
-                <StInput marginLeft="80px" maxWidth="500px" />
+                <StInput
+                  marginLeft="80px"
+                  maxWidth="500px"
+                  onChange={(e) =>
+                    setInformation({
+                      ...information,
+                      resolution: e.target.value,
+                    })
+                  }
+                />
               </StInputWrapper>
               <br />
               <StInputWrapper>
                 <div>
-                  나이 <StInput marginLeft="165px" maxWidth="140px" />
+                  성별{" "}
+                  <StInput
+                    marginLeft="165px"
+                    maxWidth="140px"
+                    onChange={(e) =>
+                      setInformation({ ...information, gender: e.target.value })
+                    }
+                  />
                 </div>
                 <div>
                   <StForm marginLeft="60px">
-                    연락처 <StInput maxWidth="220px" />
+                    연락처{" "}
+                    <StInput
+                      maxWidth="220px"
+                      onChange={(e) =>
+                        setInformation({
+                          ...information,
+                          phoneNumber: e.target.value,
+                        })
+                      }
+                    />
                   </StForm>
                 </div>
               </StInputWrapper>
               <StInputWrapper>
                 <div>
-                  생년월일 <StInput maxWidth="220px" />
+                  생년월일{" "}
+                  <StInput
+                    maxWidth="220px"
+                    onChange={(e) =>
+                      setInformation({ ...information, birth: e.target.value })
+                    }
+                  />
                 </div>
                 <div>
                   <StForm>
-                    메일 <StInput maxWidth="220px" />
+                    메일{" "}
+                    <StInput
+                      maxWidth="220px"
+                      onChange={(e) =>
+                        setInformation({
+                          ...information,
+                          email: e.target.value,
+                        })
+                      }
+                    />
                   </StForm>
                 </div>
               </StInputWrapper>
@@ -139,33 +210,54 @@ function TeacherInformation() {
             <StLeftWrapper>
               <div>담임선생님</div>
               <StIconWrapper>
-                <GrAddCircle  style={{ fontSize: 90 }}/>
+                <GrAddCircle style={{ fontSize: 90 }} />
+                <StTeacherImage>
+                  <img
+                    src={data?.data.data.teacher.imageUrl}
+                    style={{
+                      width: "90px",
+                      height: "90px",
+                      marginLeft: "-90px",
+                      marginTop: "90px",
+                      borderRadius: "70%",
+                    }}
+                  />
+                </StTeacherImage>
               </StIconWrapper>
-              <StSpan marginLeft="0px">황재연</StSpan>
+              <StSpan marginLeft="0px">{data?.data.data.teacher.name}</StSpan>
             </StLeftWrapper>
             <StBox>
               <StInputWrapper>
                 <StFont>선생님의 한마디 </StFont>
-                <StSpan marginLeft="0px">말 안 들을 때는 매가 답이다</StSpan>
+                <StSpan marginLeft="0px">
+                  {data?.data.data.teacher.resolution}
+                </StSpan>
               </StInputWrapper>
               <br />
               <StInputWrapper>
                 <div>
-                  나이 <StSpan marginLeft="150px">27</StSpan>
+                  성별{" "}
+                  <StSpan marginLeft="150px">
+                    {data?.data.data.teacher.gender}
+                  </StSpan>
                 </div>
                 <div>
                   <StForm marginLeft="60px">
-                    연락처 <StSpan>010-9985-3743</StSpan>
+                    연락처{" "}
+                    <StSpan>{data?.data.data.teacher.phoneNumber}</StSpan>
                   </StForm>
                 </div>
               </StInputWrapper>
               <StInputWrapper>
                 <div>
-                  생년월일 <StSpan>1997-08-25</StSpan>
+                  생년월일 <StSpan>{data?.data.data.teacher.birth}</StSpan>
                 </div>
                 <div>
                   <StForm marginLeft="100px">
-                    메일 <StSpan marginLeft="25px">wodus604@naver.com</StSpan>
+                    메일{" "}
+                    <StSpan marginLeft="25px">
+                      {data?.data.data.teacher.email}
+                    </StSpan>
                   </StForm>
                 </div>
               </StInputWrapper>

@@ -2,16 +2,16 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
-import { getClassesMember } from "../../api/classes";
+import { MemberAPI } from "../../api/memberAPI";
 
 function ClassMember() {
   const queryClient = useQueryClient();
   const { id } = useParams();
   const [searchMember, setSearchMember] = useState("");
 
-  const { isLoading, isError, data } = useQuery(
+  const { data } = useQuery(
     ["classesMember"],
-    () => getClassesMember(id),
+    () => MemberAPI.getClassesMember(id),
     {
       onSuccess: (data) => {
         console.log(data);
@@ -28,25 +28,20 @@ function ClassMember() {
     setSearchMember(e.target.value);
   };
 
-  const loadMemberSearch = data?.filter((item) =>
-    item.data.name.includes(searchMember)
+  const handletest = () => {
+    console.log(data.data.data);
+  }
+
+  const loadMemberSearch = data?.data.data.filter((item) =>
+    item.name.includes(searchMember)
   );
 
-  const cards = [];
-  for (let i = 0; i < 32; i++) {
-    cards.push(
-      <StyledChildrenCard key={i}>
-        <StyledChildrenImage src="https://blog.kakaocdn.net/dn/drkKUz/btrKzPmA6Xi/cLjppsVnQYYF2dggTuvCf0/img.png" />
-        김민지
-      </StyledChildrenCard>
-    );
-  }
+
   return (
     <>
       <StyledChildrenWrapper>
         <StyledChildernHeader>
-          <div>총 32명</div>
-          {/* <div>총 {data.length}명</div> */}
+          <div>총 {data?.data.data.length}명</div>
           <button style={{ marginLeft: "auto" }}>인원 추가</button>
           <input
             style={{ marginLeft: "10px" }}
@@ -56,17 +51,16 @@ function ClassMember() {
           ></input>
         </StyledChildernHeader>
         <StyledChildrenContainer>
-          {cards}
-          {/* {loadMemberSearch?.map((item) => {
+          {loadMemberSearch?.map((item) => {
             return (
-              <StyledChildrenCard key={item.data.childId}>
+              <StyledChildrenCard key={item.childId}>
             <StyledChildrenImage 
-              src={item.data.imageUrl}
+              src={item.profileImageUrl}
               />
-            {item.data.name}
+            {item.name}
           </StyledChildrenCard>
             );
-          })} */}
+          })}
         </StyledChildrenContainer>
       </StyledChildrenWrapper>
     </>

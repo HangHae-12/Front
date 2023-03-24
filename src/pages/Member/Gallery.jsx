@@ -6,7 +6,7 @@ import {
   useQuery,
   useInfiniteQuery,
 } from "@tanstack/react-query";
-import { getClassesGallery, getSearchGallery } from "../../api/classes";
+import { MemberAPI } from "../../api/memberAPI";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Pagination from "react-js-pagination";
@@ -15,18 +15,31 @@ function Gallery() {
   const queryClient = useQueryClient();
   const { id } = useParams();
   const [searchGallery, setSearchGallery] = useState("");
-  // const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
 
-  // react-js-pagination
+  // const { data } = useQuery(
+  //   ["classesGallery"],
+  //   () => MemberAPI.getClassesGallery(id),
+  //   {
+  //     onSuccess: (data) => {
+  //       console.log(data);
+  //     },
+  //     onError: () => {
+  //       console.log("error");
+  //     },
+  //   }
+  // );
+
+  //react-js-pagination
   // const { data } = useQuery(
   //   ["classesGallery", searchGallery, currentPage],
   //   () => {
   //     if (searchGallery) {
-  //       return getSearchGallery(searchGallery, currentPage, 15);
+  //       return MemberAPI.getSearchGallery(searchGallery, currentPage, 15);
   //     }
-  //     return getClassesGallery(id, currentPage, 15);
+  //     return MemberAPI.getClassesGallery(id, currentPage, 15);
   //   },
   //   {
   //     onSuccess: (data) => {
@@ -39,29 +52,33 @@ function Gallery() {
   // );
 
   //인피니티쿼리
-  // const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-  //   useInfiniteQuery(
-  //     ["classesGallery", searchGallery],
-  //     async ({ pageParam = 1 }) => {
-  //       if (searchGallery) {
-  //         return getSearchGallery(searchGallery, pageParam, 15);
-  //       }
-  //       return getClassesGallery(id, pageParam, 15);
-  //     },
-  //     {
-  //       getNextPageParam: (lastPage) => {
-  //         if (lastPage.currentPage < lastPage.totalPages) {
-  //           return lastPage.currentPage + 1;
-  //         }
-  //         return false;
-  //       },
-  //     }
-  //   );
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfiniteQuery(
+      ["classesGallery", searchGallery],
+      () => {
+        if (searchGallery) {
+          return MemberAPI.getSearchGallery(searchGallery, id);
+        }
+        return MemberAPI.getSearchDateGallery(id, startDate, endDate);
+      },
+      {
+        // getNextPageParam: (lastPage) => {
+        //   if (lastPage.currentPage < lastPage.totalPages) {
+        //     return lastPage.currentPage + 1;
+        //   }
+        //   return false;
+        // },
+          onsuccess: (data) => {
+            console.log(data);
+          }
+        }
+    );
 
   const handleSearch = (e) => {
     e.preventDefault();
     setSearchGallery(e.target.value);
     queryClient.invalidateQueries(["classesGallery", searchGallery]);
+    console.log(data)
   };
 
   // const handlePageChange = (pageNumber) => {
@@ -69,9 +86,10 @@ function Gallery() {
   // };
 
   const datechange = (date) => {
-    setStartDate(date);
-    console.log(dateToString(startDate), dateToString(endDate));
+    setStartDate(dateToString(date));
+    console.log(startDate, endDate);
   };
+
   const dateToString = (date) => {
     return (
       date.getFullYear() +
@@ -82,19 +100,6 @@ function Gallery() {
     );
   };
 
-  const cards = [];
-  for (let i = 0; i < 15; i++) {
-    cards.push(
-      <StyledGalleryCard key={i}>
-        <StyledGalleryImage src="https://blog.kakaocdn.net/dn/drkKUz/btrKzPmA6Xi/cLjppsVnQYYF2dggTuvCf0/img.png" />
-        <StyledTitleFont>제목</StyledTitleFont>
-        <StyledFont>
-          <StyledDateFont>2023.03.21 14:30</StyledDateFont>
-          <StyledDateFont>황재연</StyledDateFont>
-        </StyledFont>{" "}
-      </StyledGalleryCard>
-    );
-  }
   return (
     <>
       <StyledGalleryWrapper>
@@ -104,7 +109,7 @@ function Gallery() {
             <DatePicker
               showIcon
               selected={startDate}
-              onChange={(date) => datechange(date)}
+              onChange={(date) => setStartDate(dateToString(date))}
               selectsStart
               startDate={startDate}
               endDate={endDate}
@@ -114,7 +119,7 @@ function Gallery() {
             <DatePicker
               showIcon
               selected={endDate}
-              onChange={(date) => setEndDate(date)}
+              onChange={datechange}
               selectsEnd
               startDate={startDate}
               endDate={endDate}
@@ -129,21 +134,19 @@ function Gallery() {
           />
         </StyledGalleryHeader>
         <StyledGalleryContainer>
-          {cards}
-          {/* {data?.map((item) => {
+          {/* {data?.data.data.map((item) => {
             return (
-              <StyledGalleryCard key={item.data.imagePostId}>
-            <StyledGalleryImage src={item.data.imageUrlList} />
-            <StyledTitleFont>{item.data.title}</StyledTitleFont>
+              <StyledGalleryCard key={item.imagePostId}>
+            <StyledGalleryImage src={item.imageUrl} />
+            <StyledTitleFont>{item.title}</StyledTitleFont>
             <StyledFont>
-              <StyledDateFont>{item.data.createdAt}</StyledDateFont>
-              <StyledDateFont>{item.data.name}</StyledDateFont>
+              <StyledDateFont>{item.createdAt}</StyledDateFont>
             </StyledFont>
           </StyledGalleryCard>
             );
           })} */}
         </StyledGalleryContainer>
-        {/* <button
+        <button
           onClick={() => fetchNextPage()}
           disabled={!hasNextPage || isFetchingNextPage}
         >
@@ -152,7 +155,7 @@ function Gallery() {
             : hasNextPage
             ? "Load more"
             : "Nothing more to load"}
-        </button> */}
+        </button>
         {/* <PaginationContainer>
           <Pagination
             activePage={currentPage}
