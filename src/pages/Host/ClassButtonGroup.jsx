@@ -4,7 +4,8 @@ import { useNavigate,useParams } from "react-router-dom";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import { HostAPI } from "../../api/hostAPI";
 import textVariants from "../../styles/textVariants";
-import SideBar from "../../components/SideBar";
+import ClassButton from '../../components/ClassButton';
+
 const ClassButtonGroup = () => {
   const queryClient = useQueryClient();
   const { classroomId } = useParams();
@@ -35,59 +36,39 @@ const ClassButtonGroup = () => {
   
   const [selectedButton, setSelectedButton] = useState("모든반");
 
+const handleButtonClick = (selected) => {
+  setSelectedButton(selected);
+};
+
   return (
-    <StyledContainer>
-      <StyledLeftContainer>
-        <SideBar />
-      </StyledLeftContainer>
-      <StyledRightContainer>
+        <>
         <StyledAttendanceHeader>출결 관리</StyledAttendanceHeader>
-        <div>
-          <StyledClassButton
-            selected={selectedButton === "모든반"}
-            onClick={() => setSelectedButton("모든반")}
-          >
-            모든반
-          </StyledClassButton>
-          <StyledClassButton
-            selected={selectedButton === "새빛반"}
-            onClick={() => setSelectedButton("새빛반")}
-          >
-            새빛반
-          </StyledClassButton>
-          <StyledClassButton
-            selected={selectedButton === "동동반"}
-            onClick={() => setSelectedButton("동동반")}
-          >
-            동동반
-          </StyledClassButton>
-          <StyledClassButton
-            selected={selectedButton === "빗살반"}
-            onClick={() => setSelectedButton("빗살반")}
-          >
-            빗살반
-          </StyledClassButton>
-        </div>
+        <StyledClassButtonGroup>
+        <ClassButton selected={"모든반"} selectedButton={selectedButton} onClick={() => handleButtonClick("모든반")} />
+        <ClassButton selected={"새빛반"} selectedButton={selectedButton} onClick={() => handleButtonClick("새빛반")} />
+        <ClassButton selected={"동동반"} selectedButton={selectedButton} onClick={() => handleButtonClick("동동반")} />
+        <ClassButton selected={"빗살반"} selectedButton={selectedButton} onClick={() => handleButtonClick("빗살반")} />
+        </StyledClassButtonGroup>
         <StyledInfoContainer>
           <StyledInfoColomn>
-            <StyledInfoLabel>2023년 3월 23일</StyledInfoLabel>
+            <StyledInfoLabel>2023 03 03</StyledInfoLabel>
             <StyledInfoValue>수요일</StyledInfoValue>
           </StyledInfoColomn>
           <StyledInfoRow>
             <StyledInfoLabel>총원</StyledInfoLabel>
-            <StyledInfoValue>20명</StyledInfoValue>
+            <StyledInfoValue>20</StyledInfoValue>
           </StyledInfoRow>
           <StyledInfoRow>
             <StyledInfoLabel>등원</StyledInfoLabel>
-            <StyledInfoValue>12명</StyledInfoValue>
+            <StyledInfoValue>12</StyledInfoValue>
           </StyledInfoRow>
           <StyledInfoRow>
             <StyledInfoLabel>미등원</StyledInfoLabel>
-            <StyledInfoValue>6명</StyledInfoValue>
+            <StyledInfoValue>6</StyledInfoValue>
           </StyledInfoRow>
           <StyledInfoRow>
             <StyledInfoLabel>결석</StyledInfoLabel>
-            <StyledInfoValue>2명</StyledInfoValue>
+            <StyledInfoValue>2</StyledInfoValue>
           </StyledInfoRow>
         </StyledInfoContainer>
 
@@ -124,8 +105,10 @@ const ClassButtonGroup = () => {
           <StyledStudentCard>
             
             <StyledStudentProfile/>
+            <StyledProfileColomn>
             <StyledStudentName>김민재</StyledStudentName>
             <StyledStudentStatus status="미등원">미등원</StyledStudentStatus>
+            </StyledProfileColomn>
             <StyledStudentInfo>
             </StyledStudentInfo>
           </StyledStudentCard>
@@ -135,47 +118,24 @@ const ClassButtonGroup = () => {
           <StyledPaginationButton>2</StyledPaginationButton>
           <StyledPaginationButton>3</StyledPaginationButton>
         </StyledPagination>
-      </StyledRightContainer>
-    </StyledContainer>
+        </>
   );
   };
   
   export default ClassButtonGroup;
 
-  const StyledContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-`;
-
-const StyledLeftContainer = styled.div`
-  width: 200px;
-  height: 100vh;
-  background-color: ${({ theme }) => theme.color.grayScale[200]};
-`;
-
-const StyledRightContainer = styled.div`
-  flex-grow: 1;
-  padding: 20px;
-`;
+  
 
 const StyledAttendanceHeader = styled.h2`
   ${textVariants.H2_Bold}
   margin-bottom: 20px;
 `;
 
-const StyledClassButton = styled.button`
-  ${textVariants.Body1_Bold}
-  background-color: ${({ theme }) => theme.color.primary};
-  color: ${({ theme }) => theme.color.white};
-  border: none;
-  border-radius: 4px;
-  padding: 10px;
-  margin-right: 10px;
+const StyledClassButtonGroup = styled.div`
+  padding-bottom: 10px;
+  
+`
 
-  &:last-child {
-    margin-right: 0;
-  }
-`;
 
 const StyledInfoContainer = styled.div`
   display: grid;
@@ -187,18 +147,37 @@ const StyledInfoRow = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: center;
+
+  background-color: ${({ theme }) => theme.color.grayScale[50]};
+  border-radius: 8px;
+  padding: 0px;
+  gap: 24px;
+  width: 200px;
+  height: 80px;
 `;
 const StyledInfoColomn = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  height: 80px;
+`;
+const StyledProfileColomn = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  
 `;
 
 const StyledInfoLabel = styled.div`
   ${textVariants.Body3_Regular}
+  
 `;
 const StyledInfoValue = styled.div`
   ${textVariants.Body3_SemiBold}
+  ${textVariants.Body1_Bold}
 `;
 
 const StyledStudentGrid = styled.div`
@@ -262,8 +241,7 @@ const StyledAttendanceButton = styled.button`
   margin-left: auto;
 
   &:hover {
-    background-color: ${({ theme, isClick }) =>
-           theme.color.green_lighter}; 
+    background-color: ${({ theme }) => theme.color.green_lighter}; 
 
     color: ${({ theme, isClick }) =>
       isClick
