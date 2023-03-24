@@ -36,9 +36,9 @@ const ClassButtonGroup = () => {
   
   const [selectedButton, setSelectedButton] = useState("모든반");
 
-const handleButtonClick = (selected) => {
-  setSelectedButton(selected);
-};
+  const handleButtonClick = (selected) => {
+    setSelectedButton(selected);
+  };
 
   return (
         <>
@@ -140,7 +140,6 @@ const StyledClassButtonGroup = styled.div`
   
 `
 
-
 const StyledInfoContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -165,6 +164,7 @@ const StyledInfoColomn = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 8px;
   height: 80px;
 `;
 const StyledProfileColomn = styled.div`
@@ -181,7 +181,7 @@ const StyledInfoLabel = styled.div`
 `;
 const StyledInfoValue = styled.div`
   ${textVariants.Body3_SemiBold}
-  ${textVariants.Body1_Bold}
+  ${textVariants.H1}
 `;
 
 const StyledStudentGrid = styled.div`
