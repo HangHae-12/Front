@@ -19,18 +19,18 @@ function Gallery() {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
 
-  const { data } = useQuery(
-    ["classesGallery"],
-    () => MemberAPI.getClassesGallery(id),
-    {
-      onSuccess: (data) => {
-        console.log(data);
-      },
-      onError: () => {
-        console.log("error");
-      },
-    }
-  );
+  // const { data } = useQuery(
+  //   ["classesGallery"],
+  //   () => MemberAPI.getClassesGallery(id),
+  //   {
+  //     onSuccess: (data) => {
+  //       console.log(data);
+  //     },
+  //     onError: () => {
+  //       console.log("error");
+  //     },
+  //   }
+  // );
 
   //react-js-pagination
   // const { data } = useQuery(
@@ -52,39 +52,44 @@ function Gallery() {
   // );
 
   //인피니티쿼리
-  // const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-  //   useInfiniteQuery(
-  //     ["classesGallery", searchGallery],
-  //     async ({ pageParam = 1 }) => {
-  //       if (searchGallery) {
-  //         return MemberAPI.getSearchGallery(searchGallery, pageParam, 15);
-  //       }
-  //       return MemberAPI.getClassesGallery(id, pageParam, 15);
-  //     },
-  //     {
-  //       getNextPageParam: (lastPage) => {
-  //         if (lastPage.currentPage < lastPage.totalPages) {
-  //           return lastPage.currentPage + 1;
-  //         }
-  //         return false;
-  //       },
-  //     }
-  //   );
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfiniteQuery(
+      ["classesGallery", searchGallery],
+      () => {
+        if (searchGallery) {
+          return MemberAPI.getSearchGallery(searchGallery, id);
+        }
+        return MemberAPI.getSearchDateGallery(id, startDate, endDate);
+      },
+      {
+        // getNextPageParam: (lastPage) => {
+        //   if (lastPage.currentPage < lastPage.totalPages) {
+        //     return lastPage.currentPage + 1;
+        //   }
+        //   return false;
+        // },
+          onsuccess: (data) => {
+            console.log(data);
+          }
+        }
+    );
 
   const handleSearch = (e) => {
     e.preventDefault();
     setSearchGallery(e.target.value);
     queryClient.invalidateQueries(["classesGallery", searchGallery]);
+    console.log(data)
   };
 
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
+  // const handlePageChange = (pageNumber) => {
+  //   setCurrentPage(pageNumber);
+  // };
 
   const datechange = (date) => {
-    setStartDate(date);
-    console.log(dateToString(startDate), dateToString(endDate));
+    setStartDate(dateToString(date));
+    console.log(startDate, endDate);
   };
+
   const dateToString = (date) => {
     return (
       date.getFullYear() +
@@ -104,7 +109,7 @@ function Gallery() {
             <DatePicker
               showIcon
               selected={startDate}
-              onChange={(date) => datechange(date)}
+              onChange={(date) => setStartDate(dateToString(date))}
               selectsStart
               startDate={startDate}
               endDate={endDate}
@@ -114,7 +119,7 @@ function Gallery() {
             <DatePicker
               showIcon
               selected={endDate}
-              onChange={(date) => setEndDate(date)}
+              onChange={datechange}
               selectsEnd
               startDate={startDate}
               endDate={endDate}
@@ -129,20 +134,19 @@ function Gallery() {
           />
         </StyledGalleryHeader>
         <StyledGalleryContainer>
-          {/* {data?.map((item) => {
+          {/* {data?.data.data.map((item) => {
             return (
-              <StyledGalleryCard key={item.data.imagePostId}>
-            <StyledGalleryImage src={item.data.imageUrlList} />
-            <StyledTitleFont>{item.data.title}</StyledTitleFont>
+              <StyledGalleryCard key={item.imagePostId}>
+            <StyledGalleryImage src={item.imageUrl} />
+            <StyledTitleFont>{item.title}</StyledTitleFont>
             <StyledFont>
-              <StyledDateFont>{item.data.createdAt}</StyledDateFont>
-              <StyledDateFont>{item.data.name}</StyledDateFont>
+              <StyledDateFont>{item.createdAt}</StyledDateFont>
             </StyledFont>
           </StyledGalleryCard>
             );
           })} */}
         </StyledGalleryContainer>
-        {/* <button
+        <button
           onClick={() => fetchNextPage()}
           disabled={!hasNextPage || isFetchingNextPage}
         >
@@ -151,7 +155,7 @@ function Gallery() {
             : hasNextPage
             ? "Load more"
             : "Nothing more to load"}
-        </button> */}
+        </button>
         {/* <PaginationContainer>
           <Pagination
             activePage={currentPage}

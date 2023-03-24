@@ -40,13 +40,11 @@ export const MemberAPI = {
       console.log(error);
     }
   },
-  getSearchGallery: async (keyword, page, perPage) => {
+  getSearchGallery: async (searchGallery, id) => {
     try {
-      const response = await instance.get("api/common/search/image-posts", {
+      const response = await instance.get(`api/common/classes/${id}/image-posts`, {
         params: {
-          keyword,
-          page,
-          perPage,
+          keyword: searchGallery
         },
       });
       return response;
@@ -54,15 +52,15 @@ export const MemberAPI = {
       console.log(error);
     }
   },
-  getSearchDateGallery: async (payload) => {
+  getSearchDateGallery: async (id, startDate, endDate) => {
     try {
       const response = await instance.get(
-        `api/common/classes/${payload.id}/image-posts`,
+        `api/common/classes/${id}/image-posts`,
         {
           params: {
-            start: payload.start,
-            end: payload.end,
-            page: payload.page,
+            start: startDate,
+            end: endDate,
+            page: 1,
           },
         }
       );
