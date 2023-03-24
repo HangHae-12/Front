@@ -19,7 +19,7 @@ const StyledClassButton = styled.button`
   ${textVariants.Body1_Bold}
   background-color: ${({ theme }) => theme.color.white};
   color: ${({ theme, selected }) =>
-    selected ? theme.color.primary_l30 : theme.color.grayScale[300]};
+    selected ? theme.color.primary : theme.color.grayScale[300]};
   border: none;
   padding: 10px;
   margin-left: auto;
@@ -27,9 +27,9 @@ const StyledClassButton = styled.button`
   position: relative;
 
   &:hover {
-    color: ${({ theme }) => theme.color.primary_l30};
+    color: ${({ theme }) => theme.color.primary};
     &::after {
-      background-color: ${({ theme }) => theme.color.primary_l30};
+      background-color: ${({ theme }) => theme.color.primary};
     }
   }
 
@@ -46,7 +46,7 @@ const StyledClassButton = styled.button`
     width: calc(100% - 15px);
     height: 2px;
     background-color: ${({ theme, selected }) =>
-      selected ? theme.color.primary_l30 : theme.color.grayScale[300]};
+      selected ? theme.color.primary : theme.color.grayScale[300]};
   };
 
 `
