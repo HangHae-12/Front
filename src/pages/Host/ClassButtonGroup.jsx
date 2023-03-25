@@ -108,7 +108,8 @@ import Button from '../../components/Button';
           하원 인원
         </StyledAttendanceButton>
         </StyledAttendanceButtonGroup>
-        <div>
+        <StyledAttendanceContainer>
+        <StyledTimeButtonGroup>
           <StyledTimeButton 
             isClick={isTimeClick1}
             onClick={() => {
@@ -154,7 +155,7 @@ import Button from '../../components/Button';
           >
             09시~10시
           </StyledTimeButton>
-        </div>
+        </StyledTimeButtonGroup>
         <StyledStudentGrid>
         <StyledStudentCard>
           <StyledProfileRow>
@@ -175,6 +176,7 @@ import Button from '../../components/Button';
       <StyledAttendanceBtn>등원처리</StyledAttendanceBtn>
     </StyledStudentCard>
         </StyledStudentGrid>
+        </StyledAttendanceContainer>
         <StyledPagination>
           <StyledPaginationButton>1</StyledPaginationButton>
           <StyledPaginationButton>2</StyledPaginationButton>
@@ -254,13 +256,24 @@ const StyledInfoValue = styled.div`
   ${textVariants.H1}
   color: ${({ theme }) => theme.color.grayScale[500]};
 `;
+const StyledAttendanceContainer =styled.div`
+  background: rgba(237, 245, 238, 0.8);
+  box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.04);
+  border-radius: 12px;
+  padding: 40px;
 
+
+`
 const StyledStudentGrid = styled.div`
   display: grid;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(5, auto);
   grid-gap: 20px;
   margin-top: 20px;
+  
 `;
 
 const StyledStudentCard = styled.div`
@@ -290,12 +303,22 @@ const StyledStudentName = styled.div`
 
 const StyledStudentStatus = styled.div`
   ${textVariants.Body2_SemiBold}
-  color: ${({ status, theme }) =>
+  color: ${({ theme }) => theme.color.white};
+  background-color: ${({ theme, status }) =>
     status === "미등원"
-      ? theme.color.red
-      : status === "등원"
-      ? theme.color.green
-      : theme.color.black};
+        ? theme.color.red
+        : theme.color.grayScale[300]};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 8px;
+  padding: 4px;
+  gap: 4px;
+  border-radius: 20px;
+  width: 51px;
+  height: 26px;
+
+
 `;
 
 
@@ -331,7 +354,10 @@ const StyledAttendanceButton = styled.button`
   }
 `;
 
-
+const StyledTimeButtonGroup = styled.div`
+  display: flex;
+  flex-direction: row;
+`
 
 const StyledTimeButton = styled.button`
   ${textVariants.Body2_SemiBold}
@@ -348,6 +374,7 @@ const StyledTimeButton = styled.button`
   border-radius: 4px;
   padding: 10px;
   margin-right: 10px;
+  
 
 
   &:hover {
@@ -369,7 +396,11 @@ const StyledAttendanceRow = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-top: 10px;
+  justify-content: center;
+  margin-top: 20px;
+  width: 172px;
+  height: 36px;
+  background-color: ${({ theme }) => theme.color.grayScale[50]}; 
 `;
 
 const StyledAttendanceLabel = styled.div`
@@ -379,13 +410,14 @@ const StyledAttendanceLabel = styled.div`
 `;
 
 const StyledAttendanceValue = styled.div`
-  ${textVariants.H2_SemiBold}
+  ${textVariants.Body2_Bold}
   color: ${({ theme }) => theme.color.grayScale[700]};
 `;
 
 const StyledAttendanceBtn = styled.button`
     background-color: ${({ theme }) => theme.color.blue};
     color: ${({ theme }) => theme.color.white};
+    border: none;
     border-radius: 8px;
     margin-top: 20px;
     padding: 8px 10px;
