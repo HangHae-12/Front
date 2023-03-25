@@ -6,7 +6,7 @@ import { HostAPI } from "../../api/hostAPI";
 import textVariants from "../../styles/textVariants";
 import Button from '../../components/Button';
 
-const ClassButtonGroup = () => {
+  const ClassButtonGroup = () => {
   const queryClient = useQueryClient();
   const { classroomId } = useParams();
   const navigate = useNavigate();
@@ -23,6 +23,7 @@ const ClassButtonGroup = () => {
       },
     }
   );
+
   const loadAllClassroom = () => {
     //모든반을 클릭했을 때 전체 데이터 조회되게
   }
@@ -33,6 +34,12 @@ const ClassButtonGroup = () => {
 
   const [isAttendClick, setIsAttendClick] = useState(true);
   const [isLeaveClick, setIsLeaveClick] = useState(false);
+
+  const [isTimeClick1, setIsTimeClick1] = useState(true);
+  const [isTimeClick2, setIsTimeClick2] = useState(false);
+  const [isTimeClick3, setIsTimeClick3] = useState(false);
+  const [isTimeClick4, setIsTimeClick4] = useState(false);
+  
   
   const [selectedButton, setSelectedButton] = useState("모든반");
 
@@ -55,31 +62,34 @@ const ClassButtonGroup = () => {
         </StyledClassButtonGroup>
         <StyledInfoContainer>
           <StyledInfoColomn>
-            <StyledInfoLabel>2023 03 03</StyledInfoLabel>
-            <StyledInfoValue>수요일</StyledInfoValue>
+            <StyleddateLabel>2023 03 03</StyleddateLabel>
+            <StyleddateValue>수요일</StyleddateValue>
           </StyledInfoColomn>
           <StyledInfoRow>
             <StyledInfoLabel>총원</StyledInfoLabel>
             <StyledInfoValue>20</StyledInfoValue>
+            <StyleddateLabel>명</StyleddateLabel>
           </StyledInfoRow>
           <StyledInfoRow>
             <StyledInfoLabel>등원</StyledInfoLabel>
             <StyledInfoValue>12</StyledInfoValue>
+            <StyleddateLabel>명</StyleddateLabel>
           </StyledInfoRow>
           <StyledInfoRow>
             <StyledInfoLabel>미등원</StyledInfoLabel>
             <StyledInfoValue>6</StyledInfoValue>
+            <StyleddateLabel>명</StyleddateLabel>
           </StyledInfoRow>
           <StyledInfoRow>
             <StyledInfoLabel>결석</StyledInfoLabel>
             <StyledInfoValue>2</StyledInfoValue>
+            <StyleddateLabel>명</StyleddateLabel>
           </StyledInfoRow>
         </StyledInfoContainer>
 
         
-        <div>
+        <StyledAttendanceButtonGroup>
         <StyledAttendanceButton
-          status="등원"
           isClick={isAttendClick}
           onClick={() => {
             setIsAttendClick(true);
@@ -89,7 +99,6 @@ const ClassButtonGroup = () => {
           등원 인원
         </StyledAttendanceButton>
         <StyledAttendanceButton
-          status="미등원"
           isClick={isLeaveClick}
           onClick={() => {
             setIsLeaveClick(true);
@@ -98,24 +107,73 @@ const ClassButtonGroup = () => {
         >
           하원 인원
         </StyledAttendanceButton>
-        </div>
+        </StyledAttendanceButtonGroup>
         <div>
-          <StyledTimeButton>전체시간</StyledTimeButton>
-          <StyledTimeButton>07시~08시</StyledTimeButton>
-          <StyledTimeButton>08시~09시</StyledTimeButton>
-          <StyledTimeButton>09시~10시</StyledTimeButton>
+          <StyledTimeButton 
+            isClick={isTimeClick1}
+            onClick={() => {
+              setIsTimeClick1(true);
+              setIsTimeClick2(false);
+              setIsTimeClick3(false);
+              setIsTimeClick4(false);
+            }}
+          >
+            전체시간
+
+          </StyledTimeButton>
+          <StyledTimeButton 
+            isClick={isTimeClick2}
+            onClick={() => {
+              setIsTimeClick1(false);
+              setIsTimeClick2(true);
+              setIsTimeClick3(false);
+              setIsTimeClick4(false);
+            }}
+          >
+            07시~08시
+          </StyledTimeButton>
+          <StyledTimeButton 
+            isClick={isTimeClick3}
+            onClick={() => {
+              setIsTimeClick1(false);
+              setIsTimeClick2(false);
+              setIsTimeClick3(true);
+              setIsTimeClick4(false);
+            }}
+          >
+            08시~09시
+          </StyledTimeButton>
+          <StyledTimeButton 
+            isClick={isTimeClick4}
+            onClick={() => {
+              setIsTimeClick1(false);
+              setIsTimeClick2(false);
+              setIsTimeClick3(false);
+              setIsTimeClick4(true);
+            }}
+          >
+            09시~10시
+          </StyledTimeButton>
         </div>
         <StyledStudentGrid>
-          <StyledStudentCard>
-            
-            <StyledStudentProfile/>
-            <StyledProfileColomn>
-            <StyledStudentName>김민재</StyledStudentName>
-            <StyledStudentStatus status="미등원">미등원</StyledStudentStatus>
-            </StyledProfileColomn>
-            <StyledStudentInfo>
-            </StyledStudentInfo>
-          </StyledStudentCard>
+        <StyledStudentCard>
+          <StyledProfileRow>
+      <StyledStudentProfile />
+      <StyledProfileGroup>
+      <StyledStudentName>김민재</StyledStudentName>
+      <StyledStudentStatus status={"미등원"}>미등원</StyledStudentStatus>
+      </StyledProfileGroup>
+      </StyledProfileRow>
+      <StyledAttendanceRow>
+        <StyledAttendanceLabel>등원</StyledAttendanceLabel>
+        <StyledAttendanceValue>07시~08시</StyledAttendanceValue>
+      </StyledAttendanceRow>
+      <StyledAttendanceRow>
+        <StyledAttendanceLabel>하원</StyledAttendanceLabel>
+        <StyledAttendanceValue>18시~19시</StyledAttendanceValue>
+      </StyledAttendanceRow>
+      <StyledAttendanceBtn>등원처리</StyledAttendanceBtn>
+    </StyledStudentCard>
         </StyledStudentGrid>
         <StyledPagination>
           <StyledPaginationButton>1</StyledPaginationButton>
@@ -141,20 +199,22 @@ const StyledClassButtonGroup = styled.div`
 `
 
 const StyledInfoContainer = styled.div`
+
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   align-items: center;
-  margin-bottom: 20px;
+  margin: 64px auto;
+  border: 2px solid ${({ theme }) => theme.color.grayScale[200]};
+  box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.04);
+  border-radius: 12px;
 `;
 const StyledInfoRow = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
-
-  background-color: ${({ theme }) => theme.color.grayScale[50]};
   border-radius: 8px;
-  padding: 0px;
+  margin: 40px auto;
   gap: 24px;
   width: 200px;
   height: 80px;
@@ -167,21 +227,32 @@ const StyledInfoColomn = styled.div`
   gap: 8px;
   height: 80px;
 `;
-const StyledProfileColomn = styled.div`
+const StyledProfileRow = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   
 `;
+const StyleddateLabel = styled.div`
+  ${textVariants.H3_SemiBold}
+  color: ${({ theme }) => theme.color.grayScale[500]};
+
+`;
+
+const StyleddateValue = styled.div`
+  ${textVariants.H2_SemiBold}
+  color: ${({ theme }) => theme.color.grayScale[700]};
+`;
 
 const StyledInfoLabel = styled.div`
-  ${textVariants.Body3_Regular}
+  ${textVariants.Body1_Bold}
+  color: ${({ theme }) => theme.color.grayScale[400]};
   
 `;
 const StyledInfoValue = styled.div`
-  ${textVariants.Body3_SemiBold}
   ${textVariants.H1}
+  color: ${({ theme }) => theme.color.grayScale[500]};
 `;
 
 const StyledStudentGrid = styled.div`
@@ -194,32 +265,31 @@ const StyledStudentGrid = styled.div`
 
 const StyledStudentCard = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
   padding: 10px;
   border: 1px solid ${({ theme }) => theme.color.grayScale[300]};
   border-radius: 4px;
+
+  width: 240px;
+  height: 304px;
 `;
 
 const StyledStudentProfile = styled.div`
-  width: 50px;
-  height: 50px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   background-color: ${({ theme }) => theme.color.grayScale[400]};
-  margin-right: 10px;
+  margin-right: 29px;
 `;
 
-const StyledStudentInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
 
 const StyledStudentName = styled.div`
-  ${textVariants.Body1_SemiBold}
+  ${textVariants.H2_SemiBold}
 `;
 
 const StyledStudentStatus = styled.div`
-  ${textVariants.Body3_Regular}
+  ${textVariants.Body2_SemiBold}
   color: ${({ status, theme }) =>
     status === "미등원"
       ? theme.color.red
@@ -228,11 +298,19 @@ const StyledStudentStatus = styled.div`
       : theme.color.black};
 `;
 
+
+const StyledAttendanceButtonGroup = styled.div`
+padding-top: 64px;
+padding-bottom: 40px;
+gap: 10px;
+
+`
+
 const StyledAttendanceButton = styled.button`
   ${textVariants.Body2_SemiBold}
   background-color: ${({ theme, isClick }) =>
     isClick
-        ? theme.color.green
+        ? theme.color.primary
         : theme.color.grayScale[300]};
   color: ${({ theme, isClick }) =>
     isClick
@@ -243,14 +321,13 @@ const StyledAttendanceButton = styled.button`
   border-radius: 4px;
   padding: 10px;
   margin-left: auto;
+  margin-right: 10px;
 
   &:hover {
-    background-color: ${({ theme }) => theme.color.green_lighter}; 
+    background-color: ${({ theme }) => theme.color.primary}; 
 
-    color: ${({ theme, isClick }) =>
-      isClick
-          ? theme.color.white
-          : theme.color.grayScale[800]};
+    color: ${({ theme }) => theme.color.white}
+          
   }
 `;
 
@@ -258,23 +335,65 @@ const StyledAttendanceButton = styled.button`
 
 const StyledTimeButton = styled.button`
   ${textVariants.Body2_SemiBold}
-  background-color: ${({ theme }) => theme.color.grayScale[300]};
-  color: ${({ theme }) => theme.color.grayScale[800]};
+  background-color: ${({ theme, isClick }) =>
+    isClick
+        ? theme.color.primary
+        : theme.color.grayScale[300]};
+  color: ${({ theme, isClick }) =>
+    isClick
+      
+        ? theme.color.white
+        : theme.color.grayScale[800]};
   border: none;
   border-radius: 4px;
   padding: 10px;
   margin-right: 10px;
 
-  &:last-child {
-    margin-right: 0;
-  }
 
   &:hover {
-    background-color: #56BEA4;
+    background-color: ${({ theme }) => theme.color.primary};
     color: ${({ theme }) => theme.color.white};
   }
 
 `;
+
+const StyledProfileGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+`;
+
+
+const StyledAttendanceRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-top: 10px;
+`;
+
+const StyledAttendanceLabel = styled.div`
+  ${textVariants.Body2_SemiBold}
+  color: ${({ theme }) => theme.color.grayScale[500]};
+  margin-right: 10px;
+`;
+
+const StyledAttendanceValue = styled.div`
+  ${textVariants.H2_SemiBold}
+  color: ${({ theme }) => theme.color.grayScale[700]};
+`;
+
+const StyledAttendanceBtn = styled.button`
+    background-color: ${({ theme }) => theme.color.blue};
+    color: ${({ theme }) => theme.color.white};
+    border-radius: 8px;
+    margin-top: 20px;
+    padding: 8px 10px;
+    gap: 10px;
+
+    width: 172px;
+    height: 40px;
+`
 
 const StyledPagination = styled.div`
   display: flex;
@@ -284,8 +403,8 @@ const StyledPagination = styled.div`
 
 const StyledPaginationButton = styled.button`
   ${textVariants.Body2_SemiBold}
-  background-color: ${({ theme }) => theme.color.grayScale[300]};
-  color: ${({ theme }) => theme.color.grayScale[800]};
+  background-color: ${({ theme }) => theme.color.primary};
+  color: ${({ theme }) => theme.color.white};
   border: none;
   border-radius: 4px;
   padding: 10px;
