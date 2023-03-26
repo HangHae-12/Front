@@ -1,39 +1,81 @@
 import instance from "./instance";
 
 export const HostAPI = {
-    getManage: async () => {
+    getManageEnter: async (payload) => {
 
         try {
-            const response = await instance.get("/api/managers/");
-            return response.data;
-    
-        }catch (error) {
-            console.log(error);
-        }
-        },
-    getManageclassroom : async (classroomId) => {
-
-        try {
-            const response = await instance.get(`/api/managers/${classroomId}`);
-            return response.data;
-    
-        }catch (error) {
-            console.log(error);
-        }
-        },
-    getManageSchedule : async (payload) => {
-
-        try {
-            const response = await instance.get(`/api/managers/schedule/${payload.categoryId}`,{
-                params: { time: payload.time },
+            const response = await instance.get("/manager/schedule/enter",{
+                params:{time:payload.time,
+                        page:payload.page}
+                
             });
             return response.data;
     
         }catch (error) {
             console.log(error);
         }
+        },
+    getManageExit : async (payload) => {
+
+        try {
+            const response = await instance.get("/manager/schedule/exit",{
+                params:{time:payload.time,
+                        page:payload.page}
+                
+            });
+            return response.data;
+    
+        }catch (error) {
+            console.log(error);
         }
-        
+        },
+    getManageAbsent : async () => {
+
+        try {
+            const response = await instance.get("/manager/schedule/absent")
+            return response.data;
+    
+        }catch (error) {
+            console.log(error);
+        }
+        },
+    getManageScheduleEnter : async (payload) => {
+
+        try {
+            const response = await instance.get(`/manager/classroom/${payload.classroomId}/schedule/enter`,{
+                params:{time:payload.time,
+                        page:payload.page},
+            });
+            return response.data;
+    
+        }catch (error) {
+            console.log(error);
+        }
+            },
+    getManageScheduleExit : async (payload) => {
+
+        try {
+            const response = await instance.get(`/manager/classroom/${payload.classroomId}/schedule/exit`,{
+                params:{time:payload.time,
+                        page:payload.page},
+            });
+            return response.data;
+    
+        }catch (error) {
+            console.log(error);
+        }
+            },
+    getManageScheduleAbsent : async (classroomId) => {
+
+        try {
+            const response = await instance.get(`/manager/classroom/${classroomId}/schedule/absent`)
+            
+            return response.data;
+    
+        }catch (error) {
+            console.log(error);
+        }
+            },    
 }
 
 

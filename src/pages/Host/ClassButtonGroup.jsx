@@ -209,6 +209,7 @@ const StyledInfoContainer = styled.div`
   border: 2px solid ${({ theme }) => theme.color.grayScale[200]};
   box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.04);
   border-radius: 12px;
+  padding: 40px 64px 40px 25px;
 `;
 const StyledInfoRow = styled.div`
   display: flex;
@@ -216,7 +217,6 @@ const StyledInfoRow = styled.div`
   align-items: center;
   justify-content: center;
   border-radius: 8px;
-  margin: 40px auto;
   gap: 24px;
   width: 200px;
   height: 80px;
