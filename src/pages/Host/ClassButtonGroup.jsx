@@ -10,28 +10,7 @@ import Button from '../../components/Button';
   const queryClient = useQueryClient();
   const { classroomId } = useParams();
   const navigate = useNavigate();
-
-  const { isLoading, isError, data } = useQuery(
-    ["getManage"],
-    () => HostAPI.getManage(),
-    {
-      onSuccess: (data) => {
-        console.log(data);
-      },
-      onError: () => {
-        console.log("error");
-      },
-    }
-  );
-
-  const loadAllClassroom = () => {
-    //모든반을 클릭했을 때 전체 데이터 조회되게
-  }
   
-  const loadClassroom = (id) => {
-    navigate(`/${id}`)
-  }
-
   const [isAttendClick, setIsAttendClick] = useState(true);
   const [isLeaveClick, setIsLeaveClick] = useState(false);
 
@@ -43,22 +22,44 @@ import Button from '../../components/Button';
   
   const [selectedButton, setSelectedButton] = useState("모든반");
 
-  const handleButtonClick = (selected) => {
+  const [classId,setClassId] = useState(0);
+
+  //맨처음 로드 되었을때 모든반,등원인원,전체시간 조회
+  const { isLoading, isError, data } = useQuery(
+    ["getManageEnter"],
+    () => HostAPI.getManageEnter(),
+    {
+      onSuccess: (data) => {
+        console.log(data);
+      },
+      onError: () => {
+        console.log("error");
+      },
+    }
+  );
+
+  const loadClassroom = (selected,classId) => {
     setSelectedButton(selected);
-  };
+    setClassId(classId);
+    navigate(`/host${classId}`)
+  }
+
+  
+
+ 
 
   return (
         <>
         <StyledAttendanceHeader>출결 관리</StyledAttendanceHeader>
         <StyledClassButtonGroup>
         <Button.ClassButton selected={"모든반"} selectedButton={selectedButton} 
-                            onClick={() => handleButtonClick("모든반")} />
+                            onClick={() => loadClassroom("모든반",0)} />
         <Button.ClassButton selected={"새빛반"} selectedButton={selectedButton} 
-                            onClick={() => handleButtonClick("새빛반")} />
+                            onClick={() => loadClassroom("새빛반",1)} />
         <Button.ClassButton selected={"동동반"} selectedButton={selectedButton} 
-                            onClick={() => handleButtonClick("동동반")} />
+                            onClick={() => loadClassroom("동동반",2)} />
         <Button.ClassButton selected={"빗살반"} selectedButton={selectedButton} 
-                            onClick={() => handleButtonClick("빗살반")} />
+                            onClick={() => loadClassroom("빗살반",3)} />
         </StyledClassButtonGroup>
         <StyledInfoContainer>
           <StyledInfoColomn>
