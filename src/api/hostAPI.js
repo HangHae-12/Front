@@ -1,12 +1,12 @@
 import instance from "./instance";
+import qs from 'qs';
 
 export const HostAPI = {
     getManageEnter: async (payload) => {
 
         try {
             const response = await instance.get("/manager/schedule/enter",{
-                params:{time:payload.time,
-                        page:payload.page}
+                params: qs.stringify(payload),
                 
             });
             return response.data;
@@ -19,8 +19,7 @@ export const HostAPI = {
 
         try {
             const response = await instance.get("/manager/schedule/exit",{
-                params:{time:payload.time,
-                        page:payload.page}
+                params: qs.stringify(payload),
                 
             });
             return response.data;
@@ -43,8 +42,7 @@ export const HostAPI = {
 
         try {
             const response = await instance.get(`/manager/classroom/${payload.classroomId}/schedule/enter`,{
-                params:{time:payload.time,
-                        page:payload.page},
+                params: qs.stringify(payload),
             });
             return response.data;
     
@@ -56,8 +54,7 @@ export const HostAPI = {
 
         try {
             const response = await instance.get(`/manager/classroom/${payload.classroomId}/schedule/exit`,{
-                params:{time:payload.time,
-                        page:payload.page},
+                params: qs.stringify(payload),
             });
             return response.data;
     
