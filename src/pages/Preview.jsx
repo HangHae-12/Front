@@ -1,13 +1,9 @@
-import axios from "axios";
-import { useEffect } from "react";
 import styled from "styled-components";
 import { DUMMY_IMG_SRC } from "../assets";
-import { Buttons } from "../components/Buttons";
 import Card from "../components/Card";
-
 import Modal from "../components/Modal";
 import useModal from "../hooks/useModal";
-import textVariants from "../styles/textVariants";
+import CustomButton from "../components/Buttons";
 
 const Preview = () => {
   const { openModal } = useModal();
@@ -61,7 +57,50 @@ const Preview = () => {
         <Modal modalOption={modalOption} />
       </div>
       <StyledButtonContianer>
-        
+        <StyledGridBox>
+          <h3>Attendance</h3>
+          {/* <CustomButton buttonsTypes="Attendance" disabled>
+            등원 처리
+          </CustomButton>
+          <CustomButton buttonsTypes="Attendance" disabled>
+            하원 처리
+          </CustomButton> */}
+          <CustomButton buttonsTypes="Attendance" colorTypes="blue">
+            결석 취소
+          </CustomButton>
+          <CustomButton buttonsTypes="Attendance" colorTypes="orange">
+            결석 취소
+          </CustomButton>
+          {/* <CustomButton buttonsTypes="Attendance" outlined>
+            결석 취소
+          </CustomButton>
+          <CustomButton buttonsTypes="Attendance" outlined>
+            등원 취소
+          </CustomButton>
+          <CustomButton buttonsTypes="Attendance" outlined>
+            하원 취소
+          </CustomButton> */}
+        </StyledGridBox>
+
+        <StyledGridBox>
+          <h3>State</h3>
+          {/* <CustomButton buttonsTypes="State">미등원</CustomButton>
+          <CustomButton buttonsTypes="State">등원</CustomButton>
+          <CustomButton buttonsTypes="State">결석</CustomButton>
+          <CustomButton buttonsTypes="State">하원</CustomButton> */}
+        </StyledGridBox>
+{/* 
+        <h3>NB_Button</h3>
+        <CustomButton buttonsTypes="NB_Button">반 페이지</CustomButton>
+
+        <h3>Filter_All</h3>
+        <CustomButton buttonsTypes="Filter_All">전체기간</CustomButton>
+
+        <h3>Time_Button</h3>
+        <CustomButton buttonsTypes="Time_Button">07시 ~ 08시</CustomButton>
+
+        <h3>AB_Button</h3>
+        <CustomButton buttonsTypes="AB_Button">하원 인원</CustomButton> */}
       </StyledButtonContianer>
     </>
   );
@@ -89,7 +128,19 @@ const StyledWrapper = styled.div`
 
 const StyledButtonContianer = styled.div`
   width: 100%;
-  height: 100px;
-  background-color: ${({ theme }) => theme.color.grayScale[100]};
+  height: 1000px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   border-radius: 5px;
+`;
+
+const StyledGridBox = styled.div`
+  width: 50%;
+  height: 150px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 10px;
+  border: 1px solid black;
 `;
