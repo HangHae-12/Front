@@ -1,16 +1,16 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { useNavigate,useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
-import { HostAPI } from "../../api/hostAPI";
+import { HostAPI } from "../../api/HostAPI";
 import textVariants from "../../styles/textVariants";
-import Button from '../../components/Button';
+import Button from "../../components/Button";
 
-  const ClassButtonGroup = () => {
+const ClassButtonGroup = () => {
   const queryClient = useQueryClient();
   const { classroomId } = useParams();
   const navigate = useNavigate();
-  
+
   const [isAttendClick, setIsAttendClick] = useState(true);
   const [isLeaveClick, setIsLeaveClick] = useState(false);
 
@@ -18,8 +18,7 @@ import Button from '../../components/Button';
   const [isTimeClick2, setIsTimeClick2] = useState(false);
   const [isTimeClick3, setIsTimeClick3] = useState(false);
   const [isTimeClick4, setIsTimeClick4] = useState(false);
-  
-  
+
   const [selectedButton, setSelectedButton] = useState("모든반");
 
   const [classId, setClassId] = useState(1);
@@ -27,7 +26,7 @@ import Button from '../../components/Button';
   const [time, setTime] = useState(1);
   const [page, setPage] = useState(1);
 
-  //맨처음 로드 되었을때 defalt 모든반,등원인원,전체시간 조회 
+  //맨처음 로드 되었을때 defalt 모든반,등원인원,전체시간 조회
   // const { isLoading, isError, data } = useQuery(
   //   ["getManageEnter",scheduleId,time,page],
   //   () => HostAPI.getManageSchedule(),
@@ -59,26 +58,24 @@ import Button from '../../components/Button';
   //     },
   //   }
   // );
-  
+
   const loadAllClassroom = () => {
     setSelectedButton("모든반");
-    navigate(`/host/ENTER`)
+    navigate(`/host/ENTER`);
     // queryClient.invalidateQueries(["getManageSchedule"]);
   };
-  
 
-  const loadClassroom = (selected,classId) => {
+  const loadClassroom = (selected, classId) => {
     setSelectedButton(selected);
     setClassId(classId);
-    navigate(`/host/${classId}/ENTER`)
+    navigate(`/host/${classId}/ENTER`);
     // queryClient.invalidateQueries(["getManageClassSchedule"]);
-  }
+  };
   const handleAttendanceButton = (ScheduleId) => {
-    if(ScheduleId === "ENTER"){
+    if (ScheduleId === "ENTER") {
       setIsAttendClick(true);
       setIsLeaveClick(false);
-    }
-    else{
+    } else {
       setIsAttendClick(false);
       setIsLeaveClick(true);
     }
@@ -86,53 +83,61 @@ import Button from '../../components/Button';
     selectedButton === "모든반"
       ? navigate(`/host/${ScheduleId}`)
       : navigate(`/host/${classId}/${ScheduleId}`);
-  }
-  
-
- 
+  };
 
   return (
-        <>
-        <StyledAttendanceHeader>출결 관리</StyledAttendanceHeader>
-        <StyledClassButtonGroup>
-        <Button.ClassButton selected={"모든반"} selectedButton={selectedButton} 
-                            onClick={() => loadAllClassroom()} />
-        <Button.ClassButton selected={"새빛반"} selectedButton={selectedButton} 
-                            onClick={() => loadClassroom("새빛반",1)} />
-        <Button.ClassButton selected={"동동반"} selectedButton={selectedButton} 
-                            onClick={() => loadClassroom("동동반",2)} />
-        <Button.ClassButton selected={"빗살반"} selectedButton={selectedButton} 
-                            onClick={() => loadClassroom("빗살반",3)} />
-        </StyledClassButtonGroup>
-        <StyledInfoContainer>
-          <StyledInfoColomn>
-            <StyleddateLabel>2023 03 03</StyleddateLabel>
-            <StyleddateValue>수요일</StyleddateValue>
-          </StyledInfoColomn>
-          <StyledInfoRow>
-            <StyledInfoLabel>총원</StyledInfoLabel>
-            <StyledInfoValue>20</StyledInfoValue>
-            <StyleddateLabel>명</StyleddateLabel>
-          </StyledInfoRow>
-          <StyledInfoRow>
-            <StyledInfoLabel>등원</StyledInfoLabel>
-            <StyledInfoValue>12</StyledInfoValue>
-            <StyleddateLabel>명</StyleddateLabel>
-          </StyledInfoRow>
-          <StyledInfoRow>
-            <StyledInfoLabel>미등원</StyledInfoLabel>
-            <StyledInfoValue>6</StyledInfoValue>
-            <StyleddateLabel>명</StyleddateLabel>
-          </StyledInfoRow>
-          <StyledInfoRow>
-            <StyledInfoLabel>결석</StyledInfoLabel>
-            <StyledInfoValue>2</StyledInfoValue>
-            <StyleddateLabel>명</StyleddateLabel>
-          </StyledInfoRow>
-        </StyledInfoContainer>
+    <>
+      <StyledAttendanceHeader>출결 관리</StyledAttendanceHeader>
+      <StyledClassButtonGroup>
+        <Button.ClassButton
+          selected={"모든반"}
+          selectedButton={selectedButton}
+          onClick={() => loadAllClassroom()}
+        />
+        <Button.ClassButton
+          selected={"새빛반"}
+          selectedButton={selectedButton}
+          onClick={() => loadClassroom("새빛반", 1)}
+        />
+        <Button.ClassButton
+          selected={"동동반"}
+          selectedButton={selectedButton}
+          onClick={() => loadClassroom("동동반", 2)}
+        />
+        <Button.ClassButton
+          selected={"빗살반"}
+          selectedButton={selectedButton}
+          onClick={() => loadClassroom("빗살반", 3)}
+        />
+      </StyledClassButtonGroup>
+      <StyledInfoContainer>
+        <StyledInfoColomn>
+          <StyleddateLabel>2023 03 03</StyleddateLabel>
+          <StyleddateValue>수요일</StyleddateValue>
+        </StyledInfoColomn>
+        <StyledInfoRow>
+          <StyledInfoLabel>총원</StyledInfoLabel>
+          <StyledInfoValue>20</StyledInfoValue>
+          <StyleddateLabel>명</StyleddateLabel>
+        </StyledInfoRow>
+        <StyledInfoRow>
+          <StyledInfoLabel>등원</StyledInfoLabel>
+          <StyledInfoValue>12</StyledInfoValue>
+          <StyleddateLabel>명</StyleddateLabel>
+        </StyledInfoRow>
+        <StyledInfoRow>
+          <StyledInfoLabel>미등원</StyledInfoLabel>
+          <StyledInfoValue>6</StyledInfoValue>
+          <StyleddateLabel>명</StyleddateLabel>
+        </StyledInfoRow>
+        <StyledInfoRow>
+          <StyledInfoLabel>결석</StyledInfoLabel>
+          <StyledInfoValue>2</StyledInfoValue>
+          <StyleddateLabel>명</StyleddateLabel>
+        </StyledInfoRow>
+      </StyledInfoContainer>
 
-        
-        <StyledAttendanceButtonGroup>
+      <StyledAttendanceButtonGroup>
         <StyledAttendanceButton
           isClick={isAttendClick}
           onClick={() => handleAttendanceButton("ENTER")}
@@ -145,10 +150,10 @@ import Button from '../../components/Button';
         >
           하원 인원
         </StyledAttendanceButton>
-        </StyledAttendanceButtonGroup>
-        <StyledAttendanceContainer>
+      </StyledAttendanceButtonGroup>
+      <StyledAttendanceContainer>
         <StyledTimeButtonGroup>
-          <StyledTimeButton 
+          <StyledTimeButton
             isClick={isTimeClick1}
             onClick={() => {
               setIsTimeClick1(true);
@@ -158,9 +163,8 @@ import Button from '../../components/Button';
             }}
           >
             전체시간
-
           </StyledTimeButton>
-          <StyledTimeButton 
+          <StyledTimeButton
             isClick={isTimeClick2}
             onClick={() => {
               setIsTimeClick1(false);
@@ -171,7 +175,7 @@ import Button from '../../components/Button';
           >
             07시~08시
           </StyledTimeButton>
-          <StyledTimeButton 
+          <StyledTimeButton
             isClick={isTimeClick3}
             onClick={() => {
               setIsTimeClick1(false);
@@ -182,7 +186,7 @@ import Button from '../../components/Button';
           >
             08시~09시
           </StyledTimeButton>
-          <StyledTimeButton 
+          <StyledTimeButton
             isClick={isTimeClick4}
             onClick={() => {
               setIsTimeClick1(false);
@@ -195,38 +199,38 @@ import Button from '../../components/Button';
           </StyledTimeButton>
         </StyledTimeButtonGroup>
         <StyledStudentGrid>
-        <StyledStudentCard>
-          <StyledProfileRow>
-      <StyledStudentProfile />
-      <StyledProfileGroup>
-      <StyledStudentName>김민재</StyledStudentName>
-      <StyledStudentStatus status={"미등원"}>미등원</StyledStudentStatus>
-      </StyledProfileGroup>
-      </StyledProfileRow>
-      <StyledAttendanceRow>
-        <StyledAttendanceLabel>등원</StyledAttendanceLabel>
-        <StyledAttendanceValue>07시~08시</StyledAttendanceValue>
-      </StyledAttendanceRow>
-      <StyledAttendanceRow>
-        <StyledAttendanceLabel>하원</StyledAttendanceLabel>
-        <StyledAttendanceValue>18시~19시</StyledAttendanceValue>
-      </StyledAttendanceRow>
-      <StyledAttendanceBtn>등원처리</StyledAttendanceBtn>
-    </StyledStudentCard>
+          <StyledStudentCard>
+            <StyledProfileRow>
+              <StyledStudentProfile />
+              <StyledProfileGroup>
+                <StyledStudentName>김민재</StyledStudentName>
+                <StyledStudentStatus status={"미등원"}>
+                  미등원
+                </StyledStudentStatus>
+              </StyledProfileGroup>
+            </StyledProfileRow>
+            <StyledAttendanceRow>
+              <StyledAttendanceLabel>등원</StyledAttendanceLabel>
+              <StyledAttendanceValue>07시~08시</StyledAttendanceValue>
+            </StyledAttendanceRow>
+            <StyledAttendanceRow>
+              <StyledAttendanceLabel>하원</StyledAttendanceLabel>
+              <StyledAttendanceValue>18시~19시</StyledAttendanceValue>
+            </StyledAttendanceRow>
+            <StyledAttendanceBtn>등원처리</StyledAttendanceBtn>
+          </StyledStudentCard>
         </StyledStudentGrid>
-        </StyledAttendanceContainer>
-        <StyledPagination>
-          <StyledPaginationButton>1</StyledPaginationButton>
-          <StyledPaginationButton>2</StyledPaginationButton>
-          <StyledPaginationButton>3</StyledPaginationButton>
-        </StyledPagination>
-        </>
+      </StyledAttendanceContainer>
+      <StyledPagination>
+        <StyledPaginationButton>1</StyledPaginationButton>
+        <StyledPaginationButton>2</StyledPaginationButton>
+        <StyledPaginationButton>3</StyledPaginationButton>
+      </StyledPagination>
+    </>
   );
-  };
-  
-  export default ClassButtonGroup;
+};
 
-  
+export default ClassButtonGroup;
 
 const StyledAttendanceHeader = styled.h2`
   ${textVariants.H2_Bold}
@@ -235,11 +239,9 @@ const StyledAttendanceHeader = styled.h2`
 
 const StyledClassButtonGroup = styled.div`
   padding-bottom: 10px;
-  
-`
+`;
 
 const StyledInfoContainer = styled.div`
-
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   align-items: center;
@@ -272,12 +274,10 @@ const StyledProfileRow = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  
 `;
 const StyleddateLabel = styled.div`
   ${textVariants.H3_SemiBold}
   color: ${({ theme }) => theme.color.grayScale[500]};
-
 `;
 
 const StyleddateValue = styled.div`
@@ -288,20 +288,17 @@ const StyleddateValue = styled.div`
 const StyledInfoLabel = styled.div`
   ${textVariants.Body1_Bold}
   color: ${({ theme }) => theme.color.grayScale[400]};
-  
 `;
 const StyledInfoValue = styled.div`
   ${textVariants.H1}
   color: ${({ theme }) => theme.color.grayScale[500]};
 `;
-const StyledAttendanceContainer =styled.div`
+const StyledAttendanceContainer = styled.div`
   background: rgba(237, 245, 238, 0.8);
   box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.04);
   border-radius: 12px;
   padding: 40px;
-
-
-`
+`;
 const StyledStudentGrid = styled.div`
   display: grid;
   flex-direction: column;
@@ -311,7 +308,6 @@ const StyledStudentGrid = styled.div`
   grid-template-rows: repeat(5, auto);
   grid-gap: 20px;
   margin-top: 20px;
-  
 `;
 
 const StyledStudentCard = styled.div`
@@ -334,7 +330,6 @@ const StyledStudentProfile = styled.div`
   margin-right: 29px;
 `;
 
-
 const StyledStudentName = styled.div`
   ${textVariants.H2_SemiBold}
 `;
@@ -343,9 +338,7 @@ const StyledStudentStatus = styled.div`
   ${textVariants.Body2_SemiBold}
   color: ${({ theme }) => theme.color.white};
   background-color: ${({ theme, status }) =>
-    status === "미등원"
-        ? theme.color.red
-        : theme.color.grayScale[300]};
+    status === "미등원" ? theme.color.red : theme.color.grayScale[300]};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -355,29 +348,20 @@ const StyledStudentStatus = styled.div`
   border-radius: 20px;
   width: 51px;
   height: 26px;
-
-
 `;
 
-
 const StyledAttendanceButtonGroup = styled.div`
-padding-top: 64px;
-padding-bottom: 40px;
-gap: 10px;
-
-`
+  padding-top: 64px;
+  padding-bottom: 40px;
+  gap: 10px;
+`;
 
 const StyledAttendanceButton = styled.button`
   ${textVariants.Body2_SemiBold}
   background-color: ${({ theme, isClick }) =>
-    isClick
-        ? theme.color.primary
-        : theme.color.grayScale[300]};
+    isClick ? theme.color.primary : theme.color.grayScale[300]};
   color: ${({ theme, isClick }) =>
-    isClick
-      
-        ? theme.color.white
-        : theme.color.grayScale[800]};
+    isClick ? theme.color.white : theme.color.grayScale[800]};
   border: none;
   border-radius: 4px;
   padding: 10px;
@@ -385,50 +369,39 @@ const StyledAttendanceButton = styled.button`
   margin-right: 10px;
 
   &:hover {
-    background-color: ${({ theme }) => theme.color.primary}; 
+    background-color: ${({ theme }) => theme.color.primary};
 
-    color: ${({ theme }) => theme.color.white}
-          
+    color: ${({ theme }) => theme.color.white};
   }
 `;
 
 const StyledTimeButtonGroup = styled.div`
   display: flex;
   flex-direction: row;
-`
+`;
 
 const StyledTimeButton = styled.button`
   ${textVariants.Body2_SemiBold}
   background-color: ${({ theme, isClick }) =>
-    isClick
-        ? theme.color.primary
-        : theme.color.grayScale[300]};
+    isClick ? theme.color.primary : theme.color.grayScale[300]};
   color: ${({ theme, isClick }) =>
-    isClick
-      
-        ? theme.color.white
-        : theme.color.grayScale[800]};
+    isClick ? theme.color.white : theme.color.grayScale[800]};
   border: none;
   border-radius: 4px;
   padding: 10px;
   margin-right: 10px;
-  
-
 
   &:hover {
     background-color: ${({ theme }) => theme.color.primary};
     color: ${({ theme }) => theme.color.white};
   }
-
 `;
 
 const StyledProfileGroup = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  
 `;
-
 
 const StyledAttendanceRow = styled.div`
   display: flex;
@@ -438,7 +411,7 @@ const StyledAttendanceRow = styled.div`
   margin-top: 20px;
   width: 172px;
   height: 36px;
-  background-color: ${({ theme }) => theme.color.grayScale[50]}; 
+  background-color: ${({ theme }) => theme.color.grayScale[50]};
 `;
 
 const StyledAttendanceLabel = styled.div`
@@ -453,17 +426,17 @@ const StyledAttendanceValue = styled.div`
 `;
 
 const StyledAttendanceBtn = styled.button`
-    background-color: ${({ theme }) => theme.color.blue};
-    color: ${({ theme }) => theme.color.white};
-    border: none;
-    border-radius: 8px;
-    margin-top: 20px;
-    padding: 8px 10px;
-    gap: 10px;
+  background-color: ${({ theme }) => theme.color.blue};
+  color: ${({ theme }) => theme.color.white};
+  border: none;
+  border-radius: 8px;
+  margin-top: 20px;
+  padding: 8px 10px;
+  gap: 10px;
 
-    width: 172px;
-    height: 40px;
-`
+  width: 172px;
+  height: 40px;
+`;
 
 const StyledPagination = styled.div`
   display: flex;

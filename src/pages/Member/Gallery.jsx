@@ -6,7 +6,7 @@ import {
   useQuery,
   useInfiniteQuery,
 } from "@tanstack/react-query";
-import { MemberAPI } from "../../api/memberAPI";
+import { MemberAPI } from "../../api/MemberAPI";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Pagination from "react-js-pagination";
