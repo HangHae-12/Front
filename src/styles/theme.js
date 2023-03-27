@@ -9,7 +9,8 @@ const grayScale = {
   300: "#bdbdbd",
   200: "#dadada",
   100: "#e9e9e9",
-  50: "#f9f9f9",
+  50: "#f8f8f8",
+  25: "#fdfdfd",
 };
 
 const color = {
@@ -22,12 +23,14 @@ const color = {
   orange: "#ff852d",
   yellow: "#ffd600",
   green: transColor.lighten("#00c814", 0.4),
+  perple: "#9747ff",
   grayScale: grayScale,
 };
 
 const fontSize = {
   h1: "30px",
-  h2: "20px",
+  h2: "24px",
+  h3: "20px",
   body1: "16px",
   body2: "14px",
   body3: "12px",
