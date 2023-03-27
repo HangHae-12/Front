@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect } from "react";
 import styled from "styled-components";
 import { DUMMY_IMG_SRC } from "../assets";
+import { Buttons } from "../components/Buttons";
 import Card from "../components/Card";
 
 import Modal from "../components/Modal";
@@ -59,7 +60,9 @@ const Preview = () => {
         <button onClick={() => openModal(modalData)}>Open Modal</button>
         <Modal modalOption={modalOption} />
       </div>
-      <StyledButtonContianer>faasfafsasfasfafs</StyledButtonContianer>
+      <StyledButtonContianer>
+        
+      </StyledButtonContianer>
     </>
   );
 };

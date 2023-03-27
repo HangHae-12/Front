@@ -26,15 +26,17 @@ export const SignAPI = {
     }
   },
 
-  // test 용 로직입니다.
-  requestInfoByAccessToken: async (access_token) => {
+  auth: async (code, cancelToken) => {
     try {
       const response = await axios.get(
-        "https://kapi.kakao.com/v1/user/access_token_info",
+        "https://my-frist-server.shop/oauth/kakao/callback",
+        // 주소가 확정되면 instance로 수정할 것
+        null,
         {
-          headers: {
-            Authorization: `Bearer ${access_token}`,
+          params: {
+            code: code,
           },
+          cancelToken: cancelToken,
         }
       );
       const data = response.data;
