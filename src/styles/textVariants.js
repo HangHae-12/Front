@@ -16,6 +16,16 @@ const textVariants = {
     font-weight: ${({ theme }) => theme.fontWeight.semi_bold};
   `,
 
+  H3_Bold: css`
+    font-size: ${({ theme }) => theme.fontSize.h3};
+    font-weight: ${({ theme }) => theme.fontWeight.bold};
+  `,
+
+  H3_SemiBold: css`
+    font-size: ${({ theme }) => theme.fontSize.h3};
+    font-weight: ${({ theme }) => theme.fontWeight.semi_bold};
+  `,
+
   Body1_Bold: css`
     font-size: ${({ theme }) => theme.fontSize.body1};
     font-weight: ${({ theme }) => theme.fontWeight.bold};
