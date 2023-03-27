@@ -1,5 +1,6 @@
 export const transColor = {
   lighten: (color, amount) => {
+    if (!color) return;
     const r = Math.round(parseInt(color.slice(1, 3), 16) * (1 + amount));
     const g = Math.round(parseInt(color.slice(3, 5), 16) * (1 + amount));
     const b = Math.round(parseInt(color.slice(5, 7), 16) * (1 + amount));
@@ -8,6 +9,7 @@ export const transColor = {
   },
 
   darken: (color, amount) => {
+    if (!color) return;
     const r = Math.round(parseInt(color.slice(1, 3), 16) * (1 - amount));
     const g = Math.round(parseInt(color.slice(3, 5), 16) * (1 - amount));
     const b = Math.round(parseInt(color.slice(5, 7), 16) * (1 - amount));
