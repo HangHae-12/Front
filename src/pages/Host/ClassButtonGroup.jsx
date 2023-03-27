@@ -22,28 +22,71 @@ import Button from '../../components/Button';
   
   const [selectedButton, setSelectedButton] = useState("모든반");
 
-  const [classId,setClassId] = useState(0);
+  const [classId, setClassId] = useState(1);
+  const [scheduleId, setScheduleId] = useState("ENTER");
+  const [time, setTime] = useState(1);
+  const [page, setPage] = useState(1);
 
-  //맨처음 로드 되었을때 모든반,등원인원,전체시간 조회
-  const { isLoading, isError, data } = useQuery(
-    ["getManageEnter"],
-    () => HostAPI.getManageEnter(),
-    {
-      onSuccess: (data) => {
-        console.log(data);
-      },
-      onError: () => {
-        console.log("error");
-      },
-    }
-  );
+  //맨처음 로드 되었을때 defalt 모든반,등원인원,전체시간 조회 
+  // const { isLoading, isError, data } = useQuery(
+  //   ["getManageEnter",scheduleId,time,page],
+  //   () => HostAPI.getManageSchedule(),
+  //   {
+  //     onSuccess: (data) => {
+  //       console.log(data);
+  //     },
+  //     onError: () => {
+  //       console.log("error");
+  //     },
+  //   }
+  // );
+
+  // const { isLoading2, isError2, data2 } = useQuery(
+  //   ["getManageClassSchedule",classId,scheduleId,time,page],
+  //   () =>
+  //     HostAPI.getManageClassSchedule({
+  //       classId,
+  //       scheduleId,
+  //       time,
+  //       page,
+  //     }),
+  //   {
+  //     onSuccess: (data) => {
+  //       console.log(data);
+  //     },
+  //     onError: () => {
+  //       console.log("error");
+  //     },
+  //   }
+  // );
+  
+  const loadAllClassroom = () => {
+    setSelectedButton("모든반");
+    navigate(`/host/ENTER`)
+    // queryClient.invalidateQueries(["getManageSchedule"]);
+  };
+  
 
   const loadClassroom = (selected,classId) => {
     setSelectedButton(selected);
     setClassId(classId);
-    navigate(`/host${classId}`)
+    navigate(`/host/${classId}/ENTER`)
+    // queryClient.invalidateQueries(["getManageClassSchedule"]);
   }
-
+  const handleAttendanceButton = (ScheduleId) => {
+    if(ScheduleId === "ENTER"){
+      setIsAttendClick(true);
+      setIsLeaveClick(false);
+    }
+    else{
+      setIsAttendClick(false);
+      setIsLeaveClick(true);
+    }
+    setScheduleId(ScheduleId);
+    selectedButton === "모든반"
+      ? navigate(`/host/${ScheduleId}`)
+      : navigate(`/host/${classId}/${ScheduleId}`);
+  }
   
 
  
@@ -53,7 +96,7 @@ import Button from '../../components/Button';
         <StyledAttendanceHeader>출결 관리</StyledAttendanceHeader>
         <StyledClassButtonGroup>
         <Button.ClassButton selected={"모든반"} selectedButton={selectedButton} 
-                            onClick={() => loadClassroom("모든반",0)} />
+                            onClick={() => loadAllClassroom()} />
         <Button.ClassButton selected={"새빛반"} selectedButton={selectedButton} 
                             onClick={() => loadClassroom("새빛반",1)} />
         <Button.ClassButton selected={"동동반"} selectedButton={selectedButton} 
@@ -92,19 +135,13 @@ import Button from '../../components/Button';
         <StyledAttendanceButtonGroup>
         <StyledAttendanceButton
           isClick={isAttendClick}
-          onClick={() => {
-            setIsAttendClick(true);
-            setIsLeaveClick(false);
-          }}
+          onClick={() => handleAttendanceButton("ENTER")}
         >
           등원 인원
         </StyledAttendanceButton>
         <StyledAttendanceButton
           isClick={isLeaveClick}
-          onClick={() => {
-            setIsLeaveClick(true);
-            setIsAttendClick(false);
-          }}
+          onClick={() => handleAttendanceButton("EXIT")}
         >
           하원 인원
         </StyledAttendanceButton>
