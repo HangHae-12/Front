@@ -11,6 +11,8 @@ const Router = () => {
       <Routes>
         {/* <Route path="/" element={< />} /> */}
         <Route path="/host" element={PAGE.host} />
+        <Route path="/host/:classId" element={PAGE.host} />
+        <Route path="/host/:classId/:scheduleId" element={PAGE.host} />
         <Route path="/preview" element={<Preview />} />
         <Route path="/common/classes" element={<Classes />} />
         <Route path="/common/classes/:id" element={<Classes />} />
