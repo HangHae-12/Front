@@ -29,13 +29,10 @@ export const SignAPI = {
   auth: async (code, cancelToken) => {
     try {
       const response = await axios.get(
-        "https://my-frist-server.shop/oauth/kakao/callback",
+        `https://my-frist-server.shop/oauth/kakao/callback?code=${code}`,
         // 주소가 확정되면 instance로 수정할 것
         null,
         {
-          params: {
-            code: code,
-          },
           cancelToken: cancelToken,
         }
       );
