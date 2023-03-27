@@ -24,7 +24,7 @@ const textVariants = {
   H3_SemiBold: css`
     font-size: ${({ theme }) => theme.fontSize.h3};
     font-weight: ${({ theme }) => theme.fontWeight.semi_bold};
-  `,
+`,
 
   Body1_Bold: css`
     font-size: ${({ theme }) => theme.fontSize.body1};
