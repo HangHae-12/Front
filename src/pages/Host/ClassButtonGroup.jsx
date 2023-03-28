@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import { HostAPI } from "../../api/HostAPI";
-import textVariants from "../../styles/textVariants";
+import textVariants from "../../styles/variants/textVariants";
 import Button from "../../components/Button";
 
 const ClassButtonGroup = () => {

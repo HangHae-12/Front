@@ -1,17 +1,19 @@
 import styled from "styled-components";
-import textVariants from "../styles/textVariants";
+import textVariants from "../styles/variants/textVariants";
 
 const Button = {
-  ClassButton:({ selected, onClick, selectedButton}) => {
-
+  ClassButton: ({ selected, onClick, selectedButton }) => {
     return (
-      <StyledClassButton selected={selected===selectedButton} onClick={onClick}>
+      <StyledClassButton
+        selected={selected === selectedButton}
+        onClick={onClick}
+      >
         {selected}
       </StyledClassButton>
     );
   },
 
-  NormalButton:()=>{}
+  NormalButton: () => {},
 };
 
 export default Button;
@@ -47,7 +49,5 @@ const StyledClassButton = styled.button`
     height: 2px;
     background-color: ${({ theme, selected }) =>
       selected ? theme.color.primary : theme.color.grayScale[300]};
-  };
-
-`
-
+  }
+`;
