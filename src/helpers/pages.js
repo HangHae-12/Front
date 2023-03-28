@@ -1,7 +1,7 @@
 import Login from "../pages/Login";
 import KakaoLogin from "../pages/Login/kakao/KakaoLogin";
 import Preview from "../pages/Preview";
-import Host from '../pages/Host/host';
+import Host from '../pages/Host/Host';
 import Member from "../pages/Member/Member";
 
 export const PAGE = {
