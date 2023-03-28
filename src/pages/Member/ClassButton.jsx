@@ -1,80 +1,68 @@
-import React, { useState } from 'react'
-import styled from 'styled-components'
+import React, { useState } from "react";
+import styled from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
-import TeacherInformation from './TeacherInformation';
-import ClassMember from './ClassMember';
-import Gallery from './Gallery';
-
-
+import TeacherInformation from "./TeacherInformation";
+import ClassMember from "./ClassMember";
+import Gallery from "./Gallery";
+import Button from "../../components/Button";
+import textVariants from "../../styles/textVariants";
 
 function ClassButton() {
-  const [selectedClass, setSelectedClass] = useState('none');
-  const [color, setColor] = useState('blue');
+  const [selectedClass, setSelectedClass] = useState("none");
   const [isMember, setIsMember] = useState(true);
+  const [selectedButton, setSelectedButton] = useState("none");
   const navigate = useNavigate();
   const { id } = useParams();
 
+  // const handleClassClick = (id) => {
+  //   if (id === selectedClass) {
+  //     setSelectedClass("none");
+  //   } else {
+  //     setSelectedClass(id);
+  //   }
+  //   navigate(`/common/classes/${id}`);
+  // };
 
+  const handleButtonClick = (selected) => {
+  const idMapping = {
+    "세빛반": 1,
+    "둥둥반": 2,
+    "빛살반": 3,
+  };
 
-  const handleClassClick = (id) => {
-    if (id === selectedClass) {
-      setSelectedClass('none');
-    } else {
-      setSelectedClass(id);
-    }
-    navigate(`/common/classes/${id}`)
+  const selectedId = idMapping[selected];
+
+  if (selected === selectedClass) {
+    setSelectedClass("none");
+  } else {
+    setSelectedClass(selected);
   }
+  navigate(`/common/classes/${selectedId}`);
+};
 
   return (
     <>
-    <StyledButtonWrapper>
-      <StyledClassButton
-        onClick={() => handleClassClick(1)}
-        selected={selectedClass === 1}
-        color={selectedClass === 1 ? color : ''}
-        style={{marginLeft: "0px"}}
-      >
-        세빛반
-      </StyledClassButton>
-      <StyledClassButton
-        onClick={() => handleClassClick(2)}
-        selected={selectedClass === 2}
-        color={selectedClass === 2 ? color : ''}
-      >
-        힘찬반
-      </StyledClassButton>
-      <StyledClassButton
-        onClick={() => handleClassClick(3)}
-        selected={selectedClass === 3}
-        color={selectedClass === 3 ? color : ''}
-      >
-        창의반
-      </StyledClassButton>
-    </StyledButtonWrapper>
-    <TeacherInformation />
-    <button
-      onClick={() => setIsMember(true)}
-    >
-      아이들</button>
-    <button
-      onClick={() => setIsMember(false)}
-      >
-      갤러리</button>
-    {isMember ? <ClassMember /> : <Gallery />}
+      <StyledHeaderFont>학급관리</StyledHeaderFont>
+      <StyledButtonWrapper>
+      <Button.ClassButton selected={"세빛반"} selectedButton={selectedButton} onClick={() => handleButtonClick("세빛반")} />
+      <Button.ClassButton selected={"둥둥반"} selectedButton={selectedButton} onClick={() => handleButtonClick("둥둥반")} />
+      <Button.ClassButton selected={"빛살반"} selectedButton={selectedButton} onClick={() => handleButtonClick("빛살반")} />
+      </StyledButtonWrapper>
+      <TeacherInformation />
+      <button onClick={() => setIsMember(true)}>아이들</button>
+      <button onClick={() => setIsMember(false)}>갤러리</button>
+      {isMember ? <ClassMember /> : <Gallery />}
     </>
-  )
+  );
 }
 
-export default ClassButton
+export default ClassButton;
 
 const StyledButtonWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-`
+    padding-bottom: 10px;
+`;
 
-const StyledClassButton = styled.button`
-  margin-left: 10px;
-  background-color: ${props => props.color};
-  color: ${props => props.selected ? 'white' : 'black'};
+const StyledHeaderFont = styled.div`
+    ${textVariants.H1}
+    margin-bottom: 20px;
 `
