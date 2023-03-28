@@ -1,93 +1,62 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
-import {
-  useQueryClient,
-  useQuery,
-  useInfiniteQuery,
-} from "@tanstack/react-query";
-import { MemberAPI } from "../../api/MemberAPI";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
+import { MemberAPI } from "../../api/memberAPI";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import Pagination from "react-js-pagination";
+import Pagination from "rc-pagination";
+import "rc-pagination/assets/index.css";
 
 function Gallery() {
   const queryClient = useQueryClient();
   const { id } = useParams();
   const [searchGallery, setSearchGallery] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
+  const [formattedStartDate, setFormattedStartDate] = useState("");
+  const [formattedEndDate, setFormattedEndDate] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
-  // const { data } = useQuery(
-  //   ["classesGallery"],
-  //   () => MemberAPI.getClassesGallery(id),
-  //   {
-  //     onSuccess: (data) => {
-  //       console.log(data);
-  //     },
-  //     onError: () => {
-  //       console.log("error");
-  //     },
-  //   }
-  // );
-
-  //react-js-pagination
-  // const { data } = useQuery(
-  //   ["classesGallery", searchGallery, currentPage],
-  //   () => {
-  //     if (searchGallery) {
-  //       return MemberAPI.getSearchGallery(searchGallery, currentPage, 15);
-  //     }
-  //     return MemberAPI.getClassesGallery(id, currentPage, 15);
-  //   },
-  //   {
-  //     onSuccess: (data) => {
-  //       console.log(data);
-  //     },
-  //     onError: () => {
-  //       console.log("error");
-  //     },
-  //   }
-  // );
-
-  //인피니티쿼리
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useInfiniteQuery(
-      ["classesGallery", searchGallery],
-      () => {
-        if (searchGallery) {
-          return MemberAPI.getSearchGallery(searchGallery, id);
-        }
-        return MemberAPI.getSearchDateGallery(id, startDate, endDate);
+  const { data } = useQuery(
+    ["classesGallery", searchGallery, currentPage],
+    () => {
+      if (searchGallery) {
+        return MemberAPI.getSearchGallery(
+          searchGallery,
+          id,
+          currentPage,
+          itemsPerPage
+        );
+      }
+      return MemberAPI.getSearchDateGallery(
+        id,
+        startDate,
+        endDate,
+        currentPage,
+        itemsPerPage
+      );
+    },
+    {
+      onSuccess: (data) => {
+        console.log(data);
       },
-      {
-        // getNextPageParam: (lastPage) => {
-        //   if (lastPage.currentPage < lastPage.totalPages) {
-        //     return lastPage.currentPage + 1;
-        //   }
-        //   return false;
-        // },
-          onsuccess: (data) => {
-            console.log(data);
-          }
-        }
-    );
+    }
+  );
+
+  const itemsPerPage = 15;
+
+  const totalItems = 100;
 
   const handleSearch = (e) => {
     e.preventDefault();
     setSearchGallery(e.target.value);
     queryClient.invalidateQueries(["classesGallery", searchGallery]);
-    console.log(data)
+    console.log(data);
   };
 
-  // const handlePageChange = (pageNumber) => {
-  //   setCurrentPage(pageNumber);
-  // };
-
-  const datechange = (date) => {
-    setStartDate(dateToString(date));
-    console.log(startDate, endDate);
+  const handleTest = () => {
+    console.log(data.pages);
   };
 
   const dateToString = (date) => {
@@ -100,6 +69,15 @@ function Gallery() {
     );
   };
 
+  const handleDateSearch = () => {
+    setFormattedStartDate(dateToString(startDate));
+    setFormattedEndDate(dateToString(endDate));
+    return MemberAPI.getSearchDateGallery(
+      id,
+      formattedStartDate,
+      formattedEndDate
+    );
+  };
   return (
     <>
       <StyledGalleryWrapper>
@@ -109,7 +87,7 @@ function Gallery() {
             <DatePicker
               showIcon
               selected={startDate}
-              onChange={(date) => setStartDate(dateToString(date))}
+              onChange={(date) => setStartDate(date)}
               selectsStart
               startDate={startDate}
               endDate={endDate}
@@ -119,14 +97,17 @@ function Gallery() {
             <DatePicker
               showIcon
               selected={endDate}
-              onChange={datechange}
+              onChange={(date) => setEndDate(date)}
               selectsEnd
               startDate={startDate}
               endDate={endDate}
               minDate={startDate}
             />
           </div>
-          <button style={{ marginLeft: "auto" }}>사진등록</button>
+          <button onClick={handleDateSearch}>조회</button>
+          <button onClick={handleTest} style={{ marginLeft: "auto" }}>
+            사진등록
+          </button>
           <input
             style={{ marginLeft: "10px" }}
             onChange={handleSearch}
@@ -134,42 +115,26 @@ function Gallery() {
           />
         </StyledGalleryHeader>
         <StyledGalleryContainer>
-          {/* {data?.data.data.map((item) => {
+          {data?.pages[0].data.data.map((item) => {
             return (
               <StyledGalleryCard key={item.imagePostId}>
-            <StyledGalleryImage src={item.imageUrl} />
-            <StyledTitleFont>{item.title}</StyledTitleFont>
-            <StyledFont>
-              <StyledDateFont>{item.createdAt}</StyledDateFont>
-            </StyledFont>
-          </StyledGalleryCard>
+                <StyledGalleryImage src={item.imageUrlList} />
+                <StyledTitleFont>{item.title}</StyledTitleFont>
+                <StyledFont>
+                  <StyledDateFont>{item.createdAt}</StyledDateFont>
+                </StyledFont>
+              </StyledGalleryCard>
             );
-          })} */}
+          })}
         </StyledGalleryContainer>
-        <button
-          onClick={() => fetchNextPage()}
-          disabled={!hasNextPage || isFetchingNextPage}
-        >
-          {isFetchingNextPage
-            ? "Loading more..."
-            : hasNextPage
-            ? "Load more"
-            : "Nothing more to load"}
-        </button>
-        {/* <PaginationContainer>
+        <PaginationContainer>
           <Pagination
-            activePage={currentPage}
-            itemsCountPerPage={15}
-            // totalItemsCount={data?.totalItemsCount}
-            totalItemsCount={16}
-            pageRangeDisplayed={5}
-            onChange={handlePageChange}
-            innerClass="pagination"
-            itemClass="page-item"
-            linkClass="page-link"
-            activeClass="active"
+            current={currentPage}
+            pageSize={itemsPerPage}
+            total={totalItems}
+            onChange={(page) => setCurrentPage(page)}
           />
-        </PaginationContainer> */}
+        </PaginationContainer>
       </StyledGalleryWrapper>
     </>
   );
@@ -260,34 +225,4 @@ const PaginationContainer = styled.div`
   justify-content: center;
   align-items: center;
   margin-top: 16px;
-
-  .pagination {
-    display: flex;
-    list-style-type: none;
-    padding-inline-start: 0;
-  }
-
-  .page-item {
-    margin: 0 4px;
-  }
-
-  .page-link {
-    display: inline-block;
-    padding: 8px 12px;
-    border-radius: 4px;
-    color: #000000;
-    text-decoration: none;
-    background-color: #f5f5f5;
-    transition: background-color 0.2s;
-    cursor: pointer;
-  }
-
-  .page-link:hover {
-    background-color: #e0e0e0;
-  }
-
-  .active .page-link {
-    background-color: #2f80ed;
-    color: #ffffff;
-  }
 `;
