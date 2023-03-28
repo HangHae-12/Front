@@ -1,56 +1,7 @@
 import React from "react";
 import styled, { css } from "styled-components";
-import { transColor } from "../utils/transColor";
-import textVariants from "../styles/textVariants";
-
-const ButtonsVariants = {
-  Attendance: css`
-    ${textVariants.Body1_SemiBold}
-    width: 172px;
-    height: 40px;
-    padding: 8px 10px;
-    border-radius: 8px;
-  `,
-
-  State: css`
-    ${textVariants.Body2_SemiBold}
-    width: 48px;
-    height: 24px;
-    padding: 4px;
-    border-radius: 20px;
-  `,
-
-  NB_Button: css`
-    ${textVariants.H2_SemiBold}
-    width: 200px;
-    height: 60px;
-    padding: 12px 10px;
-    border-radius: 4px;
-  `,
-
-  Filter_All: css`
-    ${textVariants.Body1_SemiBold}
-    /* min-width: 79px;
-    min-height: 32px; */
-    padding: 10px 12px;
-    border-radius: 4px;
-  `,
-
-  Time_Button: css`
-    ${textVariants.Body1_SemiBold}
-    /* min-width: 140px;
-    min-height: 46px; */
-    padding: 8px 12px;
-    border-radius: 24px;
-  `,
-
-  AB_Button: css`
-    ${textVariants.H3_SemiBold}
-    /* min-width: 114px;
-    min-height: 54px; */
-    padding: 12px 20px;
-  `,
-};
+import { lighten } from "polished";
+import sizeVariants from "../styles/variants/sizeVariants";
 
 const Button = styled.button`
   display: inline-flex;
@@ -70,32 +21,23 @@ const Button = styled.button`
   border: ${({ outlined }) => (outlined ? "1px solid" : "none")};
   border-color: ${({ outlined, bgColor, theme }) =>
     outlined ? bgColor : theme.color.grayScale[400]};
-  color: ${({ outlined, theme, colorTypes }) =>
-    outlined
-      ? theme.color.grayScale[400]
-      : colorTypes === "State"
-      ? theme.color[colorTypes]
-      : colorTypes
-      ? theme.color.white
-      : theme.color.grayScale[200]};
 
-  cursor: pointer;
-  transition: background-color 0.3s ease-in-out;
+  color: ${({ outlined, theme, colorTypes, color }) =>
+    color
+      ? color // color가 존재할 경우 해당 색상을 사용한다.
+      : outlined
+      ? theme.color.grayScale[400] // outlined가 true일 경우 회색 400 색상을 사용한다.
+      : colorTypes
+      ? theme.color.white // colorTypes가 존재할 경우 흰색을 사용한다.
+      : theme.color.grayScale[200]}; // 그렇지 않으면 회색 200 색상을 사용한다.
 
   &:hover {
-    background-color: ${
-      ({ colorTypes, bgColor, theme }) =>
-        console.log(
-          theme.color[colorTypes],
-          transColor.lighten(theme.color[colorTypes]),
-          0.3
-        )
-      // colorTypes
-      //   ? transColor.lighten(theme.color[colorTypes], 0.3)
-      //   : bgColor
-      //   ? transColor.lighten("#303030", 0.9)
-      //   : transColor.lighten("#303030", 0.9)};
-    };
+    background-color: ${({ colorTypes, bgColor, theme }) =>
+      colorTypes
+        ? lighten(0.1, theme.color[colorTypes])
+        : bgColor
+        ? lighten(0.1, bgColor)
+        : lighten(0.2, theme.color.grayScale[50])};
   }
 
   ${({ disabled }) =>
@@ -107,16 +49,40 @@ const Button = styled.button`
       pointer-events: none;
     `}
 
-  ${({ buttonsTypes }) => ButtonsVariants[buttonsTypes] || ""}
-  white-space: nowrap
+  ${({ buttonsTypes }) =>
+    buttonsTypes === "State" &&
+    css`
+      color: ${({ theme, colorTypes }) => theme.color[colorTypes]};
+      background-color: ${({ theme, colorTypes }) =>
+        lighten(0.3, theme.color[colorTypes])};
+
+      &:hover {
+        color: ${({ theme, colorTypes }) => theme.color[colorTypes]};
+        background-color: ${({ theme, colorTypes }) =>
+          lighten(0.3, theme.color[colorTypes])};
+      }
+      /* State 버튼은 호버 이팩트가 필요하지 않음 */
+    `}
+
+  
+
+  ${({ buttonsTypes }) => sizeVariants[buttonsTypes] || ""}
+  /* buttonsTypes 로 입력받은 Variants에 대한 스타일 적용 */
+  opacity: ${({ opacity }) => opacity};
+  transition: background-color 0.3s ease-in-out;
+  white-space: nowrap;
+  cursor: pointer;
 `;
 
 const CustomButton = ({
   width,
   height,
   bgColor,
+  opacity,
   disabled,
   outlined,
+  colorTypes,
+  buttonsTypes,
   children,
   ...props
 }) => {
@@ -124,9 +90,12 @@ const CustomButton = ({
     <Button
       width={width}
       height={height}
+      opacity={opacity}
       bgColor={bgColor}
       disabled={disabled}
       outlined={outlined}
+      colorTypes={colorTypes}
+      buttonsTypes={buttonsTypes}
       {...props}
     >
       {children}

@@ -1,4 +1,4 @@
-import { transColor } from "../utils/transColor";
+import { darken, lighten } from "polished";
 
 const grayScale = {
   800: "#2c2c2c",
@@ -17,12 +17,14 @@ const color = {
   black: "#212121",
   white: "#ffffff",
   primary: "#56bea4",
-  primary_l30: transColor.lighten("#56bea4", 0.3),
+  primary_l30: lighten(0.3, "#56bea4"),
   blue: "#567bff",
   red: "#f35451",
   orange: "#ff852d",
   yellow: "#ffd600",
-  green: transColor.lighten("#00c814", 0.4),
+  // green: lighten(0.4, "#00c814"),
+  green: "#99e9a1",
+  green_darker: "#edf5eecc",
   perple: "#9747ff",
   grayScale: grayScale,
 };
