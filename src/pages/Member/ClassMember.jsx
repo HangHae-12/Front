@@ -6,6 +6,7 @@ import { MemberAPI } from "../../api/memberAPI";
 import Modal from "../../components/Modal";
 import useModal from "../../hooks/useModal";
 
+
 function ClassMember() {
   const queryClient = useQueryClient();
   const { id } = useParams();
