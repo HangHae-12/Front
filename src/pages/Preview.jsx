@@ -3,7 +3,7 @@ import { DUMMY_IMG_SRC } from "../assets";
 import Card from "../components/Card";
 import Modal from "../components/Modal";
 import useModal from "../hooks/useModal";
-import CustomButton from "../components/Buttons";
+import Buttons from "../components/Buttons";
 
 const Preview = () => {
   const { openModal } = useModal();
@@ -59,54 +59,63 @@ const Preview = () => {
       <StyledButtonContianer>
         <StyledGridBox>
           <h3>Attendance</h3>
-          {/* <CustomButton buttonsTypes="Attendance" disabled>
-            등원 처리
-          </CustomButton>
-          <CustomButton buttonsTypes="Attendance" disabled>
-            하원 처리
-          </CustomButton> */}
-          <CustomButton buttonsTypes="Attendance" colorTypes="blue">
-            결석 취소
-          </CustomButton>
-          <CustomButton buttonsTypes="Attendance" colorTypes="orange">
-            결석 취소
-          </CustomButton>
-          {/* <CustomButton buttonsTypes="Attendance" outlined>
-            결석 취소
-          </CustomButton>
-          <CustomButton buttonsTypes="Attendance" outlined>
-            등원 취소
-          </CustomButton>
-          <CustomButton buttonsTypes="Attendance" outlined>
-            하원 취소
-          </CustomButton> */}
+          <Buttons.Attendance disabled>등원 처리</Buttons.Attendance>
+          <Buttons.Attendance disabled>하원 처리</Buttons.Attendance>
+          <Buttons.Attendance colorTypes="blue">결석 취소</Buttons.Attendance>
+          <Buttons.Attendance colorTypes="orange">결석 취소</Buttons.Attendance>
+          <Buttons.Attendance colorTypes="perple">결석 취소</Buttons.Attendance>
+          <Buttons.Attendance outlined>결석 취소</Buttons.Attendance>
+          <Buttons.Attendance outlined>등원 취소</Buttons.Attendance>
+          <Buttons.Attendance outlined>하원 취소</Buttons.Attendance>
         </StyledGridBox>
 
         <StyledGridBox>
           <h3>State</h3>
-          {/* <CustomButton buttonsTypes="State">미등원</CustomButton>
-          <CustomButton buttonsTypes="State">등원</CustomButton>
-          <CustomButton buttonsTypes="State">결석</CustomButton>
-          <CustomButton buttonsTypes="State">하원</CustomButton> */}
+          <Buttons.State colorTypes="red">미등원</Buttons.State>
+          <Buttons.State colorTypes="blue">등원</Buttons.State>
+          <Buttons.State colorTypes="perple">결석</Buttons.State>
+          <Buttons.State colorTypes="orange">하원</Buttons.State>
         </StyledGridBox>
-{/* 
-        <h3>NB_Button</h3>
-        <CustomButton buttonsTypes="NB_Button">반 페이지</CustomButton>
+        <StyledGridBox>
+          <h3>NB_Button</h3>
+          <Buttons.NB colorTypes="primary">반 페이지</Buttons.NB>
+          <Buttons.NB colorTypes="primary" opacity="0.3">
+            반 페이지
+          </Buttons.NB>
+          <Buttons.NB>반 페이지</Buttons.NB>
+        </StyledGridBox>
 
-        <h3>Filter_All</h3>
-        <CustomButton buttonsTypes="Filter_All">전체기간</CustomButton>
-
-        <h3>Time_Button</h3>
-        <CustomButton buttonsTypes="Time_Button">07시 ~ 08시</CustomButton>
-
-        <h3>AB_Button</h3>
-        <CustomButton buttonsTypes="AB_Button">하원 인원</CustomButton> */}
+        <StyledGridBox>
+          <h3>Filter_All</h3>
+          <Buttons.Filter colorTypes="primary">전체기간</Buttons.Filter>
+          <Buttons.Filter outlined>전체기간</Buttons.Filter>
+          <Buttons.Filter colorTypes="primary">적용하기</Buttons.Filter>
+          <Buttons.Filter outlined>적용하기</Buttons.Filter>
+        </StyledGridBox>
+        <StyledGridBox>
+          <h3>Time_Button</h3>
+          <Buttons.Time colorTypes="primary">07시 ~ 08시</Buttons.Time>
+          <Buttons.Time outlined>07시 ~ 08시</Buttons.Time>
+          <Buttons.Time colorTypes="primary" opacity="0.3">
+            07시 ~ 08시
+          </Buttons.Time>
+        </StyledGridBox>
+        <StyledGridBox>
+          <h3>AB_Button</h3>
+          <StyledABBtn>하원 인원</StyledABBtn>
+          <Buttons.AB>하원 인원</Buttons.AB>
+        </StyledGridBox>
       </StyledButtonContianer>
     </>
   );
 };
 
 export default Preview;
+
+const StyledABBtn = styled(Buttons.AB)`
+  color: ${({ theme }) => theme.color.primary};
+  background-color: ${({ theme }) => theme.color.green_darker};
+`;
 
 const StyledDiv = styled.div`
   width: 100%;
