@@ -5,7 +5,7 @@ import TeacherInformation from "./TeacherInformation";
 import ClassMember from "./ClassMember";
 import Gallery from "./Gallery";
 import Button from "../../components/Button";
-import textVariants from "../../styles/textVariants";
+import textVariants from "../../styles/variants/textVariants";
 
 function ClassButton() {
   const [selectedClass, setSelectedClass] = useState("none");
@@ -24,29 +24,41 @@ function ClassButton() {
   // };
 
   const handleButtonClick = (selected) => {
-  const idMapping = {
-    "세빛반": 1,
-    "둥둥반": 2,
-    "빛살반": 3,
+    const idMapping = {
+      세빛반: 1,
+      둥둥반: 2,
+      빛살반: 3,
+    };
+
+    const selectedId = idMapping[selected];
+
+    if (selected === selectedClass) {
+      setSelectedClass("none");
+    } else {
+      setSelectedClass(selected);
+    }
+    navigate(`/common/classes/${selectedId}`);
   };
-
-  const selectedId = idMapping[selected];
-
-  if (selected === selectedClass) {
-    setSelectedClass("none");
-  } else {
-    setSelectedClass(selected);
-  }
-  navigate(`/common/classes/${selectedId}`);
-};
 
   return (
     <>
       <StyledHeaderFont>학급관리</StyledHeaderFont>
       <StyledButtonWrapper>
-      <Button.ClassButton selected={"세빛반"} selectedButton={selectedButton} onClick={() => handleButtonClick("세빛반")} />
-      <Button.ClassButton selected={"둥둥반"} selectedButton={selectedButton} onClick={() => handleButtonClick("둥둥반")} />
-      <Button.ClassButton selected={"빛살반"} selectedButton={selectedButton} onClick={() => handleButtonClick("빛살반")} />
+        <Button.ClassButton
+          selected={"세빛반"}
+          selectedButton={selectedButton}
+          onClick={() => handleButtonClick("세빛반")}
+        />
+        <Button.ClassButton
+          selected={"둥둥반"}
+          selectedButton={selectedButton}
+          onClick={() => handleButtonClick("둥둥반")}
+        />
+        <Button.ClassButton
+          selected={"빛살반"}
+          selectedButton={selectedButton}
+          onClick={() => handleButtonClick("빛살반")}
+        />
       </StyledButtonWrapper>
       <TeacherInformation />
       <button onClick={() => setIsMember(true)}>아이들</button>
@@ -59,10 +71,10 @@ function ClassButton() {
 export default ClassButton;
 
 const StyledButtonWrapper = styled.div`
-    padding-bottom: 10px;
+  padding-bottom: 10px;
 `;
 
 const StyledHeaderFont = styled.div`
-    ${textVariants.H1}
-    margin-bottom: 20px;
-`
+  ${textVariants.H1}
+  margin-bottom: 20px;
+`;
