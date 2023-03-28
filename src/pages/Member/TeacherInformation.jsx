@@ -30,7 +30,7 @@ function TeacherInformation() {
     () => MemberAPI.getClassesPage(id),
     {
       onSuccess: (data) => {
-        console.log(data);
+        console.log(data.data);
       },
       onError: () => {
         console.log("error");
@@ -46,18 +46,25 @@ function TeacherInformation() {
 
   const handleSave = async (id) => {
     const formData = new FormData();
-    formData.append("file", image);
-    const jsonData = JSON.stringify({
-      name: information.name,
-      gender: information.gender,
-      birth: information.birth,
-      phoneNumber: information.phoneNumber,
-      email: information.email,
-      resolution: information.resolution,
-    });
+    formData.append("imageUrl", image);
+    formData.append("name", information.name);
+    formData.append("gender", information.gender);
+    formData.append("birth", information.birth);
+    formData.append("phoneNumber", information.phoneNumber);
+    formData.append("email", information.email);
+    formData.append("resolution", information.resolution);
 
-    const jsonBlob = new Blob([jsonData], { type: "application/json" });
-    formData.append("data", jsonBlob);
+    // const jsonData = JSON.stringify({
+    //   name: information.name,
+    //   gender: information.gender,
+    //   birth: information.birth,
+    //   phoneNumber: information.phoneNumber,
+    //   email: information.email,
+    //   resolution: information.resolution,
+    // });
+
+    // const jsonBlob = new Blob([jsonData], { type: "application/json" });
+    // formData.append("data", jsonBlob);
 
     const payload = {
       id: id,
@@ -213,7 +220,7 @@ function TeacherInformation() {
                 <GrAddCircle style={{ fontSize: 90 }} />
                 <StTeacherImage>
                   <img
-                    src={data?.data.data.teacher.imageUrl}
+                    src={data?.data?.data?.teacher?.imageUrl}
                     style={{
                       width: "90px",
                       height: "90px",
@@ -224,13 +231,15 @@ function TeacherInformation() {
                   />
                 </StTeacherImage>
               </StIconWrapper>
-              <StSpan marginLeft="0px">{data?.data.data.teacher.name}</StSpan>
+              <StSpan marginLeft="0px">
+                {data?.data?.data?.teacher?.name}
+              </StSpan>
             </StLeftWrapper>
             <StBox>
               <StInputWrapper>
                 <StFont>선생님의 한마디 </StFont>
                 <StSpan marginLeft="0px">
-                  {data?.data.data.teacher.resolution}
+                  {data?.data?.data?.teacher?.resolution}
                 </StSpan>
               </StInputWrapper>
               <br />
@@ -238,25 +247,25 @@ function TeacherInformation() {
                 <div>
                   성별{" "}
                   <StSpan marginLeft="150px">
-                    {data?.data.data.teacher.gender}
+                    {data?.data?.data?.teacher?.gender}
                   </StSpan>
                 </div>
                 <div>
                   <StForm marginLeft="60px">
                     연락처{" "}
-                    <StSpan>{data?.data.data.teacher.phoneNumber}</StSpan>
+                    <StSpan>{data?.data?.data?.teacher?.phoneNumber}</StSpan>
                   </StForm>
                 </div>
               </StInputWrapper>
               <StInputWrapper>
                 <div>
-                  생년월일 <StSpan>{data?.data.data.teacher.birth}</StSpan>
+                  생년월일 <StSpan>{data?.data?.data?.teacher?.birth}</StSpan>
                 </div>
                 <div>
                   <StForm marginLeft="100px">
                     메일{" "}
                     <StSpan marginLeft="25px">
-                      {data?.data.data.teacher.email}
+                      {data?.data?.data?.teacher?.email}
                     </StSpan>
                   </StForm>
                 </div>
@@ -275,9 +284,13 @@ export default TeacherInformation;
 const StInfomation = styled.div`
   padding: 7px 133px 16px 36px;
   background: #ffffff;
-  border-radius: 8px;
+  border-radius: 12px;
+  border: 2px solid #DADADA;
+  box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.04);
   gap: 20px;
-  width: 1190px;
+  width: 1248px;
+  height: 254px;
+
 
   @media screen and (max-width: 600px) {
     width: 100%;
