@@ -8,7 +8,7 @@ import Button from "../../components/Button";
 
 const ClassButtonGroup = () => {
   const queryClient = useQueryClient();
-  const { classroomId } = useParams();
+  const { classParam, scheduleParam } = useParams();
   const navigate = useNavigate();
 
   const [isAttendClick, setIsAttendClick] = useState(true);
