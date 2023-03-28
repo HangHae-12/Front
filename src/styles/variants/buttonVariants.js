@@ -1,7 +1,7 @@
 import { css } from "styled-components";
 import textVariants from "./textVariants";
 
-const sizeVariants = {
+const buttonVariants = {
   Attendance: css`
     ${textVariants.Body1_SemiBold}
     width: 172px;
@@ -46,4 +46,4 @@ const sizeVariants = {
   `,
 };
 
-export default sizeVariants;
+export default buttonVariants;
