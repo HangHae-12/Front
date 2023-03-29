@@ -37,9 +37,9 @@ const ClassButtonGroup = () => {
 
   const { isLoading, isError, data } = useQuery(queryKey, () => {
     if (selectedButton === "모든반") {
-      return HostAPI.getManageSchedule(hostParams);
+       HostAPI.getManageSchedule(hostParams);
     }
-    return HostAPI.getManageClassSchedule({ classId, ...hostParams });
+     HostAPI.getManageClassSchedule({ classId, ...hostParams });
   }, 
   {
     onSuccess: (data) => {
@@ -55,14 +55,14 @@ const ClassButtonGroup = () => {
   const loadAllClassroom = () => {
     setSelectedButton("모든반");
     navigate(`/host/ENTER`);
-    // queryClient.invalidateQueries(["getManageSchedule"]);
+    queryClient.invalidateQueries(["getManageSchedule"]);
   };
 
   const loadClassroom = (selected, classId) => {
     setSelectedButton(selected);
     setClassId(classId);
     navigate(`/host/${classId}/ENTER`);
-    // queryClient.invalidateQueries(["getManageClassSchedule"]);
+    queryClient.invalidateQueries(["getManageClassSchedule"]);
   };
   const handleAttendanceButton = (ScheduleId) => {
     if (ScheduleId === "ENTER") {
@@ -131,7 +131,12 @@ const ClassButtonGroup = () => {
       </StyledInfoContainer>
 
       <StyledAttendanceButtonGroup>
-        <Buttons.AB onClick={() => handleAttendanceButton(true)}> 등원 인원 </Buttons.AB>
+      <StyledAttendanceButton
+          isClick={isLeaveClick}
+          onClick={() => handleAttendanceButton("EXIT")}
+        >
+          등원 인원
+        </StyledAttendanceButton>
 
         <StyledAttendanceButton
           isClick={isLeaveClick}
@@ -143,7 +148,7 @@ const ClassButtonGroup = () => {
       <StyledAttendanceContainer>
         <StyledTimeButtonGroup>
           <StyledTimeButton
-            isClick={isTimeClick1}
+            isClick={isAttendClick}
             onClick={() => {
               setIsTimeClick1(true);
               setIsTimeClick2(false);
@@ -188,9 +193,10 @@ const ClassButtonGroup = () => {
           </StyledTimeButton>
         </StyledTimeButtonGroup>
         <StyledStudentGrid>
-        {/* {
-          //서버 연결되면  id값 변경 및 데이터 바인딩
-          data.map((item) => {
+
+        {
+          //서버 연결되면  id값 변경 및 데이터 바인딩,옵셔널 체이닝
+          data?.map((item) => {
           return(
                 <StyledStudentCard key={item.childId}>
                 <StyledProfileRow>
@@ -214,7 +220,7 @@ const ClassButtonGroup = () => {
               </StyledStudentCard>
           );
           })
-        } */}
+        }
           
         </StyledStudentGrid>
       </StyledAttendanceContainer>
