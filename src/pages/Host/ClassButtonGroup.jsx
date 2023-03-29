@@ -41,14 +41,6 @@ const ClassButtonGroup = () => {
   //맨처음 로드 되었을때 defalt 모든반,등원인원,전체시간 조회
   const hostParams = { type: scheduleId, time, page };
 
-  //페이지네이션 페이지 지정
-  const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 10;
-  const totalItems = 100;
-
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  }
 
   // selectedButton의 값에 따라 다른 쿼리 실행
   const queryKey = selectedButton === "모든반"
@@ -78,6 +70,17 @@ const ClassButtonGroup = () => {
       },
     }
   );
+
+  //페이지네이션 페이지 지정
+ 
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = Math.ceil((data?.length || 0) / 15);
+  const totalItems = data?.length || 0;
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  }
+
 
   const loadAllClassroom = () => {
     setSelectedButton("모든반");
@@ -336,20 +339,28 @@ const StyledStudentGrid = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(5, auto);
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: auto; 
   grid-gap: 20px;
   margin-top: 20px;
+
+  @media ${({ theme }) => theme.device.mobile} {
+    grid-template-columns: repeat(2, 1fr); // 가로로 2개씩
+    grid-template-rows: repeat(8, auto); // 세로로 8개씩
+  }
 `;
+
 
 const StyledStudentCard = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 10px;
-  border: 1px solid ${({ theme }) => theme.color.grayScale[300]};
-  border-radius: 4px;
+  border: 0.8px solid ${({ theme }) => theme.color.grayScale[300]};
+  box-shadow: 0px 0.8px 9.6px rgba(0, 0, 0, 0.02);
+  border-radius: 8px;
 
+  background-color: ${({ theme }) => theme.color.white};
   width: 240px;
   height: 304px;
 `;
