@@ -1,26 +1,26 @@
 import styled from "styled-components";
-import { FaSchool } from "react-icons/fa";
-import { HiUserCircle } from "react-icons/hi";
+import { BsFillGearFill } from "react-icons/bs";
 import { DUMMY_PROFILE_IMG_SRC } from "../assets";
+import Buttons from "./Buttons";
+import textVariants from "../styles/variants/textVariants";
+import logo from "../assets/kindergrew_logo.png";
 
 const SideBar = () => {
   return (
     <StyledSideBarContainer>
+      <img src={logo} alt="로고 이미지" />
       <StyledUserProfileWrapper>
         <img src={DUMMY_PROFILE_IMG_SRC} alt="유저 프로필 이미지" />
         <p>학부모</p>
-        <h4>박미자</h4>
+        <h3>
+          <span>박미자</span>
+          <StyledGearButton />
+        </h3>
       </StyledUserProfileWrapper>
       <StyledSideBarBtnWrapper>
-        {/* 버튼 컴포넌트로 리팩토링 할 부분 */}
-        <button className="btn-kindergarden">
-          <FaSchool />
-          <span>유치원</span>
-        </button>
-        <button className="btn-profile">
-          <HiUserCircle />
-          <span>프로필</span>
-        </button>
+        <Buttons.NB colorTypes="primary">학급 관리</Buttons.NB>
+        <Buttons.NB>등/하원 관리</Buttons.NB>
+        <Buttons.NB>출석부 관리</Buttons.NB>
       </StyledSideBarBtnWrapper>
     </StyledSideBarContainer>
   );
@@ -32,11 +32,15 @@ const StyledSideBarContainer = styled.aside`
   position: fixed;
   left: 0;
   z-index: 5;
-  width: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 240px;
   height: 100%;
-  padding: calc(80px + 30px) 20px 0px 20px;
-  border: 1px solid ${({ theme }) => theme.color.gray_300};
+  padding: 80px 0px 200px 0px;
+  border-right: 2px solid ${({ theme }) => theme.color.grayScale[100]};
   background-color: ${({ theme }) => theme.color.white};
+  box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.04);
 `;
 
 const StyledUserProfileWrapper = styled.div`
@@ -45,58 +49,41 @@ const StyledUserProfileWrapper = styled.div`
   height: 150px;
   flex-direction: column;
   align-items: center;
-  border-bottom: 1px solid ${({ theme }) => theme.color.gray_300};
+  margin-top: 80px;
 
   img {
-    width: 80px;
-    height: 80px;
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
   }
 
   p {
-    font-size: 12px;
-    color: ${({ theme }) => theme.color.gray_100};
-    margin: 10px 0px 5px 0px;
+    ${textVariants.Body2_Bold}
+    margin-top: 16px;
+    color: ${({ theme }) => theme.color.grayScale[500]};
   }
 
-  h4 {
-    font-size: 14px;
+  h3 {
+    ${textVariants.H3_SemiBold}
+    margin-top: 4px;
+    color: ${({ theme }) => theme.color.grayScale[600]};
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
   }
 `;
 
+const StyledGearButton = styled(BsFillGearFill)`
+  width: 16px;
+  height: 16px;
+`;
+
 const StyledSideBarBtnWrapper = styled.div`
-  width: 100%;
   display: flex;
   flex-direction: column;
-  padding-top: 40px;
-  gap: 10px;
-
-  button {
-    width: 100%;
-    height: 45px;
-    border: none;
-    border-radius: 4px;
-    font-size: 25px;
-    span {
-      font-size: 15px;
-    }
-  }
-
-  .btn-kindergarden {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    background-color: ${({ theme }) => theme.color.blue};
-    color: ${({ theme }) => theme.color.white};
-  }
-
-  .btn-profile {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    background-color: ${({ theme }) => theme.color.gray_400};
-    color: ${({ theme }) => theme.color.gray_100};
-  }
+  align-items: center;
+  width: 100%;
+  margin-top: 80px;
+  gap: 12px;
 `;

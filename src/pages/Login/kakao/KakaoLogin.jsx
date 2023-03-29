@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { SignAPI } from "../../../api/signAPI";
+import { SignAPI } from "../../../api/SignAPI";
+import tokenCookie from "../../../utils/tokenCookie";
+
 
 const KakaoLogin = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [code, setCode] = useState("");
 
   useEffect(() => {
@@ -14,12 +17,23 @@ const KakaoLogin = () => {
 
   useEffect(() => {
     if (!code) return;
-
     const source = axios.CancelToken.source();
-    const request = SignAPI.auth(code, source.token);
+    const request = SignAPI.kakaoAuth(code, source.token);
 
     request
-      .then((res) => console.log(res))
+      .then((res) => {
+        console.log(res);
+        console.log(res.headers);
+        tokenCookie.set(res.data.token);
+        switch (res.statusCode) {
+          case 201:
+            // navigate("/signup");
+            break;
+          default:
+            // navigate("/");
+            break;
+        }
+      })
       .catch((error) => {
         if (axios.isCancel(error)) {
           console.log("요청이 거절되었습니다", error.message);
