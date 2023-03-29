@@ -19,17 +19,18 @@ const Host = () => {
 export default Host;
 
 const StyledContainer = styled.div`
-display: flex;
-flex-direction: row;
+  display: flex;
+  flex-direction: row;
 `;
 
 const StyledLeftContainer = styled.div`
-width: 200px;
-height: 100vh;
-
+  width: 200px;
+  height: 100vh;
 `;
 
 const StyledRightContainer = styled.div`
-flex-grow: 1;
-padding: 20px;
+  flex-grow: 1;
+  margin-top: 20px;
+  margin-left: 60px;
 `;
+

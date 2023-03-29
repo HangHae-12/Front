@@ -54,7 +54,7 @@ const ClassButtonGroup = () => {
         if (!result) {
           throw new Error("Failed to fetch data");
         }
-        return result;
+        return result.data;
       } else {
         const result = await HostAPI.getManageClassSchedule({
           classId,
@@ -63,7 +63,7 @@ const ClassButtonGroup = () => {
         if (!result) {
           throw new Error("Failed to fetch data");
         }
-        return result;
+        return result.data;
       }
     },
     {
@@ -75,6 +75,11 @@ const ClassButtonGroup = () => {
       },
     }
   );
+
+  
+    
+  
+  
   
 
 
@@ -136,30 +141,30 @@ const ClassButtonGroup = () => {
         </StyledInfoColomn>
         <StyledInfoRow>
           <StyledInfoLabel>총원</StyledInfoLabel>
-          <StyledInfoValue>20</StyledInfoValue>
+          <StyledInfoValue>{data?.totalNumber}</StyledInfoValue>
           <StyleddateLabel>명</StyleddateLabel>
         </StyledInfoRow>
         <StyledInfoRow>
           <StyledInfoLabel>등원</StyledInfoLabel>
-          <StyledInfoValue>12</StyledInfoValue>
+          <StyledInfoValue>{data?.notEnterNumber}</StyledInfoValue>
           <StyleddateLabel>명</StyleddateLabel>
         </StyledInfoRow>
         <StyledInfoRow>
           <StyledInfoLabel>미등원</StyledInfoLabel>
-          <StyledInfoValue>6</StyledInfoValue>
+          <StyledInfoValue>{data?.exitNumber}</StyledInfoValue>
           <StyleddateLabel>명</StyleddateLabel>
         </StyledInfoRow>
-        <StyledInfoRow>
+        {/* <StyledInfoRow>
           <StyledInfoLabel>결석</StyledInfoLabel>
-          <StyledInfoValue>2</StyledInfoValue>
+          <StyledInfoValue>{data.totalNumber}</StyledInfoValue>
           <StyleddateLabel>명</StyleddateLabel>
-        </StyledInfoRow>
+        </StyledInfoRow> */}
       </StyledInfoContainer>
 
       <StyledAttendanceButtonGroup>
       <StyledAttendanceButton
           isClick={isLeaveClick}
-          onClick={() => handleAttendanceButton("EXIT")}
+          onClick={() => handleAttendanceButton("ENTER")}
         >
           등원 인원
         </StyledAttendanceButton>
@@ -221,15 +226,16 @@ const ClassButtonGroup = () => {
         <StyledStudentGrid>
 
         {
+          
           //서버 연결되면  id값 변경 및 데이터 바인딩,옵셔널 체이닝
-          data?.map((item) => {
+          Array.isArray(data) && data?.map((item) => {
           return(
                 <StyledStudentCard key={item.childId}>
                 <StyledProfileRow>
                   <StyledStudentProfile />
                   <StyledProfileGroup>
-                    <StyledStudentName>김민재</StyledStudentName>
-                    <StyledStudentStatus status={"미등원"}>
+                    <StyledStudentName>{item.name}</StyledStudentName>
+                    <StyledStudentStatus status={item.currentStatus}>
                       {item.currentStatus}
                     </StyledStudentStatus>
                   </StyledProfileGroup>
