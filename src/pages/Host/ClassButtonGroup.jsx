@@ -5,7 +5,7 @@ import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import { HostAPI } from "../../api/HostAPI";
 import textVariants from "../../styles/variants/textVariants";
 import Button from "../../components/Button";
-
+import Buttons, {CustomButton} from "../../components/Buttons";
 const ClassButtonGroup = () => {
 
   const queryClient = useQueryClient();
@@ -30,35 +30,27 @@ const ClassButtonGroup = () => {
   //맨처음 로드 되었을때 defalt 모든반,등원인원,전체시간 조회
   const hostParams = { scheduleId, time, page };
 
-  const { isLoading, isError, data } = useQuery(
-    ["getManageEnter", hostParams],
-    () => HostAPI.getManageSchedule(hostParams),
-    {
-      onSuccess: (data) => {
-        console.log(data);
-      },
-      onError: () => {
-        console.log("error");
-      },
-    }
-  );
+  // selectedButton의 값에 따라 다른 쿼리 실행
+  const queryKey = selectedButton === "모든반"
+  ? ["getManageEnter", hostParams]
+  : ["getManageClassSchedule", { classId, ...hostParams }];
 
-  const { isLoading2, isError2, data2 } = useQuery(
-    ["getManageClassSchedule", { classId, ...hostParams }],
-    () =>
-      HostAPI.getManageClassSchedule({
-        classId,
-        ...hostParams,
-      }),
-    {
-      onSuccess: (data) => {
-        console.log(data);
-      },
-      onError: () => {
-        console.log("error");
-      },
+  const { isLoading, isError, data } = useQuery(queryKey, () => {
+    if (selectedButton === "모든반") {
+      return HostAPI.getManageSchedule(hostParams);
     }
-  );
+    return HostAPI.getManageClassSchedule({ classId, ...hostParams });
+  }, 
+  {
+    onSuccess: (data) => {
+      console.log(data);
+    },
+    onError: () => {
+      console.log("error");
+    },
+  }
+);
+
 
   const loadAllClassroom = () => {
     setSelectedButton("모든반");
@@ -139,12 +131,8 @@ const ClassButtonGroup = () => {
       </StyledInfoContainer>
 
       <StyledAttendanceButtonGroup>
-        <StyledAttendanceButton
-          isClick={isAttendClick}
-          onClick={() => handleAttendanceButton("ENTER")}
-        >
-          등원 인원
-        </StyledAttendanceButton>
+        <Buttons.AB onClick={() => handleAttendanceButton(true)}> 등원 인원 </Buttons.AB>
+
         <StyledAttendanceButton
           isClick={isLeaveClick}
           onClick={() => handleAttendanceButton("EXIT")}
