@@ -16,8 +16,9 @@ const grayScale = {
 const color = {
   black: "#212121",
   white: "#ffffff",
-  primary: "#56bea4",
+  primary: "#3cc678",
   primary_l30: lighten(0.3, "#56bea4"),
+  // primary_l30 을 사용한 모든 색상에 primary opacity 0.3 으로 변경할 것
   blue: "#567bff",
   red: "#f35451",
   orange: "#ff852d",

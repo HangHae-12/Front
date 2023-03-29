@@ -8,19 +8,31 @@ import Buttons from "../components/Buttons";
 const Preview = () => {
   const { openModal } = useModal();
 
+  const TestModal = () => {
+    return (
+      <div style={{ width: "100%", height: "100%", background: "red" }}>
+        <div style={{ width: "80%", height: "100%", background: "yellow" }}>
+          <div style={{ width: "80%", height: "100%", background: "green" }}>
+            <div
+              style={{ width: "80%", height: "100%", background: "black" }}
+            ></div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   const modalData = {
     title: "modal",
-    contents: (
-      <div>
-        <script>console.log(1)</script>
-      </div>
-    ),
-    callback: () => alert("modal"),
+    contents: <TestModal />,
+    // callback: () => alert("modal"),
   };
 
   const modalOption = {
     // canCloseOnOverlayClick: false,
-    isCloseButton: false,
+    isCloseButton: true,
+    width: "800px",
+    height: "500px",
   };
   return (
     <>

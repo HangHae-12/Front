@@ -1,16 +1,15 @@
 import axios from "axios";
-import { useTokenCookie } from "../hooks/useTokenCookie";
+import tokenCookie from "../utils/tokenCookie";
 import { ENV } from "../helpers/envs";
 
 const instance = axios.create({
   baseURL: `${ENV.main_server}`,
 });
 
-const { getTokenCookie, removeTokenCookie } = useTokenCookie();
 instance.interceptors.request.use(
   function (config) {
     console.log("인터셉트 요청 성공!");
-    const token = getTokenCookie();
+    const token = tokenCookie.get();
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
     }
@@ -32,7 +31,7 @@ instance.interceptors.response.use(
     console.log("인터셉트 응답 못받았어요");
 
     if (error.response && error.response.status === 401) {
-      removeTokenCookie();
+      tokenCookie.remove();
       alert("인증이 만료되었습니다. 다시 로그인 해주세요.");
     }
 
