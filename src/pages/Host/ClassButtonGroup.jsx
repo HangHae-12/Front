@@ -28,11 +28,11 @@ const ClassButtonGroup = () => {
   const [page, setPage] = useState(1);
 
   //맨처음 로드 되었을때 defalt 모든반,등원인원,전체시간 조회
-  const queryParams = { scheduleId, time, page };
+  const hostParams = { scheduleId, time, page };
 
   const { isLoading, isError, data } = useQuery(
-    ["getManageEnter", queryParams],
-    () => HostAPI.getManageSchedule(),
+    ["getManageEnter", hostParams],
+    () => HostAPI.getManageSchedule(hostParams),
     {
       onSuccess: (data) => {
         console.log(data);
@@ -44,11 +44,11 @@ const ClassButtonGroup = () => {
   );
 
   const { isLoading2, isError2, data2 } = useQuery(
-    ["getManageClassSchedule", { classId, ...queryParams }],
+    ["getManageClassSchedule", { classId, ...hostParams }],
     () =>
       HostAPI.getManageClassSchedule({
         classId,
-        ...queryParams,
+        ...hostParams,
       }),
     {
       onSuccess: (data) => {
