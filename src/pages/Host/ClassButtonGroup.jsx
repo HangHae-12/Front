@@ -6,7 +6,7 @@ import { HostAPI } from "../../api/HostAPI";
 import textVariants from "../../styles/variants/textVariants";
 import Button from "../../components/Button";
 import Buttons, {CustomButton} from "../../components/Buttons";
-
+import Pagination from 'rc-pagination';
 const ClassButtonGroup = () => {
 
   const queryClient = useQueryClient();
@@ -41,6 +41,15 @@ const ClassButtonGroup = () => {
   //맨처음 로드 되었을때 defalt 모든반,등원인원,전체시간 조회
   const hostParams = { type: scheduleId, time, page };
 
+  //페이지네이션 페이지 지정
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
+  const totalItems = 100;
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  }
+
   // selectedButton의 값에 따라 다른 쿼리 실행
   const queryKey = selectedButton === "모든반"
   ? ["getManageEnter", hostParams]
@@ -51,18 +60,12 @@ const ClassButtonGroup = () => {
     async () => {
       if (selectedButton === "모든반") {
         const result = await HostAPI.getManageSchedule(hostParams);
-        if (!result) {
-          throw new Error("Failed to fetch data");
-        }
         return result.data;
       } else {
         const result = await HostAPI.getManageClassSchedule({
           classId,
           ...hostParams,
         });
-        if (!result) {
-          throw new Error("Failed to fetch data");
-        }
         return result.data;
       }
     },
@@ -75,13 +78,6 @@ const ClassButtonGroup = () => {
       },
     }
   );
-
-  
-    
-  
-  
-  
-
 
   const loadAllClassroom = () => {
     setSelectedButton("모든반");
@@ -256,11 +252,12 @@ const ClassButtonGroup = () => {
           
         </StyledStudentGrid>
       </StyledAttendanceContainer>
-      <StyledPagination>
-        <StyledPaginationButton>1</StyledPaginationButton>
-        <StyledPaginationButton>2</StyledPaginationButton>
-        <StyledPaginationButton>3</StyledPaginationButton>
-      </StyledPagination>
+      <Pagination
+        current={currentPage}
+        pageSize={pageSize}
+        total={totalItems}
+        onChange={handlePageChange}
+      />
     </>
   );
 };
