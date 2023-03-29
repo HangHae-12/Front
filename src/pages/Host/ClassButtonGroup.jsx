@@ -188,26 +188,34 @@ const ClassButtonGroup = () => {
           </StyledTimeButton>
         </StyledTimeButtonGroup>
         <StyledStudentGrid>
-          <StyledStudentCard>
-            <StyledProfileRow>
-              <StyledStudentProfile />
-              <StyledProfileGroup>
-                <StyledStudentName>김민재</StyledStudentName>
-                <StyledStudentStatus status={"미등원"}>
-                  미등원
-                </StyledStudentStatus>
-              </StyledProfileGroup>
-            </StyledProfileRow>
-            <StyledAttendanceRow>
-              <StyledAttendanceLabel>등원</StyledAttendanceLabel>
-              <StyledAttendanceValue>07시~08시</StyledAttendanceValue>
-            </StyledAttendanceRow>
-            <StyledAttendanceRow>
-              <StyledAttendanceLabel>하원</StyledAttendanceLabel>
-              <StyledAttendanceValue>18시~19시</StyledAttendanceValue>
-            </StyledAttendanceRow>
-            <StyledAttendanceBtn>등원처리</StyledAttendanceBtn>
-          </StyledStudentCard>
+        {/* {
+          //서버 연결되면  id값 변경 및 데이터 바인딩
+          data.map((item) => {
+          return(
+                <StyledStudentCard key={item.childId}>
+                <StyledProfileRow>
+                  <StyledStudentProfile />
+                  <StyledProfileGroup>
+                    <StyledStudentName>김민재</StyledStudentName>
+                    <StyledStudentStatus status={"미등원"}>
+                      {item.currentStatus}
+                    </StyledStudentStatus>
+                  </StyledProfileGroup>
+                </StyledProfileRow>
+                <StyledAttendanceRow>
+                  <StyledAttendanceLabel>등원</StyledAttendanceLabel>
+                  <StyledAttendanceValue>{item.enterTime}</StyledAttendanceValue>
+                </StyledAttendanceRow>
+                <StyledAttendanceRow>
+                  <StyledAttendanceLabel>하원</StyledAttendanceLabel>
+                  <StyledAttendanceValue>{item.exitTime}</StyledAttendanceValue>
+                </StyledAttendanceRow>
+                <StyledAttendanceBtn>등원처리</StyledAttendanceBtn>
+              </StyledStudentCard>
+          );
+          })
+        } */}
+          
         </StyledStudentGrid>
       </StyledAttendanceContainer>
       <StyledPagination>
