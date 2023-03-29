@@ -3,8 +3,8 @@ import KakaoLogin from "../pages/Login/kakao/KakaoLogin";
 import Preview from "../pages/Preview";
 import Host from "../pages/Host/Host";
 import Member from "../pages/Member/Member";
-import SignupTeacher from "../pages/Login/SignupTeacher";
-import SignupParent from "../pages/Login/SignupParent";
+import SignupTeacher from "../pages/Login/signup/SignupTeacher";
+import SignupParent from "../pages/Login/signup/SignupParent";
 import Signup from "../pages/Login/Signup";
 
 export const PAGE = {

@@ -1,7 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
-import styled from "styled-components";
-import textVariants from "../../styles/variants/textVariants";
+import StyledSignup from "./styled";
 
 const SignupParent = () => {
   const {
@@ -23,7 +22,7 @@ const SignupParent = () => {
         <StyledSignup.Label htmlFor="name">이름 *</StyledSignup.Label>
         <StyledSignup.Input
           type="text"
-          {...register('name', { required: '이름을 입력해주세요.' })}
+          {...register("name", { required: "이름을 입력해주세요." })}
           id="name"
         />
         {errors.name && (
@@ -32,11 +31,13 @@ const SignupParent = () => {
           </StyledSignup.ErrorMessage>
         )}
 
-        <StyledSignup.Label htmlFor="phoneNumber">휴대폰 번호 *</StyledSignup.Label>
+        <StyledSignup.Label htmlFor="phoneNumber">
+          휴대폰 번호 *
+        </StyledSignup.Label>
         <StyledSignup.Input
           type="text"
-          {...register('phoneNumber', {
-            required: '휴대폰 번호를 입력해주세요',
+          {...register("phoneNumber", {
+            required: "휴대폰 번호를 입력해주세요",
           })}
           id="phoneNumber"
         />
@@ -46,24 +47,28 @@ const SignupParent = () => {
           </StyledSignup.ErrorMessage>
         )}
 
-        <StyledSignup.Label htmlFor="profileImage">프로필 사진</StyledSignup.Label>
+        <StyledSignup.Label htmlFor="profileImage">
+          프로필 사진
+        </StyledSignup.Label>
         <StyledSignup.Input
           type="file"
-          {...register('profileImage')}
+          {...register("profileImage")}
           id="profileImage"
         />
 
         <StyledSignup.Label htmlFor="relationship">관계</StyledSignup.Label>
         <StyledSignup.Input
           type="text"
-          {...register('relationship')}
+          {...register("relationship")}
           id="relationship"
         />
 
-        <StyledSignup.Label htmlFor="emergencyPhoneNumber">비상연락망</StyledSignup.Label>
+        <StyledSignup.Label htmlFor="emergencyPhoneNumber">
+          비상연락망
+        </StyledSignup.Label>
         <StyledSignup.Input
           type="text"
-          {...register('emergencyPhoneNumber')}
+          {...register("emergencyPhoneNumber")}
           id="emergencyPhoneNumber"
         />
 
@@ -71,32 +76,6 @@ const SignupParent = () => {
       </StyledSignup.Form>
     </StyledSignup.Container>
   );
-}
+};
 
 export default SignupParent;
-
-const StyledSignup = {
-  Container: styled.div`
-    display: flex;
-    width: 300px;
-    flex-direction: column;
-  `,
-
-  Form: styled.form`
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  `,
-
-  Label: styled.label`
-    ${textVariants.Body2_Bold}
-  `,
-
-  Input: styled.input``,
-
-  Button: styled.button``,
-
-  ErrorMessage: styled.span`
-    color: ${({ theme }) => theme.color.red};
-  `,
-};

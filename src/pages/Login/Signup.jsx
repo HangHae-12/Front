@@ -10,10 +10,10 @@ const Signup = () => {
       <h1>Signup</h1>
       <Tabs>
         <Tab isActive={!!parentMatch}>
-          <Link to="parent">parent</Link>
+          <Link to="parent">학부모</Link>
         </Tab>
         <Tab isActive={!!teacherMatch}>
-          <Link to="teacher">teacher</Link>
+          <Link to="teacher">선생님</Link>
         </Tab>
       </Tabs>
       <Outlet />
