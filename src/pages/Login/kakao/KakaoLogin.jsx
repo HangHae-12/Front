@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
-import { SignAPI } from "../../../api/SignAPI";
+import { SignAPI } from "../../../api/signAPI";
 
 const KakaoLogin = () => {
   const location = useLocation();

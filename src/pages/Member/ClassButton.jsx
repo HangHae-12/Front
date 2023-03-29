@@ -12,16 +12,6 @@ function ClassButton() {
   const [isMember, setIsMember] = useState(true);
   const [selectedButton, setSelectedButton] = useState("none");
   const navigate = useNavigate();
-  const { id } = useParams();
-
-  // const handleClassClick = (id) => {
-  //   if (id === selectedClass) {
-  //     setSelectedClass("none");
-  //   } else {
-  //     setSelectedClass(id);
-  //   }
-  //   navigate(`/common/classes/${id}`);
-  // };
 
   const handleButtonClick = (selected) => {
     const idMapping = {
