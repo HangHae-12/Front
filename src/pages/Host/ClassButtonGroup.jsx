@@ -2,14 +2,15 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
-import { HostAPI } from "../../api/hostAPI";
+import { HostAPI } from "../../api/HostAPI";
 import textVariants from "../../styles/variants/textVariants";
 import Button from "../../components/Button";
 import Buttons, {CustomButton} from "../../components/Buttons";
+
 const ClassButtonGroup = () => {
 
   const queryClient = useQueryClient();
-  const { classParam, scheduleParam } = useParams();
+  const { classroomId, scheduleParam } = useParams();
   const navigate = useNavigate();
 
   const [isAttendClick, setIsAttendClick] = useState(true);
@@ -27,6 +28,16 @@ const ClassButtonGroup = () => {
   const [time, setTime] = useState(1);
   const [page, setPage] = useState(1);
 
+
+  // 오늘의 날짜 구하기
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth() + 1;
+  const day = today.getDate();
+  const todayString = `${year}.${month}.${day}`;
+  const dayOfWeek = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'][today.getDay()];
+  
+
   //맨처음 로드 되었을때 defalt 모든반,등원인원,전체시간 조회
   const hostParams = { type: scheduleId, time, page };
 
@@ -35,23 +46,36 @@ const ClassButtonGroup = () => {
   ? ["getManageEnter", hostParams]
   : ["getManageClassSchedule", { classId, ...hostParams }];
 
-  const { isLoading, isError, data } = useQuery(queryKey, async() => {
-    if (selectedButton === "모든반") {
-       const result = await HostAPI.getManageSchedule(hostParams);
-       return result;
+  const { isLoading, isError, data } = useQuery(
+    queryKey,
+    async () => {
+      if (selectedButton === "모든반") {
+        const result = await HostAPI.getManageSchedule(hostParams);
+        if (!result) {
+          throw new Error("Failed to fetch data");
+        }
+        return result;
+      } else {
+        const result = await HostAPI.getManageClassSchedule({
+          classId,
+          ...hostParams,
+        });
+        if (!result) {
+          throw new Error("Failed to fetch data");
+        }
+        return result;
+      }
+    },
+    {
+      onSuccess: (data) => {
+        console.log(data);
+      },
+      onError: () => {
+        console.log("error");
+      },
     }
-       const result = await HostAPI.getManageClassSchedule({ classId, ...hostParams });
-       return result;
-  }, 
-  {
-    onSuccess: (data) => {
-      console.log(data);
-    },
-    onError: () => {
-      console.log("error");
-    },
-  }
-);
+  );
+  
 
 
   const loadAllClassroom = () => {
@@ -107,8 +131,8 @@ const ClassButtonGroup = () => {
       </StyledClassButtonGroup>
       <StyledInfoContainer>
         <StyledInfoColomn>
-          <StyleddateLabel>2023 03 03</StyleddateLabel>
-          <StyleddateValue>수요일</StyleddateValue>
+          <StyleddateLabel>{todayString}</StyleddateLabel>
+          <StyleddateValue>{dayOfWeek}</StyleddateValue>
         </StyledInfoColomn>
         <StyledInfoRow>
           <StyledInfoLabel>총원</StyledInfoLabel>

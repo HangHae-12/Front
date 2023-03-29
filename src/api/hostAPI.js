@@ -30,8 +30,12 @@ export const HostAPI = {
     getManageClassSchedule : async (payload) => {
 
         try {
-            const response = await instance.get(`/manager/classroom/${payload.classroomId}/schedule`,{
-                params: payload,
+            const response = await instance.get(`/manager/classroom/${payload.classId}/schedule`,{
+                params: {
+                    type: payload.type,
+                    time: payload.time,
+                    page: payload.page,
+                  },
             });
             return response.data;
     

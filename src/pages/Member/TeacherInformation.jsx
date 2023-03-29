@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { GrAddCircle } from "react-icons/gr";
 import { useParams } from "react-router-dom";
 import { useState } from "react";
-import { MemberAPI } from "../../api/memberAPI";
+import { MemberAPI } from "../../api/MemberAPI";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 
 function TeacherInformation() {
