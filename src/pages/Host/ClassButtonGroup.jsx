@@ -28,18 +28,20 @@ const ClassButtonGroup = () => {
   const [page, setPage] = useState(1);
 
   //맨처음 로드 되었을때 defalt 모든반,등원인원,전체시간 조회
-  const hostParams = { scheduleId, time, page };
+  const hostParams = { type: scheduleId, time, page };
 
   // selectedButton의 값에 따라 다른 쿼리 실행
   const queryKey = selectedButton === "모든반"
   ? ["getManageEnter", hostParams]
   : ["getManageClassSchedule", { classId, ...hostParams }];
 
-  const { isLoading, isError, data } = useQuery(queryKey, () => {
+  const { isLoading, isError, data } = useQuery(queryKey, async() => {
     if (selectedButton === "모든반") {
-       HostAPI.getManageSchedule(hostParams);
+       const result = await HostAPI.getManageSchedule(hostParams);
+       return result;
     }
-     HostAPI.getManageClassSchedule({ classId, ...hostParams });
+       const result = await HostAPI.getManageClassSchedule({ classId, ...hostParams });
+       return result;
   }, 
   {
     onSuccess: (data) => {
@@ -54,15 +56,15 @@ const ClassButtonGroup = () => {
 
   const loadAllClassroom = () => {
     setSelectedButton("모든반");
-    navigate(`/host/ENTER`);
-    queryClient.invalidateQueries(["getManageSchedule"]);
+    navigate(`/host/${scheduleId}`);
+    queryClient.invalidateQueries(["getManageSchedule",hostParams]);
   };
 
   const loadClassroom = (selected, classId) => {
     setSelectedButton(selected);
     setClassId(classId);
-    navigate(`/host/${classId}/ENTER`);
-    queryClient.invalidateQueries(["getManageClassSchedule"]);
+    navigate(`/host/${classId}/${scheduleId}`);
+    queryClient.invalidateQueries(["getManageClassSchedule", { classId, ...hostParams }]);
   };
   const handleAttendanceButton = (ScheduleId) => {
     if (ScheduleId === "ENTER") {
