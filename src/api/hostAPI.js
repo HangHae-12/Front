@@ -6,9 +6,10 @@ export const HostAPI = {
 
         try {
             const response = await instance.get("/manager/schedule",{
-                params: qs.stringify(payload),
+                params: payload,
                 
             });
+            console.log(response);
             return response.data;
     
         }catch (error) {
@@ -19,6 +20,7 @@ export const HostAPI = {
 
         try {
             const response = await instance.get("/manager/schedule/absent")
+            console.log(response);
             return response.data;
     
         }catch (error) {
@@ -29,7 +31,7 @@ export const HostAPI = {
 
         try {
             const response = await instance.get(`/manager/classroom/${payload.classroomId}/schedule`,{
-                params: qs.stringify(payload),
+                params: payload,
             });
             return response.data;
     

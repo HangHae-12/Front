@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
-import { HostAPI } from "../../api/HostAPI";
+import { HostAPI } from "../../api/hostAPI";
 import textVariants from "../../styles/variants/textVariants";
 import Button from "../../components/Button";
-
+import Buttons, {CustomButton} from "../../components/Buttons";
 const ClassButtonGroup = () => {
+
   const queryClient = useQueryClient();
   const { classParam, scheduleParam } = useParams();
   const navigate = useNavigate();
@@ -27,49 +28,43 @@ const ClassButtonGroup = () => {
   const [page, setPage] = useState(1);
 
   //맨처음 로드 되었을때 defalt 모든반,등원인원,전체시간 조회
-  // const { isLoading, isError, data } = useQuery(
-  //   ["getManageEnter",scheduleId,time,page],
-  //   () => HostAPI.getManageSchedule(),
-  //   {
-  //     onSuccess: (data) => {
-  //       console.log(data);
-  //     },
-  //     onError: () => {
-  //       console.log("error");
-  //     },
-  //   }
-  // );
+  const hostParams = { type: scheduleId, time, page };
 
-  // const { isLoading2, isError2, data2 } = useQuery(
-  //   ["getManageClassSchedule",classId,scheduleId,time,page],
-  //   () =>
-  //     HostAPI.getManageClassSchedule({
-  //       classId,
-  //       scheduleId,
-  //       time,
-  //       page,
-  //     }),
-  //   {
-  //     onSuccess: (data) => {
-  //       console.log(data);
-  //     },
-  //     onError: () => {
-  //       console.log("error");
-  //     },
-  //   }
-  // );
+  // selectedButton의 값에 따라 다른 쿼리 실행
+  const queryKey = selectedButton === "모든반"
+  ? ["getManageEnter", hostParams]
+  : ["getManageClassSchedule", { classId, ...hostParams }];
+
+  const { isLoading, isError, data } = useQuery(queryKey, async() => {
+    if (selectedButton === "모든반") {
+       const result = await HostAPI.getManageSchedule(hostParams);
+       return result;
+    }
+       const result = await HostAPI.getManageClassSchedule({ classId, ...hostParams });
+       return result;
+  }, 
+  {
+    onSuccess: (data) => {
+      console.log(data);
+    },
+    onError: () => {
+      console.log("error");
+    },
+  }
+);
+
 
   const loadAllClassroom = () => {
     setSelectedButton("모든반");
-    navigate(`/host/ENTER`);
-    // queryClient.invalidateQueries(["getManageSchedule"]);
+    navigate(`/host/${scheduleId}`);
+    queryClient.invalidateQueries(["getManageSchedule",hostParams]);
   };
 
   const loadClassroom = (selected, classId) => {
     setSelectedButton(selected);
     setClassId(classId);
-    navigate(`/host/${classId}/ENTER`);
-    // queryClient.invalidateQueries(["getManageClassSchedule"]);
+    navigate(`/host/${classId}/${scheduleId}`);
+    queryClient.invalidateQueries(["getManageClassSchedule", { classId, ...hostParams }]);
   };
   const handleAttendanceButton = (ScheduleId) => {
     if (ScheduleId === "ENTER") {
@@ -138,12 +133,13 @@ const ClassButtonGroup = () => {
       </StyledInfoContainer>
 
       <StyledAttendanceButtonGroup>
-        <StyledAttendanceButton
-          isClick={isAttendClick}
-          onClick={() => handleAttendanceButton("ENTER")}
+      <StyledAttendanceButton
+          isClick={isLeaveClick}
+          onClick={() => handleAttendanceButton("EXIT")}
         >
           등원 인원
         </StyledAttendanceButton>
+
         <StyledAttendanceButton
           isClick={isLeaveClick}
           onClick={() => handleAttendanceButton("EXIT")}
@@ -154,7 +150,7 @@ const ClassButtonGroup = () => {
       <StyledAttendanceContainer>
         <StyledTimeButtonGroup>
           <StyledTimeButton
-            isClick={isTimeClick1}
+            isClick={isAttendClick}
             onClick={() => {
               setIsTimeClick1(true);
               setIsTimeClick2(false);
@@ -199,26 +195,35 @@ const ClassButtonGroup = () => {
           </StyledTimeButton>
         </StyledTimeButtonGroup>
         <StyledStudentGrid>
-          <StyledStudentCard>
-            <StyledProfileRow>
-              <StyledStudentProfile />
-              <StyledProfileGroup>
-                <StyledStudentName>김민재</StyledStudentName>
-                <StyledStudentStatus status={"미등원"}>
-                  미등원
-                </StyledStudentStatus>
-              </StyledProfileGroup>
-            </StyledProfileRow>
-            <StyledAttendanceRow>
-              <StyledAttendanceLabel>등원</StyledAttendanceLabel>
-              <StyledAttendanceValue>07시~08시</StyledAttendanceValue>
-            </StyledAttendanceRow>
-            <StyledAttendanceRow>
-              <StyledAttendanceLabel>하원</StyledAttendanceLabel>
-              <StyledAttendanceValue>18시~19시</StyledAttendanceValue>
-            </StyledAttendanceRow>
-            <StyledAttendanceBtn>등원처리</StyledAttendanceBtn>
-          </StyledStudentCard>
+
+        {
+          //서버 연결되면  id값 변경 및 데이터 바인딩,옵셔널 체이닝
+          data?.map((item) => {
+          return(
+                <StyledStudentCard key={item.childId}>
+                <StyledProfileRow>
+                  <StyledStudentProfile />
+                  <StyledProfileGroup>
+                    <StyledStudentName>김민재</StyledStudentName>
+                    <StyledStudentStatus status={"미등원"}>
+                      {item.currentStatus}
+                    </StyledStudentStatus>
+                  </StyledProfileGroup>
+                </StyledProfileRow>
+                <StyledAttendanceRow>
+                  <StyledAttendanceLabel>등원</StyledAttendanceLabel>
+                  <StyledAttendanceValue>{item.enterTime}</StyledAttendanceValue>
+                </StyledAttendanceRow>
+                <StyledAttendanceRow>
+                  <StyledAttendanceLabel>하원</StyledAttendanceLabel>
+                  <StyledAttendanceValue>{item.exitTime}</StyledAttendanceValue>
+                </StyledAttendanceRow>
+                <StyledAttendanceBtn>등원처리</StyledAttendanceBtn>
+              </StyledStudentCard>
+          );
+          })
+        }
+          
         </StyledStudentGrid>
       </StyledAttendanceContainer>
       <StyledPagination>

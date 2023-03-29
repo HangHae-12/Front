@@ -1,12 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
-import { MemberAPI } from "../../api/MemberAPI";
+import { MemberAPI } from "../../api/memberAPI";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Pagination from "rc-pagination";
 import "rc-pagination/assets/index.css";
+import Modal from "../../components/Modal";
+import useModal from "../../hooks/useModal";
+import { IoIosAdd } from "react-icons/io";
 
 function Gallery() {
   const queryClient = useQueryClient();
@@ -17,6 +20,10 @@ function Gallery() {
   const [formattedStartDate, setFormattedStartDate] = useState("");
   const [formattedEndDate, setFormattedEndDate] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const { openModal, closeModal } = useModal();
+  const [detailImages, setDetailImages] = useState([]); // 프리뷰 보여줄 이미지 데이터
+  const [postImages, setPostImages] = useState([]); // 서버로 보낼 이미지 데이터
+  const [render, setRender] = useState(true);
 
   const { data } = useQuery(
     ["classesGallery", searchGallery, currentPage],
@@ -55,10 +62,6 @@ function Gallery() {
     console.log(data);
   };
 
-  const handleTest = () => {
-    console.log(data.pages);
-  };
-
   const dateToString = (date) => {
     return (
       date.getFullYear() +
@@ -78,6 +81,82 @@ function Gallery() {
       formattedEndDate
     );
   };
+
+  const uploadFile = (event) => {
+    const fileArr = event.target.files;
+    setPostImages((prevPostImages) => [
+      ...prevPostImages,
+      ...Array.from(fileArr),
+    ]);
+
+    const filesLength = fileArr.length > 10 ? 10 : fileArr.length;
+
+    for (let i = 0; i < filesLength; i++) {
+      const file = fileArr[i];
+      const reader = new FileReader();
+      reader.onload = () => {
+        console.log(reader.result);
+        setDetailImages((prevDetailImages) => [
+          ...prevDetailImages,
+          reader.result,
+        ]);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const modalData = {
+    title: "modal",
+    contents: (
+      <StyledModalContent>
+        <StyledAddGallery>
+          <StyledAddIcon />
+          <StyledAddInput
+            type="file"
+            name="upload-img"
+            id="upload-img"
+            accept="image/*"
+            aria-hidden="false"
+            tabIndex="0"
+            multiple
+            onChange={uploadFile}
+          />
+          <StyledAddFont htmlFor="upload-img" id="upload-img-label">
+            사진추가
+          </StyledAddFont>
+        </StyledAddGallery>
+        {detailImages.map((item) => {
+          return (
+            <StyledAddGallery key={item}>
+              <StyledPreviewImage src={item} />
+            </StyledAddGallery>
+          );
+        })}
+      </StyledModalContent>
+    ),
+    callback: () => alert("modal"),
+  };
+
+  const modalOption = {
+    canCloseOnOverlayClick: true,
+    isCloseButton: true,
+    padding: "10px",
+    width: "630px",
+    height: "660px",
+  };
+
+  const createGallery = () => {
+    openModal(modalData);
+  };
+
+  useEffect(() => {
+    if (!render) {
+      createGallery();
+    } else {
+      setRender(false);
+    }
+  }, [detailImages]);
+
   return (
     <>
       <StyledGalleryWrapper>
@@ -105,7 +184,7 @@ function Gallery() {
             />
           </div>
           <button onClick={handleDateSearch}>조회</button>
-          <button onClick={handleTest} style={{ marginLeft: "auto" }}>
+          <button onClick={createGallery} style={{ marginLeft: "auto" }}>
             사진등록
           </button>
           <input
@@ -115,7 +194,7 @@ function Gallery() {
           />
         </StyledGalleryHeader>
         <StyledGalleryContainer>
-          {data?.pages[0].data.data.map((item) => {
+          {data?.data.data.map((item) => {
             return (
               <StyledGalleryCard key={item.imagePostId}>
                 <StyledGalleryImage src={item.imageUrlList} />
@@ -127,15 +206,16 @@ function Gallery() {
             );
           })}
         </StyledGalleryContainer>
-        <PaginationContainer>
+        <StyledPaginationContainer>
           <Pagination
             current={currentPage}
             pageSize={itemsPerPage}
             total={totalItems}
             onChange={(page) => setCurrentPage(page)}
           />
-        </PaginationContainer>
+        </StyledPaginationContainer>
       </StyledGalleryWrapper>
+      <Modal modalOption={modalOption} />
     </>
   );
 }
@@ -190,7 +270,6 @@ const StyledGalleryImage = styled.img`
 const StyledTitleFont = styled.div`
   width: auto;
   height: 16px;
-  font-family: "Pretendard";
   font-style: normal;
   font-weight: 600;
   font-size: 16px;
@@ -204,7 +283,6 @@ const StyledTitleFont = styled.div`
 const StyledDateFont = styled.div`
   width: auto;
   height: 16px;
-  font-family: "Pretendard";
   font-style: normal;
   font-weight: 400;
   font-size: 12px;
@@ -220,9 +298,54 @@ const StyledFont = styled.div`
   justify-content: space-between;
 `;
 
-const PaginationContainer = styled.div`
+const StyledPaginationContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   margin-top: 16px;
+`;
+
+const StyledAddIcon = styled(IoIosAdd)`
+  width: 66px;
+  height: 66px;
+  background-color: ${({ theme }) => theme.color.grayScale[100]};
+  border-radius: 60px;
+  color: ${({ theme }) => theme.color.grayScale[500]};
+`;
+
+const StyledModalContent = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  max-height: 520px;
+  overflow-y: auto;
+`;
+
+const StyledAddGallery = styled.div`
+  width: 240px;
+  height: 250px;
+  /* border: 1px solid black; */
+  border-radius: 8px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  margin: 1px;
+`;
+
+const StyledAddFont = styled.label`
+  margin-top: 20px;
+  color: ${({ theme }) => theme.color.grayScale[400]};
+`;
+
+const StyledAddInput = styled.input`
+  display: none;
+`;
+
+const StyledPreviewImage = styled.img`
+  width: 240px;
+  height: 250px;
+  border-radius: 8px;
 `;

@@ -28,7 +28,7 @@ export const MemberAPI = {
   },
   getSearchGallery: async (searchGallery, id) => {
     try {
-      const response = await instance.get(`classroom/${id}/gallery/search`, {
+      const response = await instance.get(`classroom/${id}/gallery`, {
         params: {
           keyword: searchGallery,
           page: 1,

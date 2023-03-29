@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { GrAddCircle } from "react-icons/gr";
 import { useParams } from "react-router-dom";
 import { useState } from "react";
-import { MemberAPI } from "../../api/MemberAPI";
+import { MemberAPI } from "../../api/memberAPI";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 
 function TeacherInformation() {
@@ -53,19 +53,7 @@ function TeacherInformation() {
     formData.append("phoneNumber", information.phoneNumber);
     formData.append("email", information.email);
     formData.append("resolution", information.resolution);
-
-    // const jsonData = JSON.stringify({
-    //   name: information.name,
-    //   gender: information.gender,
-    //   birth: information.birth,
-    //   phoneNumber: information.phoneNumber,
-    //   email: information.email,
-    //   resolution: information.resolution,
-    // });
-
-    // const jsonBlob = new Blob([jsonData], { type: "application/json" });
-    // formData.append("data", jsonBlob);
-
+    
     const payload = {
       id: id,
       formData: formData,
@@ -371,7 +359,8 @@ const StIconWrapper = styled.div`
   justify-content: center;
   margin-top: 10px;
 `;
-const StFont = styled.div``;
+const StFont = styled.div`
+`;
 const StTeacherImage = styled.div`
   position: relative;
   top: -60%;
