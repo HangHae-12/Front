@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { IoClose } from "react-icons/io5";
 
 const Card = ({ children, width, bgcolor, padding }) => {
   return (
@@ -13,11 +12,7 @@ const Header = ({ children, isClosedIcon }) => {
   return (
     <StyledCard.Header>
       {children}
-      {isClosedIcon && (
-        <StyledCard.Icon>
-          <IoClose />
-        </StyledCard.Icon>
-      )}
+      {isClosedIcon && <StyledCard.Icon>&times</StyledCard.Icon>}
     </StyledCard.Header>
   );
 };

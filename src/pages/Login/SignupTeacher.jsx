@@ -1,4 +1,4 @@
 const SignupTeacher = () => {
-  return <></>;
+  return <>선생님</>;
 };
 export default SignupTeacher;

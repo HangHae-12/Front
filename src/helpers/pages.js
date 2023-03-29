@@ -4,7 +4,7 @@ import Preview from "../pages/Preview";
 import Host from "../pages/Host/Host";
 import Member from "../pages/Member/Member";
 import SignupTeacher from "../pages/Login/SignupTeacher";
-import SignupParant from "../pages/Login/SignupParant";
+import SignupParent from "../pages/Login/SignupParent";
 import Signup from "../pages/Login/Signup";
 
 export const PAGE = {
@@ -16,5 +16,5 @@ export const PAGE = {
   member: <Member />,
 
   signupTeacher: <SignupTeacher />,
-  signupParant: <SignupParant />,
+  signupParent: <SignupParent />,
 };

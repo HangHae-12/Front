@@ -22,11 +22,10 @@ const KakaoLogin = () => {
     request
       .then((res) => {
         console.log(res);
-        console.log(res.headers);
-        tokenCookie.set(res.data.token);
-        switch (res.statusCode) {
-          case 201:
-            // navigate("/signup");
+        tokenCookie.set(res.headers.authorization);
+        switch (res.status) {
+          case 200:
+            navigate("/signup/parant");
             break;
           default:
             // navigate("/");
