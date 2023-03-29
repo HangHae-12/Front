@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { GrAddCircle } from "react-icons/gr";
 import { useParams } from "react-router-dom";
 import { useState } from "react";
-import { MemberAPI } from "../../api/memberAPI";
+import { MemberAPI } from "../../api/MemberAPI";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 
 function TeacherInformation() {
@@ -53,7 +53,7 @@ function TeacherInformation() {
     formData.append("phoneNumber", information.phoneNumber);
     formData.append("email", information.email);
     formData.append("resolution", information.resolution);
-    
+
     const payload = {
       id: id,
       formData: formData,
@@ -273,12 +273,11 @@ const StInfomation = styled.div`
   padding: 7px 133px 16px 36px;
   background: #ffffff;
   border-radius: 12px;
-  border: 2px solid #DADADA;
+  border: 2px solid #dadada;
   box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.04);
   gap: 20px;
   width: 1248px;
   height: 254px;
-
 
   @media screen and (max-width: 600px) {
     width: 100%;
@@ -359,8 +358,7 @@ const StIconWrapper = styled.div`
   justify-content: center;
   margin-top: 10px;
 `;
-const StFont = styled.div`
-`;
+const StFont = styled.div``;
 const StTeacherImage = styled.div`
   position: relative;
   top: -60%;

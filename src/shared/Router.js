@@ -7,6 +7,10 @@ const Router = () => {
     <BrowserRouter>
       <Routes>
         {/* <Route path="/" element={< />} /> */}
+        <Route path="/signup" element={PAGE.signup}>
+          <Route path="teacher" element={PAGE.signupTeacher} />
+          <Route path="parant" element={PAGE.signupParant} />
+        </Route>
         <Route path="/host" element={PAGE.host} />
         <Route path="/common/classes" element={PAGE.member} />
         <Route path="/common/classes/:id" element={PAGE.member} />

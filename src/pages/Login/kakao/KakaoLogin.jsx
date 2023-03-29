@@ -4,7 +4,6 @@ import axios from "axios";
 import { SignAPI } from "../../../api/SignAPI";
 import tokenCookie from "../../../utils/tokenCookie";
 
-
 const KakaoLogin = () => {
   const location = useLocation();
   const navigate = useNavigate();
