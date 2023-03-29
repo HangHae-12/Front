@@ -7,6 +7,7 @@ import textVariants from "../../styles/variants/textVariants";
 import Button from "../../components/Button";
 
 const ClassButtonGroup = () => {
+
   const queryClient = useQueryClient();
   const { classParam, scheduleParam } = useParams();
   const navigate = useNavigate();
@@ -27,37 +28,37 @@ const ClassButtonGroup = () => {
   const [page, setPage] = useState(1);
 
   //맨처음 로드 되었을때 defalt 모든반,등원인원,전체시간 조회
-  // const { isLoading, isError, data } = useQuery(
-  //   ["getManageEnter",scheduleId,time,page],
-  //   () => HostAPI.getManageSchedule(),
-  //   {
-  //     onSuccess: (data) => {
-  //       console.log(data);
-  //     },
-  //     onError: () => {
-  //       console.log("error");
-  //     },
-  //   }
-  // );
+  const queryParams = { scheduleId, time, page };
 
-  // const { isLoading2, isError2, data2 } = useQuery(
-  //   ["getManageClassSchedule",classId,scheduleId,time,page],
-  //   () =>
-  //     HostAPI.getManageClassSchedule({
-  //       classId,
-  //       scheduleId,
-  //       time,
-  //       page,
-  //     }),
-  //   {
-  //     onSuccess: (data) => {
-  //       console.log(data);
-  //     },
-  //     onError: () => {
-  //       console.log("error");
-  //     },
-  //   }
-  // );
+  const { isLoading, isError, data } = useQuery(
+    ["getManageEnter", queryParams],
+    () => HostAPI.getManageSchedule(),
+    {
+      onSuccess: (data) => {
+        console.log(data);
+      },
+      onError: () => {
+        console.log("error");
+      },
+    }
+  );
+
+  const { isLoading2, isError2, data2 } = useQuery(
+    ["getManageClassSchedule", { classId, ...queryParams }],
+    () =>
+      HostAPI.getManageClassSchedule({
+        classId,
+        ...queryParams,
+      }),
+    {
+      onSuccess: (data) => {
+        console.log(data);
+      },
+      onError: () => {
+        console.log("error");
+      },
+    }
+  );
 
   const loadAllClassroom = () => {
     setSelectedButton("모든반");
