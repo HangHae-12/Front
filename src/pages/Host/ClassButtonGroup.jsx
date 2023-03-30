@@ -43,37 +43,36 @@ const ClassButtonGroup = () => {
 
 
 
-  const { isLoading, isError, data } = useQuery(["getManageClass", classId],
+  const { isLoading: isLoadingClass, isError: isErrorClass, data: classData } = useQuery(
+    ["getManageClass", classId],
+    () => HostAPI.getManageClass(classId)
+  );
 
-    () => {
-      const result = HostAPI.getManageClass(classId);
-      return result.childEnterResponseDtoList;
-    },
+  const { isLoading: isLoadingSchedule, isError: isErrorSchedule, data: scheduleData } = useQuery(
+    ["getManageTimeSchedule", hostParams],
+    () => HostAPI.getManageTimeSchedule({ classId, ...hostParams })
+  );
 
-    {
-      onSuccess: (data) => {
-        console.log(data);
-      },
-      onError: () => {
-        console.log("error");
-      },
-    })
+  let bindData = [];
 
-  const { data3 } = useQuery(["getManageTimeSchedule", hostParams],
+  //빈배열이 담지 않고 데이터 바인딩 전 분기되도록 구현
+  if (!isLoadingClass && !isLoadingSchedule) {
+    if (scheduleId === "등원인원" && time === "전체시간") {
+      if (classData) {
+        bindData = classData.childEnterResponseDtoList;
+      }
+    } else if (scheduleId === "하원인원") {
+      if (scheduleData) {
+        bindData = scheduleData.childEnterResponseDtoList;
+      }
+    } else if (time !== "전체시간") {
+      if (scheduleData) {
+        bindData = scheduleData.childEnterResponseDtoList;
+      }
+    }
+  }
 
-    () => {
-      const result = HostAPI.getManageTimeSchedule({ classId, ...hostParams });
-      return result.childEnterResponseDtoList;
-    },
 
-    {
-      onSuccess: (data) => {
-        console.log(data);
-      },
-      onError: () => {
-        console.log("error");
-      },
-    })
 
   // selectedButton의 값에 따라 다른 쿼리 실행
   // const queryKey = selectedButton === "모든반"
@@ -108,8 +107,8 @@ const ClassButtonGroup = () => {
 
 
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = Math.ceil((data?.length || 0) / 15);
-  const totalItems = data?.length || 0;
+  const pageSize = Math.ceil((bindData?.length || 0) / 15);
+  const totalItems = bindData?.length || 0;
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -125,7 +124,7 @@ const ClassButtonGroup = () => {
   const loadClassroom = (selected, classId) => {
     setSelectedButton(selected);
     setClassId(classId);
-    navigate(`/host/${classId}/${scheduleId}`);
+    navigate(`/host/${classId}/ENTER/전체시간`);
     queryClient.invalidateQueries(["getManageClass", classId]);
   };
   const handleAttendanceButton = (ScheduleId) => {
@@ -137,9 +136,10 @@ const ClassButtonGroup = () => {
       setIsLeaveClick(true);
     }
     setScheduleId(ScheduleId);
-    navigate(`/host/${classId}/${ScheduleId}`);
+    navigate(`/host/${classId}/${ScheduleId}/전체시간`);
     queryClient.invalidateQueries(["getManageTimeSchedule", hostParams]);
   };
+  //시간버튼 눌렀을때 추가 
 
   return (
     <>
@@ -173,17 +173,17 @@ const ClassButtonGroup = () => {
         </StyledInfoColomn>
         <StyledInfoRow>
           <StyledInfoLabel>총원</StyledInfoLabel>
-          <StyledInfoValue>{data?.totalNumber}</StyledInfoValue>
+          <StyledInfoValue>{bindData?.totalNumber}</StyledInfoValue>
           <StyleddateLabel>명</StyleddateLabel>
         </StyledInfoRow>
         <StyledInfoRow>
           <StyledInfoLabel>등원</StyledInfoLabel>
-          <StyledInfoValue>{data?.notEnterNumber}</StyledInfoValue>
+          <StyledInfoValue>{bindData?.notEnterNumber}</StyledInfoValue>
           <StyleddateLabel>명</StyleddateLabel>
         </StyledInfoRow>
         <StyledInfoRow>
           <StyledInfoLabel>미등원</StyledInfoLabel>
-          <StyledInfoValue>{data?.exitNumber}</StyledInfoValue>
+          <StyledInfoValue>{bindData?.exitNumber}</StyledInfoValue>
           <StyleddateLabel>명</StyleddateLabel>
         </StyledInfoRow>
         {/* <StyledInfoRow>
@@ -260,7 +260,7 @@ const ClassButtonGroup = () => {
           {
 
             //서버 연결되면  id값 변경 및 데이터 바인딩,옵셔널 체이닝
-            Array.isArray(data) && data?.map((item) => {
+            Array.isArray(bindData) && bindData?.map((item) => {
               return (
                 <StyledStudentCard key={item.childId}>
                   <StyledProfileRow>
