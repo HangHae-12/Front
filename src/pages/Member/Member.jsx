@@ -3,7 +3,7 @@ import styled from "styled-components";
 import SideBar from "../../components/SideBar";
 import ClassButton from "./ClassButton";
 
-function Member() {
+const Member = () => {
   return (
     <>
       <StyledContainer>
@@ -16,7 +16,7 @@ function Member() {
       </StyledContainer>
     </>
   );
-}
+};
 
 export default Member;
 

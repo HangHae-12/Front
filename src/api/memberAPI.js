@@ -83,10 +83,32 @@ export const MemberAPI = {
   //     console.log(error);
   //   }
   // },
+  getDetailGallery: async (id, imagePostId) => {
+    try {
+      const response = await instance.get(`classroom/${id}/gallery/${imagePostId}`);
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
   setClassesTeacher: async (payload) => {
     try {
       const response = await instance.put(
         `/manager/classroom/${payload.id}/teacher/profile`,
+        payload.formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  setGallerySubmit: async (payload) => {
+    try {
+      const response = await instance.post(
+        `/classroom/${payload.id}/gallery`,
         payload.formData,
         {
           headers: { "Content-Type": "multipart/form-data" },

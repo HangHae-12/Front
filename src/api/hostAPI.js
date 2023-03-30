@@ -1,5 +1,4 @@
 import instance from "./instance";
-import qs from 'qs';
 
 export const HostAPI = {
     getManageSchedule: async (payload) => {
