@@ -1,12 +1,24 @@
 import axios from "axios";
 import instance from "./instance";
+import tokenCookie from "../utils/tokenCookie"; // tokenCookie를 가져온다고 가정합니다.
+
+const apiInstance = axios.create({
+  baseURL: "https://my-frist-server.shop",
+});
+
+apiInstance.interceptors.request.use((config) => {
+  const token = tokenCookie.get();
+  if (token) {
+    config.headers["Authorization"] = `Bearer ${token}`;
+  }
+  return config;
+});
 
 export const SignAPI = {
   kakaoAuth: async (code, cancelToken) => {
     try {
-      const response = await axios.get(
-        `https://my-frist-server.shop/oauth/kakao/callback?code=${code}`,
-        // 주소가 확정되면 instance로 수정할 것
+      const response = await apiInstance.get(
+        `/oauth/kakao/callback?code=${code}`,
         null,
         {
           cancelToken: cancelToken,
@@ -19,25 +31,19 @@ export const SignAPI = {
       console.error(error);
     }
   },
+  //  sign api 하나로 합칠 수 있을 것 같다.
   signParent: async (info) => {
     try {
-      const response = await axios.put(
-        "https://my-frist-server.shop/signup/parent/info",
-        // 주소가 확정되면 instance로 수정할 것
-        info
-      );
+      const response = await apiInstance.put("/signup/parent/info", info);
       console.log(response);
     } catch (error) {
       console.error(error);
     }
   },
   signTeacher: async (info) => {
+    console.log(info);
     try {
-      const response = await axios.put(
-        "https://my-frist-server.shop/signup/teacher/info",
-        // 주소가 확정되면 instance로 수정할 것
-        info
-      );
+      const response = await apiInstance.put("/signup/teacher/info", info);
       console.log(response);
     } catch (error) {
       console.error(error);
