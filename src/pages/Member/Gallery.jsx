@@ -194,6 +194,20 @@ const Gallery = () => {
     }
   }, [previewImages]);
 
+  //갤러리 상세조회
+  const getDetailGallery = (imagePostId) => {
+    console.log(id, imagePostId);
+    const gallertModalData = {
+      title: "갤러리",
+      contents: (
+        <StyledModalContent>
+        </StyledModalContent>
+      ),
+      callback: () => alert("modal"),
+    };
+    openModal(gallertModalData);
+  };
+
   return (
     <>
       <StyledGalleryWrapper>
@@ -235,7 +249,7 @@ const Gallery = () => {
         <StyledGalleryContainer>
           {data?.data.data.map((item) => {
             return (
-              <StyledGalleryCard key={item.imagePostId}>
+              <StyledGalleryCard key={item.imagePostId} onClick={(e) => getDetailGallery(item.imagePostId)}>
                 <StyledGalleryImage src={item.imageUrlList} />
                 <StyledTitleFont>{item.title}</StyledTitleFont>
                 <StyledFont>

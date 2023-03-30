@@ -3,9 +3,9 @@ import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import { MemberAPI } from "../../api/memberAPI";
-import Modal from "../../components/Modal";
 import useModal from "../../hooks/useModal";
 import textVariants from "../../styles/variants/textVariants";
+import ClassModal from "./ClassModal";
 
 const ClassMember = () => {
   const queryClient = useQueryClient();
@@ -36,23 +36,14 @@ const ClassMember = () => {
     item.name.includes(searchMember)
   );
 
-  const handleOpenModal = () => {
-    openModal({
-      title: "My Modal Title",
-      contents: "My Modal Contents",
-      callback: () => {
-        console.log("Modal Ok button clicked");
-        closeModal();
-      },
-    });
-  };
-
-  const modalOption = {
-    canCloseOnOverlayClick: true,
-    isCloseButton: true,
-    padding: "10px",
-    width: "800px",
-    height: "400px",
+  const getChildInformation = (childId) => {
+    console.log(childId);
+    const modalData = {
+      title: "modal",
+      contents: "modal",
+      callback: () => alert("modal"),
+    };
+    openModal(modalData);
   };
 
   return (
@@ -62,10 +53,7 @@ const ClassMember = () => {
           <StyledPersonnelFont>
             총원 {data?.data.data.length}명
           </StyledPersonnelFont>
-          <StyledAddMemberButton onClick={handleOpenModal}>
-            인원 등록
-          </StyledAddMemberButton>
-          <Modal modalOption={modalOption} />
+          <StyledAddMemberButton>인원 등록</StyledAddMemberButton>
           <StyledMemberSearchInput
             type="text"
             onChange={handleSearch}
@@ -75,7 +63,10 @@ const ClassMember = () => {
         <StyledChildrenContainer>
           {loadMemberSearch?.map((item) => {
             return (
-              <StyledChildrenCard key={item.childId}>
+              <StyledChildrenCard
+                key={item.childId}
+                onClick={(e) => getChildInformation(item.childId)}
+              >
                 <StyledChildrenImage src={item.profileImageUrl} />
                 {item.name}
               </StyledChildrenCard>
@@ -83,6 +74,7 @@ const ClassMember = () => {
           })}
         </StyledChildrenContainer>
       </StyledChildrenWrapper>
+      <ClassModal />
     </>
   );
 };

@@ -83,6 +83,14 @@ export const MemberAPI = {
   //     console.log(error);
   //   }
   // },
+  getDetailGallery: async (id, imagePostId) => {
+    try {
+      const response = await instance.get(`classroom/${id}/gallery/${imagePostId}`);
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
   setClassesTeacher: async (payload) => {
     try {
       const response = await instance.put(
