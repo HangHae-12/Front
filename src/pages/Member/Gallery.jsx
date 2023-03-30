@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
-import { useQueryClient, useQuery } from "@tanstack/react-query";
+import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import { MemberAPI } from "../../api/memberAPI";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -26,6 +26,7 @@ const Gallery = () => {
   const [previewImages, setPreviewImages] = useState([]); // 프리뷰 보여줄 이미지 데이터
   const [severImages, setSeverImages] = useState([]); // 서버로 보낼 이미지 데이터
   const [render, setRender] = useState(true);
+  const [title, setTitle] = useState("");
 
   const { data } = useQuery(
     ["classesGallery", searchGallery, currentPage],
@@ -53,6 +54,12 @@ const Gallery = () => {
     }
   );
 
+  const setGallerySubmitMutation = useMutation(MemberAPI.setGallerySubmit, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("classesGallery");
+    },
+  });
+
   const itemsPerPage = 15;
 
   const totalItems = 100;
@@ -64,6 +71,7 @@ const Gallery = () => {
     console.log(data);
   };
 
+  //날짜변환
   const dateToString = (date) => {
     return (
       date.getFullYear() +
@@ -74,6 +82,7 @@ const Gallery = () => {
     );
   };
 
+  //검색 기능
   const handleDateSearch = () => {
     setFormattedStartDate(dateToString(startDate));
     setFormattedEndDate(dateToString(endDate));
@@ -82,6 +91,28 @@ const Gallery = () => {
       formattedStartDate,
       formattedEndDate
     );
+  };
+
+  //모달 갤러리 저장하기 기능
+  const handleGallerySubmit = async (id) => {
+    const formData = new FormData();
+    severImages.forEach((image) => {
+      formData.append("imageList[]", image);
+    });
+    formData.append("title", title);
+
+    const payload = {
+      id: id,
+      formData: formData,
+    };
+    setGallerySubmitMutation.mutate(payload);
+    setPreviewImages([]);
+    setSeverImages([]);
+    setTimeout(() => {
+      closeModal();
+    }, 0);
+    console.log(formData);
+    for (const keyValue of formData) console.log(keyValue);
   };
 
   // 모달 부분
@@ -109,7 +140,9 @@ const Gallery = () => {
   };
 
   const modalData = {
-    title: "modal",
+    title: (
+      <input type="text" onChange={(e) => setTitle(e.target.value)}></input>
+    ),
     contents: (
       <StyledModalContent>
         <StyledAddGallery>
@@ -135,6 +168,7 @@ const Gallery = () => {
             </StyledAddGallery>
           );
         })}
+        <button onClick={(e) => handleGallerySubmit(id)}>저장하기</button>
       </StyledModalContent>
     ),
     callback: () => alert("modal"),

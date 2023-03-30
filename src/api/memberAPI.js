@@ -97,4 +97,18 @@ export const MemberAPI = {
       console.log(error);
     }
   },
+  setGallerySubmit: async (payload) => {
+    try {
+      const response = await instance.post(
+        `/classroom/${payload.id}/gallery`,
+        payload.formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
 };
