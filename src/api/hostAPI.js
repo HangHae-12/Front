@@ -1,13 +1,11 @@
 import instance from "./instance";
 
 export const HostAPI = {
-    getManageSchedule: async (payload) => {
+
+    getManageClass: async (classroomId) => {
 
         try {
-            const response = await instance.get("/manager/schedule",{
-                params: payload,
-                
-            });
+            const response = await instance.get(`/manager/classroom/${classroomId}`)
             console.log(response);
             return response.data;
     
@@ -15,6 +13,22 @@ export const HostAPI = {
             console.log(error);
         }
         },
+    getManageTimeSchedule : async (payload) => {
+
+        try {
+            const response = await instance.get(`/manager/classroom/${payload.classId}/schedule`,{
+                params: {
+                    type: payload.type,
+                    dailyEnterTime: payload.time,
+                    page: payload.page,
+                    },
+            });
+            return response.data;
+
+        }catch (error) {
+            console.log(error);
+        }
+            },
     getManageAbsent : async () => {
 
         try {
@@ -26,22 +40,7 @@ export const HostAPI = {
             console.log(error);
         }
         },
-    getManageClassSchedule : async (payload) => {
-
-        try {
-            const response = await instance.get(`/manager/classroom/${payload.classId}/schedule`,{
-                params: {
-                    type: payload.type,
-                    time: payload.time,
-                    page: payload.page,
-                  },
-            });
-            return response.data;
     
-        }catch (error) {
-            console.log(error);
-        }
-            },
 }
 
 

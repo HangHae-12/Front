@@ -5,12 +5,12 @@ import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import { HostAPI } from "../../api/HostAPI";
 import textVariants from "../../styles/variants/textVariants";
 import Button from "../../components/Button";
-import Buttons, {CustomButton} from "../../components/Buttons";
+import Buttons, { CustomButton } from "../../components/Buttons";
 import Pagination from 'rc-pagination';
 const ClassButtonGroup = () => {
 
   const queryClient = useQueryClient();
-  const { classroomId, scheduleParam } = useParams();
+  const { classroomId, scheduleParam, timeParm } = useParams();
   const navigate = useNavigate();
 
   const [isAttendClick, setIsAttendClick] = useState(true);
@@ -25,42 +25,31 @@ const ClassButtonGroup = () => {
 
   const [classId, setClassId] = useState(1);
   const [scheduleId, setScheduleId] = useState("ENTER");
-  const [time, setTime] = useState(1);
+  const [time, setTime] = useState("전체시간");
   const [page, setPage] = useState(1);
 
 
-  // 오늘의 날짜 구하기
+
   const today = new Date();
   const year = today.getFullYear();
   const month = today.getMonth() + 1;
   const day = today.getDate();
   const todayString = `${year}.${month}.${day}`;
   const dayOfWeek = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'][today.getDay()];
-  
-
-  //맨처음 로드 되었을때 defalt 모든반,등원인원,전체시간 조회
-  const hostParams = { type: scheduleId, time, page };
 
 
-  // selectedButton의 값에 따라 다른 쿼리 실행
-  const queryKey = selectedButton === "모든반"
-  ? ["getManageEnter", hostParams]
-  : ["getManageClassSchedule", { classId, ...hostParams }];
+  //등원,하원,timea,page param
+  const hostParams = { type: scheduleId, dailyEnterTime: time, page };
 
-  const { isLoading, isError, data } = useQuery(
-    queryKey,
-    async () => {
-      if (selectedButton === "모든반") {
-        const result = await HostAPI.getManageSchedule(hostParams);
-        return result.data;
-      } else {
-        const result = await HostAPI.getManageClassSchedule({
-          classId,
-          ...hostParams,
-        });
-        return result.data;
-      }
+
+
+  const { isLoading, isError, data } = useQuery(["getManageClass", classId],
+
+    () => {
+      const result = HostAPI.getManageClass(classId);
+      return result.childEnterResponseDtoList;
     },
+
     {
       onSuccess: (data) => {
         console.log(data);
@@ -68,11 +57,56 @@ const ClassButtonGroup = () => {
       onError: () => {
         console.log("error");
       },
-    }
-  );
+    })
+
+  const { data3 } = useQuery(["getManageTimeSchedule", hostParams],
+
+    () => {
+      const result = HostAPI.getManageTimeSchedule({ classId, ...hostParams });
+      return result.childEnterResponseDtoList;
+    },
+
+    {
+      onSuccess: (data) => {
+        console.log(data);
+      },
+      onError: () => {
+        console.log("error");
+      },
+    })
+
+  // selectedButton의 값에 따라 다른 쿼리 실행
+  // const queryKey = selectedButton === "모든반"
+  //   ? ["getManageEnter", hostParams]
+  //   : ["getManageClassSchedule", { classId, ...hostParams }];
+
+  // const { isLoading2, isError2, data2 } = useQuery(
+  //   queryKey,
+  //   async () => {
+  //     if (selectedButton === "모든반") {
+  //       const result = await HostAPI.getManageSchedule(hostParams);
+  //       return result.data;
+  //     } else {
+  //       const result = await HostAPI.getManageClassSchedule({
+  //         classId,
+  //         ...hostParams,
+  //       });
+  //       return result.data;
+  //     }
+  //   },
+  //   {
+  //     onSuccess: (data) => {
+  //       console.log(data);
+  //     },
+  //     onError: () => {
+  //       console.log("error");
+  //     },
+  //   }
+  // );
 
   //페이지네이션 페이지 지정
- 
+
+
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = Math.ceil((data?.length || 0) / 15);
   const totalItems = data?.length || 0;
@@ -82,17 +116,17 @@ const ClassButtonGroup = () => {
   }
 
 
-  const loadAllClassroom = () => {
-    setSelectedButton("모든반");
-    navigate(`/host/${scheduleId}`);
-    queryClient.invalidateQueries(["getManageSchedule",hostParams]);
-  };
+  // const loadAllClassroom = () => {
+  //   setSelectedButton("모든반");
+  //   navigate(`/host/${scheduleId}`);
+  //   queryClient.invalidateQueries(["getManageSchedule", hostParams]);
+  // };
 
   const loadClassroom = (selected, classId) => {
     setSelectedButton(selected);
     setClassId(classId);
     navigate(`/host/${classId}/${scheduleId}`);
-    queryClient.invalidateQueries(["getManageClassSchedule", { classId, ...hostParams }]);
+    queryClient.invalidateQueries(["getManageClass", classId]);
   };
   const handleAttendanceButton = (ScheduleId) => {
     if (ScheduleId === "ENTER") {
@@ -103,9 +137,8 @@ const ClassButtonGroup = () => {
       setIsLeaveClick(true);
     }
     setScheduleId(ScheduleId);
-    selectedButton === "모든반"
-      ? navigate(`/host/${ScheduleId}`)
-      : navigate(`/host/${classId}/${ScheduleId}`);
+    navigate(`/host/${classId}/${ScheduleId}`);
+    queryClient.invalidateQueries(["getManageTimeSchedule", hostParams]);
   };
 
   return (
@@ -115,22 +148,22 @@ const ClassButtonGroup = () => {
         <Button.ClassButton
           selected={"모든반"}
           selectedButton={selectedButton}
-          onClick={() => loadAllClassroom()}
+          onClick={() => loadClassroom("모든반", 1)}
         />
         <Button.ClassButton
           selected={"새빛반"}
           selectedButton={selectedButton}
-          onClick={() => loadClassroom("새빛반", 1)}
+          onClick={() => loadClassroom("새빛반", 2)}
         />
         <Button.ClassButton
           selected={"동동반"}
           selectedButton={selectedButton}
-          onClick={() => loadClassroom("동동반", 2)}
+          onClick={() => loadClassroom("동동반", 3)}
         />
         <Button.ClassButton
           selected={"빗살반"}
           selectedButton={selectedButton}
-          onClick={() => loadClassroom("빗살반", 3)}
+          onClick={() => loadClassroom("빗살반", 4)}
         />
       </StyledClassButtonGroup>
       <StyledInfoContainer>
@@ -161,7 +194,7 @@ const ClassButtonGroup = () => {
       </StyledInfoContainer>
 
       <StyledAttendanceButtonGroup>
-      <StyledAttendanceButton
+        <StyledAttendanceButton
           isClick={isLeaveClick}
           onClick={() => handleAttendanceButton("ENTER")}
         >
@@ -224,35 +257,35 @@ const ClassButtonGroup = () => {
         </StyledTimeButtonGroup>
         <StyledStudentGrid>
 
-        {
-          
-          //서버 연결되면  id값 변경 및 데이터 바인딩,옵셔널 체이닝
-          Array.isArray(data) && data?.map((item) => {
-          return(
+          {
+
+            //서버 연결되면  id값 변경 및 데이터 바인딩,옵셔널 체이닝
+            Array.isArray(data) && data?.map((item) => {
+              return (
                 <StyledStudentCard key={item.childId}>
-                <StyledProfileRow>
-                  <StyledStudentProfile />
-                  <StyledProfileGroup>
-                    <StyledStudentName>{item.name}</StyledStudentName>
-                    <StyledStudentStatus status={item.currentStatus}>
-                      {item.currentStatus}
-                    </StyledStudentStatus>
-                  </StyledProfileGroup>
-                </StyledProfileRow>
-                <StyledAttendanceRow>
-                  <StyledAttendanceLabel>등원</StyledAttendanceLabel>
-                  <StyledAttendanceValue>{item.enterTime}</StyledAttendanceValue>
-                </StyledAttendanceRow>
-                <StyledAttendanceRow>
-                  <StyledAttendanceLabel>하원</StyledAttendanceLabel>
-                  <StyledAttendanceValue>{item.exitTime}</StyledAttendanceValue>
-                </StyledAttendanceRow>
-                <StyledAttendanceBtn>등원처리</StyledAttendanceBtn>
-              </StyledStudentCard>
-          );
-          })
-        }
-          
+                  <StyledProfileRow>
+                    <StyledStudentProfile />
+                    <StyledProfileGroup>
+                      <StyledStudentName>{item.name}</StyledStudentName>
+                      <StyledStudentStatus status={item.currentStatus}>
+                        {item.currentStatus}
+                      </StyledStudentStatus>
+                    </StyledProfileGroup>
+                  </StyledProfileRow>
+                  <StyledAttendanceRow>
+                    <StyledAttendanceLabel>등원</StyledAttendanceLabel>
+                    <StyledAttendanceValue>{item.enterTime}</StyledAttendanceValue>
+                  </StyledAttendanceRow>
+                  <StyledAttendanceRow>
+                    <StyledAttendanceLabel>하원</StyledAttendanceLabel>
+                    <StyledAttendanceValue>{item.exitTime}</StyledAttendanceValue>
+                  </StyledAttendanceRow>
+                  <StyledAttendanceBtn>등원처리</StyledAttendanceBtn>
+                </StyledStudentCard>
+              );
+            })
+          }
+
         </StyledStudentGrid>
       </StyledAttendanceContainer>
       <Pagination
