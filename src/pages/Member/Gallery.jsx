@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useParams } from "react-router-dom";
 
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
-import { MemberAPI } from "../../api/memberAPI";
+import { MemberAPI } from "../../api/MemberAPI";
 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";

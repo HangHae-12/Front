@@ -1,11 +1,9 @@
-import React,{ useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
-import { useState } from "react";
 import { MemberAPI } from "../../api/MemberAPI";
-import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import textVariants from "../../styles/variants/textVariants";
-
 
 const TeacherInformation = () => {
   const { id } = useParams();
@@ -21,49 +19,6 @@ const TeacherInformation = () => {
       },
     }
   );
-
-  const setTeacherMutation = useMutation(MemberAPI.setClassesTeacher, {
-    onSuccess: () => {
-      queryClient.invalidateQueries("ClassesPage");
-    },
-  });
-
-  const handleSave = async (id) => {
-    const formData = new FormData();
-    formData.append("imageUrl", image);
-    formData.append("name", information.name);
-    formData.append("gender", information.gender);
-    formData.append("birth", information.birth);
-    formData.append("phoneNumber", information.phoneNumber);
-    formData.append("email", information.email);
-    formData.append("resolution", information.resolution);
-    
-    const payload = {
-      id: id,
-      formData: formData,
-    };
-    setTeacherMutation.mutate(payload);
-    setEditMode(false);
-    console.log(formData);
-    for (const keyValue of formData) console.log(keyValue);
-  };
-
-  const saveImgFile = (e) => {
-    e.preventDefault();
-    const file = e.target.files[0];
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onloadend = () => {
-      setPreview(reader.result);
-    };
-    setImage(file);
-  };
-
-  const handleTest = (e) => {
-    e.preventDefault();
-    setInformation.name(e.target.value);
-    console.log(setInformation.name);
-  };
 
   return (
     <>
@@ -173,9 +128,7 @@ const StyledQuestionFont = styled.div`
   ${textVariants.Body3_SemiBold}
   color: ${({ theme }) => theme.color.grayScale[400]};
 `;
-const StFont = styled.div`
-`;
-const StTeacherImage = styled.div`
+const StyledTeacherImageWrapper = styled.div`
   position: relative;
   top: -60%;
   width: 0px;
