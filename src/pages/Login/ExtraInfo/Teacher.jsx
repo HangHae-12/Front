@@ -1,11 +1,11 @@
 import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
-import StyledSignup from "./styled";
+import StyledExtraInfo from "./styled";
 import { DUMMY_PROFILE_IMG_SRC } from "../../../assets";
 import { SignAPI } from "../../../api/SignAPI";
 
-const SignupTeacher = () => {
+const Teacher = () => {
   const [previewImage, setPreviewImage] = useState(null);
   const profileInputRef = useRef(null);
 
@@ -60,24 +60,24 @@ const SignupTeacher = () => {
   const handleThumbnailImage = () => profileInputRef.current.click();
 
   return (
-    <StyledSignup.Container>
-      <StyledSignup.Form onSubmit={handleSubmit(onSubmit)}>
-        <StyledSignup.Label htmlFor="name">이름 *</StyledSignup.Label>
-        <StyledSignup.Input
+    <StyledExtraInfo.Container>
+      <StyledExtraInfo.Form onSubmit={handleSubmit(onSubmit)}>
+        <StyledExtraInfo.Label htmlFor="name">이름 *</StyledExtraInfo.Label>
+        <StyledExtraInfo.Input
           type="text"
           {...register("name", { required: "이름을 입력해주세요." })}
           id="name"
         />
         {errors.name && (
-          <StyledSignup.ErrorMessage>
+          <StyledExtraInfo.ErrorMessage>
             {errors.name.message}
-          </StyledSignup.ErrorMessage>
+          </StyledExtraInfo.ErrorMessage>
         )}
 
-        <StyledSignup.Label htmlFor="phoneNumber">
+        <StyledExtraInfo.Label htmlFor="phoneNumber">
           휴대폰 번호 *
-        </StyledSignup.Label>
-        <StyledSignup.Input
+        </StyledExtraInfo.Label>
+        <StyledExtraInfo.Input
           type="text"
           {...register("phoneNumber", {
             required: "휴대폰 번호를 입력해주세요",
@@ -85,16 +85,16 @@ const SignupTeacher = () => {
           id="phoneNumber"
         />
         {errors.phoneNumber && (
-          <StyledSignup.ErrorMessage>
+          <StyledExtraInfo.ErrorMessage>
             {errors.phoneNumber.message}
-          </StyledSignup.ErrorMessage>
+          </StyledExtraInfo.ErrorMessage>
         )}
 
-        <StyledSignup.Label htmlFor="profileImage">
+        <StyledExtraInfo.Label htmlFor="profileImage">
           프로필 사진
-        </StyledSignup.Label>
+        </StyledExtraInfo.Label>
 
-        <StyledSignup.Input
+        <StyledExtraInfo.Input
           type="file"
           {...register("profileImage")}
           id="profileImage"
@@ -104,37 +104,41 @@ const SignupTeacher = () => {
           // input type file 을 display none 으로 변경할 것.
         />
 
-        <StyledSignup.Thumbnail
+        <StyledExtraInfo.Thumbnail
           src={previewImage || DUMMY_PROFILE_IMG_SRC}
           alt="Profile thumbnail"
           onClick={handleThumbnailImage}
         />
 
-        <StyledSignup.Label htmlFor="birthday">생일</StyledSignup.Label>
-        <StyledSignup.Input
+        <StyledExtraInfo.Label htmlFor="birthday">생일</StyledExtraInfo.Label>
+        <StyledExtraInfo.Input
           type="text"
           {...register("birthday")}
           id="birthday"
         />
         {/* date 형식으로 변경해야함 */}
 
-        <StyledSignup.Label htmlFor="resolution">자기소개</StyledSignup.Label>
-        <StyledSignup.Input
+        <StyledExtraInfo.Label htmlFor="resolution">
+          자기소개
+        </StyledExtraInfo.Label>
+        <StyledExtraInfo.Input
           type="text"
           {...register("resolution")}
           id="resolution"
         />
         {/* testarea를 사용할 지 몇글자 까지 허용할건지 */}
-        <StyledSignup.Label htmlFor="ADMIN_TOKEN">인증코드</StyledSignup.Label>
-        <StyledSignup.Input
+        <StyledExtraInfo.Label htmlFor="ADMIN_TOKEN">
+          인증코드
+        </StyledExtraInfo.Label>
+        <StyledExtraInfo.Input
           type="text"
           {...register("ADMIN_TOKEN")}
           id="ADMIN_TOKEN"
         />
 
-        <StyledSignup.Button type="submit">Submit</StyledSignup.Button>
-      </StyledSignup.Form>
-    </StyledSignup.Container>
+        <StyledExtraInfo.Button type="submit">Submit</StyledExtraInfo.Button>
+      </StyledExtraInfo.Form>
+    </StyledExtraInfo.Container>
   );
 };
-export default SignupTeacher;
+export default Teacher;

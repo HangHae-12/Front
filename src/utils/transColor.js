@@ -1,3 +1,4 @@
+// 삭제예정
 const rgbToHex = (r, g, b) => {
   const rHex = r.toString(16).padStart(2, "0");
   const gHex = g.toString(16).padStart(2, "0");

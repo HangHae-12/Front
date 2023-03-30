@@ -1,13 +1,13 @@
 import { Outlet, useMatch, Link } from "react-router-dom";
 import styled from "styled-components";
 
-const Signup = () => {
-  const teacherMatch = useMatch(`/signup/teacher`);
-  const parentMatch = useMatch(`/signup/parent`);
+const Extrainfo = () => {
+  const teacherMatch = useMatch(`/extrainfo/teacher`);
+  const parentMatch = useMatch(`/extrainfo/parent`);
 
   return (
     <>
-      <h1>Signup</h1>
+      <h1>Extra Info</h1>
       <Tabs>
         <Tab isActive={!!parentMatch}>
           <Link to="parent">학부모</Link>
@@ -20,7 +20,7 @@ const Signup = () => {
     </>
   );
 };
-export default Signup;
+export default Extrainfo;
 
 const Tabs = styled.div`
   width: 300px;

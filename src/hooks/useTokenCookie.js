@@ -1,5 +1,6 @@
 import { useCookies } from "react-cookie";
 
+// 삭제 예정
 export const useTokenCookie = () => {
   const [cookies, setCookies, removeCookies] = useCookies(["token"]);
 

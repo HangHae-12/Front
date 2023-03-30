@@ -7,9 +7,9 @@ const Router = () => {
     <BrowserRouter>
       <Routes>
         {/* <Route path="/" element={< />} /> */}
-        <Route path="/signup" element={PAGE.signup}>
-          <Route path="teacher" element={PAGE.signupTeacher} />
-          <Route path="parent" element={PAGE.signupParent} />
+        <Route path="/extrainfo" element={PAGE.extraInfo.index}>
+          <Route path="teacher" element={PAGE.extraInfo.teacher} />
+          <Route path="parent" element={PAGE.extraInfo.parent} />
         </Route>
         <Route path="/host" element={PAGE.host} />
         <Route path="/common/classes" element={PAGE.member} />

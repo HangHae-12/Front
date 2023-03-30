@@ -1,20 +1,21 @@
 import Login from "../pages/Login";
-import KakaoLogin from "../pages/Login/kakao/KakaoLogin";
+import KakaoLogin from "../pages/Login/KakaoLogin";
 import Preview from "../pages/Preview";
 import Host from "../pages/Host/Host";
 import Member from "../pages/Member/Member";
-import SignupTeacher from "../pages/Login/signup/SignupTeacher";
-import SignupParent from "../pages/Login/signup/SignupParent";
-import Signup from "../pages/Login/Signup";
+import Teacher from "../pages/Login/ExtraInfo/Teacher";
+import Parent from "../pages/Login/ExtraInfo/Parent";
+import ExtraInfo from "../pages/Login/ExtraInfo";
 
 export const PAGE = {
   preview: <Preview />,
   login: <Login />,
-  signup: <Signup />,
+  extraInfo: {
+    index: <ExtraInfo />,
+    teacher: <Teacher />,
+    parent: <Parent />,
+  },
   kakaoLogin: <KakaoLogin />,
   host: <Host />,
   member: <Member />,
-
-  signupTeacher: <SignupTeacher />,
-  signupParent: <SignupParent />,
 };

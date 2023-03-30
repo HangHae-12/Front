@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import textVariants from "../../../styles/variants/textVariants";
 
-const StyledSignup = {
+const StyledExtraInfo = {
   Container: styled.div`
     display: flex;
     width: 300px;
@@ -35,4 +35,4 @@ const StyledSignup = {
   `,
 };
 
-export default StyledSignup;
+export default StyledExtraInfo;
