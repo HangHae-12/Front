@@ -25,7 +25,7 @@ const KakaoLogin = () => {
         tokenCookie.set(res.headers.authorization);
         switch (res.status) {
           case 200:
-            navigate("/signup/parant");
+            navigate("/signup/parent");
             break;
           default:
             // navigate("/");
