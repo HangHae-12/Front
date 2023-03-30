@@ -5,8 +5,9 @@ import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import { MemberAPI } from "../../api/memberAPI";
 import Modal from "../../components/Modal";
 import useModal from "../../hooks/useModal";
+import textVariants from "../../styles/variants/textVariants";
 
-function ClassMember() {
+const ClassMember = () => {
   const queryClient = useQueryClient();
   const { id } = useParams();
   const [searchMember, setSearchMember] = useState("");
@@ -31,10 +32,6 @@ function ClassMember() {
     setSearchMember(e.target.value);
   };
 
-  const handletest = () => {
-    console.log(data.data.data);
-  };
-
   const loadMemberSearch = data?.data.data.filter((item) =>
     item.name.includes(searchMember)
   );
@@ -52,32 +49,28 @@ function ClassMember() {
 
   const modalOption = {
     canCloseOnOverlayClick: true,
-    // 모달의 백드롭을 클릭했을 때 모달창 종료 유무. 기본값은 True
     isCloseButton: true,
-    // 오른쪽 상단 닫기버튼 활성화 유무. 기본값은 True
     padding: "10px",
-    // 모달 컨테이너 패딩 설정. 기본값은 10px
     width: "800px",
-    // 모달 컨테이너 가로 길이 설정. 기본값은 500px
     height: "400px",
-    // 모달 컨테이너 세로 길이 설정. 기본값은 400px
   };
 
   return (
     <>
       <StyledChildrenWrapper>
         <StyledChildernHeader>
-          <div>총 {data?.data.data.length}명</div>
-          <button onClick={handleOpenModal} style={{ marginLeft: "auto" }}>
-            인원 추가
-          </button>
+          <StyledPersonnelFont>
+            총원 {data?.data.data.length}명
+          </StyledPersonnelFont>
+          <StyledAddMemberButton onClick={handleOpenModal}>
+            인원 등록
+          </StyledAddMemberButton>
           <Modal modalOption={modalOption} />
-          <input
-            style={{ marginLeft: "10px" }}
+          <StyledMemberSearchInput
             type="text"
             onChange={handleSearch}
             value={searchMember}
-          ></input>
+          ></StyledMemberSearchInput>
         </StyledChildernHeader>
         <StyledChildrenContainer>
           {loadMemberSearch?.map((item) => {
@@ -92,7 +85,7 @@ function ClassMember() {
       </StyledChildrenWrapper>
     </>
   );
-}
+};
 
 export default ClassMember;
 
@@ -101,12 +94,8 @@ const StyledChildrenWrapper = styled.div`
   gap: 40px;
   width: calc(8 * (130px + 16px));
   height: 650px;
-  background: rgba(237, 245, 238, 0.8);
-  border-radius: 8px;
-
-  @media screen and (max-width: 600px) {
-    width: 100%;
-  }
+  background: ${({ theme }) => theme.color.green_darker};
+  border-radius: 12px;
 `;
 
 const StyledChildernHeader = styled.div`
@@ -123,11 +112,11 @@ const StyledChildrenContainer = styled.div`
 `;
 
 const StyledChildrenCard = styled.div`
-  background: #f5f5f5;
+  background: ${({ theme }) => theme.color.white};
   border-radius: 8px;
   width: 130px;
   height: 130px;
-  border: 1px solid #dddddd;
+  border: 1px solid ${({ theme }) => theme.color.white};
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -143,4 +132,17 @@ const StyledChildrenImage = styled.img`
   border-radius: 70%;
   width: 70px;
   height: 70px;
+`;
+
+const StyledPersonnelFont = styled.div`
+  ${textVariants.H2_SemiBold}
+  color: ${({ theme }) => theme.color.grayScale[400]};
+`;
+
+const StyledAddMemberButton = styled.button`
+  margin-left: auto;
+`;
+
+const StyledMemberSearchInput = styled.input`
+  margin-left: 10px;
 `;

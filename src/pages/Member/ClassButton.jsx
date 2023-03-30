@@ -1,16 +1,26 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import TeacherInformation from "./TeacherInformation";
 import ClassMember from "./ClassMember";
 import Gallery from "./Gallery";
 import Button from "../../components/Button";
 import textVariants from "../../styles/variants/textVariants";
+import Buttons from "../../components/Buttons";
 
-function ClassButton() {
-  const [selectedClass, setSelectedClass] = useState("none");
-  const [isMember, setIsMember] = useState(true);
-  const [selectedButton, setSelectedButton] = useState("none");
+const ClassButton = () => {
+  const [selectedClass, setSelectedClass] = useState("");
+  const [selectedButton, setSelectedButton] = useState("");
+  const [selectedTab, setSelectedTab] = useState("member");
+
+  const handleMemberClick = () => {
+    setSelectedTab("member");
+  };
+
+  const handleGalleryClick = () => {
+    setSelectedTab("gallery");
+  };
+
   const navigate = useNavigate();
 
   const handleButtonClick = (selected) => {
@@ -23,7 +33,7 @@ function ClassButton() {
     const selectedId = idMapping[selected];
 
     if (selected === selectedClass) {
-      setSelectedClass("none");
+      setSelectedClass("");
     } else {
       setSelectedClass(selected);
     }
@@ -51,12 +61,20 @@ function ClassButton() {
         />
       </StyledButtonWrapper>
       <TeacherInformation />
-      <button onClick={() => setIsMember(true)}>아이들</button>
-      <button onClick={() => setIsMember(false)}>갤러리</button>
-      {isMember ? <ClassMember /> : <Gallery />}
+      {selectedTab === "member" ? (
+        <StyledABBtn onClick={handleMemberClick}>학급인원</StyledABBtn>
+      ) : (
+        <Buttons.AB onClick={handleMemberClick}>학급인원</Buttons.AB>
+      )}
+      {selectedTab === "gallery" ? (
+        <StyledABBtn onClick={handleGalleryClick}>갤러리</StyledABBtn>
+      ) : (
+        <Buttons.AB onClick={handleGalleryClick}>갤러리</Buttons.AB>
+      )}
+      {selectedTab === "member" ? <ClassMember /> : <Gallery />}
     </>
   );
-}
+};
 
 export default ClassButton;
 
@@ -67,4 +85,9 @@ const StyledButtonWrapper = styled.div`
 const StyledHeaderFont = styled.div`
   ${textVariants.H1}
   margin-bottom: 20px;
+`;
+
+const StyledABBtn = styled(Buttons.AB)`
+  color: ${({ theme }) => theme.color.primary};
+  background-color: ${({ theme }) => theme.color.green_darker};
 `;

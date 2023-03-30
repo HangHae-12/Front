@@ -10,8 +10,10 @@ import "rc-pagination/assets/index.css";
 import Modal from "../../components/Modal";
 import useModal from "../../hooks/useModal";
 import { IoIosAdd } from "react-icons/io";
+import Buttons from "../../components/Buttons";
+import textVariants from "../../styles/variants/textVariants";
 
-function Gallery() {
+const Gallery = () => {
   const queryClient = useQueryClient();
   const { id } = useParams();
   const [searchGallery, setSearchGallery] = useState("");
@@ -21,8 +23,8 @@ function Gallery() {
   const [formattedEndDate, setFormattedEndDate] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const { openModal, closeModal } = useModal();
-  const [detailImages, setDetailImages] = useState([]); // 프리뷰 보여줄 이미지 데이터
-  const [postImages, setPostImages] = useState([]); // 서버로 보낼 이미지 데이터
+  const [previewImages, setPreviewImages] = useState([]); // 프리뷰 보여줄 이미지 데이터
+  const [severImages, setSeverImages] = useState([]); // 서버로 보낼 이미지 데이터
   const [render, setRender] = useState(true);
 
   const { data } = useQuery(
@@ -82,10 +84,11 @@ function Gallery() {
     );
   };
 
+  // 모달 부분
   const uploadFile = (event) => {
     const fileArr = event.target.files;
-    setPostImages((prevPostImages) => [
-      ...prevPostImages,
+    setSeverImages((prevSeverImages) => [
+      ...prevSeverImages,
       ...Array.from(fileArr),
     ]);
 
@@ -96,8 +99,8 @@ function Gallery() {
       const reader = new FileReader();
       reader.onload = () => {
         console.log(reader.result);
-        setDetailImages((prevDetailImages) => [
-          ...prevDetailImages,
+        setPreviewImages((prevPreviewImages) => [
+          ...prevPreviewImages,
           reader.result,
         ]);
       };
@@ -125,7 +128,7 @@ function Gallery() {
             사진추가
           </StyledAddFont>
         </StyledAddGallery>
-        {detailImages.map((item) => {
+        {previewImages.map((item) => {
           return (
             <StyledAddGallery key={item}>
               <StyledPreviewImage src={item} />
@@ -155,15 +158,15 @@ function Gallery() {
     } else {
       setRender(false);
     }
-  }, [detailImages]);
+  }, [previewImages]);
 
   return (
     <>
       <StyledGalleryWrapper>
         <StyledGalleryHeader>
-          <button>전체기간</button>
-          <div>
-            <DatePicker
+          <Buttons.Filter outlined>전체기간</Buttons.Filter>
+          <StyledDatePickerWrapper>
+            <StyledDatePicker
               showIcon
               selected={startDate}
               onChange={(date) => setStartDate(date)}
@@ -171,9 +174,10 @@ function Gallery() {
               startDate={startDate}
               endDate={endDate}
             />
-          </div>
-          <div>
-            <DatePicker
+          </StyledDatePickerWrapper>
+          ~
+          <StyledDatePickerWrapper>
+            <StyledDatePicker
               showIcon
               selected={endDate}
               onChange={(date) => setEndDate(date)}
@@ -182,13 +186,14 @@ function Gallery() {
               endDate={endDate}
               minDate={startDate}
             />
-          </div>
-          <button onClick={handleDateSearch}>조회</button>
-          <button onClick={createGallery} style={{ marginLeft: "auto" }}>
+          </StyledDatePickerWrapper>
+          <Buttons.Filter colorTypes="primary" onClick={handleDateSearch}>
+            적용하기
+          </Buttons.Filter>
+          <SyledAddGalleryButton onClick={createGallery}>
             사진등록
-          </button>
-          <input
-            style={{ marginLeft: "10px" }}
+          </SyledAddGalleryButton>
+          <StyledGallerySearchInput
             onChange={handleSearch}
             placeholder="검색어를 입력하세요"
           />
@@ -218,7 +223,7 @@ function Gallery() {
       <Modal modalOption={modalOption} />
     </>
   );
-}
+};
 
 export default Gallery;
 
@@ -227,12 +232,8 @@ const StyledGalleryWrapper = styled.div`
   gap: 40px;
   width: calc(5 * (220px + 18px));
   height: 900px;
-  background: #ffffff;
-  border-radius: 8px;
-
-  @media screen and (max-width: 600px) {
-    width: 100%;
-  }
+  background: ${({ theme }) => theme.color.green_darker};
+  border-radius: 12px;
 `;
 
 const StyledGalleryHeader = styled.div`
@@ -255,7 +256,7 @@ const StyledGalleryCard = styled.div`
   gap: 20px;
   width: 210px;
   height: 250px;
-  background: #f5f5f5;
+  background: ${({ theme }) => theme.color.white};
   border-radius: 8px;
   margin-left: 20px;
   margin-top: 10px;
@@ -268,29 +269,25 @@ const StyledGalleryImage = styled.img`
 `;
 
 const StyledTitleFont = styled.div`
+  ${textVariants.Body1_SemiBold}
   width: auto;
   height: 16px;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 16px;
   line-height: 18px;
   display: flex;
   align-items: center;
   text-align: center;
-  color: #000000;
+  color: ${({ theme }) => theme.color.grayScale[600]}; ;
 `;
 
 const StyledDateFont = styled.div`
+  ${textVariants.Body3_SemiBold}
   width: auto;
   height: 16px;
-  font-style: normal;
-  font-weight: 400;
-  font-size: 12px;
   line-height: 18px;
   display: flex;
   align-items: center;
   text-align: center;
-  color: #000000;
+  color: ${({ theme }) => theme.color.grayScale[500]}; ;
 `;
 
 const StyledFont = styled.div`
@@ -326,7 +323,6 @@ const StyledModalContent = styled.div`
 const StyledAddGallery = styled.div`
   width: 240px;
   height: 250px;
-  /* border: 1px solid black; */
   border-radius: 8px;
   align-items: center;
   justify-content: center;
@@ -348,4 +344,17 @@ const StyledPreviewImage = styled.img`
   width: 240px;
   height: 250px;
   border-radius: 8px;
+`;
+
+const StyledDatePicker = styled(DatePicker)`
+  margin-left: 7px;
+`;
+const StyledDatePickerWrapper = styled.div`
+  margin-right: 7px;
+`;
+const SyledAddGalleryButton = styled.button`
+  margin-left: auto;
+`;
+const StyledGallerySearchInput = styled.input`
+  margin-left: 10px;
 `;
