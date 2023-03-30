@@ -16,10 +16,13 @@ const ClassButtonGroup = () => {
   const [isAttendClick, setIsAttendClick] = useState(true);
   const [isLeaveClick, setIsLeaveClick] = useState(false);
 
-  const [isTimeClick1, setIsTimeClick1] = useState(true);
-  const [isTimeClick2, setIsTimeClick2] = useState(false);
-  const [isTimeClick3, setIsTimeClick3] = useState(false);
-  const [isTimeClick4, setIsTimeClick4] = useState(false);
+  const [timeButtonState, setTimeButtonState] = useState({
+    '전체시간': true,
+    '07~08시': false,
+    '08~09시': false,
+    '09~10시': false
+  });
+
 
   const [selectedButton, setSelectedButton] = useState("모든반");
 
@@ -42,6 +45,7 @@ const ClassButtonGroup = () => {
   const hostParams = { type: scheduleId, dailyEnterTime: time, page };
 
 
+  //조회쿼리가 2개이므로 유지보수성을 위해서 객체 분해 형식으로 변수지정
 
   const { isLoading: isLoadingClass, isError: isErrorClass, data: classData } = useQuery(
     ["getManageClass", classId],
@@ -139,7 +143,21 @@ const ClassButtonGroup = () => {
     navigate(`/host/${classId}/${ScheduleId}/전체시간`);
     queryClient.invalidateQueries(["getManageTimeSchedule", hostParams]);
   };
-  //시간버튼 눌렀을때 추가 
+  //시간버튼 눌렀을때 추가
+  const handleTimeButton = (timeId) => {
+    setTime(timeId);
+    navigate(`/host/${classId}/${scheduleId}/${timeId}`);
+    queryClient.invalidateQueries(["getManageTimeSchedule", hostParams]);
+
+    setTimeButtonState(prevState => ({
+      ...prevState,
+      '전체시간': timeId === '전체시간',
+      '07~08시': timeId === '07~08시',
+      '08~09시': timeId === '08~09시',
+      '09~10시': timeId === '09~10시'
+    }));
+  };
+
 
   return (
     <>
@@ -212,45 +230,25 @@ const ClassButtonGroup = () => {
         <StyledTimeButtonGroup>
           <StyledTimeButton
             isClick={isAttendClick}
-            onClick={() => {
-              setIsTimeClick1(true);
-              setIsTimeClick2(false);
-              setIsTimeClick3(false);
-              setIsTimeClick4(false);
-            }}
+            onClick={() => { handleTimeButton("전체시간") }}
           >
             전체시간
           </StyledTimeButton>
           <StyledTimeButton
-            isClick={isTimeClick2}
-            onClick={() => {
-              setIsTimeClick1(false);
-              setIsTimeClick2(true);
-              setIsTimeClick3(false);
-              setIsTimeClick4(false);
-            }}
+            isClick={timeButtonState}
+            onClick={() => { handleTimeButton("07시~08시") }}
           >
             07시~08시
           </StyledTimeButton>
           <StyledTimeButton
-            isClick={isTimeClick3}
-            onClick={() => {
-              setIsTimeClick1(false);
-              setIsTimeClick2(false);
-              setIsTimeClick3(true);
-              setIsTimeClick4(false);
-            }}
+            isClick={timeButtonState}
+            onClick={() => { handleTimeButton("08시~09시") }}
           >
             08시~09시
           </StyledTimeButton>
           <StyledTimeButton
-            isClick={isTimeClick4}
-            onClick={() => {
-              setIsTimeClick1(false);
-              setIsTimeClick2(false);
-              setIsTimeClick3(false);
-              setIsTimeClick4(true);
-            }}
+            isClick={timeButtonState}
+            onClick={() => { handleTimeButton("09시~10시") }}
           >
             09시~10시
           </StyledTimeButton>
@@ -264,7 +262,7 @@ const ClassButtonGroup = () => {
               return (
                 <StyledStudentCard key={item.childId}>
                   <StyledProfileRow>
-                    <StyledStudentProfile />
+                    <StyledStudentProfile imageUrl={item.profileImageUrl} />
                     <StyledProfileGroup>
                       <StyledStudentName>{item.name}</StyledStudentName>
                       <StyledStudentStatus status={item.currentStatus}>
@@ -402,7 +400,9 @@ const StyledStudentProfile = styled.div`
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background-color: ${({ theme }) => theme.color.grayScale[400]};
+  background-image: url(${(props) => props.imageUrl});
+  background-size: cover;
+  background-position: center;
   margin-right: 29px;
 `;
 
@@ -414,7 +414,7 @@ const StyledStudentStatus = styled.div`
   ${textVariants.Body2_SemiBold}
   color: ${({ theme }) => theme.color.white};
   background-color: ${({ theme, status }) =>
-    status === "미등원" ? theme.color.red : theme.color.grayScale[300]};
+    status ? theme.color.red : theme.color.grayScale[300]};
   display: flex;
   justify-content: center;
   align-items: center;
