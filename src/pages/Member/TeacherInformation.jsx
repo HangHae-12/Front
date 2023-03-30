@@ -1,9 +1,12 @@
-import React from "react";
+import React,{ useState } from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
-import { MemberAPI } from "../../api/memberAPI";
-import { useQuery } from "@tanstack/react-query";
+
+import  from "react";
+import { MemberAPI } from "../../api/MemberAPI";
+import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import textVariants from "../../styles/variants/textVariants";
+
 
 const TeacherInformation = () => {
   const { id } = useParams();

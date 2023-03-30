@@ -46,11 +46,15 @@ const fontWeight = {
   medium: 500,
   regular: 400,
 };
-
+const device = {
+  mobile: "(max-width: 768px)",
+};
 const defaultTheme = {
   color,
   fontSize,
   fontWeight,
+  device
 };
+
 
 export default defaultTheme;
