@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { SignAPI } from "../../../api/SignAPI";
+import { SignAPI } from "../../../api/signAPI";
 import tokenCookie from "../../../utils/tokenCookie";
 
 
