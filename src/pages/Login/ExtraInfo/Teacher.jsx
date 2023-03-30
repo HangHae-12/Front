@@ -4,6 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import StyledExtraInfo from "./styled";
 import { DUMMY_PROFILE_IMG_SRC } from "../../../assets";
 import { SignAPI } from "../../../api/SignAPI";
+import { useEffect } from "react";
 
 const Teacher = () => {
   const [previewImage, setPreviewImage] = useState(null);
@@ -26,7 +27,7 @@ const Teacher = () => {
 
   const onSubmit = (data) => {
     const formData = new FormData();
-    formData.append("role", "teacher");
+    // formData.append("role", "teacher");
     formData.append("name", data.name);
     formData.append("phoneNumber", data.phoneNumber);
     if (profileInputRef.current.files[0]) {
