@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
@@ -56,6 +56,9 @@ const ClassButtonGroup = () => {
     ["getManageTimeSchedule", hostParams],
     () => HostAPI.getManageTimeSchedule({ classId, ...hostParams })
   );
+  useEffect(() => {
+    queryClient.invalidateQueries(['getManageClass', 1]);
+  }, [queryClient]);
 
   let bindData = [];
 
@@ -117,13 +120,6 @@ const ClassButtonGroup = () => {
   const handlePageChange = (page) => {
     setCurrentPage(page);
   }
-
-
-  // const loadAllClassroom = () => {
-  //   setSelectedButton("모든반");
-  //   navigate(`/host/${scheduleId}`);
-  //   queryClient.invalidateQueries(["getManageSchedule", hostParams]);
-  // };
 
   const loadClassroom = (selected, classId) => {
     setSelectedButton(selected);
@@ -213,7 +209,7 @@ const ClassButtonGroup = () => {
 
       <StyledAttendanceButtonGroup>
         <StyledAttendanceButton
-          isClick={isLeaveClick}
+          isClick={isAttendClick}
           onClick={() => handleAttendanceButton("ENTER")}
         >
           등원 인원
@@ -229,25 +225,25 @@ const ClassButtonGroup = () => {
       <StyledAttendanceContainer>
         <StyledTimeButtonGroup>
           <StyledTimeButton
-            isClick={isAttendClick}
+            isClick={timeButtonState.전체시간}
             onClick={() => { handleTimeButton("전체시간") }}
           >
             전체시간
           </StyledTimeButton>
           <StyledTimeButton
-            isClick={timeButtonState}
+            isClick={timeButtonState['07~08시']}
             onClick={() => { handleTimeButton("07시~08시") }}
           >
             07시~08시
           </StyledTimeButton>
           <StyledTimeButton
-            isClick={timeButtonState}
+            isClick={timeButtonState['08~09시']}
             onClick={() => { handleTimeButton("08시~09시") }}
           >
             08시~09시
           </StyledTimeButton>
           <StyledTimeButton
-            isClick={timeButtonState}
+            isClick={timeButtonState['09~10시']}
             onClick={() => { handleTimeButton("09시~10시") }}
           >
             09시~10시
