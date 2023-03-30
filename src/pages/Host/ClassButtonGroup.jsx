@@ -5,29 +5,16 @@ import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import { HostAPI } from "../../api/HostAPI";
 import textVariants from "../../styles/variants/textVariants";
 import Button from "../../components/Button";
-import Buttons, { CustomButton } from "../../components/Buttons";
+import Buttons from "../../components/Buttons";
 import Pagination from 'rc-pagination';
 const ClassButtonGroup = () => {
 
   const queryClient = useQueryClient();
   const { classroomId, scheduleParam, timeParm } = useParams();
   const navigate = useNavigate();
-
-  const [isAttendClick, setIsAttendClick] = useState(true);
-  const [isLeaveClick, setIsLeaveClick] = useState(false);
-
-  const [timeButtonState, setTimeButtonState] = useState({
-    '전체시간': true,
-    '07~08시': false,
-    '08~09시': false,
-    '09~10시': false
-  });
-
-
   const [selectedButton, setSelectedButton] = useState("모든반");
-
-  const [classId, setClassId] = useState(1);
-  const [scheduleId, setScheduleId] = useState("ENTER");
+  const [classId, setClassId] = useState(0);
+  const [scheduleId, setScheduleId] = useState("등원인원");
   const [time, setTime] = useState("전체시간");
   const [page, setPage] = useState(1);
 
@@ -51,35 +38,37 @@ const ClassButtonGroup = () => {
     ["getManageClass", classId],
     () => HostAPI.getManageClass(classId)
   );
-
+  console.log(classData);
   const { isLoading: isLoadingSchedule, isError: isErrorSchedule, data: scheduleData } = useQuery(
     ["getManageTimeSchedule", hostParams],
     () => HostAPI.getManageTimeSchedule({ classId, ...hostParams })
   );
   useEffect(() => {
-    queryClient.invalidateQueries(['getManageClass', 1]);
+    queryClient.invalidateQueries(['getManageClass', 0]);
   }, [queryClient]);
 
-  let bindData = [];
 
   //빈배열이 담지 않고 데이터 바인딩 전 분기되도록 구현
-  if (!isLoadingClass && !isLoadingSchedule) {
+  const [bindData, setBindData] = useState([]);
+
+  useEffect(() => {
+    // if (!isLoadingClass && !isLoadingSchedule) {
     if (scheduleId === "등원인원" && time === "전체시간") {
       if (classData) {
-        bindData = classData.childEnterResponseDtoList;
+        setBindData(classData.childEnterResponseDtoList);
       }
     } else if (scheduleId === "하원인원") {
       if (scheduleData) {
-        bindData = scheduleData.childEnterResponseDtoList;
+        setBindData(scheduleData.childEnterResponseDtoList);
       }
     } else if (time !== "전체시간") {
       if (scheduleData) {
-        bindData = scheduleData.childEnterResponseDtoList;
+        setBindData(scheduleData.childEnterResponseDtoList);
       }
     }
-  }
+  }, [classData, scheduleData, classId, scheduleId, time]);
 
-
+  console.log(bindData);
 
   // selectedButton의 값에 따라 다른 쿼리 실행
   // const queryKey = selectedButton === "모든반"
@@ -124,34 +113,19 @@ const ClassButtonGroup = () => {
   const loadClassroom = (selected, classId) => {
     setSelectedButton(selected);
     setClassId(classId);
-    navigate(`/host/${classId}/ENTER/전체시간`);
+    navigate(`/host/${classId}`);
     queryClient.invalidateQueries(["getManageClass", classId]);
   };
   const handleAttendanceButton = (ScheduleId) => {
-    if (ScheduleId === "ENTER") {
-      setIsAttendClick(true);
-      setIsLeaveClick(false);
-    } else {
-      setIsAttendClick(false);
-      setIsLeaveClick(true);
-    }
     setScheduleId(ScheduleId);
-    navigate(`/host/${classId}/${ScheduleId}/전체시간`);
-    queryClient.invalidateQueries(["getManageTimeSchedule", hostParams]);
+    // navigate(`/host/${classId}/${ScheduleId}/전체시간`);
+    // queryClient.invalidateQueries(["getManageTimeSchedule", hostParams]);
   };
   //시간버튼 눌렀을때 추가
   const handleTimeButton = (timeId) => {
     setTime(timeId);
-    navigate(`/host/${classId}/${scheduleId}/${timeId}`);
-    queryClient.invalidateQueries(["getManageTimeSchedule", hostParams]);
-
-    setTimeButtonState(prevState => ({
-      ...prevState,
-      '전체시간': timeId === '전체시간',
-      '07~08시': timeId === '07~08시',
-      '08~09시': timeId === '08~09시',
-      '09~10시': timeId === '09~10시'
-    }));
+    // navigate(`/host/${classId}/${scheduleId}/${timeId}`);
+    // queryClient.invalidateQueries(["getManageTimeSchedule", hostParams]);
   };
 
 
@@ -162,22 +136,22 @@ const ClassButtonGroup = () => {
         <Button.ClassButton
           selected={"모든반"}
           selectedButton={selectedButton}
-          onClick={() => loadClassroom("모든반", 1)}
+          onClick={() => loadClassroom("모든반", 0)}
         />
         <Button.ClassButton
           selected={"새빛반"}
           selectedButton={selectedButton}
-          onClick={() => loadClassroom("새빛반", 2)}
+          onClick={() => loadClassroom("새빛반", 1)}
         />
         <Button.ClassButton
           selected={"동동반"}
           selectedButton={selectedButton}
-          onClick={() => loadClassroom("동동반", 3)}
+          onClick={() => loadClassroom("동동반", 2)}
         />
         <Button.ClassButton
           selected={"빗살반"}
           selectedButton={selectedButton}
-          onClick={() => loadClassroom("빗살반", 4)}
+          onClick={() => loadClassroom("빗살반", 3)}
         />
       </StyledClassButtonGroup>
       <StyledInfoContainer>
@@ -208,46 +182,55 @@ const ClassButtonGroup = () => {
       </StyledInfoContainer>
 
       <StyledAttendanceButtonGroup>
-        <StyledAttendanceButton
-          isClick={isAttendClick}
-          onClick={() => handleAttendanceButton("ENTER")}
-        >
-          등원 인원
-        </StyledAttendanceButton>
-
-        <StyledAttendanceButton
-          isClick={isLeaveClick}
-          onClick={() => handleAttendanceButton("EXIT")}
-        >
-          하원 인원
-        </StyledAttendanceButton>
+        {scheduleId === "등원인원" ? (
+          <StyledABBtn
+            onClick={() => handleAttendanceButton("등원인원")}>등원인원</StyledABBtn>
+        ) : (
+          <Buttons.AB
+            onClick={() => handleAttendanceButton("등원인원")}>등원인원</Buttons.AB>
+        )}
+        {scheduleId === "하원인원" ? (
+          <StyledABBtn
+            onClick={() => handleAttendanceButton("하원인원")}>하원인원</StyledABBtn>
+        ) : (
+          <Buttons.AB
+            onClick={() => handleAttendanceButton("하원인원")}>하원인원</Buttons.AB>
+        )}
       </StyledAttendanceButtonGroup>
       <StyledAttendanceContainer>
         <StyledTimeButtonGroup>
-          <StyledTimeButton
-            isClick={timeButtonState.전체시간}
-            onClick={() => { handleTimeButton("전체시간") }}
-          >
-            전체시간
-          </StyledTimeButton>
-          <StyledTimeButton
-            isClick={timeButtonState['07~08시']}
-            onClick={() => { handleTimeButton("07시~08시") }}
-          >
-            07시~08시
-          </StyledTimeButton>
-          <StyledTimeButton
-            isClick={timeButtonState['08~09시']}
-            onClick={() => { handleTimeButton("08시~09시") }}
-          >
-            08시~09시
-          </StyledTimeButton>
-          <StyledTimeButton
-            isClick={timeButtonState['09~10시']}
-            onClick={() => { handleTimeButton("09시~10시") }}
-          >
-            09시~10시
-          </StyledTimeButton>
+          {time === "전체시간" ? (
+            <Buttons.Time
+              colorTypes="primary"
+              onClick={() => { handleTimeButton("전체시간") }}>전체시간</Buttons.Time>
+          ) : (
+            <Buttons.Time
+              onClick={() => { handleTimeButton("전체시간") }}>전체시간</Buttons.Time>
+          )}
+          {time === "07시~08시" ? (
+            <Buttons.Time
+              colorTypes="primary"
+              onClick={() => { handleTimeButton("07시~08시") }}>07시 ~ 08시</Buttons.Time>
+          ) : (
+            <Buttons.Time
+              onClick={() => { handleTimeButton("07시~08시") }}>07시 ~ 08시</Buttons.Time>
+          )}
+          {time === "08시~09시" ? (
+            <Buttons.Time
+              colorTypes="primary"
+              onClick={() => { handleTimeButton("08시~09시") }}>08시~09시</Buttons.Time>
+          ) : (
+            <Buttons.Time
+              onClick={() => { handleTimeButton("08시~09시") }}>08시~09시</Buttons.Time>
+          )}
+          {time === "09시~10시" ? (
+            <Buttons.Time
+              colorTypes="primary"
+              onClick={() => { handleTimeButton("09시~10시") }}>09시~10시</Buttons.Time>
+          ) : (
+            <Buttons.Time
+              onClick={() => { handleTimeButton("09시~10시") }}>09시~10시</Buttons.Time>
+          )}
         </StyledTimeButtonGroup>
         <StyledStudentGrid>
 
@@ -356,17 +339,18 @@ const StyledInfoValue = styled.div`
   color: ${({ theme }) => theme.color.grayScale[500]};
 `;
 const StyledAttendanceContainer = styled.div`
-  background: rgba(237, 245, 238, 0.8);
+  background-color: ${({ theme }) => theme.color.green_darker};
   box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.04);
   border-radius: 12px;
   padding: 40px;
+  
 `;
 const StyledStudentGrid = styled.div`
   display: grid;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   grid-template-rows: auto; 
   grid-gap: 20px;
   margin-top: 20px;
@@ -424,27 +408,11 @@ const StyledStudentStatus = styled.div`
 
 const StyledAttendanceButtonGroup = styled.div`
   padding-top: 64px;
-  padding-bottom: 40px;
   gap: 10px;
 `;
-
-const StyledAttendanceButton = styled.button`
-  ${textVariants.Body2_SemiBold}
-  background-color: ${({ theme, isClick }) =>
-    isClick ? theme.color.primary : theme.color.grayScale[300]};
-  color: ${({ theme, isClick }) =>
-    isClick ? theme.color.white : theme.color.grayScale[800]};
-  border: none;
-  border-radius: 4px;
-  padding: 10px;
-  margin-left: auto;
-  margin-right: 10px;
-
-  &:hover {
-    background-color: ${({ theme }) => theme.color.primary};
-
-    color: ${({ theme }) => theme.color.white};
-  }
+const StyledABBtn = styled(Buttons.AB)`
+  color: ${({ theme }) => theme.color.primary};
+  background-color: ${({ theme }) => theme.color.green_darker};
 `;
 
 const StyledTimeButtonGroup = styled.div`
@@ -452,22 +420,7 @@ const StyledTimeButtonGroup = styled.div`
   flex-direction: row;
 `;
 
-const StyledTimeButton = styled.button`
-  ${textVariants.Body2_SemiBold}
-  background-color: ${({ theme, isClick }) =>
-    isClick ? theme.color.primary : theme.color.grayScale[300]};
-  color: ${({ theme, isClick }) =>
-    isClick ? theme.color.white : theme.color.grayScale[800]};
-  border: none;
-  border-radius: 4px;
-  padding: 10px;
-  margin-right: 10px;
 
-  &:hover {
-    background-color: ${({ theme }) => theme.color.primary};
-    color: ${({ theme }) => theme.color.white};
-  }
-`;
 
 const StyledProfileGroup = styled.div`
   display: flex;
