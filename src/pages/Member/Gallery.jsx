@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
-
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
-import { MemberAPI } from "../../api/MemberAPI";
-
+import { MemberAPI } from "../../api/memberAPI";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Pagination from "rc-pagination";
@@ -29,6 +27,7 @@ const Gallery = () => {
   const [severImages, setSeverImages] = useState([]); // 서버로 보낼 이미지 데이터
   const [render, setRender] = useState(true);
   const [title, setTitle] = useState("");
+  const [imageId, setImageId] = useState(null);
 
   const { data } = useQuery(
     ["classesGallery", searchGallery, currentPage],
@@ -52,6 +51,19 @@ const Gallery = () => {
     {
       onSuccess: (data) => {
         console.log(data);
+      },
+    }
+  );
+
+  const { data: DetailGallery } = useQuery(
+    ["getDetailGallery", id, imageId],
+    () => MemberAPI.getDetailGallery(id, imageId),
+    {
+      onSuccess: (data) => {
+        console.log(data);
+      },
+      onError: () => {
+        console.log("error");
       },
     }
   );
@@ -84,10 +96,11 @@ const Gallery = () => {
     );
   };
 
-  //검색 기능
+  //날짜 검색 기능
   const handleDateSearch = () => {
     setFormattedStartDate(dateToString(startDate));
     setFormattedEndDate(dateToString(endDate));
+    console.log(formattedStartDate, formattedEndDate);
     return MemberAPI.getSearchDateGallery(
       id,
       formattedStartDate,
@@ -197,12 +210,21 @@ const Gallery = () => {
   }, [previewImages]);
 
   //갤러리 상세조회
-  const getDetailGallery = (imagePostId) => {
+  const getDetailGallery = async (imagePostId) => {
     console.log(id, imagePostId);
+    setImageId(imagePostId);
+    console.log(imageId);
     const gallertModalData = {
-      title: "갤러리",
+      title: <StyledGalleryModalHeader>갤러리</StyledGalleryModalHeader>,
       contents: (
         <StyledModalContent>
+          {DetailGallery?.data.data.imageUrlList.map((item) => {
+            return (
+              <StyledAddGallery>
+                <StyledPreviewImage src={item} />
+              </StyledAddGallery>
+            );
+          })}
         </StyledModalContent>
       ),
       callback: () => alert("modal"),
@@ -251,7 +273,10 @@ const Gallery = () => {
         <StyledGalleryContainer>
           {data?.data.data.map((item) => {
             return (
-              <StyledGalleryCard key={item.imagePostId} onClick={(e) => getDetailGallery(item.imagePostId)}>
+              <StyledGalleryCard
+                key={item.imagePostId}
+                onClick={(e) => getDetailGallery(item.imagePostId)}
+              >
                 <StyledGalleryImage src={item.imageUrlList} />
                 <StyledTitleFont>{item.title}</StyledTitleFont>
                 <StyledFont>
@@ -408,3 +433,12 @@ const SyledAddGalleryButton = styled.button`
 const StyledGallerySearchInput = styled.input`
   margin-left: 10px;
 `;
+const StyledGalleryModalHeader = styled.div`
+  ${textVariants.Body1_SemiBold}
+  color: ${({ theme }) => theme.color.grayScale[600]};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+`;
+const StyledGalleryModalTitleBox = styled.div``;

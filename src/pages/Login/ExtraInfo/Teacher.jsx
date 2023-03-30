@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import StyledExtraInfo from "./styled";
 import { DUMMY_PROFILE_IMG_SRC } from "../../../assets";
-import { SignAPI } from "../../../api/SignAPI";
+import { SignAPI } from "../../../api/signAPI";
 
 const Teacher = () => {
   const [previewImage, setPreviewImage] = useState(null);

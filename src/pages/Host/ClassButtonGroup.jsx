@@ -2,13 +2,12 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
-import { HostAPI } from "../../api/HostAPI";
+import { HostAPI } from "../../api/hostAPI";
 import textVariants from "../../styles/variants/textVariants";
 import Button from "../../components/Button";
 import Buttons, { CustomButton } from "../../components/Buttons";
-import Pagination from 'rc-pagination';
+import Pagination from "rc-pagination";
 const ClassButtonGroup = () => {
-
   const queryClient = useQueryClient();
   const { classroomId, scheduleParam, timeParm } = useParams();
   const navigate = useNavigate();
@@ -28,22 +27,26 @@ const ClassButtonGroup = () => {
   const [time, setTime] = useState("전체시간");
   const [page, setPage] = useState(1);
 
-
-
   const today = new Date();
   const year = today.getFullYear();
   const month = today.getMonth() + 1;
   const day = today.getDate();
   const todayString = `${year}.${month}.${day}`;
-  const dayOfWeek = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'][today.getDay()];
-
+  const dayOfWeek = [
+    "일요일",
+    "월요일",
+    "화요일",
+    "수요일",
+    "목요일",
+    "금요일",
+    "토요일",
+  ][today.getDay()];
 
   //등원,하원,timea,page param
   const hostParams = { type: scheduleId, dailyEnterTime: time, page };
 
-
-
-  const { isLoading, isError, data } = useQuery(["getManageClass", classId],
+  const { isLoading, isError, data } = useQuery(
+    ["getManageClass", classId],
 
     () => {
       const result = HostAPI.getManageClass(classId);
@@ -57,9 +60,11 @@ const ClassButtonGroup = () => {
       onError: () => {
         console.log("error");
       },
-    })
+    }
+  );
 
-  const { data3 } = useQuery(["getManageTimeSchedule", hostParams],
+  const { data3 } = useQuery(
+    ["getManageTimeSchedule", hostParams],
 
     () => {
       const result = HostAPI.getManageTimeSchedule({ classId, ...hostParams });
@@ -73,7 +78,8 @@ const ClassButtonGroup = () => {
       onError: () => {
         console.log("error");
       },
-    })
+    }
+  );
 
   // selectedButton의 값에 따라 다른 쿼리 실행
   // const queryKey = selectedButton === "모든반"
@@ -106,15 +112,13 @@ const ClassButtonGroup = () => {
 
   //페이지네이션 페이지 지정
 
-
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = Math.ceil((data?.length || 0) / 15);
   const totalItems = data?.length || 0;
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
-  }
-
+  };
 
   // const loadAllClassroom = () => {
   //   setSelectedButton("모든반");
@@ -256,36 +260,38 @@ const ClassButtonGroup = () => {
           </StyledTimeButton>
         </StyledTimeButtonGroup>
         <StyledStudentGrid>
-
           {
-
             //서버 연결되면  id값 변경 및 데이터 바인딩,옵셔널 체이닝
-            Array.isArray(data) && data?.map((item) => {
-              return (
-                <StyledStudentCard key={item.childId}>
-                  <StyledProfileRow>
-                    <StyledStudentProfile />
-                    <StyledProfileGroup>
-                      <StyledStudentName>{item.name}</StyledStudentName>
-                      <StyledStudentStatus status={item.currentStatus}>
-                        {item.currentStatus}
-                      </StyledStudentStatus>
-                    </StyledProfileGroup>
-                  </StyledProfileRow>
-                  <StyledAttendanceRow>
-                    <StyledAttendanceLabel>등원</StyledAttendanceLabel>
-                    <StyledAttendanceValue>{item.enterTime}</StyledAttendanceValue>
-                  </StyledAttendanceRow>
-                  <StyledAttendanceRow>
-                    <StyledAttendanceLabel>하원</StyledAttendanceLabel>
-                    <StyledAttendanceValue>{item.exitTime}</StyledAttendanceValue>
-                  </StyledAttendanceRow>
-                  <StyledAttendanceBtn>등원처리</StyledAttendanceBtn>
-                </StyledStudentCard>
-              );
-            })
+            Array.isArray(data) &&
+              data?.map((item) => {
+                return (
+                  <StyledStudentCard key={item.childId}>
+                    <StyledProfileRow>
+                      <StyledStudentProfile />
+                      <StyledProfileGroup>
+                        <StyledStudentName>{item.name}</StyledStudentName>
+                        <StyledStudentStatus status={item.currentStatus}>
+                          {item.currentStatus}
+                        </StyledStudentStatus>
+                      </StyledProfileGroup>
+                    </StyledProfileRow>
+                    <StyledAttendanceRow>
+                      <StyledAttendanceLabel>등원</StyledAttendanceLabel>
+                      <StyledAttendanceValue>
+                        {item.enterTime}
+                      </StyledAttendanceValue>
+                    </StyledAttendanceRow>
+                    <StyledAttendanceRow>
+                      <StyledAttendanceLabel>하원</StyledAttendanceLabel>
+                      <StyledAttendanceValue>
+                        {item.exitTime}
+                      </StyledAttendanceValue>
+                    </StyledAttendanceRow>
+                    <StyledAttendanceBtn>등원처리</StyledAttendanceBtn>
+                  </StyledStudentCard>
+                );
+              })
           }
-
         </StyledStudentGrid>
       </StyledAttendanceContainer>
       <Pagination
@@ -373,7 +379,7 @@ const StyledStudentGrid = styled.div`
   justify-content: center;
   align-items: center;
   grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: auto; 
+  grid-template-rows: auto;
   grid-gap: 20px;
   margin-top: 20px;
 
@@ -382,7 +388,6 @@ const StyledStudentGrid = styled.div`
     grid-template-rows: repeat(8, auto); // 세로로 8개씩
   }
 `;
-
 
 const StyledStudentCard = styled.div`
   display: flex;

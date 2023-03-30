@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
-import { MemberAPI } from "../../api/MemberAPI";
+import { MemberAPI } from "../../api/memberAPI";
 import { useQuery } from "@tanstack/react-query";
 import textVariants from "../../styles/variants/textVariants";
 
