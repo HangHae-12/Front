@@ -18,14 +18,6 @@ const StyledExtraInfo = {
     ${textVariants.Body2_Bold}
   `,
 
-  Thumbnail: styled.img`
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    object-fit: cover;
-    cursor: pointer;
-  `,
-
   Input: styled.input``,
 
   Button: styled.button``,

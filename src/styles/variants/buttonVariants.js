@@ -19,9 +19,9 @@ const buttonVariants = {
   `,
 
   NB_Button: css`
-    ${textVariants.H2_SemiBold}
+    ${textVariants.H3_SemiBold}
     width: 200px;
-    height: 60px;
+    height: 46px;
     padding: 12px 10px;
     border-radius: 4px;
   `,
