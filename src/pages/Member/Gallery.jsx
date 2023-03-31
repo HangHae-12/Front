@@ -74,9 +74,9 @@ const Gallery = () => {
     },
   });
 
-  const itemsPerPage = 15;
+  const itemsPerPage = 12;
 
-  const totalItems = 100;
+  const totalItems = 12;
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -210,10 +210,7 @@ const Gallery = () => {
   }, [previewImages]);
 
   //갤러리 상세조회
-  const getDetailGallery = async (imagePostId) => {
-    console.log(id, imagePostId);
-    setImageId(imagePostId);
-    console.log(imageId);
+  const getDetailGallery = () => {
     const gallertModalData = {
       title: <StyledGalleryModalHeader>갤러리</StyledGalleryModalHeader>,
       contents: (
@@ -267,7 +264,6 @@ const Gallery = () => {
           </SyledAddGalleryButton>
           <StyledGallerySearchInput
             onChange={handleSearch}
-            placeholder="검색어를 입력하세요"
           />
         </StyledGalleryHeader>
         <StyledGalleryContainer>
@@ -276,6 +272,7 @@ const Gallery = () => {
               <StyledGalleryCard
                 key={item.imagePostId}
                 onClick={(e) => getDetailGallery(item.imagePostId)}
+                onMouseEnter={() => setImageId(item.imagePostId)}
               >
                 <StyledGalleryImage src={item.imageUrlList} />
                 <StyledTitleFont>{item.title}</StyledTitleFont>
@@ -305,10 +302,15 @@ export default Gallery;
 const StyledGalleryWrapper = styled.div`
   padding: 0px 0px 20px;
   gap: 40px;
-  width: calc(5 * (220px + 18px));
-  height: 900px;
+  width: calc(6 * (225px + 18px));
+  height: 748px;
   background: ${({ theme }) => theme.color.green_darker};
   border-radius: 12px;
+
+  @media (max-width: 1800px) {
+    width: calc(6 * (170px + 10px));
+    height: 650px;
+  }
 `;
 
 const StyledGalleryHeader = styled.div`
@@ -329,18 +331,28 @@ const StyledGalleryCard = styled.div`
   justify-content: center;
   padding: 20px;
   gap: 20px;
-  width: 210px;
-  height: 250px;
+  width: 216px;
+  height: 286px;
   background: ${({ theme }) => theme.color.white};
   border-radius: 8px;
   margin-left: 20px;
   margin-top: 10px;
+
+  @media (max-width: 1800px) {
+    width: 185px;
+    height: 250px;
+  }
 `;
 
 const StyledGalleryImage = styled.img`
   width: 170px;
   height: 150px;
   border-radius: 4px;
+
+  @media (max-width: 1800px) {
+    width: 145px;
+    height: 130px;
+  }
 `;
 
 const StyledTitleFont = styled.div`

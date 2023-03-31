@@ -26,50 +26,44 @@ const TeacherInformation = () => {
         <StyledContentWrapper>
           <StyledLeftWrapper>
             <StyledQuestionFont>담임선생님</StyledQuestionFont>
-            <StyledTeacherImage src={data?.data?.data?.teacher?.imageUrl} />
-            <StyledSpan marginLeft="0px">
-              {data?.data?.data?.teacher?.name}
-            </StyledSpan>
+            {/* <StyledTeacherImage src={data?.data?.data?.teacher?.imageUrl} /> */}
+            <StyledTeacherImage
+              src={
+                "https://outlooksformen.com/sites/default/files/2020-09/testiminials-img-01.png"
+              }
+            />
           </StyledLeftWrapper>
-          <StyledBox>
+          <StyledMiddleWrapper>
             <StyledInputWrapper>
               <StyledQuestionFont>한마디 </StyledQuestionFont>
-              <StyledSpan marginLeft="0px">
-                {data?.data?.data?.teacher?.resolution}
-              </StyledSpan>
-            </StyledInputWrapper>
-            <br />
-            <StyledInputWrapper>
-              <StyledQuestionFont>
-                성별
-                <StyledSpan marginLeft="150px">
-                  {data?.data?.data?.teacher?.gender}
-                </StyledSpan>
-              </StyledQuestionFont>
-              <StyledQuestionFont>
-                <StyledForm marginLeft="60px">
-                  연락처
-                  <StyledSpan>
-                    {data?.data?.data?.teacher?.phoneNumber}
-                  </StyledSpan>
-                </StyledForm>
+              <StyledQuestionFont marginLeft="30px">
+                {/* {data?.data?.data?.teacher?.resolution} */}
+                글로벌 인재로 만들겠습니다.
               </StyledQuestionFont>
             </StyledInputWrapper>
             <StyledInputWrapper>
-              <StyledQuestionFont>
-                생년월일
-                <StyledSpan>{data?.data?.data?.teacher?.birth}</StyledSpan>
-              </StyledQuestionFont>
-              <StyledQuestionFont>
-                <StyledForm marginLeft="100px">
-                  메일
-                  <StyledSpan marginLeft="25px">
-                    {data?.data?.data?.teacher?.email}
-                  </StyledSpan>
-                </StyledForm>
-              </StyledQuestionFont>
+              <StyledQuestionFont>이름</StyledQuestionFont>
+              <StyledAnswerFont marginLeft="190px">
+                {/* {data?.data?.data?.teacher?.name} */}
+                정길숙
+              </StyledAnswerFont>
+              <StyledQuestionFont marginLeft="90px">연락처</StyledQuestionFont>
+              <StyledAnswerFont marginLeft="110px">
+                {/* {data?.data?.data?.teacher?.phoneNumber} */}
+                010-0000-0000
+              </StyledAnswerFont>
             </StyledInputWrapper>
-          </StyledBox>
+            <StyledInputWrapper>
+              <StyledQuestionFont>생년월일</StyledQuestionFont>
+              {/* <StyledSpan>{data?.data?.data?.teacher?.birth}</StyledSpan> */}
+              <StyledAnswerFont marginLeft="135px">1995.12.07</StyledAnswerFont>
+              <StyledQuestionFont marginLeft="87px">메일</StyledQuestionFont>
+              <StyledAnswerFont marginLeft="80px">
+                {/* {data?.data?.data?.teacher?.email} */}
+                sssssssss@gmail.com
+              </StyledAnswerFont>
+            </StyledInputWrapper>
+          </StyledMiddleWrapper>
         </StyledContentWrapper>
       </StyledInfomation>
     </>
@@ -85,36 +79,29 @@ const StyledInfomation = styled.div`
   box-sizing: border-box;
   width: 1428px;
   height: 216px;
+  margin-top: 10px;
+
+  @media (max-width: 1800px) {
+    width: 1080px;
+  }
 `;
 
 const StyledContentWrapper = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: center;
-  align-items: flex-end;
-  padding: 20px 80px 40px;
+  padding: 30px;
   gap: 26px;
 `;
 
-const StyledSpan = styled.span`
-  margin-left: ${({ marginLeft }) => (marginLeft ? marginLeft : "60px")};
-  margin-top: 10px;
-`;
-
-const StyledBox = styled.div`
+const StyledMiddleWrapper = styled.div`
   margin-left: 40px;
-  margin-top: 50px;
-`;
-
-const StyledForm = styled.span`
-  margin-left: ${({ marginLeft }) => (marginLeft ? marginLeft : "20px")};
 `;
 
 const StyledInputWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   align-items: center;
-  width: 100%;
+  margin-top: 30px;
 `;
 
 const StyledLeftWrapper = styled.div`
@@ -127,6 +114,7 @@ const StyledLeftWrapper = styled.div`
 const StyledQuestionFont = styled.div`
   ${textVariants.Body3_SemiBold}
   color: ${({ theme }) => theme.color.grayScale[400]};
+  margin-left: ${({ marginLeft }) => marginLeft};
 `;
 const StyledTeacherImageWrapper = styled.div`
   position: relative;
@@ -142,4 +130,10 @@ const StyledTeacherImage = styled.img`
   width: 120px;
   height: 120px;
   border-radius: 70%;
+`;
+
+const StyledAnswerFont = styled.div`
+  ${textVariants.Body1_SemiBold}
+  color: ${({ theme }) => theme.color.grayScale[400]};
+  margin-left: ${({ marginLeft }) => marginLeft};
 `;

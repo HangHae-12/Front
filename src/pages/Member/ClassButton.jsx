@@ -9,7 +9,6 @@ import textVariants from "../../styles/variants/textVariants";
 import Buttons from "../../components/Buttons";
 
 const ClassButton = () => {
-  const [selectedClass, setSelectedClass] = useState("");
   const [selectedButton, setSelectedButton] = useState("");
   const [selectedTab, setSelectedTab] = useState("member");
 
@@ -23,21 +22,9 @@ const ClassButton = () => {
 
   const navigate = useNavigate();
 
-  const handleButtonClick = (selected) => {
-    const idMapping = {
-      세빛반: 1,
-      둥둥반: 2,
-      빛살반: 3,
-    };
-
-    const selectedId = idMapping[selected];
-
-    if (selected === selectedClass) {
-      setSelectedClass("");
-    } else {
-      setSelectedClass(selected);
-    }
-    navigate(`/common/classes/${selectedId}`);
+  const handleButtonClick = (selected, id) => {
+    setSelectedButton(selected);
+    navigate(`/classes/${id}`);
   };
 
   return (
@@ -47,17 +34,17 @@ const ClassButton = () => {
         <Button.ClassButton
           selected={"세빛반"}
           selectedButton={selectedButton}
-          onClick={() => handleButtonClick("세빛반")}
+          onClick={() => handleButtonClick("세빛반", 1)}
         />
         <Button.ClassButton
           selected={"둥둥반"}
           selectedButton={selectedButton}
-          onClick={() => handleButtonClick("둥둥반")}
+          onClick={() => handleButtonClick("둥둥반", 2)}
         />
         <Button.ClassButton
           selected={"빛살반"}
           selectedButton={selectedButton}
-          onClick={() => handleButtonClick("빛살반")}
+          onClick={() => handleButtonClick("빛살반", 3)}
         />
       </StyledButtonWrapper>
       <TeacherInformation />
@@ -69,7 +56,7 @@ const ClassButton = () => {
       {selectedTab === "gallery" ? (
         <StyledABBtn onClick={handleGalleryClick}>갤러리</StyledABBtn>
       ) : (
-        <Buttons.AB onClick={handleGalleryClick}>갤러리</Buttons.AB>
+        <StyledABButton onClick={handleGalleryClick}>갤러리</StyledABButton>
       )}
       {selectedTab === "member" ? <ClassMember /> : <Gallery />}
     </>
@@ -85,9 +72,15 @@ const StyledButtonWrapper = styled.div`
 const StyledHeaderFont = styled.div`
   ${textVariants.H1}
   margin-bottom: 20px;
+  margin-top: 29px;
 `;
 
 const StyledABBtn = styled(Buttons.AB)`
   color: ${({ theme }) => theme.color.primary};
   background-color: ${({ theme }) => theme.color.green_darker};
+  margin-top: 20px;
 `;
+
+const StyledABButton = styled(Buttons.AB)`
+  margin-top: 20px;
+`
