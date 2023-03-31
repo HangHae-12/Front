@@ -6,13 +6,13 @@ const Host = () => {
 
   return (
     <StyledContainer>
-      <StyledLeftContainer>
+      {/* <StyledLeftContainer>
         <SideBar />
-      </StyledLeftContainer>
-      <StyledRightContainer>
+    </StyledLeftContainer>  */}
+      < StyledRightContainer >
         <ClassButtonGroup />
-      </StyledRightContainer>
-    </StyledContainer>
+      </StyledRightContainer >
+    </StyledContainer >
   );
 };
 

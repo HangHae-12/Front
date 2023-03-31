@@ -14,6 +14,7 @@ const Router = () => {
 
         <Route path="/common/classes" element={PAGE.member} />
         <Route path="/common/classes/:id" element={PAGE.member} />
+        <Route path="/host" element={PAGE.host} />
         <Route
           path="/host/:classroomId/:scheduleId?/:timeId?"
           element={PAGE.host}

@@ -3,20 +3,21 @@ import styled from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import Buttons from "../../components/Buttons";
-
+import { useSetRecoilState, useRecoilValue } from "recoil";
+import { scheduledIdAtom, classIdAtom, timeAtom } from "../../atom/hostButtonAtom";
 const Time = (hostParams) => {
-
+    const setTime = useSetRecoilState(timeAtom);
+    const time = useRecoilValue(timeAtom);
     const queryClient = useQueryClient();
     const { classroomId, scheduleId, timeId } = useParams();
     const navigate = useNavigate();
 
-    const [time, setTime] = useState("전체시간");
+
 
     const handleTimeButton = (timeId) => {
+
         setTime(timeId);
-        navigate(`/host/${classroomId}/${scheduleId}/${timeId}`, { replace: true }, () => {
-            queryClient.invalidateQueries(["getManageTimeSchedule", hostParams]);
-        });
+        navigate(`/host/${classroomId}/${scheduleId}/${timeId}`)
     };
     return (
         <StyledTimeButtonGroup>
