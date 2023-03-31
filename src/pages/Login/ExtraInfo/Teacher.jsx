@@ -1,12 +1,14 @@
-import { useState, useRef } from "react";
+import { useRef } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
+import { useLocation } from "react-router-dom";
 import StyledExtraInfo from "./styled";
 import { SignAPI } from "../../../api/SignAPI";
 import ProfileImageUploader from "../../../components/ProfileImageUploader";
 
 const Teacher = () => {
   const profileInputRef = useRef(null);
+  const location = useLocation();
 
   const {
     register,
@@ -14,7 +16,7 @@ const Teacher = () => {
     formState: { errors },
   } = useForm();
 
-  const { mutate } = useMutation(SignAPI.signTeacher, {
+  const { mutate } = useMutation(SignAPI.putExtraInfo, {
     onSuccess: (res) => {
       console.log(res);
     },
@@ -27,6 +29,7 @@ const Teacher = () => {
     const formData = new FormData();
     formData.append("name", data.name);
     formData.append("phoneNumber", data.phoneNumber);
+    console.log(profileInputRef.current.files[0]);
     profileInputRef.current.files[0] &&
       formData.append("profileImage", profileInputRef.current.files[0]);
     formData.append("birthday", data.birthday);
@@ -36,8 +39,9 @@ const Teacher = () => {
     for (const [key, value] of formData.entries()) {
       console.log(`${key}: ${value}`);
     }
+    const role = location.pathname.split("/")[2];
 
-    // mutate(formData);
+    mutate({ role: role, info: formData });
   };
 
   return (

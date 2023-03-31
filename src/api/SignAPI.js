@@ -31,22 +31,16 @@ export const SignAPI = {
       console.error(error);
     }
   },
-  //  sign api 하나로 합칠 수 있을 것 같다.
-  signParent: async (info) => {
+  
+  putExtraInfo: async (payload) => {
+    const { role, info } = payload;
+    console.log(payload);
     try {
-      const response = await apiInstance.put("/signup/parent/info", info);
+      const response = await apiInstance.put(`/signup/${role}/info`, info);
       console.log(response);
     } catch (error) {
       console.error(error);
     }
   },
-  signTeacher: async (info) => {
-    console.log(info);
-    try {
-      const response = await apiInstance.put("/signup/teacher/info", info);
-      console.log(response);
-    } catch (error) {
-      console.error(error);
-    }
-  },
+  
 };

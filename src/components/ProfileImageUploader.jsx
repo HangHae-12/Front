@@ -1,4 +1,3 @@
-// components/ImageUploader/ImageUploader.js
 import { useState, forwardRef } from "react";
 import styled from "styled-components";
 import { DUMMY_PROFILE_IMG_SRC } from "../assets";
