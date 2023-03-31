@@ -114,7 +114,7 @@ const StyledChildrenCard = styled.div`
   border-radius: 8px;
   width: 180px;
   height: 160px;
-  border: 1px solid ${({ theme }) => theme.color.white};
+  border: 1px solid ${({ theme }) => theme.color.grayScale[100]};
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -144,6 +144,13 @@ const StyledPersonnelFont = styled.div`
 
 const StyledAddMemberButton = styled.button`
   margin-left: auto;
+  margin-left: auto;
+  border-radius: 4px;
+  border: 1px solid ${({ theme }) => theme.color.primary};
+  background: #FFFFFF;
+  padding: 4px 10px;
+  gap: 10px;
+  color: ${({ theme }) => theme.color.primary};
 `;
 
 const StyledMemberSearchInput = styled.input`

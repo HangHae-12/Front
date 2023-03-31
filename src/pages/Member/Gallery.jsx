@@ -334,6 +334,7 @@ const StyledGalleryCard = styled.div`
   width: 216px;
   height: 286px;
   background: ${({ theme }) => theme.color.white};
+  border: 1px solid ${({ theme }) => theme.color.grayScale[100]};
   border-radius: 8px;
   margin-left: 20px;
   margin-top: 10px;
@@ -441,6 +442,12 @@ const StyledDatePickerWrapper = styled.div`
 `;
 const SyledAddGalleryButton = styled.button`
   margin-left: auto;
+  border-radius: 4px;
+  border: 1px solid ${({ theme }) => theme.color.primary};
+  background: #FFFFFF;
+  padding: 4px 10px;
+  gap: 10px;
+  color: ${({ theme }) => theme.color.primary};
 `;
 const StyledGallerySearchInput = styled.input`
   margin-left: 10px;

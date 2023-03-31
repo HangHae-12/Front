@@ -10,7 +10,7 @@ import Buttons from "../../components/Buttons";
 
 const ClassButton = () => {
   const [selectedButton, setSelectedButton] = useState("");
-  const [selectedTab, setSelectedTab] = useState("member");
+  const [selectedTab, setSelectedTab] = useState("");
 
   const handleMemberClick = () => {
     setSelectedTab("member");
@@ -49,16 +49,24 @@ const ClassButton = () => {
       </StyledButtonWrapper>
       <TeacherInformation />
       {selectedTab === "member" ? (
-        <StyledABBtn onClick={handleMemberClick}>학급인원</StyledABBtn>
+        <StyledABBtn marginLeft="30px" onClick={handleMemberClick}>학급인원</StyledABBtn>
       ) : (
-        <Buttons.AB onClick={handleMemberClick}>학급인원</Buttons.AB>
+        <StyledABButton marginLeft="30px" onClick={handleMemberClick}>학급인원</StyledABButton>
       )}
       {selectedTab === "gallery" ? (
-        <StyledABBtn onClick={handleGalleryClick}>갤러리</StyledABBtn>
+        <StyledABBtn marginLeft="10px" onClick={handleGalleryClick}>갤러리</StyledABBtn>
       ) : (
-        <StyledABButton onClick={handleGalleryClick}>갤러리</StyledABButton>
+        <StyledABButton marginLeft="10px" onClick={handleGalleryClick}>갤러리</StyledABButton>
       )}
-      {selectedTab === "member" ? <ClassMember /> : <Gallery />}
+      {selectedTab === "member" ? (
+        <ClassMember />
+      ) : selectedTab === "gallery" ? (
+        <Gallery />
+      ) : selectedTab === "" ? (
+        <StyledChildrenWrapper />
+      ) : (
+        <StyledChildrenWrapper />
+      )}
     </>
   );
 };
@@ -79,8 +87,26 @@ const StyledABBtn = styled(Buttons.AB)`
   color: ${({ theme }) => theme.color.primary};
   background-color: ${({ theme }) => theme.color.green_darker};
   margin-top: 20px;
+  margin-left: ${({ marginLeft }) => marginLeft};
+  border-radius: 4px 4px 0px 0px;
 `;
 
 const StyledABButton = styled(Buttons.AB)`
   margin-top: 20px;
-`
+  margin-left: ${({ marginLeft }) => marginLeft};
+  border-radius: 4px 4px 0px 0px;
+`;
+
+const StyledChildrenWrapper = styled.div`
+  padding: 0px 0px 20px;
+  gap: 40px;
+  width: calc(7 * (190px + 15px));
+  height: 484px;
+  background: ${({ theme }) => theme.color.green_darker};
+  border-radius: 12px;
+
+  @media (max-width: 1800px) {
+    width: calc(7 * (140px + 15px));
+    height: 360px;
+  }
+`;

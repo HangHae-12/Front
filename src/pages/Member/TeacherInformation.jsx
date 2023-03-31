@@ -109,6 +109,7 @@ const StyledLeftWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   margin-left: 40px;
+  margin-top: 10px;
 `;
 
 const StyledQuestionFont = styled.div`
