@@ -4,16 +4,16 @@ import ClassButtonGroup from './ClassButtonGroup'
 
 const Host = () => {
 
-    return (
-        <StyledContainer>
-            <StyledLeftContainer>
-                <SideBar />
-            </StyledLeftContainer>
-            <StyledRightContainer>
-                <ClassButtonGroup />
-            </StyledRightContainer>
-        </StyledContainer>
-    );
+  return (
+    <StyledContainer>
+      <StyledLeftContainer>
+        <SideBar />
+      </StyledLeftContainer>
+      <StyledRightContainer>
+        <ClassButtonGroup />
+      </StyledRightContainer>
+    </StyledContainer>
+  );
 };
 
 export default Host;
