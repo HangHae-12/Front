@@ -16,6 +16,7 @@ const Router = () => {
         <Route path="/common/classes/:id" element={PAGE.member} />
         <Route path="/host/:classId" element={PAGE.host} />
         <Route path="/host/:classId/:scheduleId" element={PAGE.host} />
+        <Route path="/host/:classId/:scheduleId/:timeId" element={PAGE.host} />
         <Route path="/preview" element={PAGE.preview} />
         <Route path="/login" element={PAGE.login} />
         <Route path="/oauth/kakao/callback" element={PAGE.kakaoLogin} />

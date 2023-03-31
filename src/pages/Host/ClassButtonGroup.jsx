@@ -14,7 +14,7 @@ const ClassButtonGroup = () => {
   const navigate = useNavigate();
   const [selectedButton, setSelectedButton] = useState("모든반");
   const [classId, setClassId] = useState(0);
-  const [scheduleId, setScheduleId] = useState("등원인원");
+  const [scheduleId, setScheduleId] = useState("ENTER");
   const [time, setTime] = useState("전체시간");
   const [page, setPage] = useState(1);
 
@@ -53,11 +53,11 @@ const ClassButtonGroup = () => {
 
   useEffect(() => {
     // if (!isLoadingClass && !isLoadingSchedule) {
-    if (scheduleId === "등원인원" && time === "전체시간") {
+    if (scheduleId === "ENTER" && time === "전체시간") {
       if (classData) {
         setBindData(classData.childEnterResponseDtoList);
       }
-    } else if (scheduleId === "하원인원") {
+    } else if (scheduleId === "EXIT") {
       if (scheduleData) {
         setBindData(scheduleData.childEnterResponseDtoList);
       }
@@ -70,34 +70,6 @@ const ClassButtonGroup = () => {
 
   console.log(bindData);
 
-  // selectedButton의 값에 따라 다른 쿼리 실행
-  // const queryKey = selectedButton === "모든반"
-  //   ? ["getManageEnter", hostParams]
-  //   : ["getManageClassSchedule", { classId, ...hostParams }];
-
-  // const { isLoading2, isError2, data2 } = useQuery(
-  //   queryKey,
-  //   async () => {
-  //     if (selectedButton === "모든반") {
-  //       const result = await HostAPI.getManageSchedule(hostParams);
-  //       return result.data;
-  //     } else {
-  //       const result = await HostAPI.getManageClassSchedule({
-  //         classId,
-  //         ...hostParams,
-  //       });
-  //       return result.data;
-  //     }
-  //   },
-  //   {
-  //     onSuccess: (data) => {
-  //       console.log(data);
-  //     },
-  //     onError: () => {
-  //       console.log("error");
-  //     },
-  //   }
-  // );
 
   //페이지네이션 페이지 지정
 
@@ -118,14 +90,14 @@ const ClassButtonGroup = () => {
   };
   const handleAttendanceButton = (ScheduleId) => {
     setScheduleId(ScheduleId);
-    // navigate(`/host/${classId}/${ScheduleId}/전체시간`);
-    // queryClient.invalidateQueries(["getManageTimeSchedule", hostParams]);
+    navigate(`/host/${classId}/${ScheduleId}/전체시간`);
+    queryClient.invalidateQueries(["getManageTimeSchedule", hostParams]);
   };
   //시간버튼 눌렀을때 추가
   const handleTimeButton = (timeId) => {
     setTime(timeId);
-    // navigate(`/host/${classId}/${scheduleId}/${timeId}`);
-    // queryClient.invalidateQueries(["getManageTimeSchedule", hostParams]);
+    navigate(`/host/${classId}/${scheduleId}/${timeId}`);
+    queryClient.invalidateQueries(["getManageTimeSchedule", hostParams]);
   };
 
 
@@ -161,17 +133,17 @@ const ClassButtonGroup = () => {
         </StyledInfoColomn>
         <StyledInfoRow>
           <StyledInfoLabel>총원</StyledInfoLabel>
-          <StyledInfoValue>{bindData?.totalNumber}</StyledInfoValue>
+          <StyledInfoValue>{classData?.totalNumber}</StyledInfoValue>
           <StyleddateLabel>명</StyleddateLabel>
         </StyledInfoRow>
         <StyledInfoRow>
           <StyledInfoLabel>등원</StyledInfoLabel>
-          <StyledInfoValue>{bindData?.notEnterNumber}</StyledInfoValue>
+          <StyledInfoValue>{classData?.notEnterNumber}</StyledInfoValue>
           <StyleddateLabel>명</StyleddateLabel>
         </StyledInfoRow>
         <StyledInfoRow>
           <StyledInfoLabel>미등원</StyledInfoLabel>
-          <StyledInfoValue>{bindData?.exitNumber}</StyledInfoValue>
+          <StyledInfoValue>{classData?.exitNumber}</StyledInfoValue>
           <StyleddateLabel>명</StyleddateLabel>
         </StyledInfoRow>
         {/* <StyledInfoRow>
@@ -182,19 +154,19 @@ const ClassButtonGroup = () => {
       </StyledInfoContainer>
 
       <StyledAttendanceButtonGroup>
-        {scheduleId === "등원인원" ? (
+        {scheduleId === "ENTER" ? (
           <StyledABBtn
-            onClick={() => handleAttendanceButton("등원인원")}>등원인원</StyledABBtn>
+            onClick={() => handleAttendanceButton("ENTER")}>등원인원</StyledABBtn>
         ) : (
           <Buttons.AB
-            onClick={() => handleAttendanceButton("등원인원")}>등원인원</Buttons.AB>
+            onClick={() => handleAttendanceButton("ENTER")}>등원인원</Buttons.AB>
         )}
-        {scheduleId === "하원인원" ? (
+        {scheduleId === "EXIT" ? (
           <StyledABBtn
-            onClick={() => handleAttendanceButton("하원인원")}>하원인원</StyledABBtn>
+            onClick={() => handleAttendanceButton("EXIT")}>하원인원</StyledABBtn>
         ) : (
           <Buttons.AB
-            onClick={() => handleAttendanceButton("하원인원")}>하원인원</Buttons.AB>
+            onClick={() => handleAttendanceButton("EXIT")}>하원인원</Buttons.AB>
         )}
       </StyledAttendanceButtonGroup>
       <StyledAttendanceContainer>
@@ -350,7 +322,7 @@ const StyledStudentGrid = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   grid-template-rows: auto; 
   grid-gap: 20px;
   margin-top: 20px;
