@@ -6,12 +6,13 @@ import { HostAPI } from "../../api/HostAPI";
 import textVariants from "../../styles/variants/textVariants";
 import Button from "../../components/Button";
 import Buttons from "../../components/Buttons";
-import Pagination from 'rc-pagination';
 import ClassButton from "./ClassButton";
 import Attendee from './Attendee'
 import Schedule from './Schedule'
 import Time from './Time'
 import Children from './Children';
+import Pagination from '../../components/Pagination';
+
 const ClassButtonGroup = () => {
 
   const queryClient = useQueryClient();
@@ -64,7 +65,6 @@ const ClassButtonGroup = () => {
 
 
   //페이지네이션 페이지 지정
-
 
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = Math.ceil((bindData?.length || 0) / 15);
