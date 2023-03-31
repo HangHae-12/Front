@@ -36,7 +36,7 @@ export const SignAPI = {
     const { role, info } = payload;
     console.log(payload);
     try {
-      const response = await apiInstance.put(`/signup/${role}/info`, info);
+      const response = await apiInstance.put(`/${role}/info`, info);
       console.log(response);
     } catch (error) {
       console.error(error);

@@ -29,12 +29,10 @@ const Teacher = () => {
     const formData = new FormData();
     formData.append("name", data.name);
     formData.append("phoneNumber", data.phoneNumber);
-    console.log(profileInputRef.current.files[0]);
-    profileInputRef.current.files[0] &&
-      formData.append("profileImage", profileInputRef.current.files[0]);
-    formData.append("birthday", data.birthday);
-    formData.append("resolution", data.resolution);
     formData.append("ADMIN_TOKEN", data.ADMIN_TOKEN);
+    formData.append("profileImage", profileInputRef.current.files[0] ?? null);
+    formData.append("birthday", data.birthday ?? null);
+    formData.append("resolution", data.resolution ?? null);
 
     for (const [key, value] of formData.entries()) {
       console.log(`${key}: ${value}`);
