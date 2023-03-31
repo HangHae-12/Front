@@ -85,10 +85,15 @@ export default ClassMember;
 const StyledChildrenWrapper = styled.div`
   padding: 0px 0px 20px;
   gap: 40px;
-  width: calc(8 * (130px + 16px));
-  height: 650px;
+  width: calc(7 * (190px + 15px));
+  height: 484px;
   background: ${({ theme }) => theme.color.green_darker};
   border-radius: 12px;
+
+  @media (max-width: 1800px) {
+    width: calc(7 * (140px + 15px));
+    height: 360px;
+  }
 `;
 
 const StyledChildernHeader = styled.div`
@@ -107,9 +112,9 @@ const StyledChildrenContainer = styled.div`
 const StyledChildrenCard = styled.div`
   background: ${({ theme }) => theme.color.white};
   border-radius: 8px;
-  width: 130px;
-  height: 130px;
-  border: 1px solid ${({ theme }) => theme.color.white};
+  width: 180px;
+  height: 160px;
+  border: 1px solid ${({ theme }) => theme.color.grayScale[100]};
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -119,6 +124,11 @@ const StyledChildrenCard = styled.div`
   box-sizing: border-box;
   margin-left: 10px;
   margin-top: 10px;
+
+  @media (max-width: 1800px) {
+    width: 135px;
+    height: 130px;
+  }
 `;
 
 const StyledChildrenImage = styled.img`
@@ -134,6 +144,13 @@ const StyledPersonnelFont = styled.div`
 
 const StyledAddMemberButton = styled.button`
   margin-left: auto;
+  margin-left: auto;
+  border-radius: 4px;
+  border: 1px solid ${({ theme }) => theme.color.primary};
+  background: #FFFFFF;
+  padding: 4px 10px;
+  gap: 10px;
+  color: ${({ theme }) => theme.color.primary};
 `;
 
 const StyledMemberSearchInput = styled.input`
