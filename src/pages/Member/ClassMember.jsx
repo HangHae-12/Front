@@ -2,13 +2,8 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
-
-
-
-
 import { MemberAPI } from "../../api/MemberAPI";
 import Modal from "../../components/Modal";
-
 import useModal from "../../hooks/useModal";
 import textVariants from "../../styles/variants/textVariants";
 import ClassModal from "./ClassModal";
