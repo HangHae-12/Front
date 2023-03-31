@@ -7,7 +7,7 @@ export const HostAPI = {
         try {
             const response = await instance.get(`/manager/classroom/${classroomId}`)
             console.log(response);
-            return response.data;
+            return response.data.data;
     
         }catch (error) {
             console.log(error);
@@ -23,7 +23,7 @@ export const HostAPI = {
                     page: payload.page,
                     },
             });
-            return response.data;
+            return response.data.data;
 
         }catch (error) {
             console.log(error);
