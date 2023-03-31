@@ -1,11 +1,6 @@
-// components/ImageUploader/ImageUploader.js
 import { useState, forwardRef } from "react";
 import styled from "styled-components";
 import { DUMMY_PROFILE_IMG_SRC } from "../assets";
-
-const Thumbnail = styled.img`
-  // 적절한 스타일 추가
-`;
 
 const ProfileImageUploader = forwardRef((props, ref) => {
   const [previewImage, setPreviewImage] = useState(null);
@@ -27,15 +22,14 @@ const ProfileImageUploader = forwardRef((props, ref) => {
 
   return (
     <>
-      <input
+      <StyledProfileImageUploader.Input
         type="file"
         {...props}
         onChange={handleImageChange}
-        style={{ display: "none" }}
         ref={ref}
       />
-      <Thumbnail
-        src={previewImage || DUMMY_PROFILE_IMG_SRC}
+      <StyledProfileImageUploader.Thumbnail
+        src={previewImage ?? DUMMY_PROFILE_IMG_SRC}
         alt="Profile thumbnail"
         onClick={handleThumbnailImage}
       />
@@ -46,6 +40,14 @@ const ProfileImageUploader = forwardRef((props, ref) => {
 export default ProfileImageUploader;
 
 const StyledProfileImageUploader = {
-  // input
-
-}
+  Input: styled.input`
+    display: none;
+  `,
+  Thumbnail: styled.img`
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: pointer;
+  `,
+};

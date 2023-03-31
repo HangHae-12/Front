@@ -12,7 +12,7 @@ export const StyledButton = styled.button`
   background-color: ${({ colorTypes, bgColor, theme }) =>
     colorTypes
       ? theme.color[colorTypes]
-      : bgColor || theme.color.grayScale[50]};
+      : bgColor ?? theme.color.grayScale[50]};
 
   border: ${({ outlined }) => (outlined ? "1px solid" : "none")};
   border-color: ${({ outlined, bgColor, theme }) =>
@@ -59,7 +59,7 @@ export const StyledButton = styled.button`
       }
     `}
 
-  ${({ buttonsTypes }) => buttonVariants[buttonsTypes] || ""}
+  ${({ buttonsTypes }) => buttonVariants[buttonsTypes] ?? ""}
 
   ${({ width }) =>
     width &&

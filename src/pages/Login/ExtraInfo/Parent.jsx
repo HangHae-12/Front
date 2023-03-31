@@ -1,19 +1,43 @@
+import { useRef } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
+import { useLocation } from "react-router-dom";
 import StyledExtraInfo from "./styled";
+import { SignAPI } from "../../../api/SignAPI";
+import ProfileImageUploader from "../../../components/ProfileImageUploader";
 
 const Parent = () => {
+  const profileInputRef = useRef(null);
+  const location = useLocation();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const mutation = useMutation(async (data) => {
-    console.log(data);
+
+  const { mutate } = useMutation(SignAPI.putExtraInfo, {
+    onSuccess: (res) => {
+      console.log(res);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
   });
 
   const onSubmit = (data) => {
-    mutation.mutate(data);
+    const formData = new FormData();
+    formData.append("name", data.name);
+    formData.append("phoneNumber", data.phoneNumber);
+    formData.append("profileImage", profileInputRef.current.files[0] ?? null);
+    formData.append("relationship", data.relationship ?? null);
+    formData.append("emergencyPhoneNumber", data.emergencyPhoneNumber ?? null);
+
+    for (const [key, value] of formData.entries()) {
+      console.log(`${key}: ${value}`);
+    }
+    const role = location.pathname.split("/")[2];
+
+    mutate({ role: role, info: formData });
   };
 
   return (
@@ -50,10 +74,10 @@ const Parent = () => {
         <StyledExtraInfo.Label htmlFor="profileImage">
           프로필 사진
         </StyledExtraInfo.Label>
-        <StyledExtraInfo.Input
-          type="file"
+        <ProfileImageUploader
           {...register("profileImage")}
           id="profileImage"
+          ref={profileInputRef}
         />
 
         <StyledExtraInfo.Label htmlFor="relationship">
