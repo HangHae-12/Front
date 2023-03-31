@@ -14,11 +14,12 @@ const useModal = () => {
   );
 
   const openModal = useCallback(
-    ({ title, contents, callback }) => {
+    ({ title, contents, footer, callback }) => {
       setModalState({
         isOpen: true,
         title: title,
         contents: contents,
+        footer: footer,
         callback: callback,
       });
     },

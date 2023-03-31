@@ -41,9 +41,7 @@ const Modal = ({ modalOption = {} }) => {
               <StyledModal.Contents>{modalState.contents}</StyledModal.Contents>
               {modalState.callback && (
                 <StyledModal.Footer>
-                  <button onClick={closeModal}>Cancel</button>
-                  <button onClick={modalState.callback}>Ok</button>
-                  {/* 모달 디자인이 나오면 버튼 디자인, 문구 변경할 것 */}
+                  {modalState.footer}
                 </StyledModal.Footer>
               )}
             </StyledModal.Container>
@@ -102,14 +100,11 @@ const StyledModal = {
 
   Footer: styled.div`
     position: absolute;
-    width: 100%;
+    right: 30px;
     display: flex;
     justify-content: center;
-    bottom: 10px;
+    bottom: 20px;
     gap: 10px;
-    button {
-      width: 20%;
-    }
   `,
 
   CloseButton: styled.button`
