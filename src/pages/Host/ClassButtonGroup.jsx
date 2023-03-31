@@ -29,7 +29,7 @@ const ClassButtonGroup = () => {
 
 
   //등원,하원,timea,page param
-  const hostParams = { type: scheduleId, dailyEnterTime: time, page };
+  const hostParams = { type: scheduleParam, dailyEnterTime: timeParm, page };
 
 
   //조회쿼리가 2개이므로 유지보수성을 위해서 객체 분해 형식으로 변수지정
@@ -85,19 +85,22 @@ const ClassButtonGroup = () => {
   const loadClassroom = (selected, classId) => {
     setSelectedButton(selected);
     setClassId(classId);
-    navigate(`/host/${classId}`);
-    queryClient.invalidateQueries(["getManageClass", classId]);
+    navigate(`/host/${classId}`, { replace: true }, () => {
+      queryClient.invalidateQueries(["getManageClass", classroomId]);
+    });
   };
   const handleAttendanceButton = (ScheduleId) => {
     setScheduleId(ScheduleId);
-    navigate(`/host/${classId}/${ScheduleId}/전체시간`);
-    queryClient.invalidateQueries(["getManageTimeSchedule", hostParams]);
+    navigate(`/host/${classId}/${ScheduleId}/전체시간`, { replace: true }, () => {
+      queryClient.invalidateQueries(["getManageTimeSchedule", hostParams]);
+    });
   };
   //시간버튼 눌렀을때 추가
   const handleTimeButton = (timeId) => {
     setTime(timeId);
-    navigate(`/host/${classId}/${scheduleId}/${timeId}`);
-    queryClient.invalidateQueries(["getManageTimeSchedule", hostParams]);
+    navigate(`/host/${classId}/${scheduleId}/${timeId}`, { replace: true }, () => {
+      queryClient.invalidateQueries(["getManageTimeSchedule", hostParams]);
+    });
   };
 
 
