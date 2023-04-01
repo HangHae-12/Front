@@ -7,6 +7,7 @@ import textVariants from "../../styles/variants/textVariants";
 
 const Children = ({ bindData }) => {
   const queryClient = useQueryClient();
+  //useSearchParams 알아보기
   const { classroomId, scheduleId, timeId } = useParams();
   const navigate = useNavigate();
 
