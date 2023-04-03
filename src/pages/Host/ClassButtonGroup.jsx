@@ -51,20 +51,20 @@ const ClassButtonGroup = () => {
 
   useEffect(() => {
     if (scheduleId === "ENTER" && timeId === "전체시간") {
-      if (classData && classData.data.childEnterResponseDtoList) {
-        setBindData(classData.data.childEnterResponseDtoList);
+      if (classData && classData.data.childrenEnterResponseDto.childEnterResponseDtoList) {
+        setBindData(classData.data.childrenEnterResponseDto.childEnterResponseDtoList);
       } else {
         setBindData([]);
       }
     } else if (scheduleId === "EXIT") {
-      if (scheduleData && scheduleData.data) {
-        setBindData(scheduleData.data);
+      if (scheduleData && scheduleData.data.childEnterResponseDtoList) {
+        setBindData(scheduleData.data.childEnterResponseDtoList);
       } else {
         setBindData([]);
       }
     } else if (timeId !== "전체시간") {
-      if (scheduleData && scheduleData.data) {
-        setBindData(scheduleData.data);
+      if (scheduleData && scheduleData.data.childEnterResponseDtoList) {
+        setBindData(scheduleData.data.childEnterResponseDtoList);
       } else {
         setBindData([]);
       }
