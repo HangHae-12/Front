@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import Pagination from "rc-pagination";
 import "rc-pagination/assets/index.css";
+import textVariants from "../styles/variants/textVariants";
 
 const CustomPagination = ({ current, pageSize, total, onChange }) => {
   return (
@@ -46,6 +47,7 @@ const StyledPagination = styled(Pagination)`
 .rc-pagination-next button,
 .rc-pagination-total-text a, 
 .rc-pagination-total-text button {
+  ${textVariants.Body3_Regular}
     padding: 6px 8px;
     height: auto;
     min-width: 32px;
@@ -56,8 +58,6 @@ const StyledPagination = styled(Pagination)`
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 12px;
-    font-weight: 500;
     color: ${({ theme }) => theme.color.grayScale[400]} !important;
     transition: 0.3s;
     -webkit-transition: 0.3s;
@@ -74,7 +74,7 @@ const StyledPagination = styled(Pagination)`
 .rc-pagination-total-text.rc-pagination-item-active a:hover {
     background-color: ${({ theme }) => theme.color.primary};
     border-color: ${({ theme }) => theme.color.primary};
-    color: #ffffff !important;
+    color: ${({ theme }) => theme.color.white} !important;
 }
 .rc-pagination-item a:hover, 
 .rc-pagination-item button:hover, 
@@ -84,8 +84,8 @@ const StyledPagination = styled(Pagination)`
 .rc-pagination-next button:hover, 
 .rc-pagination-total-text a:hover, 
 .rc-pagination-total-text button:hover {
-    background-color: #eceff5;
-    border-color: #eceff5;
+    background-color: ${({ theme }) => theme.color.grayScale[100]};
+    border-color: ${({ theme }) => theme.color.grayScale[100]};
 }
 
 `
