@@ -12,7 +12,7 @@ const Header = ({ children, isClosedIcon }) => {
   return (
     <StyledCard.Header>
       {children}
-      {isClosedIcon && <StyledCard.Icon>&times</StyledCard.Icon>}
+      {isClosedIcon && <StyledCard.Icon>&times;</StyledCard.Icon>}
     </StyledCard.Header>
   );
 };
@@ -48,17 +48,7 @@ const StyledCard = {
   `,
 
   Icon: styled.span`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 20px;
-    transition: 0.2s ease;
-
-    &:hover {
-      border-radius: 50px;
-      background-color: ${({ theme }) => theme.color.gray_300};
-      cursor: pointer;
-    }
+    font-size: 20px;
   `,
 
   Content: styled.div`
