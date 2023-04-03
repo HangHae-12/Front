@@ -156,7 +156,12 @@ const Gallery = () => {
 
   const modalData = {
     title: (
-      <input type="text" onChange={(e) => setTitle(e.target.value)}></input>
+      <>
+        <StyledGalleryModalHeader>갤러리 수정</StyledGalleryModalHeader>
+        <StyledGalleryModalTitleBox>
+          <input type="text" onChange={(e) => setTitle(e.target.value)}></input>
+        </StyledGalleryModalTitleBox>
+      </>
     ),
     contents: (
       <StyledModalContent>
@@ -183,8 +188,17 @@ const Gallery = () => {
             </StyledAddGallery>
           );
         })}
-        <button onClick={(e) => handleGallerySubmit(id)}>저장하기</button>
       </StyledModalContent>
+    ),
+    footer: (
+      <>
+        <Buttons.Filter
+          colorTypes="primary"
+          onClick={(e) => handleGallerySubmit(id)}
+        >
+          저장하기
+        </Buttons.Filter>
+      </>
     ),
     callback: () => alert("modal"),
   };
@@ -194,7 +208,7 @@ const Gallery = () => {
     isCloseButton: true,
     padding: "10px",
     width: "630px",
-    height: "660px",
+    height: "700px",
   };
 
   const createGallery = () => {
@@ -212,7 +226,19 @@ const Gallery = () => {
   //갤러리 상세조회
   const getDetailGallery = () => {
     const gallertModalData = {
-      title: <StyledGalleryModalHeader>갤러리</StyledGalleryModalHeader>,
+      title: (
+        <>
+          <StyledGalleryModalHeader>갤러리</StyledGalleryModalHeader>
+          <StyledGalleryModalTitleBox>
+            <StyledModalTitle>
+              {DetailGallery?.data.data.title}
+            </StyledModalTitle>
+            <StyledModalDate>
+              {DetailGallery?.data.data.createdAt}
+            </StyledModalDate>
+          </StyledGalleryModalTitleBox>
+        </>
+      ),
       contents: (
         <StyledModalContent>
           {DetailGallery?.data.data.imageUrlList.map((item) => {
@@ -260,11 +286,9 @@ const Gallery = () => {
             적용하기
           </Buttons.Filter>
           <SyledAddGalleryButton onClick={createGallery}>
-            사진등록
+            사진 등록
           </SyledAddGalleryButton>
-          <StyledGallerySearchInput
-            onChange={handleSearch}
-          />
+          <StyledGallerySearchInput onChange={handleSearch} />
         </StyledGalleryHeader>
         <StyledGalleryContainer>
           {data?.data.data.map((item) => {
@@ -437,21 +461,25 @@ const StyledPreviewImage = styled.img`
 const StyledDatePicker = styled(DatePicker)`
   margin-left: 7px;
 `;
+
 const StyledDatePickerWrapper = styled.div`
   margin-right: 7px;
 `;
+
 const SyledAddGalleryButton = styled.button`
   margin-left: auto;
   border-radius: 4px;
   border: 1px solid ${({ theme }) => theme.color.primary};
-  background: #FFFFFF;
+  background: ${({ theme }) => theme.color.white};
   padding: 4px 10px;
   gap: 10px;
   color: ${({ theme }) => theme.color.primary};
 `;
+
 const StyledGallerySearchInput = styled.input`
   margin-left: 10px;
 `;
+
 const StyledGalleryModalHeader = styled.div`
   ${textVariants.Body1_SemiBold}
   color: ${({ theme }) => theme.color.grayScale[600]};
@@ -460,4 +488,20 @@ const StyledGalleryModalHeader = styled.div`
   justify-content: center;
   margin-top: 20px;
 `;
-const StyledGalleryModalTitleBox = styled.div``;
+
+const StyledGalleryModalTitleBox = styled.div`
+  padding: 20px;
+  gap: 12px;
+  border-bottom: 2px solid ${({ theme }) => theme.color.grayScale[200]};
+`;
+
+const StyledModalTitle = styled.div`
+  ${textVariants.H3_SemiBold}
+  color: ${({ theme }) => theme.color.grayScale[600]};
+`;
+
+const StyledModalDate = styled.div`
+  ${textVariants.Body3_SemiBold}
+  color: ${({ theme }) => theme.color.grayScale[500]};
+  margin-top: 15px;
+`;

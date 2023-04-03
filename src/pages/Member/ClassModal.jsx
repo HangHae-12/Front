@@ -7,7 +7,7 @@ const ClassModal = () => {
     isCloseButton: true,
     padding: "10px",
     width: "800px",
-    height: "400px",
+    height: "800px",
   };
   return <Modal modalOption={modalOption} />;
 };
