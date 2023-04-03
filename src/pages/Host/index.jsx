@@ -11,8 +11,8 @@ const Host = () => {
       </StyledLeftContainer>
       <StyledRightContainer>
         <ClassButtonGroup />
-      </StyledRightContainer>
-    </StyledContainer>
+      </StyledRightContainer >
+    </StyledContainer >
   );
 };
 

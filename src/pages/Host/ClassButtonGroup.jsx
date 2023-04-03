@@ -4,8 +4,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import { HostAPI } from "../../api/HostAPI";
 import textVariants from "../../styles/variants/textVariants";
-import Button from "../../components/Button";
-import Buttons from "../../components/Buttons";
 import ClassButton from "./ClassButton";
 import Attendee from "./Attendee";
 import Schedule from "./Schedule";
@@ -13,12 +11,14 @@ import Time from "./Time";
 import Children from "./Children";
 import Pagination from "../../components/Pagination";
 
+
 const ClassButtonGroup = () => {
+
   const queryClient = useQueryClient();
   const { classroomId, scheduleId, timeId } = useParams();
   const navigate = useNavigate();
-  const [time, setTime] = useState("전체시간");
   const [page, setPage] = useState(1);
+
 
   //등원,하원,timea,page param
   const hostParams = { type: scheduleId, dailyEnterTime: timeId, page };
@@ -32,7 +32,9 @@ const ClassButtonGroup = () => {
   } = useQuery(["getManageClass", classroomId], () =>
     HostAPI.getManageClass(classroomId)
   );
-  console.log(classData);
+  console.log(classroomId);
+  console.log(scheduleId);
+  console.log(timeId);
   const {
     isLoading: isLoadingSchedule,
     isError: isErrorSchedule,
@@ -48,33 +50,46 @@ const ClassButtonGroup = () => {
   const [bindData, setBindData] = useState([]);
 
   useEffect(() => {
-    // if (!isLoadingClass && !isLoadingSchedule) {
-    if (scheduleId === "ENTER" && time === "전체시간") {
-      if (classData) {
-        setBindData(classData.childEnterResponseDtoList);
+    if (scheduleId === "ENTER" && timeId === "전체시간") {
+      if (classData && classData.data.childrenEnterResponseDto.childEnterResponseDtoList) {
+        setBindData(classData.data.childrenEnterResponseDto.childEnterResponseDtoList);
+      } else {
+        setBindData([]);
       }
     } else if (scheduleId === "EXIT") {
-      if (scheduleData) {
-        setBindData(scheduleData.childEnterResponseDtoList);
+      if (scheduleData && scheduleData.data.childEnterResponseDtoList) {
+        setBindData(scheduleData.data.childEnterResponseDtoList);
+      } else {
+        setBindData([]);
       }
-    } else if (time !== "전체시간") {
-      if (scheduleData) {
-        setBindData(scheduleData.childEnterResponseDtoList);
+    } else if (timeId !== "전체시간") {
+      if (scheduleData && scheduleData.data.childEnterResponseDtoList) {
+        setBindData(scheduleData.data.childEnterResponseDtoList);
+      } else {
+        setBindData([]);
       }
+    } else {
+      setBindData([]);
     }
-  }, [classData, scheduleData, classroomId, scheduleId, time]);
+  }, [classData, scheduleData, classroomId, scheduleId, timeId]);
+
+
+
+
+
 
   console.log(bindData);
-
+  console.log(classData?.data.childEnterResponseDtoList);
+  console.log(scheduleData?.data);
   //페이지네이션 페이지 지정
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = Math.ceil((bindData?.length || 0) / 15);
-  const totalItems = bindData?.length || 0;
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const pageSize = Math.ceil((bindData?.length || 0) / 15);
+  // const totalItems = bindData?.length || 0;
 
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
+  // const handlePageChange = (page) => {
+  //   setCurrentPage(page);
+  // };
 
   return (
     <>

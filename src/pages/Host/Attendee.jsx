@@ -1,43 +1,44 @@
 import styled from "styled-components";
 import textVariants from "../../styles/variants/textVariants";
 
-const Attendee = (classData) => {
+const Attendee = ({ classData }) => {
 
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = today.getMonth() + 1;
-    const day = today.getDate();
-    const todayString = `${year}.${month}.${day}`;
-    const dayOfWeek = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'][today.getDay()];
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth() + 1;
+  const day = today.getDate();
+  const todayString = `${year}.${month}.${day}`;
+  const dayOfWeek = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'][today.getDay()];
 
-    return (
-        <StyledInfoContainer>
-            <StyledInfoColomn>
-                <StyleddateLabel>{todayString}</StyleddateLabel>
-                <StyleddateValue>{dayOfWeek}</StyleddateValue>
-            </StyledInfoColomn>
-            <StyledInfoRow>
-                <StyledInfoLabel>총원</StyledInfoLabel>
-                <StyledInfoValue>{classData?.totalNumber}</StyledInfoValue>
-                <StyleddateLabel>명</StyleddateLabel>
-            </StyledInfoRow>
-            <StyledInfoRow>
-                <StyledInfoLabel>등원</StyledInfoLabel>
-                <StyledInfoValue>{classData?.notEnterNumber}</StyledInfoValue>
-                <StyleddateLabel>명</StyleddateLabel>
-            </StyledInfoRow>
-            <StyledInfoRow>
-                <StyledInfoLabel>미등원</StyledInfoLabel>
-                <StyledInfoValue>{classData?.exitNumber}</StyledInfoValue>
-                <StyleddateLabel>명</StyleddateLabel>
-            </StyledInfoRow>
-            {/* <StyledInfoRow>
+  // console.log(classData);
+  return (
+    <StyledInfoContainer>
+      <StyledInfoColomn>
+        <StyleddateLabel>{todayString}</StyleddateLabel>
+        <StyleddateValue>{dayOfWeek}</StyleddateValue>
+      </StyledInfoColomn>
+      <StyledInfoRow>
+        <StyledInfoLabel>총원</StyledInfoLabel>
+        <StyledInfoValue>{classData?.data?.totalNumber}</StyledInfoValue>
+        <StyleddateLabel>명</StyleddateLabel>
+      </StyledInfoRow>
+      <StyledInfoRow>
+        <StyledInfoLabel>등원</StyledInfoLabel>
+        <StyledInfoValue>{classData?.data?.notEnterNumber}</StyledInfoValue>
+        <StyleddateLabel>명</StyleddateLabel>
+      </StyledInfoRow>
+      <StyledInfoRow>
+        <StyledInfoLabel>미등원</StyledInfoLabel>
+        <StyledInfoValue>{classData?.data?.exitNumber}</StyledInfoValue>
+        <StyleddateLabel>명</StyleddateLabel>
+      </StyledInfoRow>
+      {/* <StyledInfoRow>
           <StyledInfoLabel>결석</StyledInfoLabel>
           <StyledInfoValue>{data.totalNumber}</StyledInfoValue>
           <StyleddateLabel>명</StyleddateLabel>
         </StyledInfoRow> */}
-        </StyledInfoContainer>
-    );
+    </StyledInfoContainer>
+  );
 };
 
 export default Attendee;
