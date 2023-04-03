@@ -2,16 +2,27 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
+import { HostAPI } from "../../api/HostAPI";
 import Buttons from "../../components/Buttons";
 import textVariants from "../../styles/variants/textVariants";
+import { scheduledIdAtom } from "../../atom/hostButtonAtom";
 
 const Children = ({ bindData }) => {
   const queryClient = useQueryClient();
   //useSearchParams 알아보기
   const { classroomId, scheduleId, timeId } = useParams();
   const navigate = useNavigate();
+  const { enterTime, exitTime } = bindData;
 
-
+  const updateExitMutation = useMutation(HostAPI.updateExit, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["getManageTimeSchedule"]);
+      // queryClient.setQueryData(["getManageTimeSchedule"]);
+    },
+  });
+  const handleSchedule = () => {
+    updateExitMutation.mutate()
+  }
 
   return (
     <StyledStudentGrid>
@@ -38,7 +49,17 @@ const Children = ({ bindData }) => {
                 <StyledAttendanceLabel>하원</StyledAttendanceLabel>
                 <StyledAttendanceValue>{item.exitTime}</StyledAttendanceValue>
               </StyledAttendanceRow>
-              <StyledAttendanceBtn>등원처리</StyledAttendanceBtn>
+              {
+                scheduleId === "ENTER"
+                  ?
+                  item.currentStatus === "미등원"
+                    ? <StyledAttendanceBtn onClick={() => handleSchedule}>등원처리</StyledAttendanceBtn>
+                    : <StyledAttendanceBtn onClick={() => handleSchedule}>등원취소</StyledAttendanceBtn>
+                  :
+                  item.currentStatus === "미하원"
+                    ? <StyledAttendanceBtn onClick={() => handleSchedule}>하원처리</StyledAttendanceBtn>
+                    : <StyledAttendanceBtn onClick={() => handleSchedule}>하원취소</StyledAttendanceBtn>
+              }
             </StyledStudentCard>
           );
         })

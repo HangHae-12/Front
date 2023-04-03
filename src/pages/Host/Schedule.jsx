@@ -7,7 +7,7 @@ import { useSetRecoilState, useRecoilValue } from "recoil";
 import { scheduledIdAtom, classIdAtom, timeAtom } from "../../atom/hostButtonAtom";
 
 const Schedule = ({ hostParams }) => {
-
+    //param,전역상태 모두 사용하는 이유는 전체시간,반을 눌렀을때 defalt값을 설정하기 위해서
     const setScheduleId = useSetRecoilState(scheduledIdAtom);
     const scheduledId = useRecoilValue(scheduledIdAtom);
     const setTime = useSetRecoilState(timeAtom);
@@ -16,11 +16,11 @@ const Schedule = ({ hostParams }) => {
     const { classroomId } = useParams();
     const navigate = useNavigate();
 
-
+    //도메인과 reponse값 매칭해서 리팩토링 필요
     const handleAttendanceButton = (id) => {
         setScheduleId(id);
         setTime("전체시간");
-        navigate(`/host/${classroomId}/${scheduledId}/전체시간`, () => {
+        navigate(`/host/${classroomId}/${id}/전체시간`, () => {
             queryClient.invalidateQueries(["getManageTimeSchedule", hostParams]);
         });
     };
