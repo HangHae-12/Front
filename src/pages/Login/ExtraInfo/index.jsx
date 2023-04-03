@@ -1,4 +1,4 @@
-import { Outlet, useMatch, Link } from "react-router-dom";
+import { useMatch, Link } from "react-router-dom";
 import styled from "styled-components";
 import Parent from "./Parent";
 import Teacher from "./Teacher";
@@ -18,7 +18,7 @@ const Extrainfo = () => {
           <Link to="teacher">선생님</Link>
         </Tab>
       </Tabs>
-      {/* <Outlet /> */}
+      
       {parentMatch && <Parent />}
       {teacherMatch && <Teacher />}
     </>

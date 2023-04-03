@@ -17,16 +17,19 @@ const color = {
   black: "#212121",
   white: "#ffffff",
   primary: "#3cc678",
-  primary_l30: lighten(0.3, "#56bea4"),
+  // primary_l30: lighten(0.3, "#56bea4"),
   // primary_l30 을 사용한 모든 색상에 primary opacity 0.3 으로 변경할 것
   blue: "#567bff",
+  blue_lighter: "#eef2ff",
   red: "#f35451",
+  red_lighter: "#feeeee",
   orange: "#ff852d",
+  orange_lighter: "#fff3ea",
   yellow: "#ffd600",
-  // green: lighten(0.4, "#00c814"),
-  green: "#99e9a1",
-  green_darker: "#edf5eecc",
+  green: "#86e49b",
+  green_darker: "#fefffe",
   perple: "#9747ff",
+  perple_lighter: "#f5edff",
   grayScale: grayScale,
 };
 
@@ -53,8 +56,7 @@ const defaultTheme = {
   color,
   fontSize,
   fontWeight,
-  device
+  device,
 };
-
 
 export default defaultTheme;

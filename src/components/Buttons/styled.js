@@ -50,7 +50,7 @@ export const StyledButton = styled.button`
     css`
       color: ${({ theme, colorTypes }) => theme.color[colorTypes]};
       background-color: ${({ theme, colorTypes }) =>
-        lighten(0.3, theme.color[colorTypes])};
+        theme.color[`${colorTypes}_lighter`]};
 
       &:hover {
         color: ${({ theme, colorTypes }) => theme.color[colorTypes]};

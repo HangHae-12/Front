@@ -22,12 +22,12 @@ const KakaoLogin = () => {
     request
       .then((res) => {
         tokenCookie.set(res.headers.authorization);
-        switch (res.status) {
+        switch (res.data.statusCode) {
           case 200:
-            navigate("/extrainfo/parent");
+            navigate("/extrainfo/parent", { state: res.data });
             break;
           default:
-            // navigate("/");
+            navigate("/host");
             break;
         }
       })

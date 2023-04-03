@@ -1,8 +1,8 @@
 import { useState, forwardRef } from "react";
 import styled from "styled-components";
-import { DUMMY_PROFILE_IMG_SRC } from "../assets";
 
 const ProfileImageUploader = forwardRef((props, ref) => {
+  const { prev } = props;
   const [previewImage, setPreviewImage] = useState(null);
 
   const handleImageChange = (e) => {
@@ -29,7 +29,7 @@ const ProfileImageUploader = forwardRef((props, ref) => {
         ref={ref}
       />
       <StyledProfileImageUploader.Thumbnail
-        src={previewImage ?? DUMMY_PROFILE_IMG_SRC}
+        src={previewImage ?? prev}
         alt="Profile thumbnail"
         onClick={handleThumbnailImage}
       />
