@@ -70,7 +70,8 @@ const StyledModal = {
 
   Container: styled.div`
     background-color: ${({ color, theme }) => color?? theme.color.white};
-    border-radius: 8px;
+    border-radius: 12px;
+    border: 1px solid ${({ theme }) => theme.color.grayScale[200]};
     padding: ${({ padding }) => padding ?? "10px"};
     width: ${({ width }) => width ?? "500px"};
     height: ${({ height }) => height ?? "400px"};

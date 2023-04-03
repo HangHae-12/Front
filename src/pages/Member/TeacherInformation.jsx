@@ -5,20 +5,20 @@ import { MemberAPI } from "../../api/MemberAPI";
 import { useQuery } from "@tanstack/react-query";
 import textVariants from "../../styles/variants/textVariants";
 
-const TeacherInformation = () => {
-  const { id } = useParams();
-  const { data } = useQuery(
-    ["ClassesPage"],
-    () => MemberAPI.getClassesPage(id),
-    {
-      onSuccess: (data) => {
-        console.log(data.data);
-      },
-      onError: () => {
-        console.log("error");
-      },
-    }
-  );
+const TeacherInformation = (data) => {
+  // const { id } = useParams();
+  // const { data } = useQuery(
+  //   ["ClassesPage"],
+  //   () => MemberAPI.getClassesPage(id),
+  //   {
+  //     onSuccess: (data) => {
+  //       console.log(data.data);
+  //     },
+  //     onError: () => {
+  //       console.log("error");
+  //     },
+  //   }
+  // );
 
   return (
     <>
@@ -99,7 +99,6 @@ const StyledMiddleWrapper = styled.div`
 
 const StyledInputWrapper = styled.div`
   display: flex;
-  /* justify-content: space-between; */
   align-items: center;
   margin-top: 30px;
 `;

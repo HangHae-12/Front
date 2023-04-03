@@ -17,8 +17,8 @@ const Gallery = () => {
   const queryClient = useQueryClient();
   const { id } = useParams();
   const [searchGallery, setSearchGallery] = useState("");
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [formattedStartDate, setFormattedStartDate] = useState("");
   const [formattedEndDate, setFormattedEndDate] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -65,6 +65,7 @@ const Gallery = () => {
       onError: () => {
         console.log("error");
       },
+      enabled: false,
     }
   );
 
@@ -224,35 +225,33 @@ const Gallery = () => {
   }, [previewImages]);
 
   //갤러리 상세조회
-  const getDetailGallery = () => {
-    const gallertModalData = {
-      title: (
-        <>
-          <StyledGalleryModalHeader>갤러리</StyledGalleryModalHeader>
-          <StyledGalleryModalTitleBox>
-            <StyledModalTitle>
-              {DetailGallery?.data.data.title}
-            </StyledModalTitle>
-            <StyledModalDate>
-              {DetailGallery?.data.data.createdAt}
-            </StyledModalDate>
-          </StyledGalleryModalTitleBox>
-        </>
-      ),
-      contents: (
-        <StyledModalContent>
-          {DetailGallery?.data.data.imageUrlList.map((item) => {
-            return (
-              <StyledAddGallery>
-                <StyledPreviewImage src={item} />
-              </StyledAddGallery>
-            );
-          })}
-        </StyledModalContent>
-      ),
-      callback: () => alert("modal"),
-    };
-    openModal(gallertModalData);
+  const getDetailGallery = (imageId) => {
+    MemberAPI.getDetailGallery(id, imageId).then((response) => {
+      const gallertModalData = {
+        title: (
+          <>
+            <StyledGalleryModalHeader>갤러리</StyledGalleryModalHeader>
+            <StyledGalleryModalTitleBox>
+              <StyledModalTitle>{response?.data.data.title}</StyledModalTitle>
+              <StyledModalDate>{response?.data.data.createdAt}</StyledModalDate>
+            </StyledGalleryModalTitleBox>
+          </>
+        ),
+        contents: (
+          <StyledModalContent>
+            {response?.data.data.imageUrlList.map((item) => {
+              return (
+                <StyledAddGallery>
+                  <StyledPreviewImage src={item} />
+                </StyledAddGallery>
+              );
+            })}
+          </StyledModalContent>
+        ),
+        callback: () => alert("modal"),
+      };
+      openModal(gallertModalData);
+    });
   };
 
   return (
@@ -291,12 +290,11 @@ const Gallery = () => {
           <StyledGallerySearchInput onChange={handleSearch} />
         </StyledGalleryHeader>
         <StyledGalleryContainer>
-          {data?.data.data.map((item) => {
+          {data?.data.data.imagePostResponseDtoList.map((item) => {
             return (
               <StyledGalleryCard
                 key={item.imagePostId}
-                onClick={(e) => getDetailGallery(item.imagePostId)}
-                onMouseEnter={() => setImageId(item.imagePostId)}
+                onClick={() => getDetailGallery(item.imagePostId)}
               >
                 <StyledGalleryImage src={item.imageUrlList} />
                 <StyledTitleFont>{item.title}</StyledTitleFont>

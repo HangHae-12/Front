@@ -3,10 +3,10 @@ import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import { MemberAPI } from "../../api/MemberAPI";
-import Modal from "../../components/Modal";
 import useModal from "../../hooks/useModal";
 import textVariants from "../../styles/variants/textVariants";
 import ClassModal from "./ClassModal";
+import Modal from "../../components/Modal";
 
 const ClassMember = () => {
   const queryClient = useQueryClient();
@@ -33,16 +33,25 @@ const ClassMember = () => {
     setSearchMember(e.target.value);
   };
 
-  const loadMemberSearch = data?.data.data.filter((item) =>
-    item.name.includes(searchMember)
+  const loadMemberSearch = data?.data?.data?.childResponseDtoList?.filter(
+    (item) => item.name.includes(searchMember)
   );
+  
+  //아이 상세 조회 모달
+
+  const modalOption = {
+    canCloseOnOverlayClick: true,
+    isCloseButton: true,
+    padding: "10px",
+    width: "660px",
+    height: "837px",
+  };
 
   const getChildInformation = (childId) => {
     console.log(childId);
     const modalData = {
       title: "modal",
-      contents: "modal",
-      callback: () => alert("modal"),
+      contents: <ClassModal />,
     };
     openModal(modalData);
   };
@@ -75,7 +84,7 @@ const ClassMember = () => {
           })}
         </StyledChildrenContainer>
       </StyledChildrenWrapper>
-      <ClassModal />
+      <Modal modalOption={modalOption}/>
     </>
   );
 };
@@ -143,7 +152,6 @@ const StyledPersonnelFont = styled.div`
 `;
 
 const StyledAddMemberButton = styled.button`
-  margin-left: auto;
   margin-left: auto;
   border-radius: 4px;
   border: 1px solid ${({ theme }) => theme.color.primary};

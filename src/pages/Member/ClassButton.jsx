@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import TeacherInformation from "./TeacherInformation";
+import { MemberAPI } from "../../api/MemberAPI";
 import ClassMember from "./ClassMember";
 import Gallery from "./Gallery";
 import Button from "../../components/Button";
@@ -11,6 +12,7 @@ import Buttons from "../../components/Buttons";
 const ClassButton = () => {
   const [selectedButton, setSelectedButton] = useState("");
   const [selectedTab, setSelectedTab] = useState("");
+  const [data, setData] = useState("")
 
   const handleMemberClick = () => {
     setSelectedTab("member");
@@ -22,9 +24,11 @@ const ClassButton = () => {
 
   const navigate = useNavigate();
 
-  const handleButtonClick = (selected, id) => {
+  const handleButtonClick = async (selected, id) => {
     setSelectedButton(selected);
     navigate(`/classes/${id}`);
+    const newData = await MemberAPI.getClassesPage(id);
+    setData(newData);
   };
 
   return (
@@ -47,7 +51,7 @@ const ClassButton = () => {
           onClick={() => handleButtonClick("빛살반", 3)}
         />
       </StyledButtonWrapper>
-      <TeacherInformation />
+      <TeacherInformation data={data}/>
       {selectedTab === "member" ? (
         <StyledABBtn marginLeft="30px" onClick={handleMemberClick}>학급인원</StyledABBtn>
       ) : (
