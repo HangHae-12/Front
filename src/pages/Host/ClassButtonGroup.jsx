@@ -9,7 +9,7 @@ import Attendee from "./Attendee";
 import Schedule from "./Schedule";
 import Time from "./Time";
 import Children from "./Children";
-import Pagination from "../../components/Pagination";
+import Pagination from "../../components/CustomPagination";
 
 
 const ClassButtonGroup = () => {
@@ -81,15 +81,16 @@ const ClassButtonGroup = () => {
   console.log(bindData);
   console.log(classData?.data.childEnterResponseDtoList);
   console.log(scheduleData?.data);
+
   //페이지네이션 페이지 지정
 
-  // const [currentPage, setCurrentPage] = useState(1);
-  // const pageSize = Math.ceil((bindData?.length || 0) / 15);
-  // const totalItems = bindData?.length || 0;
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = Math.ceil((bindData?.length || 0) / 15);
+  const totalItems = bindData?.length || 0;
 
-  // const handlePageChange = (page) => {
-  //   setCurrentPage(page);
-  // };
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
 
   return (
     <>
@@ -100,13 +101,14 @@ const ClassButtonGroup = () => {
       <StyledAttendanceContainer>
         <Time hostParams={hostParams} />
         <Children bindData={bindData} />
+        <Pagination
+          current={currentPage}
+          pageSize={pageSize}
+          total={totalItems}
+          onChange={handlePageChange}
+        />
       </StyledAttendanceContainer>
-      {/* <Pagination
-        current={currentPage}
-        pageSize={pageSize}
-        total={totalItems}
-        onChange={handlePageChange}
-      /> */}
+
     </>
   );
 };
