@@ -86,12 +86,12 @@ const ClassButtonGroup = () => {
         <Time hostParams={hostParams} />
         <Children bindData={bindData} />
       </StyledAttendanceContainer>
-      <Pagination
+      {/* <Pagination
         current={currentPage}
         pageSize={pageSize}
         total={totalItems}
         onChange={handlePageChange}
-      />
+      /> */}
     </>
   );
 };

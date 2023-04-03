@@ -6,9 +6,14 @@ import StyledExtraInfo from "./styled";
 import { SignAPI } from "../../../api/SignAPI";
 import ProfileImageUploader from "../../../components/ProfileImageUploader";
 
+// 사용자가 정보를 다 입력하고 난 뒤에 도메인에 extrainfo 를 치면 이 화면이 보일 수 있으니까
+// 그걸 방지하기 위한 로직을 구현해야만 한다.
+
 const Parent = () => {
   const profileInputRef = useRef(null);
   const location = useLocation();
+  const { name, profileImageUrl } = location.state.data;
+
   const {
     register,
     handleSubmit,
@@ -28,9 +33,10 @@ const Parent = () => {
     const formData = new FormData();
     formData.append("name", data.name);
     formData.append("phoneNumber", data.phoneNumber);
-    formData.append("profileImage", profileInputRef.current.files[0] ?? null);
-    formData.append("relationship", data.relationship ?? null);
-    formData.append("emergencyPhoneNumber", data.emergencyPhoneNumber ?? null);
+    profileInputRef.current.files[0] &&
+      formData.append("profileImage", profileInputRef.current.files[0]);
+    formData.append("relationship", data.relationship);
+    formData.append("emergencyPhoneNumber", data.emergencyPhoneNumber);
 
     for (const [key, value] of formData.entries()) {
       console.log(`${key}: ${value}`);
@@ -48,6 +54,7 @@ const Parent = () => {
           type="text"
           {...register("name", { required: "이름을 입력해주세요." })}
           id="name"
+          defaultValue={name ?? ""}
         />
         {errors.name && (
           <StyledExtraInfo.ErrorMessage>
@@ -78,6 +85,7 @@ const Parent = () => {
           {...register("profileImage")}
           id="profileImage"
           ref={profileInputRef}
+          prev={profileImageUrl}
         />
 
         <StyledExtraInfo.Label htmlFor="relationship">
