@@ -6,6 +6,8 @@ const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/login" element={PAGE.login} />
+        <Route path="/oauth/kakao/callback" element={PAGE.kakaoLogin} />
         {/* <Route path="/" element={< />} /> */}
         <Route path="/extrainfo" element={PAGE.extraInfo.index}>
           <Route path="teacher" element={PAGE.extraInfo.teacher} />
@@ -19,9 +21,8 @@ const Router = () => {
           path="/host/:classroomId/:scheduleId?/:timeId?"
           element={PAGE.host}
         />
+        <Route path="/childmanage" element={PAGE.childmanage} />
         <Route path="/preview" element={PAGE.preview} />
-        <Route path="/login" element={PAGE.login} />
-        <Route path="/oauth/kakao/callback" element={PAGE.kakaoLogin} />
       </Routes>
     </BrowserRouter>
   );

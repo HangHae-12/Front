@@ -29,14 +29,16 @@ const SideBar = () => {
 export default SideBar;
 
 const StyledSideBarContainer = styled.aside`
-  position: fixed;
-  left: 0;
-  z-index: 5;
+  /* position: fixed; */
+  float: left;
+  /* left: 0;
+  z-index: 5; */
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 240px;
   height: 100%;
+  min-height: 100vh;
   padding: 80px 0px 200px 0px;
   border-right: 2px solid ${({ theme }) => theme.color.grayScale[100]};
   background-color: ${({ theme }) => theme.color.white};
