@@ -29,7 +29,7 @@ const color = {
   green: "#86e49b",
   green_darker: "#fefffe",
   perple: "#9747ff",
-  perple_lighter: "#9747ff",
+  perple_lighter: "#f5edff",
   grayScale: grayScale,
 };
 
