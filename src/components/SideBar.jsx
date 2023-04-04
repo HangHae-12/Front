@@ -30,13 +30,15 @@ export default SideBar;
 
 const StyledSideBarContainer = styled.aside`
   position: fixed;
-  left: 0;
   z-index: 5;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  left: 0;
+  bottom: 0;
   width: 240px;
   height: 100%;
+  min-height: 100vh;
+  flex-direction: column;
+  align-items: center;
   padding: 80px 0px 200px 0px;
   border-right: 2px solid ${({ theme }) => theme.color.grayScale[100]};
   background-color: ${({ theme }) => theme.color.white};

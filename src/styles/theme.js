@@ -1,5 +1,3 @@
-import { darken, lighten } from "polished";
-
 const grayScale = {
   800: "#2c2c2c",
   700: "#383838",
