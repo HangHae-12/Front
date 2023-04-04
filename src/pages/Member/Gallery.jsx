@@ -28,6 +28,7 @@ const Gallery = () => {
   const [render, setRender] = useState(true);
   const [title, setTitle] = useState("");
   const [imageId, setImageId] = useState(null);
+  const [isCarousel, setIsCarousel] = useState(false);
 
   const { data } = useQuery(
     ["classesGallery", searchGallery, currentPage],
@@ -158,27 +159,31 @@ const Gallery = () => {
   const modalData = {
     title: (
       <>
-        <StyledGalleryModalHeader>갤러리 수정</StyledGalleryModalHeader>
+        <StyledGalleryModalHeader>갤러리 등록</StyledGalleryModalHeader>
         <StyledGalleryModalTitleBox>
-          <input type="text" onChange={(e) => setTitle(e.target.value)}></input>
+          <StyledModalInputBox
+            type="text"
+            placeholder="제목을 작성해주세요"
+            onChange={(e) => setTitle(e.target.value)}
+          ></StyledModalInputBox>
         </StyledGalleryModalTitleBox>
       </>
     ),
     contents: (
       <StyledModalContent>
         <StyledAddGallery>
-          <StyledAddIcon />
-          <StyledAddInput
-            type="file"
-            name="upload-img"
-            id="upload-img"
-            accept="image/*"
-            aria-hidden="false"
-            tabIndex="0"
-            multiple
-            onChange={uploadFile}
-          />
           <StyledAddFont htmlFor="upload-img" id="upload-img-label">
+            <StyledAddIcon />
+            <StyledAddInput
+              type="file"
+              name="upload-img"
+              id="upload-img"
+              accept="image/*"
+              aria-hidden="false"
+              tabIndex="0"
+              multiple
+              onChange={uploadFile}
+            />
             사진추가
           </StyledAddFont>
         </StyledAddGallery>
@@ -326,7 +331,7 @@ const StyledGalleryWrapper = styled.div`
   gap: 40px;
   width: calc(6 * (225px + 18px));
   height: 748px;
-  background: ${({ theme }) => theme.color.green_darker};
+  background: rgba(237, 245, 238, 0.8);
   border-radius: 12px;
 
   @media (max-width: 1800px) {
@@ -444,6 +449,10 @@ const StyledAddGallery = styled.div`
 const StyledAddFont = styled.label`
   margin-top: 20px;
   color: ${({ theme }) => theme.color.grayScale[400]};
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+  gap: 15px;
 `;
 
 const StyledAddInput = styled.input`
@@ -502,4 +511,13 @@ const StyledModalDate = styled.div`
   ${textVariants.Body3_SemiBold}
   color: ${({ theme }) => theme.color.grayScale[500]};
   margin-top: 15px;
+`;
+
+const StyledModalInputBox = styled.input`
+  width: 570px;
+  height: 30px;
+  border: 0;
+  border-radius: 4px;
+  outline: none;
+  background-color: ${({ theme }) => theme.color.grayScale[50]};
 `;

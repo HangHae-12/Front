@@ -89,7 +89,7 @@ const StyledHeaderFont = styled.div`
 
 const StyledABBtn = styled(Buttons.AB)`
   color: ${({ theme }) => theme.color.primary};
-  background-color: ${({ theme }) => theme.color.green_darker};
+  background-color: rgba(237, 245, 238, 0.8);
   margin-top: 20px;
   margin-left: ${({ marginLeft }) => marginLeft};
   border-radius: 4px 4px 0px 0px;
@@ -106,7 +106,7 @@ const StyledChildrenWrapper = styled.div`
   gap: 40px;
   width: calc(7 * (190px + 15px));
   height: 484px;
-  background: ${({ theme }) => theme.color.green_darker};
+  background: rgba(237, 245, 238, 0.8);
   border-radius: 12px;
 
   @media (max-width: 1800px) {
