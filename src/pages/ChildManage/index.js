@@ -8,6 +8,7 @@ const ChildManage = () => {
   const [isFixMode, setIsFixMode] = useState(true);
   // 수정모드 로직에 대해서 고민해볼 것.
   // 아예 readOnly input -> hook form 으로 처리할건지 아니면 이대로 갈건지
+
   return (
     <StyledChildManage.Container>
       <StyledChildManage.Header>아이 관리</StyledChildManage.Header>

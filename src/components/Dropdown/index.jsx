@@ -1,7 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
 import StyledDropdown from "./styled";
 
-const Dropdown = ({ isReadOnly, buttonLabel, children }) => {
+const Dropdown = ({
+  isReadOnly,
+  buttonLabel,
+  children,
+  buttonStyle,
+  menuStyle,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef(null);
 
@@ -26,18 +32,26 @@ const Dropdown = ({ isReadOnly, buttonLabel, children }) => {
 
   return (
     <StyledDropdown.Container ref={containerRef}>
-      <StyledDropdown.Button onClick={toggleDropdown} isReadOnly={isReadOnly}>
+      <StyledDropdown.Button
+        onClick={toggleDropdown}
+        isReadOnly={isReadOnly}
+        buttonStyle={buttonStyle}
+      >
         {buttonLabel}
         {!isReadOnly ? <StyledDropdown.Icon /> : null}
       </StyledDropdown.Button>
-      <StyledDropdown.Menu isOpen={isOpen}>{children}</StyledDropdown.Menu>
+      <StyledDropdown.Menu isOpen={isOpen} menuStyle={menuStyle}>
+        {children}
+      </StyledDropdown.Menu>
     </StyledDropdown.Container>
   );
 };
 
-const Item = ({ children, onClick }) => {
+const Item = ({ children, onClick, itemStyle }) => {
   return (
-    <StyledDropdown.Item onClick={onClick}>{children}</StyledDropdown.Item>
+    <StyledDropdown.Item onClick={onClick} itemStyle={itemStyle}>
+      {children}
+    </StyledDropdown.Item>
   );
 };
 

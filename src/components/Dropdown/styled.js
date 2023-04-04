@@ -16,10 +16,12 @@ const StyledDropdown = {
     align-items: center;
     background: ${({ theme }) => theme.color.grayScale[25]};
     color: ${({ theme }) => theme.color.grayScale[500]};
-    border: 1px solid ${({ theme }) => theme.color.grayScale[200]};
+    border: ${({ theme }) => `1px solid ${theme.color.grayScale[200]}`};
     border-radius: 40px;
     padding: 12px 21px;
+    white-space: nowrap;
     cursor: ${({ isReadOnly }) => (isReadOnly ? "auto" : "pointer")};
+    ${({ buttonStyle }) => buttonStyle}
   `,
 
   Menu: styled.div`
@@ -31,6 +33,7 @@ const StyledDropdown = {
     padding: 8px 0;
     min-width: 160px;
     z-index: 1;
+    ${({ menuStyle }) => menuStyle}
   `,
 
   Item: styled.a`
@@ -43,6 +46,8 @@ const StyledDropdown = {
     &:hover {
       background-color: ${({ theme }) => darken(0.1, theme.color.white)};
     }
+
+    ${({ itemStyle }) => itemStyle}
   `,
 
   Icon: styled(RxTriangleDown)`
