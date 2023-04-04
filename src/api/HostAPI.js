@@ -36,4 +36,20 @@ export const HostAPI = {
       console.log(error);
     }
   },
+  updateEnter: async (childId) => {
+    try {
+      const response = await instance.put(`manager/child/${childId}/enter`);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  updateExit: async (childId) => {
+    try {
+      const response = await instance.put(`manager/child/${childId}/exit`);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
 };
