@@ -1,10 +1,13 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { DUMMY_PROFILE_IMG_SRC } from "../../assets";
+import Dropdown from "../../components/Dropdown";
 import textVariants from "../../styles/variants/textVariants";
 
 const ChildManage = () => {
   const [isFixMode, setIsFixMode] = useState(true);
+  // 수정모드 로직에 대해서 고민해볼 것.
+  // 아예 readOnly input -> hook form 으로 처리할건지 아니면 이대로 갈건지
   return (
     <StyledChildManage.Container>
       <StyledChildManage.Header>아이 관리</StyledChildManage.Header>
@@ -40,7 +43,19 @@ const ChildManage = () => {
             defaultValue="우리 아이는 너무 귀엽습니다."
           />
         </StyledCard>
-        <StyledCard></StyledCard>
+        <StyledCard>
+          <Dropdown buttonLabel="09시~10시" isReadOnly={false}>
+            <Dropdown.Item onClick={() => console.log("Option 1")}>
+              Option 1
+            </Dropdown.Item>
+            <Dropdown.Item onClick={() => console.log("Option 2")}>
+              Option 2
+            </Dropdown.Item>
+            <Dropdown.Item onClick={() => console.log("Option 3")}>
+              Option 3
+            </Dropdown.Item>
+          </Dropdown>
+        </StyledCard>
       </StyledChildManage.Section>
     </StyledChildManage.Container>
   );
