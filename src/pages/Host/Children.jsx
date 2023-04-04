@@ -77,8 +77,8 @@ const StyledStudentGrid = styled.div`
   align-items: center;
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: auto; 
-  grid-gap: 20px;
-  margin-top: 20px;
+  grid-gap: 12px;
+  margin-top: 24px;
 
   @media ${({ theme }) => theme.device.mobile} {
     grid-template-columns: repeat(2, 1fr); // 가로로 2개씩
@@ -97,8 +97,8 @@ const StyledStudentCard = styled.div`
   border-radius: 8px;
 
   background-color: ${({ theme }) => theme.color.white};
-  width: 240px;
-  height: 304px;
+  width: 180px;
+  height: 240px;
 `;
 
 const StyledProfileRow = styled.div`
@@ -106,21 +106,25 @@ const StyledProfileRow = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: center;
+  
+  
 `;
 
 
 const StyledStudentProfile = styled.div`
-  width: 80px;
-  height: 80px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
   background-image: url(${(props) => props.imageUrl});
   background-size: cover;
   background-position: center;
+  margin-top: 22.1px;
   margin-right: 29px;
 `;
 
 const StyledStudentName = styled.div`
-  ${textVariants.H2_SemiBold}
+  ${textVariants.Body1_SemiBold}
+  
 `;
 
 const StyledStudentStatus = styled.div`
@@ -143,6 +147,7 @@ const StyledProfileGroup = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-top: 28.1px;
 `;
 
 const StyledAttendanceRow = styled.div`
@@ -151,8 +156,9 @@ const StyledAttendanceRow = styled.div`
   align-items: center;
   justify-content: center;
   margin-top: 20px;
-  width: 172px;
-  height: 36px;
+  width: 132px;
+  height: 32px;
+  gap: 4px;
   background-color: ${({ theme }) => theme.color.grayScale[50]};
 `;
 

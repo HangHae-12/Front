@@ -48,8 +48,8 @@ const Schedule = ({ hostParams }) => {
 export default Schedule;
 
 const StyledAttendanceButtonGroup = styled.div`
-    padding-top: 64px;
-    gap: 10px;
+    padding-top: 20px;
+    margin-left: 30px;
 `;
 const StyledABBtn = styled(Buttons.AB)`
   color: ${({ theme }) => theme.color.primary};
