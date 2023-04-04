@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import textVariants from "../../styles/variants/textVariants";
 
@@ -186,7 +186,51 @@ export const MemberAddModal = () => {
   );
 };
 
-export const GalleryCarousel = () => {};
+//갤러리 이미지 슬라이드 모달
+export const GallerySlider = ({ images }) => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const slideRef = useRef(null);
+  const TOTAL_SLIDES = images.length;
+
+  const nextSlide = () => {
+    if (currentSlide >= TOTAL_SLIDES - 1) {
+      setCurrentSlide(0);
+    } else {
+      setCurrentSlide(currentSlide + 1);
+    }
+  };
+
+  const prevSlide = () => {
+    if (currentSlide === 0) {
+      setCurrentSlide(TOTAL_SLIDES - 1);
+    } else {
+      setCurrentSlide(currentSlide - 1);
+    }
+  };
+
+  useEffect(() => {
+    if (slideRef.current) {
+      slideRef.current.style.transition = "all 0.5s ease-in-out";
+      slideRef.current.style.transform = `translateX(-${currentSlide * 100}%)`;
+    }
+  }, [currentSlide]);
+
+  return (
+    <StyledModalSlideContainer>
+      <Button onClick={prevSlide}>＜</Button>
+      <StyledModalSlideWrapper>
+        <StyledModalSlide ref={slideRef}>
+          {images.map((item) => (
+            <StyledModalSlideImgContainer key={item}>
+              <StyledModalSlideImg src={item} />
+            </StyledModalSlideImgContainer>
+          ))}
+        </StyledModalSlide>
+      </StyledModalSlideWrapper>
+      <Button onClick={nextSlide}>＞</Button>
+    </StyledModalSlideContainer>
+  );
+};
 
 const StyledModalWrapper = styled.div`
   display: flex;
@@ -402,4 +446,49 @@ const StyledSearchInput = styled.input`
   border-radius: 4px;
   margin-left: 83px;
   margin-top: 20px;
+`;
+
+const StyledModalSlideContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const StyledModalSlideWrapper = styled.div`
+  width: 716px;
+  overflow: hidden;
+`;
+
+const StyledModalSlideImgContainer = styled.div`
+  flex-shrink: 0;
+  width: 716px;
+  height: 400px;
+  border-radius: 8px;
+  overflow: hidden;
+`;
+
+const StyledModalSlide = styled.div`
+  width: 716px;
+  height: 400px;
+  display: flex;
+`;
+
+const StyledModalSlideImg = styled.img`
+  width: 500px;
+  height: 400px;
+  border-radius: 8px;
+  margin-left: 20px;
+`;
+
+const Button = styled.button`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  gap: 10px;
+  width: 40px;
+  height: 60px;
+  background: #e9e9e9;
+  border-radius: 8px;
+  border: 1px solid ${({ theme }) => theme.color.grayScale[100]};
 `;

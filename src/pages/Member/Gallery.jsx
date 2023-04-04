@@ -12,6 +12,7 @@ import useModal from "../../hooks/useModal";
 import { IoIosAdd } from "react-icons/io";
 import Buttons from "../../components/Buttons";
 import textVariants from "../../styles/variants/textVariants";
+import { GallerySlider } from "./ClassModal";
 
 const Gallery = () => {
   const queryClient = useQueryClient();
@@ -214,7 +215,7 @@ const Gallery = () => {
     isCloseButton: true,
     padding: "10px",
     width: "630px",
-    height: "700px",
+    height: "720px",
   };
 
   const createGallery = () => {
@@ -230,32 +231,44 @@ const Gallery = () => {
   }, [previewImages]);
 
   //갤러리 상세조회
+  const createGalleryModalData = (response) => {
+    return {
+      title: (
+        <>
+          <StyledGalleryModalHeader>갤러리</StyledGalleryModalHeader>
+          <StyledGalleryModalTitleBox>
+            <StyledModalTitle>{response?.data.data.title}</StyledModalTitle>
+            <StyledModalDate>{response?.data.data.createdAt}</StyledModalDate>
+            <button onClick={() => setIsCarousel(true)}>슬라이드</button>
+            <button onClick={() => setIsCarousel(false)}>분할</button>
+          </StyledGalleryModalTitleBox>
+        </>
+      ),
+      contents: (
+        <>
+          {!isCarousel ? (
+            <StyledModalContent>
+              {response?.data.data.imageUrlList.map((item) => {
+                return (
+                  <StyledAddGallery>
+                    <StyledPreviewImage src={item} />
+                  </StyledAddGallery>
+                );
+              })}
+            </StyledModalContent>
+          ) : (
+            <GallerySlider images={response?.data.data.imageUrlList} />
+          )}
+        </>
+      ),
+      callback: () => alert("modal"),
+    };
+  };
+
   const getDetailGallery = (imageId) => {
     MemberAPI.getDetailGallery(id, imageId).then((response) => {
-      const gallertModalData = {
-        title: (
-          <>
-            <StyledGalleryModalHeader>갤러리</StyledGalleryModalHeader>
-            <StyledGalleryModalTitleBox>
-              <StyledModalTitle>{response?.data.data.title}</StyledModalTitle>
-              <StyledModalDate>{response?.data.data.createdAt}</StyledModalDate>
-            </StyledGalleryModalTitleBox>
-          </>
-        ),
-        contents: (
-          <StyledModalContent>
-            {response?.data.data.imageUrlList.map((item) => {
-              return (
-                <StyledAddGallery>
-                  <StyledPreviewImage src={item} />
-                </StyledAddGallery>
-              );
-            })}
-          </StyledModalContent>
-        ),
-        callback: () => alert("modal"),
-      };
-      openModal(gallertModalData);
+      const galleryModalData = createGalleryModalData(response);
+      openModal(galleryModalData);
     });
   };
 
