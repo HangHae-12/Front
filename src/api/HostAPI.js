@@ -1,32 +1,26 @@
 import instance from "./instance";
 
 export const HostAPI = {
-  getManageClass: async (classroomId) => {
+  //page,size는 param 나머지 jsom 형태로 전달
+  getManageSchedule: async (payload) => {
     try {
-      const response = await instance.get(`/manager/classroom/${classroomId}`);
-      console.log(response);
+      const data = {
+        classroomId: payload.classroomId,
+        state: payload.state,
+        time: payload.time,
+      };
+      const response = await instance.get(`/manager/classroom`, {
+        params: {
+          ...payload,
+          data: JSON.stringify(data),
+        },
+      });
       return response.data;
     } catch (error) {
       console.log(error);
     }
   },
-  getManageTimeSchedule: async (payload) => {
-    try {
-      const response = await instance.get(
-        `/manager/classroom/${payload.classroomId}/schedule`,
-        {
-          params: {
-            type: payload.type,
-            dailyEnterTime: payload.time,
-            page: payload.page,
-          },
-        }
-      );
-      return response.data;
-    } catch (error) {
-      console.log(error);
-    }
-  },
+
   getManageAbsent: async () => {
     try {
       const response = await instance.get("/manager/schedule/absent");

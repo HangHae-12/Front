@@ -18,75 +18,24 @@ const ClassButtonGroup = () => {
   const { classroomId, scheduleId, timeId } = useParams();
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
-
+  const [size, setSize] = useState(1);
 
   //등원,하원,timea,page param
-  const hostParams = { type: scheduleId, dailyEnterTime: timeId, page };
+  const hostParams = { classroomId, state: scheduleId, time: timeId, page, size };
 
-  //조회쿼리가 2개이므로 유지보수성을 위해서 객체 분해 형식으로 변수지정
+  const { isLoading, isError, data } = useQuery(["getManageSchedule", hostParams], () =>
+    HostAPI.getManageSchedule({ hostParams })
+  );
 
-  const {
-    isLoading: isLoadingClass,
-    isError: isErrorClass,
-    data: classData,
-  } = useQuery(["getManageClass", classroomId], () =>
-    HostAPI.getManageClass(classroomId)
-  );
-  console.log(classroomId);
-  console.log(scheduleId);
-  console.log(timeId);
-  const {
-    isLoading: isLoadingSchedule,
-    isError: isErrorSchedule,
-    data: scheduleData,
-  } = useQuery(["getManageTimeSchedule", hostParams], () =>
-    HostAPI.getManageTimeSchedule({ classroomId, ...hostParams })
-  );
   useEffect(() => {
-    queryClient.invalidateQueries(["getManageClass", 0]);
+    queryClient.invalidateQueries(["getManageSchedule", 0]);
   }, [queryClient]);
 
-  //빈배열이 담지 않고 데이터 바인딩 전 분기되도록 구현
-  const [bindData, setBindData] = useState([]);
-
-  useEffect(() => {
-    if (scheduleId === "ENTER" && timeId === "전체시간") {
-      if (classData && classData.data.childrenEnterResponseDto.childEnterResponseDtoList) {
-        setBindData(classData.data.childrenEnterResponseDto.childEnterResponseDtoList);
-      } else {
-        setBindData([]);
-      }
-    } else if (scheduleId === "EXIT") {
-      if (scheduleData && scheduleData.data.childEnterResponseDtoList) {
-        setBindData(scheduleData.data.childEnterResponseDtoList);
-      } else {
-        setBindData([]);
-      }
-    } else if (timeId !== "전체시간") {
-      if (scheduleData && scheduleData.data.childEnterResponseDtoList) {
-        setBindData(scheduleData.data.childEnterResponseDtoList);
-      } else {
-        setBindData([]);
-      }
-    } else {
-      setBindData([]);
-    }
-  }, [classData, scheduleData, classroomId, scheduleId, timeId]);
-
-
-
-
-
-
-  console.log(bindData);
-  console.log(classData?.data.childEnterResponseDtoList);
-  console.log(scheduleData?.data);
 
   //페이지네이션 페이지 지정
 
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = Math.ceil((bindData?.length || 0) / 15);
-  const totalItems = bindData?.length || 0;
+
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -96,15 +45,15 @@ const ClassButtonGroup = () => {
     <>
       <StyledAttendanceHeader>출결 관리</StyledAttendanceHeader>
       <ClassButton />
-      <Attendee classData={classData} />
+      <Attendee classData={data.info} />
       <Schedule hostParams={hostParams} />
       <StyledAttendanceContainer>
         <Time hostParams={hostParams} />
-        <Children bindData={bindData} />
+        <Children bindData={data} />
         <Pagination
           current={currentPage}
-          pageSize={pageSize}
-          total={totalItems}
+          pageSize={data.pageable.pageSize}
+          total={data.size}
           onChange={handlePageChange}
         />
       </StyledAttendanceContainer>

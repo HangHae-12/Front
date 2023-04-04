@@ -81,7 +81,7 @@ const StyledStudentGrid = styled.div`
   margin-top: 24px;
 
   @media ${({ theme }) => theme.device.mobile} {
-    grid-template-columns: repeat(2, 1fr); // 가로로 2개씩
+    grid-template-columns: repeat(3, 1fr); // 가로로 2개씩
     grid-template-rows: repeat(8, auto); // 세로로 8개씩
   }
 `;
