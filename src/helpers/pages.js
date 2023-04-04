@@ -7,8 +7,10 @@ import Teacher from "../pages/Login/ExtraInfo/Teacher";
 import Parent from "../pages/Login/ExtraInfo/Parent";
 import ExtraInfo from "../pages/Login/ExtraInfo";
 import ChildManage from "../pages/ChildManage";
+import Layout from "../pages/Layout";
 
 export const PAGE = {
+  layout: <Layout />,
   preview: <Preview />,
   login: <Login />,
   extraInfo: {

@@ -21,8 +21,11 @@ const Router = () => {
           path="/host/:classroomId/:scheduleId?/:timeId?"
           element={PAGE.host}
         />
-        <Route path="/childmanage" element={PAGE.childmanage} />
-        <Route path="/preview" element={PAGE.preview} />
+        <Route path="/" element={PAGE.layout}>
+          {/* layout 컴포넌트를 전체 적용시킬 수 있도록 수정할 것. */}
+          <Route path="/childmanage" element={PAGE.childmanage} />
+          <Route path="/preview" element={PAGE.preview} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
