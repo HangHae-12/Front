@@ -36,19 +36,19 @@ const Children = ({ bindData }) => {
                 <StyledStudentProfile imageUrl={item.profileImageUrl} />
                 <StyledProfileGroup>
                   <StyledStudentName>{item.name}</StyledStudentName>
-                  <StyledStudentStatus status={item.currentStatus}>
-                    {item.currentStatus}
-                  </StyledStudentStatus>
+                  <Buttons.State colorTypes="red">{item.currentStatus}</Buttons.State>
                 </StyledProfileGroup>
               </StyledProfileRow>
-              <StyledAttendanceRow>
-                <StyledAttendanceLabel>등원</StyledAttendanceLabel>
-                <StyledAttendanceValue>{item.enterTime}</StyledAttendanceValue>
-              </StyledAttendanceRow>
-              <StyledAttendanceRow>
-                <StyledAttendanceLabel>하원</StyledAttendanceLabel>
-                <StyledAttendanceValue>{item.exitTime}</StyledAttendanceValue>
-              </StyledAttendanceRow>
+              <StyledAttendanceGroup>
+                <StyledAttendanceRow>
+                  <StyledAttendanceLabel>등원시간</StyledAttendanceLabel>
+                  <StyledAttendanceValue>{item.enterTime}</StyledAttendanceValue>
+                </StyledAttendanceRow>
+                <StyledAttendanceRow>
+                  <StyledAttendanceLabel>하원시간</StyledAttendanceLabel>
+                  <StyledAttendanceValue>{item.exitTime}</StyledAttendanceValue>
+                </StyledAttendanceRow>
+              </StyledAttendanceGroup>
               {
                 scheduleId === "ENTER"
                   ?
@@ -75,7 +75,7 @@ const StyledStudentGrid = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   grid-template-rows: auto; 
   grid-gap: 12px;
   margin-top: 24px;
@@ -91,11 +91,11 @@ const StyledStudentCard = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 10px;
+  padding-top: 22px;
+  padding-bottom: 22px;
   border: 0.8px solid ${({ theme }) => theme.color.grayScale[300]};
   box-shadow: 0px 0.8px 9.6px rgba(0, 0, 0, 0.02);
   border-radius: 8px;
-
   background-color: ${({ theme }) => theme.color.white};
   width: 180px;
   height: 240px;
@@ -107,7 +107,6 @@ const StyledProfileRow = styled.div`
   align-items: center;
   justify-content: center;
   
-  
 `;
 
 
@@ -118,7 +117,6 @@ const StyledStudentProfile = styled.div`
   background-image: url(${(props) => props.imageUrl});
   background-size: cover;
   background-position: center;
-  margin-top: 22.1px;
   margin-right: 29px;
 `;
 
@@ -127,45 +125,33 @@ const StyledStudentName = styled.div`
   
 `;
 
-const StyledStudentStatus = styled.div`
-  ${textVariants.Body2_SemiBold}
-  color: ${({ theme }) => theme.color.white};
-  background-color: ${({ theme, status }) =>
-    status ? theme.color.red : theme.color.grayScale[300]};
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 8px;
-  padding: 4px;
-  gap: 4px;
-  border-radius: 20px;
-  width: 51px;
-  height: 26px;
-`;
 
 const StyledProfileGroup = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 28.1px;
+  gap: 6px;
 `;
-
+const StyledAttendanceGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin: 16px 24px;
+  gap: 4px;
+`
 const StyledAttendanceRow = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  margin-top: 20px;
   width: 132px;
   height: 32px;
-  gap: 4px;
   background-color: ${({ theme }) => theme.color.grayScale[50]};
 `;
 
 const StyledAttendanceLabel = styled.div`
-  ${textVariants.Body2_SemiBold}
+  ${textVariants.Body3_Regular}
   color: ${({ theme }) => theme.color.grayScale[500]};
-  margin-right: 10px;
+  margin: 10px;
 `;
 
 const StyledAttendanceValue = styled.div`
@@ -178,10 +164,9 @@ const StyledAttendanceBtn = styled.button`
   color: ${({ theme }) => theme.color.white};
   border: none;
   border-radius: 8px;
-  margin-top: 20px;
-  padding: 8px 10px;
+  padding: 6.4px 8px;
   gap: 10px;
+  width: 132px;
+  height: 32px;
 
-  width: 172px;
-  height: 40px;
 `;
