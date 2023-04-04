@@ -65,6 +65,11 @@ const textVariants = {
     font-size: ${({ theme }) => theme.fontSize.caption};
     font-weight: ${({ theme }) => theme.fontWeight.bold};
   `,
+
+  Caption_SemiBold: css`
+  font-size: ${({ theme }) => theme.fontSize.caption};
+  font-weight: ${({ theme }) => theme.fontWeight.semi_bold};
+`,
 };
 
 export default textVariants;

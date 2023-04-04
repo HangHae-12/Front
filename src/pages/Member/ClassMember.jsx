@@ -5,7 +5,7 @@ import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import { MemberAPI } from "../../api/MemberAPI";
 import useModal from "../../hooks/useModal";
 import textVariants from "../../styles/variants/textVariants";
-import ClassModal from "./ClassModal";
+import { MemberAddModal, ClassModal } from "./ClassModal";
 import Modal from "../../components/Modal";
 
 const ClassMember = () => {
@@ -36,8 +36,6 @@ const ClassMember = () => {
   const loadMemberSearch = data?.data?.data?.childResponseDtoList?.filter(
     (item) => item.name.includes(searchMember)
   );
-  
-  //아이 상세 조회 모달
 
   const modalOption = {
     canCloseOnOverlayClick: true,
@@ -46,24 +44,38 @@ const ClassMember = () => {
     width: "660px",
     height: "837px",
   };
-
+  
+  //아이 상세 조회 모달
   const getChildInformation = (childId) => {
     console.log(childId);
     const modalData = {
-      title: "modal",
+      title: <StyledModalHeader>인원정보</StyledModalHeader>,
       contents: <ClassModal />,
+      footer: <StyledModalButton>수정하기</StyledModalButton>,
+      callback: () => alert("modal"),
     };
     openModal(modalData);
   };
+  
+  //반별 아이들 인원 등록 모달
+  const setChildInformation = () => {
+    const modalData = {
+      title: <StyledModalHeader>인원등록</StyledModalHeader>,
+      contents: <MemberAddModal />,
+      footer: <StyledModalButton>저장하기</StyledModalButton>,
+      callback: () => alert("modal"),
+    };
+    openModal(modalData);
+  }
 
   return (
     <>
       <StyledChildrenWrapper>
         <StyledChildernHeader>
           <StyledPersonnelFont>
-            총원 {data?.data.data.length}명
+            총원 {data?.data.data.childrenCount}명
           </StyledPersonnelFont>
-          <StyledAddMemberButton>인원 등록</StyledAddMemberButton>
+          <StyledAddMemberButton onClick={() => setChildInformation()}>인원 등록</StyledAddMemberButton>
           <StyledMemberSearchInput
             type="text"
             onChange={handleSearch}
@@ -84,7 +96,7 @@ const ClassMember = () => {
           })}
         </StyledChildrenContainer>
       </StyledChildrenWrapper>
-      <Modal modalOption={modalOption}/>
+      <Modal modalOption={modalOption} />
     </>
   );
 };
@@ -96,7 +108,7 @@ const StyledChildrenWrapper = styled.div`
   gap: 40px;
   width: calc(7 * (190px + 15px));
   height: 484px;
-  background: ${({ theme }) => theme.color.green_darker};
+  background: rgba(237, 245, 238, 0.8);
   border-radius: 12px;
 
   @media (max-width: 1800px) {
@@ -163,4 +175,21 @@ const StyledAddMemberButton = styled.button`
 
 const StyledMemberSearchInput = styled.input`
   margin-left: 10px;
+`;
+
+const StyledModalHeader = styled.div`
+  ${textVariants.Body1_SemiBold}
+  color: ${({ theme }) => theme.color.grayScale[600]};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+`;
+
+const StyledModalButton = styled.button`
+  padding: 5px 8px;
+  gap: 10px;
+  border-radius: 4px;
+  background: ${({ theme }) => theme.color.grayScale[50]};
+  border: 1px solid ${({ theme }) => theme.color.grayScale[300]}; ;
 `;
