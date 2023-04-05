@@ -2,20 +2,30 @@ import { useState, forwardRef } from "react";
 import styled from "styled-components";
 
 const ProfileImageUploader = forwardRef((props, ref) => {
-  const { prev } = props;
-  const [previewImage, setPreviewImage] = useState(null);
+  const {
+    prev,
+    setIsCancelled,
+    setSelectedFile,
+    previewImage,
+    setPreviewImage,
+  } = props;
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
+    console.log(file);
+    setIsCancelled(false);
+
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreviewImage(reader.result);
       };
       reader.readAsDataURL(file);
-    } else {
-      setPreviewImage(null);
+      setSelectedFile(file);
+      // } else {
+      //   setPreviewImage(null);
     }
+    e.target.value = null;
   };
 
   const handleThumbnailImage = () => ref.current.click();
