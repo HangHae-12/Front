@@ -12,6 +12,9 @@ import useModal from "../../hooks/useModal";
 import { IoIosAdd } from "react-icons/io";
 import Buttons from "../../components/Buttons";
 import textVariants from "../../styles/variants/textVariants";
+import { GallerySlider } from "./ClassModal";
+import { useRecoilState } from "recoil";
+import { modalAtom } from "../../atom/modalAtoms";
 
 const Gallery = () => {
   const queryClient = useQueryClient();
@@ -27,8 +30,7 @@ const Gallery = () => {
   const [severImages, setSeverImages] = useState([]); // 서버로 보낼 이미지 데이터
   const [render, setRender] = useState(true);
   const [title, setTitle] = useState("");
-  const [imageId, setImageId] = useState(null);
-  const [isCarousel, setIsCarousel] = useState(false);
+  const [modalState, setModalState] = useRecoilState(modalAtom);
 
   const { data } = useQuery(
     ["classesGallery", searchGallery, currentPage],
@@ -56,19 +58,16 @@ const Gallery = () => {
     }
   );
 
-  const { data: DetailGallery } = useQuery(
-    ["getDetailGallery", id, imageId],
-    () => MemberAPI.getDetailGallery(id, imageId),
-    {
-      onSuccess: (data) => {
-        console.log(data);
-      },
-      onError: () => {
-        console.log("error");
-      },
-      enabled: false,
-    }
-  );
+  const detailGalleryMutation = useMutation(MemberAPI.getDetailGallery, {
+    onSuccess: (response) => {
+      const galleryModalData = createGalleryModalData(response);
+      openModal(galleryModalData);
+      console.log(response);
+    },
+    onError: (response) => {
+      console.log(response);
+    },
+  });
 
   const setGallerySubmitMutation = useMutation(MemberAPI.setGallerySubmit, {
     onSuccess: () => {
@@ -132,7 +131,7 @@ const Gallery = () => {
     for (const keyValue of formData) console.log(keyValue);
   };
 
-  // 모달 부분
+  // 사진 등록 모달 부분
   const uploadFile = (event) => {
     const fileArr = event.target.files;
     setSeverImages((prevSeverImages) => [
@@ -214,7 +213,7 @@ const Gallery = () => {
     isCloseButton: true,
     padding: "10px",
     width: "630px",
-    height: "700px",
+    height: "720px",
   };
 
   const createGallery = () => {
@@ -229,34 +228,76 @@ const Gallery = () => {
     }
   }, [previewImages]);
 
-  //갤러리 상세조회
+  const createGalleryModalData = (response) => {
+    return {
+      title: (
+        <>
+          <StyledGalleryModalHeader>갤러리</StyledGalleryModalHeader>
+          <StyledGalleryModalTitleBox>
+            <StyledModalTitle>{response?.data.data.title}</StyledModalTitle>
+            <StyledModalDate>{response?.data.data.createdAt}</StyledModalDate>
+            <button onClick={() => handleClickSlide(response)}>슬라이드</button>
+            <button onClick={() => handleClick(response)}>분할</button>
+          </StyledGalleryModalTitleBox>
+        </>
+      ),
+      contents: (
+        <>
+          {!modalState.isOpen ? (
+            <StyledModalContent>
+              {response?.data.data.imageUrlList.map((item) => {
+                return (
+                  <StyledAddGallery key={item}>
+                    <StyledPreviewImage src={item} />
+                  </StyledAddGallery>
+                );
+              })}
+            </StyledModalContent>
+          ) : (
+            modalState.contents
+          )}
+        </>
+      ),
+      callback: () => alert("modal"),
+    };
+  };
+
   const getDetailGallery = (imageId) => {
-    MemberAPI.getDetailGallery(id, imageId).then((response) => {
-      const gallertModalData = {
-        title: (
-          <>
-            <StyledGalleryModalHeader>갤러리</StyledGalleryModalHeader>
-            <StyledGalleryModalTitleBox>
-              <StyledModalTitle>{response?.data.data.title}</StyledModalTitle>
-              <StyledModalDate>{response?.data.data.createdAt}</StyledModalDate>
-            </StyledGalleryModalTitleBox>
-          </>
-        ),
-        contents: (
-          <StyledModalContent>
-            {response?.data.data.imageUrlList.map((item) => {
-              return (
-                <StyledAddGallery>
-                  <StyledPreviewImage src={item} />
-                </StyledAddGallery>
-              );
-            })}
-          </StyledModalContent>
-        ),
-        callback: () => alert("modal"),
-      };
-      openModal(gallertModalData);
-    });
+    const payload = {
+      id: id,
+      imageId: imageId,
+    };
+    detailGalleryMutation.mutate(payload);
+  };
+
+  const handleClickSlide = (response) => {
+    setModalState((prevState) => ({
+      ...prevState,
+      isOpen: true,
+      contents: (
+        <GallerySlider images={response?.data?.data?.imageUrlList || []} />
+      ),
+      callback: () => alert("modal"),
+    }));
+  };
+
+  const handleClick = (response) => {
+    setModalState((prevState) => ({
+      ...prevState,
+      isOpen: true,
+      contents: (
+        <StyledModalContent>
+          {response?.data.data.imageUrlList.map((item) => {
+            return (
+              <StyledAddGallery key={item}>
+                <StyledPreviewImage src={item} />
+              </StyledAddGallery>
+            );
+          })}
+        </StyledModalContent>
+      ),
+      callback: () => alert("modal"),
+    }));
   };
 
   return (
@@ -493,7 +534,7 @@ const StyledGalleryModalHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 20px;
+  margin-top: 15px;
 `;
 
 const StyledGalleryModalTitleBox = styled.div`
