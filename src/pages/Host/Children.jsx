@@ -16,13 +16,26 @@ const Children = ({ bindData }) => {
 
   const updateExitMutation = useMutation(HostAPI.updateExit, {
     onSuccess: () => {
-      queryClient.invalidateQueries(["getManageTimeSchedule"]);
+      queryClient.invalidateQueries(["getManageSchedule"]);
       // queryClient.setQueryData(["getManageTimeSchedule"]);
     },
   });
   const handleSchedule = () => {
-    updateExitMutation.mutate()
-  }
+    const newEnterTime = enterTime || (scheduleId === "ENTER" ? new Date() : null);
+    const newExitTime = exitTime || (scheduleId === "EXIT" ? new Date() : null);
+
+    const updatedData = {
+      ...bindData,
+      enterTime: newEnterTime,
+      exitTime: newExitTime,
+    };
+
+    bindData.enterTime = newEnterTime;
+    bindData.exitTime = newExitTime;
+
+    updateExitMutation.mutate(updatedData);
+  };
+
 
   return (
     <StyledStudentGrid>

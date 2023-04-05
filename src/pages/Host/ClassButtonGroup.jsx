@@ -18,7 +18,7 @@ const ClassButtonGroup = () => {
   const { classroomId, scheduleId, timeId } = useParams();
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
-  const [size, setSize] = useState(1);
+  const [size, setSize] = useState(15);
 
   //등원,하원,timea,page param
   const hostParams = { classroomId, state: scheduleId, time: timeId, page, size };
@@ -33,12 +33,8 @@ const ClassButtonGroup = () => {
 
 
   //페이지네이션 페이지 지정
-
-  const [currentPage, setCurrentPage] = useState(1);
-
-
   const handlePageChange = (page) => {
-    setCurrentPage(page);
+    setPage(page);
   };
 
   return (
@@ -51,7 +47,7 @@ const ClassButtonGroup = () => {
         <Time hostParams={hostParams} />
         <Children bindData={data} />
         <Pagination
-          current={currentPage}
+          current={page}
           pageSize={data.pageable.pageSize}
           total={data.size}
           onChange={handlePageChange}
@@ -77,22 +73,3 @@ const StyledAttendanceContainer = styled.div`
   padding: 40px;
 `;
 
-const StyledPagination = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-`;
-
-const StyledPaginationButton = styled.button`
-  ${textVariants.Body2_SemiBold}
-  background-color: ${({ theme }) => theme.color.primary};
-  color: ${({ theme }) => theme.color.white};
-  border: none;
-  border-radius: 4px;
-  padding: 10px;
-  margin-right: 10px;
-
-  &:last-child {
-    margin-right: 0;
-  }
-`;
