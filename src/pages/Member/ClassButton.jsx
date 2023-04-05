@@ -8,11 +8,38 @@ import Gallery from "./Gallery";
 import Button from "../../components/Button";
 import textVariants from "../../styles/variants/textVariants";
 import Buttons from "../../components/Buttons";
+import { useMutation,useQuery, useQueryClient } from "@tanstack/react-query";
+import { useParams } from "react-router-dom";
 
 const ClassButton = () => {
+  const queryClient = useQueryClient();
   const [selectedButton, setSelectedButton] = useState("");
   const [selectedTab, setSelectedTab] = useState("");
+  const { id } = useParams();
   const [data, setData] = useState("")
+
+  // const { data } = useQuery(
+  //   ["classesPage"],
+  //   () => MemberAPI.getClassesMember(id),
+  //   {
+  //     onSuccess: (data) => {
+  //       console.log(data);
+  //     },
+  //     onError: () => {
+  //       console.log("error");
+  //     },
+  //   }
+  // );
+
+  const getClassesPageMutation = useMutation(MemberAPI.getClassesPage, {
+    onSuccess: (response) => {
+      setData(response)
+      console.log(response);
+    },
+    onError: (response) => {
+      console.log(response);
+    },
+  })
 
   const handleMemberClick = () => {
     setSelectedTab("member");
@@ -26,9 +53,11 @@ const ClassButton = () => {
 
   const handleButtonClick = async (selected, id) => {
     setSelectedButton(selected);
+    getClassesPageMutation.mutate(id);
     navigate(`/classes/${id}`);
-    const newData = await MemberAPI.getClassesPage(id);
-    setData(newData);
+    // queryClient.invalidateQueries("classesPage");
+    // const newData = await MemberAPI.getClassesPage(id);
+    // setData(newData);
   };
 
   return (

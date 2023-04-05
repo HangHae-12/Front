@@ -83,9 +83,9 @@ export const MemberAPI = {
   //     console.log(error);
   //   }
   // },
-  getDetailGallery: async (id, imagePostId) => {
+  getDetailGallery: async (payload) => {
     try {
-      const response = await instance.get(`classroom/${id}/gallery/${imagePostId}`);
+      const response = await instance.get(`classroom/${payload.id}/gallery/${payload.imageId}`);
       return response;
     } catch (error) {
       console.log(error);

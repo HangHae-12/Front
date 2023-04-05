@@ -217,7 +217,7 @@ export const GallerySlider = ({ images }) => {
 
   return (
     <StyledModalSlideContainer>
-      <Button onClick={prevSlide}>＜</Button>
+      <StlyedSlideButton onClick={prevSlide}>＜</StlyedSlideButton>
       <StyledModalSlideWrapper>
         <StyledModalSlide ref={slideRef}>
           {images.map((item) => (
@@ -227,7 +227,7 @@ export const GallerySlider = ({ images }) => {
           ))}
         </StyledModalSlide>
       </StyledModalSlideWrapper>
-      <Button onClick={nextSlide}>＞</Button>
+      <StlyedSlideButton onClick={nextSlide}>＞</StlyedSlideButton>
     </StyledModalSlideContainer>
   );
 };
@@ -479,7 +479,7 @@ const StyledModalSlideImg = styled.img`
   margin-left: 20px;
 `;
 
-const Button = styled.button`
+const StlyedSlideButton = styled.button`
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -488,7 +488,7 @@ const Button = styled.button`
   gap: 10px;
   width: 40px;
   height: 60px;
-  background: #e9e9e9;
+  background: ${({ theme }) => theme.color.grayScale[100]};
   border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.color.grayScale[100]};
 `;
