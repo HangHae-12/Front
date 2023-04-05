@@ -31,7 +31,6 @@ const Gallery = () => {
   const [render, setRender] = useState(true);
   const [title, setTitle] = useState("");
   const [modalState, setModalState] = useRecoilState(modalAtom);
-  const [galleryResponse, setGalleryResponse] = useState(null);
 
   const { data } = useQuery(
     ["classesGallery", searchGallery, currentPage],
@@ -61,7 +60,6 @@ const Gallery = () => {
 
   const detailGalleryMutation = useMutation(MemberAPI.getDetailGallery, {
     onSuccess: (response) => {
-      setGalleryResponse(response);
       const galleryModalData = createGalleryModalData(response);
       openModal(galleryModalData);
       console.log(response);
@@ -238,8 +236,8 @@ const Gallery = () => {
           <StyledGalleryModalTitleBox>
             <StyledModalTitle>{response?.data.data.title}</StyledModalTitle>
             <StyledModalDate>{response?.data.data.createdAt}</StyledModalDate>
-            <button onClick={handleClickSlide}>슬라이드</button>
-            <button onClick={handleClick}>분할</button>
+            <button onClick={() => handleClickSlide(response)}>슬라이드</button>
+            <button onClick={() => handleClick(response)}>분할</button>
           </StyledGalleryModalTitleBox>
         </>
       ),
@@ -272,47 +270,24 @@ const Gallery = () => {
     detailGalleryMutation.mutate(payload);
   };
 
-  const handleClickSlide = () => {
-    setModalState({
-      ...modalState,
+  const handleClickSlide = (response) => {
+    setModalState((prevState) => ({
+      ...prevState,
       isOpen: true,
-      title: (
-        <>
-          <StyledGalleryModalHeader>갤러리</StyledGalleryModalHeader>
-          <StyledGalleryModalTitleBox>
-            <StyledModalTitle>{galleryResponse?.data.data.title}</StyledModalTitle>
-            <StyledModalDate>{galleryResponse?.data.data.createdAt}</StyledModalDate>
-            <button onClick={handleClickSlide}>슬라이드</button>
-            <button onClick={handleClick}>분할</button>
-          </StyledGalleryModalTitleBox>
-        </>
-      ),
       contents: (
-        <GallerySlider images={galleryResponse?.data.data.imageUrlList} />
+        <GallerySlider images={response?.data?.data?.imageUrlList || []} />
       ),
-      footer: null,
       callback: () => alert("modal"),
-    });
+    }));
   };
 
-  const handleClick = () => {
-    setModalState({
-      ...modalState,
+  const handleClick = (response) => {
+    setModalState((prevState) => ({
+      ...prevState,
       isOpen: true,
-      title: (
-        <>
-          <StyledGalleryModalHeader>갤러리</StyledGalleryModalHeader>
-          <StyledGalleryModalTitleBox>
-            <StyledModalTitle>{galleryResponse?.data.data.title}</StyledModalTitle>
-            <StyledModalDate>{galleryResponse?.data.data.createdAt}</StyledModalDate>
-            <button onClick={handleClickSlide}>슬라이드</button>
-            <button onClick={handleClick}>분할</button>
-          </StyledGalleryModalTitleBox>
-        </>
-      ),
       contents: (
         <StyledModalContent>
-          {galleryResponse?.data.data.imageUrlList.map((item) => {
+          {response?.data.data.imageUrlList.map((item) => {
             return (
               <StyledAddGallery key={item}>
                 <StyledPreviewImage src={item} />
@@ -321,9 +296,8 @@ const Gallery = () => {
           })}
         </StyledModalContent>
       ),
-      footer: null,
       callback: () => alert("modal"),
-    });
+    }));
   };
 
   return (
