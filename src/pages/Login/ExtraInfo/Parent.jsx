@@ -12,7 +12,7 @@ import ProfileImageUploader from "../../../components/ProfileImageUploader";
 const Parent = () => {
   const profileInputRef = useRef(null);
   const location = useLocation();
-  const { name, profileImageUrl } = location.state.data;
+  const { name, profileImageUrl } = location.state?.data ?? {};
 
   const {
     register,
