@@ -284,7 +284,7 @@ const Table = () => {
                                     <td rowSpan="3">{getRandomIcon()} {student.name}</td>
                                     <td>출석상태</td>
                                     {visibleDays.map((day) => (
-                                        <td key={day}><Buttons.State colorTypes="red">{student.attendanceStatus}</Buttons.State></td>
+                                        <td key={day}>{student.attendanceStatus === "출석" ? <Buttons.State colorTypes="blue">{student.attendanceStatus}</Buttons.State> : <Buttons.State colorTypes="orange">{student.attendanceStatus}</Buttons.State>}</td>
                                     ))}
                                     <td rowSpan="3">{student.attendanceCnt}</td>
                                     <td rowSpan="3">{student.absentCnt}</td>

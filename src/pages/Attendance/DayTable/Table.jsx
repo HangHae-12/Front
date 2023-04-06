@@ -141,7 +141,21 @@ const Table = () => {
               <tr key={rowIndex}>
                 <td>{row.No}</td>
                 <td>{getRandomIcon()} {row.원아명}</td>
-                <td><Buttons.State colorTypes="red">{row.출결상태}</Buttons.State></td>
+                <td>
+                  {(() => {
+                    switch (row.출결상태) {
+                      case "출석":
+                        return <Buttons.State colorTypes="blue">{row.출결상태}</Buttons.State>;
+                      case "인정결석":
+                        return <Buttons.State colorTypes="orange">{row.출결상태}</Buttons.State>;
+                      case "결석":
+                        return <Buttons.State colorTypes="red">{row.출결상태}</Buttons.State>;
+                      default:
+                        return <Buttons.State colorTypes="perple">{row.출결상태}</Buttons.State>;
+                    }
+                  })()}
+
+                </td>
                 <td>{row.등원시간}</td>
                 <td>{row.하원시간}</td>
                 <td>{row.결석사유}</td>
