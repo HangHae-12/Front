@@ -27,30 +27,22 @@ const Children = ({ bindData }) => {
     },
   });
 
-  const handleEnterSchedule = () => {
-    const newEnterTime = enterTime || (scheduleId === "ENTER" ? new Date() : null);
+  const handleScheduleUpdate = (type) => {
+    const currentTime = new Date();
+    const newEnterTime = type === "enter" && !enterTime ? currentTime : enterTime;
+    const newExitTime = type === "exit" && !exitTime ? currentTime : exitTime;
 
     const updatedData = {
       ...bindData,
       enterTime: newEnterTime,
-    };
-
-    bindData.enterTime = newEnterTime;
-
-    updateEnterMutation.mutate(updatedData);
-  };
-  const handleExitSchedule = () => {
-
-    const newExitTime = exitTime || (scheduleId === "EXIT" ? new Date() : null);
-
-    const updatedData = {
-      ...bindData,
       exitTime: newExitTime,
     };
 
-    bindData.exitTime = newExitTime;
-
-    updateExitMutation.mutate(updatedData);
+    if (type === "enter") {
+      updateEnterMutation.mutate(updatedData);
+    } else if (type === "exit") {
+      updateExitMutation.mutate(updatedData);
+    }
   };
 
 
@@ -83,12 +75,12 @@ const Children = ({ bindData }) => {
                 scheduleId === "ENTER"
                   ?
                   item.currentStatus === "미등원"
-                    ? <StyledAttendanceBtn onClick={() => handleEnterSchedule}>등원처리</StyledAttendanceBtn>
-                    : <StyledAttendanceBtn onClick={() => handleEnterSchedule}>등원취소</StyledAttendanceBtn>
+                    ? <StyledAttendanceBtn onClick={() => handleScheduleUpdate("enter")}>등원처리</StyledAttendanceBtn>
+                    : <StyledAttendanceBtn onClick={() => handleScheduleUpdate("enter")}>등원취소</StyledAttendanceBtn>
                   :
                   item.currentStatus === "미하원"
-                    ? <StyledAttendanceBtn onClick={() => handleExitSchedule}>하원처리</StyledAttendanceBtn>
-                    : <StyledAttendanceBtn onClick={() => handleExitSchedule}>하원취소</StyledAttendanceBtn>
+                    ? <StyledAttendanceBtn onClick={() => handleScheduleUpdate("exit")}>하원처리</StyledAttendanceBtn>
+                    : <StyledAttendanceBtn onClick={() => handleScheduleUpdate("exit")}>하원취소</StyledAttendanceBtn>
               }
             </StyledStudentCard>
           );
