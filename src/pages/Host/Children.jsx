@@ -14,27 +14,53 @@ const Children = ({ bindData }) => {
   const navigate = useNavigate();
   const { enterTime, exitTime } = bindData;
 
+  const updateEnterMutation = useMutation(HostAPI.updateEnter, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["getManageSchedule"]);
+      // queryClient.setQueryData(["getManageSchedule"]);
+    },
+  });
   const updateExitMutation = useMutation(HostAPI.updateExit, {
     onSuccess: () => {
       queryClient.invalidateQueries(["getManageSchedule"]);
-      // queryClient.setQueryData(["getManageTimeSchedule"]);
+      // queryClient.setQueryData(["getManageSchedule"]);
     },
   });
-  const handleSchedule = () => {
-    const newEnterTime = enterTime || (scheduleId === "ENTER" ? new Date() : null);
-    const newExitTime = exitTime || (scheduleId === "EXIT" ? new Date() : null);
 
-    const updatedData = {
-      ...bindData,
+  const handleScheduleUpdate = (type, childId) => {
+    const currentTime = new Date();
+    const childData = bindData.find((item) => item.childId === childId);
+
+    const newEnterTime = type === "enter" && !childData.enterTime ? currentTime : childData.enterTime;
+    const newExitTime = type === "exit" && !childData.exitTime ? currentTime : childData.exitTime;
+
+    const updatedData = bindData.map((item) => {
+      if (item.childId === childId) {
+        return { ...item, enterTime: newEnterTime, exitTime: newExitTime };
+      } else {
+        return item;
+      }
+    });
+    queryClient.setQueryData(["getManageSchedule"], updatedData);
+
+    const updatedChildData = {
+      ...childData,
       enterTime: newEnterTime,
       exitTime: newExitTime,
     };
 
-    bindData.enterTime = newEnterTime;
-    bindData.exitTime = newExitTime;
-
-    updateExitMutation.mutate(updatedData);
+    if (type === "enter") {
+      updateEnterMutation.mutate(updatedChildData);
+    } else if (type === "exit") {
+      updateExitMutation.mutate(updatedChildData);
+    }
   };
+
+
+
+
+
+
 
 
   return (
@@ -66,12 +92,12 @@ const Children = ({ bindData }) => {
                 scheduleId === "ENTER"
                   ?
                   item.currentStatus === "미등원"
-                    ? <StyledAttendanceBtn onClick={() => handleSchedule}>등원처리</StyledAttendanceBtn>
-                    : <StyledAttendanceBtn onClick={() => handleSchedule}>등원취소</StyledAttendanceBtn>
+                    ? <StyledAttendanceBtn onClick={() => handleScheduleUpdate("enter", item.childId)}>등원처리</StyledAttendanceBtn>
+                    : <StyledAttendanceBtn onClick={() => handleScheduleUpdate("enter", item.childId)}>등원취소</StyledAttendanceBtn>
                   :
                   item.currentStatus === "미하원"
-                    ? <StyledAttendanceBtn onClick={() => handleSchedule}>하원처리</StyledAttendanceBtn>
-                    : <StyledAttendanceBtn onClick={() => handleSchedule}>하원취소</StyledAttendanceBtn>
+                    ? <StyledAttendanceBtn onClick={() => handleScheduleUpdate("exit", item.childId)}>하원처리</StyledAttendanceBtn>
+                    : <StyledAttendanceBtn onClick={() => handleScheduleUpdate("exit", item.childId)}>하원취소</StyledAttendanceBtn>
               }
             </StyledStudentCard>
           );
