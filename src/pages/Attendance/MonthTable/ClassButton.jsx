@@ -13,7 +13,7 @@ const ClassButton = () => {
 
     const loadClassroom = (selected, id) => {
         setSelectedButton(selected)
-        navigate(`/attendance2/${id}`)
+        navigate(`/monthAttendance/${id}`)
     };
 
     return (

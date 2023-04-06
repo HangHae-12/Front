@@ -15,14 +15,6 @@ import CustomDatepicker from '../../../components/CustomDatepicker'
 
 const Table = () => {
 
-    const [selectedButton, setSelectedButton] = useState("새빛반");
-
-
-
-    const loadClassroom = (selected, id) => {
-        setSelectedButton(selected);
-        // navigate(`/attendance/${id}`)
-    };
 
     const [selectedDate, setSelectedDate] = useState(new Date());
 
@@ -32,10 +24,6 @@ const Table = () => {
 
     ];
 
-
-    const handleDateChange = (date) => {
-        setSelectedDate(date);
-    };
 
     const filteredAttendanceData = students.filter(
         (data) =>
@@ -138,10 +126,6 @@ const Table = () => {
             return newDate;
         });
     };
-
-
-
-
     useEffect(() => {
 
         setVisibleDays((prevVisibleDays) => {
@@ -362,9 +346,6 @@ const StyledTable = styled.table`
     border: 1px solid ${({ theme }) => theme.color.grayScale[100]};
   }
 `;
-
-
-
 
 const StyledButtonGroup = styled.div`
     display: flex;
