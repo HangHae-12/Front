@@ -24,13 +24,16 @@ const ClassButtonGroup = () => {
   const hostParams = { classroomId, state: scheduleId, time: timeId, page, size };
 
   const { isLoading, isError, data } = useQuery(["getManageSchedule", hostParams], () =>
-    HostAPI.getManageSchedule({ hostParams })
+    HostAPI.getManageSchedule(hostParams)
   );
 
   useEffect(() => {
     queryClient.invalidateQueries(["getManageSchedule", 0]);
   }, [queryClient]);
 
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error...</div>;
+  if (!data) return null; // 데이터가 로드되지 않은 경우
 
   //페이지네이션 페이지 지정
   const handlePageChange = (page) => {

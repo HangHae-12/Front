@@ -4,17 +4,17 @@ export const HostAPI = {
   //page,size는 param 나머지 jsom 형태로 전달
   getManageSchedule: async (payload) => {
     try {
-      const data = {
-        classroomId: payload.classroomId,
-        state: payload.state,
-        time: payload.time,
-      };
-      const response = await instance.get(`/manager/classroom`, {
-        params: {
-          ...payload,
-          data: JSON.stringify(data),
-        },
-      });
+      const response = await instance.get(
+        `/manager/classroom/${payload.classroomId}`,
+        {
+          params: {
+            state: payload.state,
+            time: payload.time,
+            page: payload.page,
+            size: payload.size,
+          },
+        }
+      );
       return response.data;
     } catch (error) {
       console.log(error);
