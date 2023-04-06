@@ -3,23 +3,18 @@ import styled from "styled-components";
 import textVariants from "../../styles/variants/textVariants";
 
 //반별 아이들 상세 조회 모달
-export const ClassModal = () => {
+export const ClassModal = ({ response }) => {
   return (
     <StyledModalWrapper>
       <StyledChildrenProfileWrapper>
         <StyledLeftWrapper>
           <StyledProfileHeaderFont>원생 프로필</StyledProfileHeaderFont>
-          <StyledProfileImage
-            src={
-              "https://outlooksformen.com/sites/default/files/2020-09/testiminials-img-01.png"
-            }
-          />
-          <StyledProfileButton>이미지 변경</StyledProfileButton>
+          <StyledProfileImage src={response?.data.data.profileImageUrl} />
         </StyledLeftWrapper>
         <StyledRightWrapper>
           <StyledInputWrapper>
             <StyledQuestionFont>이름 </StyledQuestionFont>
-            <StyledAnswerFont>정길숙</StyledAnswerFont>
+            <StyledAnswerFont>{response?.data.data.name}</StyledAnswerFont>
           </StyledInputWrapper>
           <StyledInputWrapper>
             <StyledQuestionFont>성별 </StyledQuestionFont>
@@ -83,6 +78,9 @@ export const ClassModal = () => {
 export const MemberAddModal = () => {
   const [isChecked, setIsChecked] = useState(false);
   const [selectedParent, setSelectedParent] = useState(null);
+  const [name, setName] = useState("");
+  const [birth, setBirth] = useState("");
+  const [note, setNote] = useState("");
 
   const handleCheckBoxChange = (e) => {
     setIsChecked(e.target.checked);
@@ -107,12 +105,21 @@ export const MemberAddModal = () => {
               "https://outlooksformen.com/sites/default/files/2020-09/testiminials-img-01.png"
             }
           />
-          <StyledProfileButton>이미지 추가</StyledProfileButton>
+          <StyledProfileButton type="file"
+              name="upload-img"
+              id="upload-img"
+              accept="image/*"
+              aria-hidden="false"
+              tabIndex="0" />
         </StyledLeftWrapper>
         <StyledRightWrapper>
           <StyledInputWrapper marginTop="20px">
             <StyledQuestionFont>이름 </StyledQuestionFont>
-            <StyledAnswerInputBox width="58px" height="32px" />
+            <StyledAnswerInputBox
+              width="58px"
+              height="32px"
+              onChange={(e) => setName(e.target.value)}
+            />
           </StyledInputWrapper>
           <StyledInputWrapper marginTop="15px">
             <StyledQuestionFont>성별 </StyledQuestionFont>
@@ -123,7 +130,11 @@ export const MemberAddModal = () => {
           </StyledInputWrapper>
           <StyledInputWrapper marginTop="15px">
             <StyledQuestionFont>생년월일 </StyledQuestionFont>
-            <StyledAnswerInputBox width="109px" height="32px" />
+            <StyledAnswerInputBox
+              width="109px"
+              height="32px"
+              onChange={(e) => setBirth(e.target.value)}
+            />
           </StyledInputWrapper>
           <StyledInputWrapper marginTop="25px">
             <StyledQuestionFont>등원시간 </StyledQuestionFont>
@@ -136,7 +147,11 @@ export const MemberAddModal = () => {
         </StyledRightWrapper>
       </StyledChildrenProfileWrapper>
       <StyledNote>특이사항</StyledNote>
-      <StyledInputBox width="560px" height="115px" />
+      <StyledInputBox
+        width="560px"
+        height="115px"
+        onChange={(e) => setNote(e.target.value)}
+      />
       <StyledParentProfileWrapper>
         <StyledParentBox flexDirection="column" padding="0px">
           <StyledProfileHeaderFont marginTop="20px">
@@ -287,7 +302,7 @@ const StyledAnswerFont = styled.div`
   margin-left: ${({ marginLeft }) => marginLeft};
 `;
 
-const StyledProfileButton = styled.button`
+const StyledProfileButton = styled.input`
   ${textVariants.Body3_SemiBold}
   border: 1px solid ${({ theme }) => theme.color.grayScale[200]};
   background: ${({ theme }) => theme.color.white};
@@ -295,6 +310,7 @@ const StyledProfileButton = styled.button`
   padding: 4px;
   color: ${({ theme }) => theme.color.grayScale[500]};
   margin-top: 10px;
+    display: none;
 `;
 
 const StyledTime = styled.div`

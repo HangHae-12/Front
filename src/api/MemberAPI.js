@@ -9,29 +9,11 @@ export const MemberAPI = {
       console.log(error);
     }
   },
-  getClassesMember: async (id) => {
+  getClassesMember: async (id, currentPage) => {
     try {
-      const response = await instance.get(`classroom/${id}/children`);
-      return response;
-    } catch (error) {
-      console.log(error);
-    }
-  },
-
-  getClassesGallery: async (id) => {
-    try {
-      const response = await instance.get(`classroom/${id}/gallery`);
-      return response;
-    } catch (error) {
-      console.log(error);
-    }
-  },
-  getSearchGallery: async (searchGallery, id) => {
-    try {
-      const response = await instance.get(`classroom/${id}/gallery`, {
+      const response = await instance.get(`classroom/${id}/children`, {
         params: {
-          keyword: searchGallery,
-          page: 1,
+          page: currentPage,
         },
       });
       return response;
@@ -39,13 +21,39 @@ export const MemberAPI = {
       console.log(error);
     }
   },
-  getSearchDateGallery: async (id, startDate, endDate) => {
+
+  getClassesGallery: async (id, currentPage) => {
+    try {
+      const response = await instance.get(`classroom/${id}/gallery`, {
+        params: {
+          page: currentPage,
+        },
+      });
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  getSearchGallery: async (searchGallery, id, currentPage) => {
+    try {
+      const response = await instance.get(`classroom/${id}/gallery`, {
+        params: {
+          keyword: searchGallery,
+          page: currentPage,
+        },
+      });
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  getSearchDateGallery: async (id, startDate, endDate, currentPage) => {
     try {
       const response = await instance.get(`classroom/${id}/gallery`, {
         params: {
           start: startDate,
           end: endDate,
-          page: 1,
+          page: currentPage,
         },
       });
       return response;
@@ -53,44 +61,42 @@ export const MemberAPI = {
       console.log(error);
     }
   },
-  // getSearchGallery: async (searchGallery, id, currentPage, itemsPerPage) => {
-  //   try {
-  //     const response = await instance.get(`classroom/${id}/gallery/search`, {
-  //       params: {
-  //         keyword: searchGallery,
-  //         page: currentPage,
-  //         per_page: itemsPerPage,
-  //       },
-  //     });
-  //     return response;
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // },
 
-  // getSearchDateGallery: async (id, startDate, endDate, currentPage, itemsPerPage) => {
-  //   try {
-  //     const response = await instance.get(`classroom/${id}/gallery`, {
-  //       params: {
-  //         start: startDate,
-  //         end: endDate,
-  //         page: currentPage,
-  //         per_page: itemsPerPage,
-  //       },
-  //     });
-  //     return response;
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // },
   getDetailGallery: async (payload) => {
     try {
-      const response = await instance.get(`classroom/${payload.id}/gallery/${payload.imageId}`);
+      const response = await instance.get(
+        `classroom/${payload.id}/gallery/${payload.imageId}`
+      );
       return response;
     } catch (error) {
       console.log(error);
     }
   },
+
+  getSearchMember: async (id, searchMember) => {
+    try {
+      const response = await instance.get(`classroom/${id}/children/search`, {
+        params: {
+          name: searchMember,
+        },
+      });
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  getDetailMember: async (payload) => {
+    try {
+      const response = await instance.get(
+        `classroom/${payload.id}/child/${payload.childid}`
+      );
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   setClassesTeacher: async (payload) => {
     try {
       const response = await instance.put(
@@ -113,6 +119,32 @@ export const MemberAPI = {
         {
           headers: { "Content-Type": "multipart/form-data" },
         }
+      );
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  setGalleryModify: async (payload) => {
+    try {
+      const response = await instance.put(
+        `/classroom/${payload.id}/gallery/${payload.imageId}`,
+        payload.formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  removeGallery: async (payload) => {
+    try {
+      const response = await instance.delete(
+        `/classroom/${payload.id}/gallery/${payload.imageId}`
       );
       return response;
     } catch (error) {
