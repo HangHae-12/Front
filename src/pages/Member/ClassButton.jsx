@@ -56,8 +56,8 @@ const ClassButton = () => {
     getClassesPageMutation.mutate(id);
     navigate(`/classes/${id}`);
     // queryClient.invalidateQueries("classesPage");
-    // const newData = await MemberAPI.getClassesPage(id);
-    // setData(newData);
+    const newData = await MemberAPI.getClassesPage(id);
+    setData(newData);
   };
 
   return (

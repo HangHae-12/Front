@@ -7,16 +7,24 @@ import useModal from "../../hooks/useModal";
 import textVariants from "../../styles/variants/textVariants";
 import { MemberAddModal, ClassModal } from "./ClassModal";
 import Modal from "../../components/Modal";
+import CustomPagination from "../../components/CustomPagination";
 
 const ClassMember = () => {
   const queryClient = useQueryClient();
   const { id } = useParams();
   const [searchMember, setSearchMember] = useState("");
-  const { openModal, closeModal } = useModal();
+  const { openModal } = useModal();
+  const [currentPage, setCurrentPage] = useState(1);
 
   const { data } = useQuery(
-    ["classesMember"],
-    () => MemberAPI.getClassesMember(id),
+    ["classesMember", id, currentPage, searchMember],
+    () => {
+      if (searchMember) {
+        return MemberAPI.getSearchMember(id, searchMember);
+      } else {
+        return MemberAPI.getClassesMember(id, currentPage);
+      }
+    },
     {
       onSuccess: (data) => {
         console.log(data);
@@ -27,15 +35,24 @@ const ClassMember = () => {
     }
   );
 
+  const detailMemberMutation = useMutation(MemberAPI.getDetailMember, {
+    onSuccess: (response) => {
+      const MemberModalData = getChildInformation(response);
+      openModal(MemberModalData);
+      console.log(response);
+    },
+    onError: () => {
+      console.log("error");
+    },
+  });
+
   //검색기능
   const handleSearch = (e) => {
     e.preventDefault();
     setSearchMember(e.target.value);
+    queryClient.invalidateQueries(["classesMember", searchMember]);
+    console.log(data);
   };
-
-  const loadMemberSearch = data?.data?.data?.childResponseDtoList?.filter(
-    (item) => item.name.includes(searchMember)
-  );
 
   const modalOption = {
     canCloseOnOverlayClick: true,
@@ -44,19 +61,27 @@ const ClassMember = () => {
     width: "660px",
     height: "837px",
   };
-  
+
   //아이 상세 조회 모달
-  const getChildInformation = (childId) => {
-    console.log(childId);
+  const getChildInformation = (response) => {
+    console.log(response?.data.data.name)
     const modalData = {
       title: <StyledModalHeader>인원정보</StyledModalHeader>,
-      contents: <ClassModal />,
+      contents: <ClassModal response={response} />,
       footer: <StyledModalButton>수정하기</StyledModalButton>,
       callback: () => alert("modal"),
     };
     openModal(modalData);
   };
-  
+
+  const getDetailMember = (childid) => {
+    const payload = {
+      id: id,
+      childid: childid,
+    };
+    detailMemberMutation.mutate(payload);
+  };
+
   //반별 아이들 인원 등록 모달
   const setChildInformation = () => {
     const modalData = {
@@ -66,16 +91,18 @@ const ClassMember = () => {
       callback: () => alert("modal"),
     };
     openModal(modalData);
-  }
+  };
 
   return (
     <>
       <StyledChildrenWrapper>
         <StyledChildernHeader>
           <StyledPersonnelFont>
-            총원 {data?.data.data.childrenCount}명
+            총원 {data?.data?.data?.childrenCount}명
           </StyledPersonnelFont>
-          <StyledAddMemberButton onClick={() => setChildInformation()}>인원 등록</StyledAddMemberButton>
+          <StyledAddMemberButton onClick={() => setChildInformation()}>
+            인원 등록
+          </StyledAddMemberButton>
           <StyledMemberSearchInput
             type="text"
             onChange={handleSearch}
@@ -83,11 +110,11 @@ const ClassMember = () => {
           ></StyledMemberSearchInput>
         </StyledChildernHeader>
         <StyledChildrenContainer>
-          {loadMemberSearch?.map((item) => {
+          {data?.data?.data?.childResponseDtoList?.map((item) => {
             return (
               <StyledChildrenCard
                 key={item.childId}
-                onClick={(e) => getChildInformation(item.childId)}
+                onClick={(e) => getDetailMember(item.childId)}
               >
                 <StyledChildrenImage src={item.profileImageUrl} />
                 {item.name}
@@ -95,6 +122,14 @@ const ClassMember = () => {
             );
           })}
         </StyledChildrenContainer>
+        {data?.data?.data?.childrenCount !== 0 ? (
+          <CustomPagination
+            current={currentPage}
+            pageSize="14"
+            total={data?.data?.data?.childrenCount}
+            onChange={(page) => setCurrentPage(page)}
+          />
+        ) : null}
       </StyledChildrenWrapper>
       <Modal modalOption={modalOption} />
     </>

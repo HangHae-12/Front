@@ -5,8 +5,6 @@ import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import { MemberAPI } from "../../api/MemberAPI";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import Pagination from "rc-pagination";
-import "rc-pagination/assets/index.css";
 import Modal from "../../components/Modal";
 import useModal from "../../hooks/useModal";
 import { IoIosAdd } from "react-icons/io";
@@ -15,6 +13,7 @@ import textVariants from "../../styles/variants/textVariants";
 import { GallerySlider } from "./ClassModal";
 import { useRecoilState } from "recoil";
 import { modalAtom } from "../../atom/modalAtoms";
+import CustomPagination from "../../components/CustomPagination";
 
 const Gallery = () => {
   const queryClient = useQueryClient();
@@ -31,25 +30,30 @@ const Gallery = () => {
   const [render, setRender] = useState(true);
   const [title, setTitle] = useState("");
   const [modalState, setModalState] = useRecoilState(modalAtom);
+  const [imageUrlList, setImageUrlList] = useState([]);
 
   const { data } = useQuery(
-    ["classesGallery", searchGallery, currentPage],
+    [
+      "classesGallery",
+      searchGallery,
+      currentPage,
+      id,
+      formattedEndDate,
+      formattedStartDate,
+    ],
     () => {
       if (searchGallery) {
-        return MemberAPI.getSearchGallery(
-          searchGallery,
+        return MemberAPI.getSearchGallery(searchGallery, id, currentPage);
+      } else if (formattedEndDate || formattedStartDate) {
+        return MemberAPI.getSearchDateGallery(
           id,
-          currentPage,
-          itemsPerPage
+          formattedStartDate,
+          formattedEndDate,
+          currentPage
         );
+      } else {
+        return MemberAPI.getClassesGallery(id, currentPage);
       }
-      return MemberAPI.getSearchDateGallery(
-        id,
-        startDate,
-        endDate,
-        currentPage,
-        itemsPerPage
-      );
     },
     {
       onSuccess: (data) => {
@@ -60,8 +64,8 @@ const Gallery = () => {
 
   const detailGalleryMutation = useMutation(MemberAPI.getDetailGallery, {
     onSuccess: (response) => {
-      const galleryModalData = createGalleryModalData(response);
-      openModal(galleryModalData);
+      const GalleryModalData = createGalleryModalData(response);
+      openModal(GalleryModalData);
       console.log(response);
     },
     onError: (response) => {
@@ -75,15 +79,22 @@ const Gallery = () => {
     },
   });
 
-  const itemsPerPage = 12;
+  const setGalleryModifyMutation = useMutation(MemberAPI.setGalleryModify, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("classesGallery");
+    },
+  });
 
-  const totalItems = 12;
+  const removeGalleryMutation = useMutation(MemberAPI.removeGallery, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("classesGallery");
+    },
+  });
 
   const handleSearch = (e) => {
     e.preventDefault();
     setSearchGallery(e.target.value);
     queryClient.invalidateQueries(["classesGallery", searchGallery]);
-    console.log(data);
   };
 
   //날짜변환
@@ -101,12 +112,14 @@ const Gallery = () => {
   const handleDateSearch = () => {
     setFormattedStartDate(dateToString(startDate));
     setFormattedEndDate(dateToString(endDate));
-    console.log(formattedStartDate, formattedEndDate);
-    return MemberAPI.getSearchDateGallery(
-      id,
-      formattedStartDate,
-      formattedEndDate
-    );
+  };
+
+  //전체기간 조회
+  const handleEntireDate = () => {
+    setFormattedStartDate("2000-01-01");
+    setFormattedEndDate("3000-01-01");
+    setStartDate("");
+    setEndDate("");
   };
 
   //모달 갤러리 저장하기 기능
@@ -124,11 +137,10 @@ const Gallery = () => {
     setGallerySubmitMutation.mutate(payload);
     setPreviewImages([]);
     setSeverImages([]);
+    setTitle("");
     setTimeout(() => {
       closeModal();
     }, 0);
-    console.log(formData);
-    for (const keyValue of formData) console.log(keyValue);
   };
 
   // 사진 등록 모달 부분
@@ -145,7 +157,6 @@ const Gallery = () => {
       const file = fileArr[i];
       const reader = new FileReader();
       reader.onload = () => {
-        console.log(reader.result);
         setPreviewImages((prevPreviewImages) => [
           ...prevPreviewImages,
           reader.result,
@@ -228,6 +239,7 @@ const Gallery = () => {
     }
   }, [previewImages]);
 
+  //사진 상세조회 부분 및 프레임 전환
   const createGalleryModalData = (response) => {
     return {
       title: (
@@ -237,7 +249,7 @@ const Gallery = () => {
             <StyledModalTitle>{response?.data.data.title}</StyledModalTitle>
             <StyledModalDate>{response?.data.data.createdAt}</StyledModalDate>
             <button onClick={() => handleClickSlide(response)}>슬라이드</button>
-            <button onClick={() => handleClick(response)}>분할</button>
+            <button onClick={() => handleClickSplit(response)}>분할</button>
           </StyledGalleryModalTitleBox>
         </>
       ),
@@ -256,6 +268,16 @@ const Gallery = () => {
           ) : (
             modalState.contents
           )}
+        </>
+      ),
+      footer: (
+        <>
+          <Buttons.Filter
+            colorTypes="primary"
+            onClick={() => handleClickModify(response)}
+          >
+            수정하기
+          </Buttons.Filter>
         </>
       ),
       callback: () => alert("modal"),
@@ -281,7 +303,7 @@ const Gallery = () => {
     }));
   };
 
-  const handleClick = (response) => {
+  const handleClickSplit = (response) => {
     setModalState((prevState) => ({
       ...prevState,
       isOpen: true,
@@ -300,11 +322,128 @@ const Gallery = () => {
     }));
   };
 
+  //갤러리 수정 모달
+  const handleClickModify = (response) => {
+    // const initialImageUrlList = response?.data?.data?.imageUrlList || [];
+    // console.log(initialImageUrlList)
+    setImageUrlList(response?.data?.data?.imageUrlList);
+    console.log(imageUrlList);
+    // setImageUrlList([...imageUrlList, response?.data?.data?.imageUrlList ]);
+    setModalState((prevState) => ({
+      ...prevState,
+      title: (
+        <>
+          <StyledGalleryModalHeader>갤러리 수정</StyledGalleryModalHeader>
+          <StyledGalleryModalTitleBox>
+            <StyledModalInputBox
+              type="text"
+              placeholder={response?.data.data.title}
+              onChange={(e) => setTitle(e.target.value)}
+            ></StyledModalInputBox>
+          </StyledGalleryModalTitleBox>
+        </>
+      ),
+      contents: (
+        <StyledModalContent>
+          <StyledAddGallery>
+            <StyledAddFont htmlFor="upload-img" id="upload-img-label">
+              <StyledAddIcon />
+              <StyledAddInput
+                type="file"
+                name="upload-img"
+                id="upload-img"
+                accept="image/*"
+                aria-hidden="false"
+                tabIndex="0"
+                multiple
+                onChange={(e) => handleImageEdit(e.target.files)}
+              />
+              사진추가
+            </StyledAddFont>
+          </StyledAddGallery>
+          {imageUrlList.map((item, index) => {
+            return (
+              <StyledAddGallery key={index}>
+                <StyledPreviewImage src={item} />
+                <button onClick={() => handleImageDelete(index)}>삭제</button>
+              </StyledAddGallery>
+            );
+          })}
+        </StyledModalContent>
+      ),
+      footer: (
+        <>
+          <Buttons.Filter
+            colorTypes="primary"
+            onClick={() =>
+              handleGalleryChange(
+                response.data.data.imagePostResponseDtoList.imagePostId
+              )
+            }
+          >
+            저장하기
+          </Buttons.Filter>
+          <Buttons.Filter
+            colorTypes="primary"
+            onClick={() =>
+              handleGalleryDelete(
+                response.data.data.imagePostResponseDtoList.imagePostId
+              )
+            }
+          >
+            삭제하기
+          </Buttons.Filter>
+        </>
+      ),
+      callback: () => alert("modal"),
+    }));
+  };
+
+  useEffect(() => {
+    console.log(imageUrlList);
+  }, [imageUrlList]);
+
+  //갤러리 수정 모달에서 이미지 삭제
+  const handleImageDelete = (index) => {
+    const updatedImages = imageUrlList.filter((_, idx) => idx !== index);
+    setImageUrlList(updatedImages);
+    setImageUrlList((prev) => [...prev]); // imageUrlList를 다시 설정하여 컴포넌트를 렌더링합니다.
+    console.log(imageUrlList);
+  };
+
+  //갤러리 모달에서 이미지 추가
+  const handleImageEdit = (newImages) => {
+    const updatedImages = Array.from(newImages).map((image) =>
+      URL.createObjectURL(image)
+    );
+    setImageUrlList((prevState) => [...prevState, ...updatedImages]);
+  };
+
+  //갤러리 모달에서 수정완료 버튼
+  const handleGalleryChange = (imageId) => {
+    const payload = {
+      id: id,
+      imageId: imageId,
+    };
+    setGalleryModifyMutation.mutate(payload);
+  };
+
+  //갤러리 삭제
+  const handleGalleryDelete = (imageId) => {
+    const payload = {
+      id: id,
+      imageId: imageId,
+    };
+    removeGalleryMutation.mutate(payload);
+  };
+
   return (
     <>
       <StyledGalleryWrapper>
         <StyledGalleryHeader>
-          <Buttons.Filter outlined>전체기간</Buttons.Filter>
+          <Buttons.Filter outlined onClick={handleEntireDate}>
+            전체기간
+          </Buttons.Filter>
           <StyledDatePickerWrapper>
             <StyledDatePicker
               showIcon
@@ -352,12 +491,14 @@ const Gallery = () => {
           })}
         </StyledGalleryContainer>
         <StyledPaginationContainer>
-          <Pagination
-            current={currentPage}
-            pageSize={itemsPerPage}
-            total={totalItems}
-            onChange={(page) => setCurrentPage(page)}
-          />
+          {data?.data.data.imagePostCount !== 0 ? (
+            <CustomPagination
+              current={currentPage}
+              pageSize="12"
+              total={data?.data.data.imagePostCount}
+              onChange={(page) => setCurrentPage(page)}
+            />
+          ) : null}
         </StyledPaginationContainer>
       </StyledGalleryWrapper>
       <Modal modalOption={modalOption} />
