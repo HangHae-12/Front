@@ -199,7 +199,7 @@ const Table = () => {
                         <GrPrevious style={{ marginRight: "8px" }} onClick={decreaseMonth} size={24} />
                         {selectedDate.getFullYear()}년 {selectedDate.getMonth() + 1}월
                         <GrNext style={{ marginLeft: "8px" }} onClick={increaseMonth} size={24} />
-                        <CustomDatepicker />
+                        <CustomDatepicker mode="month" />
                     </StyledMonthYear>
                 </StyledHeader>
                 <StyledTable>
