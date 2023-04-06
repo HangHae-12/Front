@@ -14,23 +14,40 @@ const Children = ({ bindData }) => {
   const navigate = useNavigate();
   const { enterTime, exitTime } = bindData;
 
+  const updateEnterMutation = useMutation(HostAPI.updateEnter, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["getManageSchedule"]);
+      // queryClient.setQueryData(["getManageSchedule"]);
+    },
+  });
   const updateExitMutation = useMutation(HostAPI.updateExit, {
     onSuccess: () => {
       queryClient.invalidateQueries(["getManageSchedule"]);
-      // queryClient.setQueryData(["getManageTimeSchedule"]);
+      // queryClient.setQueryData(["getManageSchedule"]);
     },
   });
-  const handleSchedule = () => {
+
+  const handleEnterSchedule = () => {
     const newEnterTime = enterTime || (scheduleId === "ENTER" ? new Date() : null);
-    const newExitTime = exitTime || (scheduleId === "EXIT" ? new Date() : null);
 
     const updatedData = {
       ...bindData,
       enterTime: newEnterTime,
-      exitTime: newExitTime,
     };
 
     bindData.enterTime = newEnterTime;
+
+    updateEnterMutation.mutate(updatedData);
+  };
+  const handleExitSchedule = () => {
+
+    const newExitTime = exitTime || (scheduleId === "EXIT" ? new Date() : null);
+
+    const updatedData = {
+      ...bindData,
+      exitTime: newExitTime,
+    };
+
     bindData.exitTime = newExitTime;
 
     updateExitMutation.mutate(updatedData);
@@ -66,12 +83,12 @@ const Children = ({ bindData }) => {
                 scheduleId === "ENTER"
                   ?
                   item.currentStatus === "미등원"
-                    ? <StyledAttendanceBtn onClick={() => handleSchedule}>등원처리</StyledAttendanceBtn>
-                    : <StyledAttendanceBtn onClick={() => handleSchedule}>등원취소</StyledAttendanceBtn>
+                    ? <StyledAttendanceBtn onClick={() => handleEnterSchedule}>등원처리</StyledAttendanceBtn>
+                    : <StyledAttendanceBtn onClick={() => handleEnterSchedule}>등원취소</StyledAttendanceBtn>
                   :
                   item.currentStatus === "미하원"
-                    ? <StyledAttendanceBtn onClick={() => handleSchedule}>하원처리</StyledAttendanceBtn>
-                    : <StyledAttendanceBtn onClick={() => handleSchedule}>하원취소</StyledAttendanceBtn>
+                    ? <StyledAttendanceBtn onClick={() => handleExitSchedule}>하원처리</StyledAttendanceBtn>
+                    : <StyledAttendanceBtn onClick={() => handleExitSchedule}>하원취소</StyledAttendanceBtn>
               }
             </StyledStudentCard>
           );
