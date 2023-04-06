@@ -7,7 +7,7 @@ import { GrPrevious, GrNext } from "react-icons/gr";
 import { GoOctoface } from "react-icons/go"
 import { TbDog } from "react-icons/tb"
 import { RiBearSmileLine } from "react-icons/ri"
-import { AiOutlineSmile, AiOutlineDoubleLeft, AiOutlineDoubleRight } from "react-icons/ai"
+import { AiOutlineSmile, AiOutlineDoubleLeft, AiOutlineDoubleRight, AiOutlineLeft, AiOutlineRight } from "react-icons/ai"
 import textVariants from '../../../styles/variants/textVariants';
 import Buttons from '../../../components/Buttons';
 import ClassButton from './ClassButton';
@@ -23,27 +23,23 @@ const Table = () => {
         { id: 2, name: "김주원", attendanceStatus: "인정결석", enterTime: "오전 9:00", exitTime: "오후 7:30", attendanceCnt: "6", absentCnt: "0" },
 
     ];
-
-
     const filteredAttendanceData = students.filter(
         (data) =>
             new Date(data.date).getMonth() === selectedDate.getMonth() &&
             new Date(data.date).getFullYear() === selectedDate.getFullYear()
     );
-
-
     const getDaysInMonth = (month, year) => {
         return new Date(year, month + 1, 0).getDate();
     };
-
     const daysInMonth = getDaysInMonth(selectedDate.getMonth(), selectedDate.getFullYear());
     const daysOfWeek = ["일", "월", "화", "수", "목", "금", "토"];
 
+    //오늘의 날짜 부터 보여주기 위해서 
     const getInitialVisibleDays = () => {
         const today = new Date().getDate();
         return Array.from({ length: 5 }, (_, i) => today + i);
     };
-
+    //기준날을 오늘로
     const [visibleDays, setVisibleDays] = useState(getInitialVisibleDays());
 
     const exportToExcel = () => {
@@ -99,27 +95,22 @@ const Table = () => {
             ];
             XLSX.utils.sheet_add_aoa(ws, [leaveTimeData], { origin: `A${rowIndex + index * 3 + 2}` });
         });
-
-
-
         // 워크북에 시트 추가
         XLSX.utils.book_append_sheet(wb, ws, "월별 출석부");
-
         // 엑셀 파일 다운로드
         XLSX.writeFile(wb, `출석부.xlsx`);
     };
 
+    // 달 넘기기 버튼 핸들러
 
-
-    const decreaseMonth = () => {
+    const handleDecreaseMonth = () => {
         setSelectedDate((prevDate) => {
             const newDate = new Date(prevDate);
             newDate.setMonth(newDate.getMonth() - 1);
             return newDate;
         });
     };
-
-    const increaseMonth = () => {
+    const handleIncreaseMonth = () => {
         setSelectedDate((prevDate) => {
             const newDate = new Date(prevDate);
             newDate.setMonth(newDate.getMonth() + 1);
@@ -140,7 +131,9 @@ const Table = () => {
             return newDays;
         });
     }, [selectedDate]);
-    const goPrevDays = () => {
+
+    //태이블 전날,다음날로 가는 함수
+    const handlePrevDays = () => {
         setVisibleDays((prevVisibleDays) => {
             const firstDay = prevVisibleDays[0] - 1;
             const lastDay = prevVisibleDays[prevVisibleDays.length - 1] - 1;
@@ -159,10 +152,48 @@ const Table = () => {
         });
     };
 
-    const goNextDays = () => {
+    const handleNextDays = () => {
         setVisibleDays((prevVisibleDays) => {
             const firstDay = prevVisibleDays[0] + 1;
             const lastDay = prevVisibleDays[prevVisibleDays.length - 1] + 1;
+
+            if (lastDay > daysInMonth) {
+                return prevVisibleDays;
+            }
+
+            const newDays = [];
+
+            for (let i = firstDay; i <= lastDay; i++) {
+                newDays.push(i);
+            }
+
+            return newDays;
+        });
+    };
+    //태이블 일자 +- 5로 가는 함수
+    const handleFivePrevDays = () => {
+        setVisibleDays((prevVisibleDays) => {
+            const firstDay = prevVisibleDays[0] - 5;
+            const lastDay = prevVisibleDays[prevVisibleDays.length - 1] - 5;
+
+            if (firstDay < 1) {
+                return prevVisibleDays;
+            }
+
+            const newDays = [];
+
+            for (let i = firstDay; i <= lastDay; i++) {
+                newDays.push(i);
+            }
+
+            return newDays;
+        });
+    };
+
+    const handleFiveNextDays = () => {
+        setVisibleDays((prevVisibleDays) => {
+            const firstDay = prevVisibleDays[0] + 5;
+            const lastDay = prevVisibleDays[prevVisibleDays.length - 1] + 5;
 
             if (lastDay > daysInMonth) {
                 return prevVisibleDays;
@@ -196,22 +227,29 @@ const Table = () => {
             <StyledTableContainer>
                 <StyledHeader>
                     <StyledMonthYear>
-                        <GrPrevious style={{ marginRight: "8px" }} onClick={decreaseMonth} size={24} />
+                        <GrPrevious style={{ marginRight: "8px" }} onClick={handleDecreaseMonth} size={24} />
                         {selectedDate.getFullYear()}년 {selectedDate.getMonth() + 1}월
-                        <GrNext style={{ marginLeft: "8px" }} onClick={increaseMonth} size={24} />
+                        <GrNext style={{ marginLeft: "8px" }} onClick={handleIncreaseMonth} size={24} />
                         <CustomDatepicker mode="month" />
                     </StyledMonthYear>
                 </StyledHeader>
                 <StyledTable>
                     <thead>
                         <tr>
-                            <th></th>
-                            <th onClick={goPrevDays}><AiOutlineDoubleLeft /></th>
-                            {visibleDays.map((day) => (
-                                <th key={day}>{day}</th>
-                            ))}
-                            <th onClick={goNextDays}><AiOutlineDoubleRight /></th>
-                            <th></th>
+                            <th onClick={handleFivePrevDays}><AiOutlineDoubleLeft /></th>
+                            <th onClick={handlePrevDays}><AiOutlineLeft /></th>
+                            {visibleDays.map((day) => {
+                                if (day > daysInMonth) {
+                                    return (
+                                        <th key={day}></th>
+                                    );
+                                }
+                                return (
+                                    <th key={day}>{day}</th>
+                                );
+                            })}
+                            <th onClick={handleNextDays}><AiOutlineRight /></th>
+                            <th onClick={handleFiveNextDays}><AiOutlineDoubleRight /></th>
                         </tr>
                         <tr>
                             <th>이름</th>
@@ -311,6 +349,11 @@ const StyledTable = styled.table`
   background-color: ${({ theme }) => theme.color.white};
   width: 100%;
   margin-top: 20px;
+
+
+  thead{
+    padding: 10px;
+  }
 
   th,
   td {

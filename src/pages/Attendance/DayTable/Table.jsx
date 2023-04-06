@@ -36,7 +36,7 @@ const Table = () => {
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
-
+  const dayOfWeek = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'][selectedDate.getDay()];
   const exportToExcel = () => {
     const ws = XLSX.utils.json_to_sheet(attendanceData, {
       header: ["No", "원아명", "출결상태", "등원시간", "하원시간", "결석사유"],
@@ -91,7 +91,7 @@ const Table = () => {
         <StyledHeader>
           <StyledMonthYear>
             <GrPrevious style={{ marginRight: "8px" }} onClick={decreaseDate} size={24} />
-            {selectedDate.getFullYear()}년 {selectedDate.getMonth() + 1}월 {selectedDate.getDate()}일
+            {selectedDate.getFullYear()}년 {selectedDate.getMonth() + 1}월 {selectedDate.getDate()}일 {dayOfWeek}
             <GrNext style={{ marginLeft: "8px" }} onClick={increaseDate} size={24} />
             <CustomDatepicker />
           </StyledMonthYear>
@@ -184,6 +184,12 @@ const StyledTable = styled.table`
   background-color: ${({ theme }) => theme.color.white};
   width: 100%;
   margin-top: 20px;
+
+
+  thead{
+    padding: 10px;
+  }
+
 
   th,
   td {
