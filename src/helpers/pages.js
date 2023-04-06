@@ -2,7 +2,8 @@ import Login from "../pages/Login";
 import KakaoLogin from "../pages/Login/KakaoLogin";
 import Preview from "../pages/Preview";
 import Host from "../pages/Host";
-import Attendance from "../pages/Attendance";
+import Attendance from "../pages/Attendance/DayTable";
+import MonthTable from "../pages/Attendance/MonthTable";
 import Member from "../pages/Member/Member";
 import Teacher from "../pages/Login/ExtraInfo/Teacher";
 import Parent from "../pages/Login/ExtraInfo/Parent";
@@ -23,6 +24,7 @@ export const PAGE = {
   kakaoLogin: <KakaoLogin />,
   host: <Host />,
   attendance: <Attendance />,
+  attendance2: <MonthTable />,
   member: <Member />,
   childmanage: <ChildManage />,
 };
