@@ -1,4 +1,3 @@
-// useTokenCookie.js
 import { useEffect } from "react";
 import tokenCookie from "../utils/tokenCookie";
 
