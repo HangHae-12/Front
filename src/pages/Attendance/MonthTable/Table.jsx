@@ -13,7 +13,7 @@ import Buttons from '../../../components/Buttons';
 import ClassButton from './ClassButton';
 import CustomDatepicker from '../../../components/CustomDatepicker'
 
-const Table = () => {
+const Table = ({ data }) => {
 
 
     const [selectedDate, setSelectedDate] = useState(new Date());

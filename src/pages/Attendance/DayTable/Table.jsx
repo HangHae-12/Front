@@ -13,7 +13,7 @@ import ClassButton from './ClassButton';
 import CustomDatepicker from '../../../components/CustomDatepicker'
 
 
-const Table = () => {
+const Table = ({ data }) => {
 
   const [selectedButton, setSelectedButton] = useState("새빛반");
   const [selectedDate, setSelectedDate] = useState(new Date());
