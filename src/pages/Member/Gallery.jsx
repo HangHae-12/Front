@@ -28,6 +28,7 @@ const Gallery = () => {
   const [previewImages, setPreviewImages] = useState([]); // 프리뷰 보여줄 이미지 데이터
   const [severImages, setSeverImages] = useState([]); // 서버로 보낼 이미지 데이터
   const [render, setRender] = useState(true);
+  const [render2, setRender2] = useState(true);
   const [title, setTitle] = useState("");
   const [modalState, setModalState] = useRecoilState(modalAtom);
   const [imageUrlList, setImageUrlList] = useState([]);
@@ -220,8 +221,6 @@ const Gallery = () => {
   };
 
   const modalOption = {
-    canCloseOnOverlayClick: true,
-    isCloseButton: true,
     padding: "10px",
     width: "630px",
     height: "720px",
@@ -322,6 +321,14 @@ const Gallery = () => {
     }));
   };
 
+  // useEffect(() => {
+  //   if (!render2) {
+  //     handleClickModify();
+  //   } else {
+  //     setRender2(false);
+  //   }
+  // }, [imageUrlList]);
+
   //갤러리 수정 모달
   const handleClickModify = (response) => {
     // const initialImageUrlList = response?.data?.data?.imageUrlList || [];
@@ -375,21 +382,13 @@ const Gallery = () => {
         <>
           <Buttons.Filter
             colorTypes="primary"
-            onClick={() =>
-              handleGalleryChange(
-                response.data.data.imagePostResponseDtoList.imagePostId
-              )
-            }
+            onClick={() => handleGalleryChange(response.data.data.imagePostId)}
           >
             저장하기
           </Buttons.Filter>
           <Buttons.Filter
             colorTypes="primary"
-            onClick={() =>
-              handleGalleryDelete(
-                response.data.data.imagePostResponseDtoList.imagePostId
-              )
-            }
+            onClick={() => handleGalleryDelete(response.data.data.imagePostId)}
           >
             삭제하기
           </Buttons.Filter>
@@ -435,6 +434,7 @@ const Gallery = () => {
       imageId: imageId,
     };
     removeGalleryMutation.mutate(payload);
+    closeModal();
   };
 
   return (

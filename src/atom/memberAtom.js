@@ -1,6 +1,12 @@
 import { atom } from "recoil";
 
 export const memberAtom = atom({
-    key: "galleryresponse",
-    default: ""
+  key: "memberAdd",
+  default: {
+    name: "",
+    birth: "",
+    note: "",
+    gender:"",
+    image: "",
+  },
 });
