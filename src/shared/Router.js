@@ -17,8 +17,10 @@ const Router = () => {
         <Route path="/classes" element={PAGE.member} />
         <Route path="/classes/:id" element={PAGE.member} />
         <Route path="/host" element={PAGE.host} />
-        <Route path="/attendance" element={PAGE.attendance} />
-        <Route path="/attendance2" element={PAGE.attendance2} />
+        <Route path="/dayAttendance" element={PAGE.dayAttendance} />
+        <Route path="/dayAttendance/:id" element={PAGE.dayAttendance} />
+        <Route path="/monthAttendance" element={PAGE.monthAttendance} />
+        <Route path="/monthAttendance/:id" element={PAGE.dayAttendance} />
         <Route
           path="/host/:classroomId/:scheduleId?/:timeId?"
           element={PAGE.host}

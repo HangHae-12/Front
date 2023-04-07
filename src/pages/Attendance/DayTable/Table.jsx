@@ -1,9 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import DatePicker, { registerLocale } from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import * as XLSX from "xlsx";
-import ko from "date-fns/locale/ko";
 import { GrPrevious, GrNext } from "react-icons/gr";
 import { BsCalendarDate } from "react-icons/bs"
 import { GoOctoface } from "react-icons/go"
@@ -11,36 +8,34 @@ import { TbDog } from "react-icons/tb"
 import { RiBearSmileLine } from "react-icons/ri"
 import { AiOutlineSmile } from "react-icons/ai"
 import textVariants from '../../../styles/variants/textVariants';
-import Button from "../../../components/Button";
-import Buttons from '../../../components/Buttons';
+import Buttons from "../../../components/Buttons";
+import ClassButton from './ClassButton';
+import CustomDatepicker from '../../../components/CustomDatepicker'
 
-registerLocale("ko", ko);
 
-const Table = () => {
+const Table = ({ data }) => {
 
   const [selectedButton, setSelectedButton] = useState("새빛반");
-
-
-
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+  };
   const loadClassroom = (selected, id) => {
     setSelectedButton(selected);
     // navigate(`/host/${id}/ENTER/전체시간`)
   };
 
-  const [selectedDate, setSelectedDate] = useState(new Date());
+
   const [attendanceData, setAttendanceData] = useState([
     { No: 1, 원아명: "백주원", 출결상태: "출석", 등원시간: "오전 9:00", 하원시간: "오후 4:30", 결석사유: "" },
     { No: 2, 원아명: "김주원", 출결상태: "인정결석", 등원시간: "오전 9:00", 하원시간: "오후 7:30", 결석사유: "코로나" },
-    { No: 3, 원아명: "홍주원", 출결상태: "결석", 등원시간: "오전 9:00", 하원시간: "오후 4:30", 결석사유: "" },
+    { No: 3, 원아명: "홍주원", 출결상태: "결석", 등원시간: "", 하원시간: "", 결석사유: "" },
     { No: 4, 원아명: "유주원", 출결상태: "출석", 등원시간: "오전 9:00", 하원시간: "오후 7:30", 결석사유: "" },
-    { No: 5, 원아명: "이주원", 출결상태: "출석", 등원시간: "오전 9:00", 하원시간: "오후 4:30", 결석사유: "" }
+    { No: 5, 원아명: "이주원", 출결상태: "인정결석", 등원시간: "오전 9:00", 하원시간: "오후 4:30", 결석사유: "코로나" },
+
 
   ]);
-
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-  };
-
+  const dayOfWeek = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'][selectedDate.getDay()];
   const exportToExcel = () => {
     const ws = XLSX.utils.json_to_sheet(attendanceData, {
       header: ["No", "원아명", "출결상태", "등원시간", "하원시간", "결석사유"],
@@ -90,39 +85,14 @@ const Table = () => {
     <div>
 
       <StyledTableTitle>일별 출석부</StyledTableTitle>
-      <StyledClassButtonGroup>
-        <Button.ClassButton
-          selected={"새빛반"}
-          selectedButton={selectedButton}
-          onClick={() => loadClassroom("새빛반", 1)}
-        />
-        <Button.ClassButton
-          selected={"동동반"}
-          selectedButton={selectedButton}
-          onClick={() => loadClassroom("동동반", 2)}
-        />
-        <Button.ClassButton
-          selected={"빗살반"}
-          selectedButton={selectedButton}
-          onClick={() => loadClassroom("빗살반", 3)}
-        />
-      </StyledClassButtonGroup>
+      <ClassButton />
       <StyledTableContainer>
         <StyledHeader>
           <StyledMonthYear>
             <GrPrevious style={{ marginRight: "8px" }} onClick={decreaseDate} size={24} />
-            {selectedDate.getFullYear()}년 {selectedDate.getMonth() + 1}월 {selectedDate.getDate()}일
+            {selectedDate.getFullYear()}년 {selectedDate.getMonth() + 1}월 {selectedDate.getDate()}일 {dayOfWeek}
             <GrNext style={{ marginLeft: "8px" }} onClick={increaseDate} size={24} />
-            <StyledCustomDatePicker>
-              <DatePicker
-                selected={selectedDate}
-                onChange={handleDateChange}
-                customInput={<CustomInput />}
-                dateFormat="yyyy년 MM월 dd일"
-                locale="ko"
-                wrapperClassName="hidden"
-              />
-            </StyledCustomDatePicker>
+            <CustomDatepicker selectedDate={selectedDate} onDateChange={handleDateChange} />
           </StyledMonthYear>
         </StyledHeader>
         <StyledTable>
@@ -174,9 +144,6 @@ const Table = () => {
 
 export default Table;
 
-const StyledClassButtonGroup = styled.div`
-padding-bottom: 10px;
-`;
 
 const StyledTableTitle = styled.h2`
   ${textVariants.H2_Bold}
@@ -202,17 +169,12 @@ const StyledMonthYear = styled.div`
 `;
 
 
-
-const CustomInput = React.forwardRef(({ value, onClick }, ref) => (
-  <BsCalendarDate onClick={onClick} ref={ref} className="hidden" />
-));
-
 const StyledTableContainer = styled.div`
     background-color:#EDF5EECC;
     box-shadow: 0px 2px 12px hsla(0, 0%, 0%, 0.04);
     border-radius: 12px;
     padding: 40px;
-    margin-top: 50px;
+    margin-top: 30px;
 `
 
 const StyledTable = styled.table`
@@ -221,6 +183,12 @@ const StyledTable = styled.table`
   background-color: ${({ theme }) => theme.color.white};
   width: 100%;
   margin-top: 20px;
+
+
+  thead{
+    padding: 10px;
+  }
+
 
   th,
   td {
@@ -249,7 +217,6 @@ const StyledTable = styled.table`
 
 
 
-
 const StyledButtonGroup = styled.div`
     display: flex;
     justify-content: flex-end; /* 오른쪽 정렬 */
@@ -260,66 +227,6 @@ const StyledExportButton = styled(Buttons.Filter)`
     margin-left: 10px;
 `;
 
-
-const StyledCustomDatePicker = styled.div`
-    .react-datepicker {
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: white;
-    font-size: 14px;
-  }
-  
-  .react-datepicker__header {
-    background-color: ${({ theme }) => theme.color.perple_lighter};
-    border-bottom: 1px solid #ccc;
-    font-weight: bold;
-    padding: 10px;
-    text-align: center;
-  }
-  
-  .react-datepicker__current-month {
-    ${textVariants.Body1_SemiBold}
-  }
-  
-  .react-datepicker__day {
-    ${textVariants.Body3_Regular}
-    color: ${({ theme }) => theme.color.grayScale[500]};
-    outline: none;
-  }
-  
-  .react-datepicker__day:hover {
-    background-color: ${({ theme }) => theme.color.grayScale[100]};
-    cursor: pointer;
-  }
-  
-  .react-datepicker__day--selected {
-    ${textVariants.Body3_SemiBold}
-    background-color: ${({ theme }) => theme.color.orange_lighter};
-    color: ${({ theme }) => theme.color.white};
-    
-  }
-  
-  .react-datepicker__day--today {
-    ${textVariants.Body3_SemiBold}
-    color: ${({ theme }) => theme.color.orange};
-  }
-  
-  .react-datepicker__navigation {
-    outline: none;
-    border: none;
-    background-color: transparent;
-    cursor: pointer;
-    line-height: 1.4;
-  }
-  
-  .react-datepicker__navigation--previous {
-    margin-right: 10px;
-  }
-  
-  .react-datepicker__navigation--next {
-    margin-left: 10px;
-  }
-`
 
 
 

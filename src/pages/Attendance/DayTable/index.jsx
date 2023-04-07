@@ -1,21 +1,26 @@
 import styled from "styled-components";
+import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
+import { AttendanceAPI } from "../../../api/AttendanceAPI";
 import SideBar from "../../../components/SideBar";
 import Table from "./Table"
-const Host = () => {
 
+const DayTable = () => {
+  const { isLoading, isError, data } = useQuery(["getDayAttendance"], () =>
+    AttendanceAPI.getManageSchedule()
+  );
   return (
     <StyledContainer>
       <StyledLeftContainer>
         <SideBar />
       </StyledLeftContainer>
       <StyledRightContainer>
-        <Table />
+        <Table data={data} />
       </StyledRightContainer >
     </StyledContainer >
   );
 };
 
-export default Host;
+export default DayTable;
 
 const StyledContainer = styled.div`
   display: flex;

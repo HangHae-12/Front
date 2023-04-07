@@ -12,7 +12,7 @@ const Children = ({ bindData }) => {
   //useSearchParams 알아보기
   const { classroomId, scheduleId, timeId } = useParams();
   const navigate = useNavigate();
-  const { enterTime, exitTime } = bindData;
+  // const { enterTime, exitTime } = bindData;
 
   const updateEnterMutation = useMutation(HostAPI.updateEnter, {
     onSuccess: () => {
@@ -29,13 +29,13 @@ const Children = ({ bindData }) => {
 
   const handleScheduleUpdate = (type, childId) => {
     const currentTime = new Date();
-    const childData = bindData.find((item) => item.childId === childId);
+    const childData = bindData.find((item) => item.id === childId);
 
     const newEnterTime = type === "enter" && !childData.enterTime ? currentTime : childData.enterTime;
     const newExitTime = type === "exit" && !childData.exitTime ? currentTime : childData.exitTime;
 
     const updatedData = bindData.map((item) => {
-      if (item.childId === childId) {
+      if (item.id === childId) {
         return { ...item, enterTime: newEnterTime, exitTime: newExitTime };
       } else {
         return item;
@@ -57,12 +57,6 @@ const Children = ({ bindData }) => {
   };
 
 
-
-
-
-
-
-
   return (
     <StyledStudentGrid>
 
@@ -70,12 +64,12 @@ const Children = ({ bindData }) => {
         //서버 연결되면  id값 변경 및 데이터 바인딩,옵셔널 체이닝
         Array.isArray(bindData) && bindData?.map((item) => {
           return (
-            <StyledStudentCard key={item.childId}>
+            <StyledStudentCard key={item.id}>
               <StyledProfileRow>
                 <StyledStudentProfile imageUrl={item.profileImageUrl} />
                 <StyledProfileGroup>
                   <StyledStudentName>{item.name}</StyledStudentName>
-                  <Buttons.State colorTypes="red">{item.currentStatus}</Buttons.State>
+                  <Buttons.State colorTypes="red">{item.state}</Buttons.State>
                 </StyledProfileGroup>
               </StyledProfileRow>
               <StyledAttendanceGroup>
@@ -91,13 +85,13 @@ const Children = ({ bindData }) => {
               {
                 scheduleId === "ENTER"
                   ?
-                  item.currentStatus === "미등원"
-                    ? <StyledAttendanceBtn onClick={() => handleScheduleUpdate("enter", item.childId)}>등원처리</StyledAttendanceBtn>
-                    : <StyledAttendanceBtn onClick={() => handleScheduleUpdate("enter", item.childId)}>등원취소</StyledAttendanceBtn>
+                  item.state === "미등원"
+                    ? <StyledAttendanceBtn onClick={() => handleScheduleUpdate("enter", item.id)}>등원처리</StyledAttendanceBtn>
+                    : <StyledAttendanceBtn onClick={() => handleScheduleUpdate("enter", item.id)}>등원취소</StyledAttendanceBtn>
                   :
-                  item.currentStatus === "미하원"
-                    ? <StyledAttendanceBtn onClick={() => handleScheduleUpdate("exit", item.childId)}>하원처리</StyledAttendanceBtn>
-                    : <StyledAttendanceBtn onClick={() => handleScheduleUpdate("exit", item.childId)}>하원취소</StyledAttendanceBtn>
+                  item.state === "미하원"
+                    ? <StyledAttendanceBtn onClick={() => handleScheduleUpdate("exit", item.id)}>하원처리</StyledAttendanceBtn>
+                    : <StyledAttendanceBtn onClick={() => handleScheduleUpdate("exit", item.id)}>하원취소</StyledAttendanceBtn>
               }
             </StyledStudentCard>
           );
