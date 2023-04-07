@@ -97,6 +97,19 @@ export const MemberAPI = {
     }
   },
 
+  getSearchParent: async (searchParent) => {
+    try {
+      const response = await instance.get("search/parent", {
+        params: {
+          name: searchParent,
+        },
+      });
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   setClassesTeacher: async (payload) => {
     try {
       const response = await instance.put(
@@ -130,6 +143,21 @@ export const MemberAPI = {
     try {
       const response = await instance.put(
         `/classroom/${payload.id}/gallery/${payload.imageId}`,
+        payload.formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  setMemberSubmit: async (payload) => {
+    try {
+      const response = await instance.post(
+        `/classroom/${payload.id}/child`,
         payload.formData,
         {
           headers: { "Content-Type": "multipart/form-data" },

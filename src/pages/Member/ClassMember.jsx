@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import { MemberAPI } from "../../api/MemberAPI";
 import useModal from "../../hooks/useModal";
 import textVariants from "../../styles/variants/textVariants";
-import { MemberAddModal, ClassModal } from "./ClassModal";
+import { MemberAddModal, ClassModal, ClassParentModal } from "./ClassModal";
 import Modal from "../../components/Modal";
 import CustomPagination from "../../components/CustomPagination";
+import { useRecoilValue } from "recoil";
+import { memberAtom } from "../../atom/memberAtom";
 
 const ClassMember = () => {
   const queryClient = useQueryClient();
@@ -15,6 +17,13 @@ const ClassMember = () => {
   const [searchMember, setSearchMember] = useState("");
   const { openModal } = useModal();
   const [currentPage, setCurrentPage] = useState(1);
+  const [render, setRender] = useState(true);
+  const memberinfor = useRecoilValue(memberAtom);
+  const [modalOption, setmodalOption] = useState({
+    padding: "",
+    width: "",
+    height: "",
+  });
 
   const { data } = useQuery(
     ["classesMember", id, currentPage, searchMember],
@@ -41,8 +50,11 @@ const ClassMember = () => {
       openModal(MemberModalData);
       console.log(response);
     },
-    onError: () => {
-      console.log("error");
+  });
+
+  const setMemberSubmitMutation = useMutation(MemberAPI.setMemberSubmit, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("classesMember");
     },
   });
 
@@ -54,24 +66,28 @@ const ClassMember = () => {
     console.log(data);
   };
 
-  const modalOption = {
-    canCloseOnOverlayClick: true,
-    isCloseButton: true,
-    padding: "10px",
-    width: "660px",
-    height: "837px",
-  };
-
   //아이 상세 조회 모달
   const getChildInformation = (response) => {
-    console.log(response?.data.data.name)
-    const modalData = {
+    console.log(response?.data.data.name);
+    // setmodalOption ({
+    //   padding: "10px",
+    //   width: "620px",
+    //   height: "281px",
+    // });
+    setmodalOption({
+      padding: "10px",
+      width: "660px",
+      height: "837px",
+    });
+    return {
       title: <StyledModalHeader>인원정보</StyledModalHeader>,
-      contents: <ClassModal response={response} />,
+      contents: (
+        // <ClassParentModal response={response} />
+        <ClassModal response={response} />
+      ),
       footer: <StyledModalButton>수정하기</StyledModalButton>,
       callback: () => alert("modal"),
     };
-    openModal(modalData);
   };
 
   const getDetailMember = (childid) => {
@@ -82,12 +98,48 @@ const ClassMember = () => {
     detailMemberMutation.mutate(payload);
   };
 
+  useEffect(() => {
+    if (!render) {
+      setChildInformation();
+    } else {
+      setRender(false);
+    }
+  }, [memberinfor]);
+
   //반별 아이들 인원 등록 모달
+  const handleMemberSubmit = (id) => {
+    const formData = new FormData();
+    formData.append("name", memberinfor.name);
+    formData.append("birth", memberinfor.birth);
+    formData.append("note", memberinfor.note);
+    formData.append("gender", memberinfor.gender);
+    formData.append("image", memberinfor.image);
+
+    const payload = {
+      id: id,
+      formData: formData,
+    };
+    setMemberSubmitMutation.mutate(payload);
+  };
+
   const setChildInformation = () => {
+    setmodalOption({
+      padding: "10px",
+      width: "660px",
+      height: "837px",
+    });
     const modalData = {
       title: <StyledModalHeader>인원등록</StyledModalHeader>,
       contents: <MemberAddModal />,
-      footer: <StyledModalButton>저장하기</StyledModalButton>,
+      footer: (
+        <StyledModalButton
+          onClick={() => {
+            handleMemberSubmit(id);
+          }}
+        >
+          저장하기
+        </StyledModalButton>
+      ),
       callback: () => alert("modal"),
     };
     openModal(modalData);
@@ -100,7 +152,7 @@ const ClassMember = () => {
           <StyledPersonnelFont>
             총원 {data?.data?.data?.childrenCount}명
           </StyledPersonnelFont>
-          <StyledAddMemberButton onClick={() => setChildInformation()}>
+          <StyledAddMemberButton onClick={setChildInformation}>
             인원 등록
           </StyledAddMemberButton>
           <StyledMemberSearchInput
