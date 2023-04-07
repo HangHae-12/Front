@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
-import { AttendanceAPI } from "../../api/AttendanceAPI";
+import { AttendanceAPI } from "../../../api/AttendanceAPI";
 import SideBar from "../../../components/SideBar";
 import Table from "./Table"
 const MonthTable = () => {
