@@ -5,12 +5,10 @@ import ko from "date-fns/locale/ko";
 import { BsCalendarDate } from "react-icons/bs"
 registerLocale("ko", ko);
 
-const CustomDatepicker = ({ mode }) => {
-
-    const [selectedDate, setSelectedDate] = useState(new Date());
+const CustomDatepicker = ({ mode, selectedDate, onDateChange }) => {
 
     const handleDateChange = (date) => {
-        setSelectedDate(date);
+        onDateChange(date);
     };
 
     const datePickerProps = {

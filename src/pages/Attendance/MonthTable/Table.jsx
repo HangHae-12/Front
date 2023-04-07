@@ -18,16 +18,20 @@ const Table = () => {
 
     const [selectedDate, setSelectedDate] = useState(new Date());
 
+    const handleDateChange = (date) => {
+        setSelectedDate(date);
+    };
+
     const students = [
         { id: 1, name: "백주원", attendanceStatus: "출석", enterTime: "오전 9:00", exitTime: "오후 4:30", attendanceCnt: "3", absentCnt: "3" },
         { id: 2, name: "김주원", attendanceStatus: "인정결석", enterTime: "오전 9:00", exitTime: "오후 7:30", attendanceCnt: "6", absentCnt: "0" },
 
     ];
-    const filteredAttendanceData = students.filter(
-        (data) =>
-            new Date(data.date).getMonth() === selectedDate.getMonth() &&
-            new Date(data.date).getFullYear() === selectedDate.getFullYear()
-    );
+    // const filteredAttendanceData = students.filter(
+    //     (data) =>
+    //         new Date(data.date).getMonth() === selectedDate.getMonth() &&
+    //         new Date(data.date).getFullYear() === selectedDate.getFullYear()
+    // );
     const getDaysInMonth = (month, year) => {
         return new Date(year, month + 1, 0).getDate();
     };
@@ -230,7 +234,7 @@ const Table = () => {
                         <GrPrevious style={{ marginRight: "8px" }} onClick={handleDecreaseMonth} size={24} />
                         {selectedDate.getFullYear()}년 {selectedDate.getMonth() + 1}월
                         <GrNext style={{ marginLeft: "8px" }} onClick={handleIncreaseMonth} size={24} />
-                        <CustomDatepicker mode="month" />
+                        <CustomDatepicker mode="month" selectedDate={selectedDate} onDateChange={handleDateChange} />
                     </StyledMonthYear>
                 </StyledHeader>
                 <StyledTable>
