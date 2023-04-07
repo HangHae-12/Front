@@ -15,7 +15,7 @@ import Pagination from "../../components/CustomPagination";
 const ClassButtonGroup = () => {
 
   const queryClient = useQueryClient();
-  const { classroomId, scheduleId, timeId } = useParams();
+  const { classroomId = 0, scheduleId = "ENTER", timeId = "전체시간" } = useParams();
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [size, setSize] = useState(15);
@@ -44,15 +44,15 @@ const ClassButtonGroup = () => {
     <>
       <StyledAttendanceHeader>출결 관리</StyledAttendanceHeader>
       <ClassButton />
-      <Attendee classData={data.info} />
+      <Attendee classData={data.data.info} />
       <Schedule hostParams={hostParams} />
       <StyledAttendanceContainer>
         <Time hostParams={hostParams} />
-        <Children bindData={data} />
+        <Children bindData={data.data.content} />
         <Pagination
-          current={page}
-          pageSize={data.pageable.pageSize}
-          total={data.size}
+          current={data.data.pageable.pageNumber}
+          pageSize={data.data.pageable.pageSize}
+          total={data.data.totalElements}
           onChange={handlePageChange}
         />
       </StyledAttendanceContainer>

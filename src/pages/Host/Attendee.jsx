@@ -19,24 +19,24 @@ const Attendee = ({ classData }) => {
       </StyledInfoColomn>
       <StyledInfoRow>
         <StyledInfoLabel>총원</StyledInfoLabel>
-        <StyledInfoValue>{classData?.data?.totalNumber}</StyledInfoValue>
+        <StyledInfoValue>{classData?.total}</StyledInfoValue>
         <StyleddateLabel>명</StyleddateLabel>
       </StyledInfoRow>
       <StyledInfoRow>
         <StyledInfoLabel>등원</StyledInfoLabel>
-        <StyledInfoValue>{classData?.data?.notEnterNumber}</StyledInfoValue>
+        <StyledInfoValue>{classData?.entered}</StyledInfoValue>
         <StyleddateLabel>명</StyleddateLabel>
       </StyledInfoRow>
       <StyledInfoRow>
         <StyledInfoLabel>미등원</StyledInfoLabel>
-        <StyledInfoValue>{classData?.data?.exitNumber}</StyledInfoValue>
+        <StyledInfoValue>{classData?.notEntered}</StyledInfoValue>
         <StyleddateLabel>명</StyleddateLabel>
       </StyledInfoRow>
-      {/* <StyledInfoRow>
-          <StyledInfoLabel>결석</StyledInfoLabel>
-          <StyledInfoValue>{data.totalNumber}</StyledInfoValue>
-          <StyleddateLabel>명</StyleddateLabel>
-        </StyledInfoRow> */}
+      <StyledInfoRow>
+        <StyledInfoLabel>하원</StyledInfoLabel>
+        <StyledInfoValue>{classData?.exited}</StyledInfoValue>
+        <StyleddateLabel>명</StyleddateLabel>
+      </StyledInfoRow>
     </StyledInfoContainer>
   );
 };
