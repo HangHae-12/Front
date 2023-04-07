@@ -1,7 +1,6 @@
 import instance from "./instance";
 
 export const HostAPI = {
-  //page,size는 param 나머지 jsom 형태로 전달
   getManageSchedule: async (payload) => {
     try {
       const response = await instance.get(
