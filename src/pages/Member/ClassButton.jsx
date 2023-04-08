@@ -16,30 +16,30 @@ const ClassButton = () => {
   const [selectedButton, setSelectedButton] = useState("");
   const [selectedTab, setSelectedTab] = useState("");
   const { id } = useParams();
-  const [data, setData] = useState("")
+  // const [data, setData] = useState("")
 
-  // const { data } = useQuery(
-  //   ["classesPage"],
-  //   () => MemberAPI.getClassesMember(id),
-  //   {
-  //     onSuccess: (data) => {
-  //       console.log(data);
-  //     },
-  //     onError: () => {
-  //       console.log("error");
-  //     },
-  //   }
-  // );
+  const { data } = useQuery(
+    ["classesPage", id],
+    () => MemberAPI.getClassesPage(id),
+    {
+      onSuccess: (data) => {
+        console.log(data);
+      },
+      onError: () => {
+        console.log("error");
+      },
+    }
+  );
 
-  const getClassesPageMutation = useMutation(MemberAPI.getClassesPage, {
-    onSuccess: (response) => {
-      setData(response)
-      console.log(response);
-    },
-    onError: (response) => {
-      console.log(response);
-    },
-  })
+  // const getClassesPageMutation = useMutation(MemberAPI.getClassesPage, {
+  //   onSuccess: (response) => {
+  //     setData(response)
+  //     console.log(response);
+  //   },
+  //   onError: (response) => {
+  //     console.log(response);
+  //   },
+  // })
 
   const handleMemberClick = () => {
     setSelectedTab("member");
@@ -53,11 +53,11 @@ const ClassButton = () => {
 
   const handleButtonClick = async (selected, id) => {
     setSelectedButton(selected);
-    getClassesPageMutation.mutate(id);
+    // getClassesPageMutation.mutate(id);
     navigate(`/classes/${id}`);
     // queryClient.invalidateQueries("classesPage");
-    const newData = await MemberAPI.getClassesPage(id);
-    setData(newData);
+    // const newData = await MemberAPI.getClassesPage(id);
+    // setData(newData);
   };
 
   return (

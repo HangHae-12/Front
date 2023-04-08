@@ -10,3 +10,13 @@ export const memberAtom = atom({
     image: "",
   },
 });
+
+export const parentAtom = atom({
+  key: "parentAdd",
+  default: {
+    id: "",
+    name: "",
+    phone: "",
+    imgSrc:"",
+  },
+});

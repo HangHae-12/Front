@@ -4,40 +4,79 @@ import useModal from "../../hooks/useModal";
 import Modal from "../../components/Modal";
 import { useParams } from "react-router-dom";
 import { MemberAPI } from "../../api/MemberAPI";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { BsFillGearFill } from "react-icons/bs";
 import textVariants from "../../styles/variants/textVariants";
 
-const TeacherInformation = (data) => {
+const TeacherInformation = ({ data }) => {
+  const queryClient = useQueryClient();
   const { id } = useParams();
-  const { openModal } = useModal();
+  const { openModal, closeModal } = useModal();
   const [render, setRender] = useState(true);
-  const [isChecked, setIsChecked] = useState(false);
-  const [selectedParent, setSelectedParent] = useState(null);
-  const [searchParent, setSearchParent] = useState("");
+  const [checkedTeachers, setCheckedTeachers] = useState({});
+  const [selectedTeacher, setSelectedTeacher] = useState(null);
+  const [searchTeacher, setSearchTeacher] = useState("");
 
+  const { data: TeacherData } = useQuery(
+    ["TeacherInformation"],
+    () => MemberAPI.getTeacherInformation(),
+    {
+      onSuccess: (data) => {
+        console.log(data.data);
+      },
+      onError: () => {
+        console.log("error");
+      },
+    }
+  );
 
+  const setTeacherMutation = useMutation(MemberAPI.setTeacher, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("TeacherInformation");
+    },
+  });
 
-  // const { data } = useQuery(
-  //   ["ClassesPage"],
-  //   () => MemberAPI.getClassesPage(id),
-  //   {
-  //     onSuccess: (data) => {
-  //       console.log(data.data);
-  //     },
-  //     onError: () => {
-  //       console.log("error");
-  //     },
-  //   }
-  // );
+  useEffect(() => {
+    if (!render) {
+      setTeacherAppoint();
+    } else {
+      setRender(false);
+    }
+  }, [selectedTeacher]);
 
-  // useEffect(() => {
-  //   if (!render) {
-  //     openModal();
-  //   } else {
-  //     setRender(false);
-  //   }
-  // }, []);
+  const handleSearch = (e) => {
+    e.preventDefault();
+    setSearchTeacher(e.target.value);
+    queryClient.invalidateQueries(["TeacherInformation", searchTeacher]);
+  };
+
+  const handleCheckBoxChange = (e, item) => {
+    setCheckedTeachers({
+      ...checkedTeachers,
+      [item.id]: e.target.checked,
+    });
+    if (e.target.checked) {
+      setSelectedTeacher({
+        id: item.id,
+        name: item.name,
+        phone: item.phoneNumber,
+        imgSrc: item.profileImageUrl,
+      });
+    } else {
+      setSelectedTeacher(null);
+    }
+  };
+
+  const handleTeacherSubmit = async (id) => {
+    const payload = {
+      id: id,
+      teacherId: selectedTeacher.id,
+    };
+    setTeacherMutation.mutate(payload);
+    setCheckedTeachers({});
+    await setSelectedTeacher(null);
+    closeModal();
+  };
 
   const modalOption = {
     padding: "20px",
@@ -45,63 +84,66 @@ const TeacherInformation = (data) => {
     height: "532px",
   };
 
-  const setTeacherAppoint  = () => {
+  const setTeacherAppoint = () => {
+    console.log(TeacherData.data.data);
     const modalData = {
       title: <StyledModalHeader>담임선생님 지정</StyledModalHeader>,
-      contents: 
-      <StyledParentProfileWrapper>
-      <StyledParentBox flexDirection="column" padding="0px">
-        <StyledProfileHeaderFont marginTop="20px">
-          학부모 등록
-        </StyledProfileHeaderFont>
-        <StyledInputWrapper marginTop="20px">
-          {selectedParent ? (
-            <>
-              <StyledCheckInformationBox marginLeft="12px">
-                <StyledProfileImage
-                  width="40px"
-                  height="40px"
-                  marginTop="0px"
-                  src={selectedParent.imgSrc}
-                />
-                <StyledParentName>{selectedParent.name}</StyledParentName>
-                <StyledParentPhone>{selectedParent.phone}</StyledParentPhone>
-              </StyledCheckInformationBox>
-            </>
-          ) : (
-            <StyledParentAddBox>학부모를 선택 해주세요</StyledParentAddBox>
-          )}
-          <StyledSearchInput
-            type="text"
-            // onChange={handleSearch}
-            value={searchParent}
-          />
-        </StyledInputWrapper>
-        <StyledChoiceparentWrapper>
-          <StyledParentInformationBox>
-            <CheckBox
-              type="checkbox"
-              checked={isChecked}
-              // onChange={handleCheckBoxChange}
-            />
-            <StyledProfileImage
-              width="40px"
-              height="40px"
-              marginTop="0px"
-              src={
-                "https://outlooksformen.com/sites/default/files/2020-09/testiminials-img-01.png"
-              }
-            />
-            <StyledParentName>준수형</StyledParentName>
-            <StyledParentPhone>010-8888-8888</StyledParentPhone>
-          </StyledParentInformationBox>
-        </StyledChoiceparentWrapper>
-      </StyledParentBox>
-    </StyledParentProfileWrapper>,
+      contents: (
+        <StyledParentProfileWrapper>
+          <StyledParentBox flexDirection="column" padding="0px">
+            <StyledInputWrapper marginTop="20px">
+              {selectedTeacher ? (
+                <>
+                  <StyledCheckInformationBox marginLeft="12px">
+                    <StyledProfileImage
+                      width="40px"
+                      height="40px"
+                      marginTop="0px"
+                      src={selectedTeacher.imgSrc}
+                    />
+                    <StyledParentName>{selectedTeacher.name}</StyledParentName>
+                    <StyledParentPhone>
+                      {selectedTeacher.phone}
+                    </StyledParentPhone>
+                  </StyledCheckInformationBox>
+                </>
+              ) : (
+                <StyledParentAddBox>선생님을 선택 해주세요</StyledParentAddBox>
+              )}
+              <StyledSearchInput
+                type="text"
+                onChange={handleSearch}
+                value={searchTeacher}
+              />
+            </StyledInputWrapper>
+            <StyledChoiceparentWrapper>
+              {TeacherData?.data.data?.map((item) => {
+                return (
+                  <StyledParentInformationBox key={item.id}>
+                    <CheckBox
+                      type="checkbox"
+                      checked={checkedTeachers[item.id] || false}
+                      onChange={(e) => handleCheckBoxChange(e, item)}
+                    />
+                    <StyledProfileImage
+                      width="40px"
+                      height="40px"
+                      marginTop="0px"
+                      src={item.profileImageUrl}
+                    />
+                    <StyledParentName>{item.name}</StyledParentName>
+                    <StyledParentPhone>{item.phoneNumber}</StyledParentPhone>
+                  </StyledParentInformationBox>
+                );
+              })}
+            </StyledChoiceparentWrapper>
+          </StyledParentBox>
+        </StyledParentProfileWrapper>
+      ),
       footer: (
         <StyledModalButton
           onClick={() => {
-            // handleTeacherSubmit(id);
+            handleTeacherSubmit(id);
           }}
         >
           저장하기
@@ -118,44 +160,40 @@ const TeacherInformation = (data) => {
         <StyledContentWrapper>
           <StyledLeftWrapper>
             <StyledInputWrapper marginTop="0px">
-              <StyledQuestionFont marginLeft="5px">담임선생님</StyledQuestionFont>
-              <StyledGearButton marginLeft="5px" onClick={setTeacherAppoint}/>
+              <StyledQuestionFont marginLeft="5px">
+                담임선생님
+              </StyledQuestionFont>
+              <StyledGearButton marginLeft="5px" onClick={setTeacherAppoint} />
             </StyledInputWrapper>
-            {/* <StyledTeacherImage src={data?.data?.data?.teacher?.imageUrl} /> */}
             <StyledTeacherImage
-              src={
-                "https://outlooksformen.com/sites/default/files/2020-09/testiminials-img-01.png"
-              }
+              src={data?.data?.data?.classroomTeacher?.profileImageUrl}
             />
           </StyledLeftWrapper>
           <StyledMiddleWrapper>
             <StyledInputWrapper>
               <StyledQuestionFont>한마디 </StyledQuestionFont>
               <StyledQuestionFont marginLeft="30px">
-                {/* {data?.data?.data?.teacher?.resolution} */}
-                글로벌 인재로 만들겠습니다.
+                {data?.data?.data?.classroomTeacher?.resolution}
               </StyledQuestionFont>
             </StyledInputWrapper>
             <StyledInputWrapper>
               <StyledQuestionFont>이름</StyledQuestionFont>
               <StyledAnswerFont marginLeft="190px">
-                {/* {data?.data?.data?.teacher?.name} */}
-                정길숙
+                {data?.data?.data?.classroomTeacher?.name}
               </StyledAnswerFont>
               <StyledQuestionFont marginLeft="90px">연락처</StyledQuestionFont>
               <StyledAnswerFont marginLeft="110px">
-                {/* {data?.data?.data?.teacher?.phoneNumber} */}
-                010-0000-0000
+                {data?.data?.data?.classroomTeacher?.phoneNumber}
               </StyledAnswerFont>
             </StyledInputWrapper>
             <StyledInputWrapper>
               <StyledQuestionFont>생년월일</StyledQuestionFont>
-              {/* <StyledSpan>{data?.data?.data?.teacher?.birth}</StyledSpan> */}
-              <StyledAnswerFont marginLeft="135px">1995.12.07</StyledAnswerFont>
+              <StyledAnswerFont marginLeft="135px">
+                {data?.data?.data?.classroomTeacher?.birth}
+              </StyledAnswerFont>
               <StyledQuestionFont marginLeft="87px">메일</StyledQuestionFont>
               <StyledAnswerFont marginLeft="80px">
-                {/* {data?.data?.data?.teacher?.email} */}
-                sssssssss@gmail.com
+                {data?.data?.data?.classroomTeacher?.email}
               </StyledAnswerFont>
             </StyledInputWrapper>
           </StyledMiddleWrapper>
@@ -212,15 +250,6 @@ const StyledQuestionFont = styled.div`
   color: ${({ theme }) => theme.color.grayScale[400]};
   margin-left: ${({ marginLeft }) => marginLeft};
 `;
-const StyledTeacherImageWrapper = styled.div`
-  position: relative;
-  top: -60%;
-  width: 0px;
-  height: 0px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
 
 const StyledTeacherImage = styled.img`
   width: 120px;
@@ -264,7 +293,6 @@ const StyledParentProfileWrapper = styled.div`
   align-items: flex-start;
   padding: 10px;
   gap: 12px;
-  margin-top: 20px;
 `;
 
 const StyledParentBox = styled.div`
@@ -274,12 +302,6 @@ const StyledParentBox = styled.div`
   display: flex;
   flex-direction: ${({ flexDirection }) => flexDirection || "row"};
   align-items: flex-start;
-`;
-
-const StyledProfileHeaderFont = styled.div`
-  color: ${({ theme }) => theme.color.grayScale[700]};
-  ${textVariants.Body1_SemiBold}
-  margin-top: ${({ marginTop }) => marginTop};
 `;
 
 const StyledCheckInformationBox = styled.div`

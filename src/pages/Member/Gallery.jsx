@@ -138,10 +138,8 @@ const Gallery = () => {
     setGallerySubmitMutation.mutate(payload);
     setPreviewImages([]);
     setSeverImages([]);
-    setTitle("");
-    setTimeout(() => {
-      closeModal();
-    }, 0);
+    await setTitle("");
+    closeModal();
   };
 
   // 사진 등록 모달 부분
@@ -298,7 +296,6 @@ const Gallery = () => {
       contents: (
         <GallerySlider images={response?.data?.data?.imageUrlList || []} />
       ),
-      callback: () => alert("modal"),
     }));
   };
 
@@ -317,7 +314,6 @@ const Gallery = () => {
           })}
         </StyledModalContent>
       ),
-      callback: () => alert("modal"),
     }));
   };
 

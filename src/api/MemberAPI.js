@@ -110,20 +110,15 @@ export const MemberAPI = {
     }
   },
 
-  setClassesTeacher: async (payload) => {
+  getTeacherInformation: async () => {
     try {
-      const response = await instance.put(
-        `/manager/classroom/${payload.id}/teacher/profile`,
-        payload.formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
+      const response = await instance.get("/teacher");
       return response;
     } catch (error) {
       console.log(error);
     }
   },
+
   setGallerySubmit: async (payload) => {
     try {
       const response = await instance.post(
@@ -162,6 +157,17 @@ export const MemberAPI = {
         {
           headers: { "Content-Type": "multipart/form-data" },
         }
+      );
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  setTeacher: async (payload) => {
+    try {
+      const response = await instance.put(
+        `/classroom/${payload.id}/classroom_teacher/${payload.teacherId}`
       );
       return response;
     } catch (error) {

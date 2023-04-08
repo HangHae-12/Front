@@ -9,7 +9,7 @@ import { MemberAddModal, ClassModal, ClassParentModal } from "./ClassModal";
 import Modal from "../../components/Modal";
 import CustomPagination from "../../components/CustomPagination";
 import { useRecoilValue } from "recoil";
-import { memberAtom } from "../../atom/memberAtom";
+import { memberAtom, parentAtom } from "../../atom/memberAtom";
 
 const ClassMember = () => {
   const queryClient = useQueryClient();
@@ -19,6 +19,7 @@ const ClassMember = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [render, setRender] = useState(true);
   const memberinfor = useRecoilValue(memberAtom);
+  const parentinfor = useRecoilValue(parentAtom);
   const [modalOption, setmodalOption] = useState({
     padding: "",
     width: "",
@@ -114,6 +115,7 @@ const ClassMember = () => {
     formData.append("note", memberinfor.note);
     formData.append("gender", memberinfor.gender);
     formData.append("image", memberinfor.image);
+    formData.append("parentId", parentinfor.id);
 
     const payload = {
       id: id,

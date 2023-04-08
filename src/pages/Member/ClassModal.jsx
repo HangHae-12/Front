@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import textVariants from "../../styles/variants/textVariants";
-import { memberAtom } from "../../atom/memberAtom";
+import { memberAtom, parentAtom } from "../../atom/memberAtom";
 import { useRecoilState } from "recoil";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { MemberAPI } from "../../api/MemberAPI";
@@ -111,10 +111,11 @@ export const ClassParentModal = ({ response }) => {
 //반별 아이들 인원 등록 모달
 export const MemberAddModal = () => {
   const queryClient = useQueryClient();
-  const [isChecked, setIsChecked] = useState(false);
-  const [selectedParent, setSelectedParent] = useState(null);
+  const [checkParent, setCheckedParent] = useState({});
   const [preview, setPreview] = useState("");
   const [memberAdd, setMemberAdd] = useRecoilState(memberAtom);
+  const [parentAdd, setParentAdd] = useRecoilState(parentAtom);
+  const [isChecked, setIsChecked] = useState(false);
   const [searchParent, setSearchParent] = useState("");
 
   const { data } = useQuery(
@@ -149,17 +150,22 @@ export const MemberAddModal = () => {
     setMemberAdd({ ...memberAdd, image: file });
   };
 
-  const handleCheckBoxChange = (e) => {
+  const handleCheckBoxChange = (e, item) => {
     setIsChecked(e.target.checked);
+    setCheckedParent({
+      ...checkParent,
+      [item.id]: e.target.checked,
+    });
     if (e.target.checked) {
-      setSelectedParent({
-        name: "박병근",
-        phone: "010-9999-9999",
-        imgSrc:
-          "https://outlooksformen.com/sites/default/files/2020-09/testiminials-img-01.png",
+      setParentAdd({
+        ...memberAdd,
+        id: item.id,
+        name: item.name,
+        phone: item.phoneNumber,
+        imgSrc: item.profileImageUrl,
       });
     } else {
-      setSelectedParent(null);
+      setParentAdd("");
     }
   };
 
@@ -242,17 +248,17 @@ export const MemberAddModal = () => {
             학부모 등록
           </StyledProfileHeaderFont>
           <StyledInputWrapper marginTop="20px">
-            {selectedParent ? (
+            {isChecked ? (
               <>
                 <StyledCheckInformationBox marginLeft="12px">
                   <StyledProfileImage
                     width="40px"
                     height="40px"
                     marginTop="0px"
-                    src={selectedParent.imgSrc}
+                    src={parentAdd.imgSrc}
                   />
-                  <StyledParentName>{selectedParent.name}</StyledParentName>
-                  <StyledParentPhone>{selectedParent.phone}</StyledParentPhone>
+                  <StyledParentName>{parentAdd.name}</StyledParentName>
+                  <StyledParentPhone>{parentAdd.phone}</StyledParentPhone>
                 </StyledCheckInformationBox>
               </>
             ) : (
@@ -264,13 +270,15 @@ export const MemberAddModal = () => {
               value={searchParent}
             />
           </StyledInputWrapper>
-          <StyledChoiceparentWrapper>
-            <StyledParentInformationBox>
+          {/* <StyledChoiceparentWrapper>
+            {data?.data?.data?.childResponseDtoList?.map((item) => {
+            return (
+                  <StyledParentInformationBox key={item.id}>
               <CheckBox
                 type="checkbox"
-                checked={isChecked}
-                onChange={handleCheckBoxChange}
-              />
+                checked={checkParent[item.id] || false}
+                onChange={(e) => handleCheckBoxChange(e, item)}
+                />
               <StyledProfileImage
                 width="40px"
                 height="40px"
@@ -279,10 +287,12 @@ export const MemberAddModal = () => {
                   "https://outlooksformen.com/sites/default/files/2020-09/testiminials-img-01.png"
                 }
               />
-              <StyledParentName>준수형</StyledParentName>
-              <StyledParentPhone>010-8888-8888</StyledParentPhone>
+              <StyledParentName>{item.name}</StyledParentName>
+              <StyledParentPhone>{item.phoneNumber}</StyledParentPhone>
             </StyledParentInformationBox>
-          </StyledChoiceparentWrapper>
+            );
+              })}
+          </StyledChoiceparentWrapper> */}
         </StyledParentBox>
       </StyledParentProfileWrapper>
     </StyledModalWrapper>
