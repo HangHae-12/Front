@@ -12,7 +12,7 @@ const ClassButton = () => {
     const setTime = useSetRecoilState(timeAtom);
     const navigate = useNavigate();
     const [selectedButton, setSelectedButton] = useState("모든반");
-
+    const queryClient = useQueryClient();
 
 
     const loadClassroom = (selected, id) => {
@@ -21,6 +21,7 @@ const ClassButton = () => {
         setScheduleId("ENTER");
         setTime("전체시간");
         navigate(`/host/${id}/ENTER/전체시간`)
+
     };
 
     return (

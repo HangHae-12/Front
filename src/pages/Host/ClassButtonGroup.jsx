@@ -7,7 +7,8 @@ import textVariants from "../../styles/variants/textVariants";
 import ClassButton from "./ClassButton";
 import Attendee from "./Attendee";
 import Schedule from "./Schedule";
-import Time from "./Time";
+import ExitTime from "./ExitTime";
+import EnterTime from "./EnterTime";
 import Children from "./Children";
 import Pagination from "../../components/CustomPagination";
 
@@ -26,6 +27,7 @@ const ClassButtonGroup = () => {
   const { isLoading, isError, data } = useQuery(["getManageSchedule", hostParams], () =>
     HostAPI.getManageSchedule(hostParams)
   );
+  console.log(classroomId);
 
   useEffect(() => {
     queryClient.invalidateQueries(["getManageSchedule", 0]);
@@ -38,6 +40,8 @@ const ClassButtonGroup = () => {
   //페이지네이션 페이지 지정
   const handlePageChange = (page) => {
     setPage(page);
+    console.log(page);
+
   };
 
   return (
@@ -47,10 +51,15 @@ const ClassButtonGroup = () => {
       <Attendee classData={data.data.info} />
       <Schedule hostParams={hostParams} />
       <StyledAttendanceContainer>
-        <Time hostParams={hostParams} />
+        {
+          scheduleId === "ENTER"
+            ? <EnterTime hostParams={hostParams} />
+            : <ExitTime hostParams={hostParams} />
+        }
+
         <Children bindData={data.data.content} />
         <Pagination
-          current={data.data.pageable.pageNumber}
+          current={data.data.pageable.pageNumber + 1} // 백엔드로직 리팩토링 필요
           pageSize={data.data.pageable.pageSize}
           total={data.data.totalElements}
           onChange={handlePageChange}

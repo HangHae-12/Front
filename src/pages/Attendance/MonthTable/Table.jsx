@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import styled from "styled-components";
+import { useNavigate, useParams } from "react-router-dom";
 import "react-datepicker/dist/react-datepicker.css";
 import * as XLSX from "xlsx";
 import ko from "date-fns/locale/ko";
@@ -10,28 +12,43 @@ import { RiBearSmileLine } from "react-icons/ri"
 import { AiOutlineSmile, AiOutlineDoubleLeft, AiOutlineDoubleRight, AiOutlineLeft, AiOutlineRight } from "react-icons/ai"
 import textVariants from '../../../styles/variants/textVariants';
 import Buttons from '../../../components/Buttons';
-import ClassButton from './ClassButton';
+import ClassButton from './MonthClassButton';
 import CustomDatepicker from '../../../components/CustomDatepicker'
-
-const Table = ({ data }) => {
-
-
+import { AttendanceAPI } from "../../../api/AttendanceAPI";
+const Table = () => {
+    const queryClient = useQueryClient();
+    const { sid } = useParams();
     const [selectedDate, setSelectedDate] = useState(new Date());
+    const { isLoading, isError, data } = useQuery(
+        ["getMonthAttendance", selectedDate, sid],
+        () =>
+            AttendanceAPI.getMonthAttendance({
+                classroomId: sid,
+                year: selectedDate.getFullYear(),
+                month: selectedDate.getMonth() + 1,
+            })
+    );
+
+
+
+
+
 
     const handleDateChange = (date) => {
         setSelectedDate(date);
+        console.log(selectedDate);
+        queryClient.invalidateQueries(["getMonthAttendance"]);
     };
+    useEffect(() => {
+        queryClient.invalidateQueries(["getMonthAttendance"]);
+    }, [selectedDate, sid]);
 
-    const students = [
-        { id: 1, name: "백주원", attendanceStatus: "출석", enterTime: "오전 9:00", exitTime: "오후 4:30", attendanceCnt: "3", absentCnt: "3" },
-        { id: 2, name: "김주원", attendanceStatus: "인정결석", enterTime: "오전 9:00", exitTime: "오후 7:30", attendanceCnt: "6", absentCnt: "0" },
 
-    ];
-    // const filteredAttendanceData = students.filter(
-    //     (data) =>
-    //         new Date(data.date).getMonth() === selectedDate.getMonth() &&
-    //         new Date(data.date).getFullYear() === selectedDate.getFullYear()
-    // );
+
+
+
+
+    // console.log(filteredAttendanceData);
     const getDaysInMonth = (month, year) => {
         return new Date(year, month + 1, 0).getDate();
     };
@@ -66,7 +83,7 @@ const Table = ({ data }) => {
 
         // 시트 데이터 행 추가
         const rowIndex = 3;
-        students.forEach((student, index) => {
+        data?.data?.forEach((student, index) => {
             const rowData = [
                 student.id,
                 student.name,
@@ -237,72 +254,112 @@ const Table = ({ data }) => {
                         <CustomDatepicker mode="month" selectedDate={selectedDate} onDateChange={handleDateChange} />
                     </StyledMonthYear>
                 </StyledHeader>
-                <StyledTable>
-                    <thead>
-                        <tr>
-                            <th onClick={handleFivePrevDays}><AiOutlineDoubleLeft /></th>
-                            <th onClick={handlePrevDays}><AiOutlineLeft /></th>
-                            {visibleDays.map((day) => {
-                                if (day > daysInMonth) {
-                                    return (
-                                        <th key={day}></th>
-                                    );
-                                }
+                <StyledTableWrapper>
+                    <StyledTable>
+                        <thead>
+                            <tr>
+                                <StyledTopStickyHeader onClick={handleFivePrevDays}>
+                                    <AiOutlineDoubleLeft />
+                                </StyledTopStickyHeader>
+                                <StyledTopStickyHeader onClick={handlePrevDays}>
+                                    <AiOutlineLeft />
+                                </StyledTopStickyHeader>
+                                {visibleDays.map((day) => {
+                                    if (day > daysInMonth) {
+                                        return <StyledTopStickyHeader key={day}></StyledTopStickyHeader>;
+                                    }
+                                    return <StyledTopStickyHeader key={day}>{day}</StyledTopStickyHeader>;
+                                })}
+                                <StyledTopStickyHeader onClick={handleNextDays}>
+                                    <AiOutlineRight />
+                                </StyledTopStickyHeader>
+                                <StyledTopStickyHeader onClick={handleFiveNextDays}>
+                                    <AiOutlineDoubleRight />
+                                </StyledTopStickyHeader>
+                            </tr>
+                            <tr>
+                                <StyledStickyHeader>이름</StyledStickyHeader>
+                                <StyledStickyHeader>출결정보</StyledStickyHeader>
+                                {visibleDays.map((day) => (
+                                    <StyledStickyHeader key={day}>
+                                        {
+                                            daysOfWeek[
+                                            new Date(
+                                                selectedDate.getFullYear(),
+                                                selectedDate.getMonth(),
+                                                day
+                                            ).getDay()
+                                            ]
+                                        }
+                                    </StyledStickyHeader>
+                                ))}
+                                <StyledStickyHeader>출석일수</StyledStickyHeader>
+                                <StyledStickyHeader>결석일수</StyledStickyHeader>
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+                            {data?.data?.map((student) => {
                                 return (
-                                    <th key={day}>{day}</th>
+                                    <>
+                                        <tr key={student.id}>
+                                            <td rowSpan="3">{getRandomIcon()} {student.name}</td>
+                                            <td>출석상태</td>
+                                            {visibleDays.map((day) => {
+                                                const attendance = student.monthAttendanceList.find(
+                                                    (attendance) => new Date(attendance.date).getDate() === day
+                                                );
+
+                                                return (
+                                                    <td key={day}>
+                                                        {attendance ? (
+                                                            attendance.status === "출석" ? (
+                                                                <Buttons.State colorTypes="blue">
+                                                                    {attendance.status}
+                                                                </Buttons.State>
+                                                            ) : (
+                                                                <Buttons.State colorTypes="orange">
+                                                                    {attendance.status}
+                                                                </Buttons.State>
+                                                            )
+                                                        ) : (
+                                                            <></>
+                                                        )}
+                                                    </td>
+                                                );
+                                            })}
+                                            <td rowSpan="3">{student.attendanceCount}</td>
+                                            <td rowSpan="3">{student.absentCount}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>등원시간</td>
+                                            {visibleDays.map((day) => {
+                                                const attendance = student.monthAttendanceList.find(
+                                                    (attendance) => new Date(attendance.date).getDate() === day
+                                                );
+
+                                                return <td key={day}>{attendance ? attendance.enterTime : <></>}</td>;
+                                            })}
+                                        </tr>
+                                        <tr>
+                                            <td>하원시간</td>
+                                            {visibleDays.map((day) => {
+                                                const attendance = student.monthAttendanceList.find(
+                                                    (attendance) => new Date(attendance.date).getDate() === day
+                                                );
+
+                                                return <td key={day}>{attendance ? attendance.exitTime : <></>}</td>;
+                                            })}
+                                        </tr>
+                                    </>
                                 );
                             })}
-                            <th onClick={handleNextDays}><AiOutlineRight /></th>
-                            <th onClick={handleFiveNextDays}><AiOutlineDoubleRight /></th>
-                        </tr>
-                        <tr>
-                            <th>이름</th>
-                            <th>출결정보</th>
-                            {visibleDays.map((day) => (
-                                <th key={day}>
-                                    {
-                                        daysOfWeek[
-                                        new Date(
-                                            selectedDate.getFullYear(),
-                                            selectedDate.getMonth(),
-                                            day
-                                        ).getDay()
-                                        ]
-                                    }
-                                </th>
-                            ))}
-                            <th>출석일수</th>
-                            <th>결석일수</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {students.map((student) => (
-                            <>
-                                <tr key={student.id}>
-                                    <td rowSpan="3">{getRandomIcon()} {student.name}</td>
-                                    <td>출석상태</td>
-                                    {visibleDays.map((day) => (
-                                        <td key={day}>{student.attendanceStatus === "출석" ? <Buttons.State colorTypes="blue">{student.attendanceStatus}</Buttons.State> : <Buttons.State colorTypes="orange">{student.attendanceStatus}</Buttons.State>}</td>
-                                    ))}
-                                    <td rowSpan="3">{student.attendanceCnt}</td>
-                                    <td rowSpan="3">{student.absentCnt}</td>
-                                </tr>
-                                <tr>
-                                    <td>등원시간</td>
-                                    {visibleDays.map((day) => (
-                                        <td key={day}>{student.enterTime}</td>
-                                    ))}
-                                </tr>
-                                <tr>
-                                    <td>하원시간</td>
-                                    {visibleDays.map((day) => (
-                                        <td key={day}>{student.exitTime}</td>
-                                    ))}
-                                </tr>
-                            </>
-                        ))}
-                    </tbody>
-                </StyledTable>
+                        </tbody>
+
+
+                    </StyledTable>
+                </StyledTableWrapper>
                 <StyledButtonGroup>
                     <StyledExportButton colorTypes="primary" onClick={exportToExcel}>내보내기</StyledExportButton>
                 </StyledButtonGroup>
@@ -325,7 +382,23 @@ const StyledHeader = styled.div`
   justify-content:center;
   align-items: center;
   margin: 20px;
+  
 `;
+const StyledTopStickyHeader = styled.th`
+  position: sticky;
+  top: 0;
+  background-color: ${({ theme }) => theme.color.grayScale[100]};
+  color: ${({ theme }) => theme.color.grayScale[500]};
+  z-index: 1;
+`;
+
+const StyledStickyHeader = styled.th`
+  position: sticky;
+  top: 35px; 
+  background-color: ${({ theme }) => theme.color.grayScale[100]};
+  color: ${({ theme }) => theme.color.grayScale[500]};
+`;
+
 
 const StyledMonthYear = styled.div`
   ${textVariants.H2_SemiBold}
@@ -338,14 +411,21 @@ const StyledMonthYear = styled.div`
   gap: 10px;
 `;
 
+const StyledTableWrapper = styled.div`
+  max-height: 500px;
+  overflow: auto;
+`;
+
+
 
 const StyledTableContainer = styled.div`
-    background-color:#EDF5EECC;
-    box-shadow: 0px 2px 12px hsla(0, 0%, 0%, 0.04);
-    border-radius: 12px;
-    padding: 40px;
-    margin-top: 30px;
-`
+  background-color: #edf5eecc;
+  box-shadow: 0px 2px 12px hsla(0, 0%, 0%, 0.04);
+  border-radius: 12px;
+  padding: 40px;
+  margin-top: 30px;
+`;
+
 
 const StyledTable = styled.table`
   border-collapse: collapse;
@@ -353,7 +433,7 @@ const StyledTable = styled.table`
   background-color: ${({ theme }) => theme.color.white};
   width: 100%;
   margin-top: 20px;
-
+  
 
   thead{
     padding: 10px;

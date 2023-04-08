@@ -21,6 +21,7 @@ const Time = (hostParams) => {
     };
     return (
         <StyledTimeButtonGroup>
+
             {time === "전체시간" ? (
                 <Buttons.Time
                     colorTypes="primary"
@@ -29,29 +30,29 @@ const Time = (hostParams) => {
                 <Buttons.Time
                     onClick={() => { handleTimeButton("전체시간") }}>전체시간</Buttons.Time>
             )}
-            {time === "07시~08시" ? (
+            {time === "16시~17시" ? (
                 <Buttons.Time
                     colorTypes="primary"
-                    onClick={() => { handleTimeButton("07시~08시") }}>07시 ~ 08시</Buttons.Time>
+                    onClick={() => { handleTimeButton("16시~17시") }}>16시~17시</Buttons.Time>
             ) : (
                 <Buttons.Time
-                    onClick={() => { handleTimeButton("07시~08시") }}>07시 ~ 08시</Buttons.Time>
+                    onClick={() => { handleTimeButton("16시~17시") }}>16시~17시</Buttons.Time>
             )}
-            {time === "08시~09시" ? (
+            {time === "17시~18시" ? (
                 <Buttons.Time
                     colorTypes="primary"
-                    onClick={() => { handleTimeButton("08시~09시") }}>08시~09시</Buttons.Time>
+                    onClick={() => { handleTimeButton("17시~18시") }}>17시~18시</Buttons.Time>
             ) : (
                 <Buttons.Time
-                    onClick={() => { handleTimeButton("08시~09시") }}>08시~09시</Buttons.Time>
+                    onClick={() => { handleTimeButton("17시~18시") }}>17시~18시</Buttons.Time>
             )}
-            {time === "09시~10시" ? (
+            {time === "18시~19시" ? (
                 <Buttons.Time
                     colorTypes="primary"
-                    onClick={() => { handleTimeButton("09시~10시") }}>09시~10시</Buttons.Time>
+                    onClick={() => { handleTimeButton("18시~19시") }}>18시~19시</Buttons.Time>
             ) : (
                 <Buttons.Time
-                    onClick={() => { handleTimeButton("09시~10시") }}>09시~10시</Buttons.Time>
+                    onClick={() => { handleTimeButton("18시~19시") }}>18시~19시</Buttons.Time>
             )}
         </StyledTimeButtonGroup>
     );

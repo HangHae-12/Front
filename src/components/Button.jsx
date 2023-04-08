@@ -13,7 +13,7 @@ const Button = {
     );
   },
 
-  NormalButton: () => {},
+  NormalButton: () => { },
 };
 
 export default Button;
@@ -48,6 +48,6 @@ const StyledClassButton = styled.button`
     width: calc(100% - 15px);
     height: 2px;
     background-color: ${({ theme, selected }) =>
-      selected ? theme.color.primary : theme.color.grayScale[300]};
+    selected ? theme.color.primary : theme.color.grayScale[300]};
   }
 `;

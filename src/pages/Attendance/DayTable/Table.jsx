@@ -9,7 +9,7 @@ import { RiBearSmileLine } from "react-icons/ri"
 import { AiOutlineSmile } from "react-icons/ai"
 import textVariants from '../../../styles/variants/textVariants';
 import Buttons from "../../../components/Buttons";
-import ClassButton from './ClassButton';
+import ClassButton from './DayClassButton';
 import CustomDatepicker from '../../../components/CustomDatepicker'
 
 
