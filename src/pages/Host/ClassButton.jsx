@@ -17,7 +17,6 @@ const ClassButton = () => {
 
     const loadClassroom = (selected, id) => {
         setSelectedButton(selected);
-        setClassId(id);
         setScheduleId("ENTER");
         setTime("전체시간");
         navigate(`/host/${id}/ENTER/전체시간`)

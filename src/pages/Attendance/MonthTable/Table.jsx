@@ -17,8 +17,9 @@ import CustomDatepicker from '../../../components/CustomDatepicker'
 import { AttendanceAPI } from "../../../api/AttendanceAPI";
 const Table = () => {
     const queryClient = useQueryClient();
-    const { sid } = useParams();
+    const { sid = 1 } = useParams();
     const [selectedDate, setSelectedDate] = useState(new Date());
+
     const { isLoading, isError, data } = useQuery(
         ["getMonthAttendance", selectedDate, sid],
         () =>
