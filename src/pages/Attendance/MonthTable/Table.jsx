@@ -30,10 +30,6 @@ const Table = () => {
     );
 
 
-
-
-
-
     const handleDateChange = (date) => {
         setSelectedDate(date);
         console.log(selectedDate);
@@ -44,10 +40,6 @@ const Table = () => {
     }, [selectedDate, sid]);
 
 
-
-
-
-
     // console.log(filteredAttendanceData);
     const getDaysInMonth = (month, year) => {
         return new Date(year, month + 1, 0).getDate();
@@ -55,13 +47,17 @@ const Table = () => {
     const daysInMonth = getDaysInMonth(selectedDate.getMonth(), selectedDate.getFullYear());
     const daysOfWeek = ["일", "월", "화", "수", "목", "금", "토"];
 
-    //오늘의 날짜 부터 보여주기 위해서 
+    //이번달은 오늘의 날짜 부터 보여주고, 다른달은 1일부터 
     const getInitialVisibleDays = () => {
-        const today = new Date().getDate();
+        const today = selectedDate.getMonth() === new Date().getMonth() ? new Date().getDate() : 1;
         return Array.from({ length: 5 }, (_, i) => today + i);
     };
     //기준날을 오늘로
     const [visibleDays, setVisibleDays] = useState(getInitialVisibleDays());
+    //선택날짜 바뀔때 기준일자 변경되게 
+    useEffect(() => {
+        setVisibleDays(getInitialVisibleDays(selectedDate));
+    }, [selectedDate]);
 
     const exportToExcel = () => {
         const wb = XLSX.utils.book_new();
@@ -84,16 +80,21 @@ const Table = () => {
         // 시트 데이터 행 추가
         const rowIndex = 3;
         data?.data?.forEach((student, index) => {
+
             const rowData = [
                 student.id,
                 student.name,
                 "출결상태",
                 ...Array.from({ length: daysInMonth }, (_, i) => i + 1).map((day) => {
-                    return student.attendanceStatus;
+                    const attendance = student.monthAttendanceList.find(
+                        (attendance) => new Date(attendance.date).getDate() === day
+                    );
+                    return attendance ? attendance.status : '';
                 }),
-                student.attendanceCnt.toString(),
-                student.absentCnt.toString(),
+                student.attendanceCount,
+                student.absentCount
             ];
+
             XLSX.utils.sheet_add_aoa(ws, [rowData], { origin: `A${rowIndex + index * 3}` });
 
             const arrivalTimeData = [
@@ -101,7 +102,10 @@ const Table = () => {
                 "",
                 "등원시간",
                 ...Array.from({ length: daysInMonth }, (_, i) => i + 1).map((day) => {
-                    return student.enterTime;
+                    const attendance = student.monthAttendanceList.find(
+                        (attendance) => new Date(attendance.date).getDate() === day
+                    );
+                    return attendance ? attendance.enterTime : '';
                 }),
             ];
             XLSX.utils.sheet_add_aoa(ws, [arrivalTimeData], { origin: `A${rowIndex + index * 3 + 1}` });
@@ -111,7 +115,10 @@ const Table = () => {
                 "",
                 "하원시간",
                 ...Array.from({ length: daysInMonth }, (_, i) => i + 1).map((day) => {
-                    return student.exitTime;
+                    const attendance = student.monthAttendanceList.find(
+                        (attendance) => new Date(attendance.date).getDate() === day
+                    );
+                    return attendance ? attendance.exitTime : '';
                 }),
             ];
             XLSX.utils.sheet_add_aoa(ws, [leaveTimeData], { origin: `A${rowIndex + index * 3 + 2}` });
