@@ -8,7 +8,9 @@ import logo from "../assets/kindergrew_logo.png";
 const SideBar = () => {
   return (
     <StyledSideBarContainer>
-      <img src={logo} alt="로고 이미지" />
+      <StyledLogo>
+        <img src={logo} alt="로고 이미지" />
+      </StyledLogo>
       <StyledUserProfileWrapper>
         <img src={DUMMY_PROFILE_IMG_SRC} alt="유저 프로필 이미지" />
         <p>학부모</p>
@@ -18,9 +20,10 @@ const SideBar = () => {
         </h3>
       </StyledUserProfileWrapper>
       <StyledSideBarBtnWrapper>
-        <Buttons.NB colorTypes="primary">학급 관리</Buttons.NB>
-        <Buttons.NB>등/하원 관리</Buttons.NB>
-        <Buttons.NB>출석부 관리</Buttons.NB>
+        <Buttons.NB colorTypes="primary" width="160px">학급 관리</Buttons.NB>
+        <Buttons.NB >등/하원 관리</Buttons.NB>
+        <Buttons.NB >출석부 관리</Buttons.NB>
+        <Buttons.NB >멤버 관리</Buttons.NB>
       </StyledSideBarBtnWrapper>
     </StyledSideBarContainer>
   );
@@ -34,7 +37,7 @@ const StyledSideBarContainer = styled.aside`
   display: flex;
   left: 0;
   bottom: 0;
-  width: 240px;
+  width: 200px;
   height: 100%;
   min-height: 100vh;
   flex-direction: column;
@@ -43,19 +46,27 @@ const StyledSideBarContainer = styled.aside`
   border-right: 2px solid ${({ theme }) => theme.color.grayScale[100]};
   background-color: ${({ theme }) => theme.color.white};
   box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.04);
-`;
 
+`;
+const StyledLogo = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 122px;
+  height: 48px;
+
+`
 const StyledUserProfileWrapper = styled.div`
   display: flex;
   width: 100%;
   height: 150px;
   flex-direction: column;
   align-items: center;
-  margin-top: 80px;
+  margin-top: 84px;
 
   img {
-    width: 120px;
-    height: 120px;
+    width: 80px;
+    height: 80px;
     border-radius: 50%;
   }
 
