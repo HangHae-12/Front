@@ -6,21 +6,38 @@ import Button from "../../components/Button";
 import { useSetRecoilState, useRecoilValue } from "recoil";
 import { scheduledIdAtom, classIdAtom, timeAtom } from "../../atom/hostButtonAtom";
 
-const ClassButton = () => {
+const ClassButton = ({ hostParams }) => {
+    const { classroomId = 0 } = useParams();
     const setClassId = useSetRecoilState(classIdAtom);
     const setScheduleId = useSetRecoilState(scheduledIdAtom);
     const setTime = useSetRecoilState(timeAtom);
     const navigate = useNavigate();
     const [selectedButton, setSelectedButton] = useState("모든반");
     const queryClient = useQueryClient();
-
+    useEffect(() => {
+        switch (classroomId) {
+            case "1":
+                setSelectedButton("새빛반");
+                break;
+            case "2":
+                setSelectedButton("동동반");
+                break;
+            case "3":
+                setSelectedButton("빗살반");
+                break;
+            default:
+                setSelectedButton("모든반");
+                break;
+        }
+    }, [classroomId]);
 
     const loadClassroom = (selected, id) => {
         setSelectedButton(selected);
         setScheduleId("ENTER");
         setTime("전체시간");
-        navigate(`/host/${id}/ENTER/전체시간`)
-
+        navigate(`/host/${id}/ENTER/전체시간`, () => {
+            queryClient.invalidateQueries(["getManageTimeSchedule", hostParams]);
+        });
     };
 
     return (

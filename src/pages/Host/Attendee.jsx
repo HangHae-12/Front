@@ -10,7 +10,7 @@ const Attendee = ({ classData }) => {
   const todayString = `${year}.${month}.${day}`;
   const dayOfWeek = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'][today.getDay()];
 
-  // console.log(classData);
+
   return (
     <StyledInfoContainer>
       <StyledInfoColomn>
@@ -47,7 +47,7 @@ const StyledInfoContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   align-items: center;
-  margin: 64px auto;
+  margin: 24px auto;
   border: 2px solid ${({ theme }) => theme.color.grayScale[200]};
   box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.04);
   border-radius: 12px;

@@ -47,7 +47,7 @@ const ClassButtonGroup = () => {
   return (
     <>
       <StyledAttendanceHeader>출결 관리</StyledAttendanceHeader>
-      <ClassButton />
+      <ClassButton hostParams={hostParams} />
       <Attendee classData={data.data.info} />
       <Schedule hostParams={hostParams} />
       <StyledAttendanceContainer>

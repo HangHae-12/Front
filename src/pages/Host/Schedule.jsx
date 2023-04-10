@@ -13,7 +13,7 @@ const Schedule = ({ hostParams }) => {
     const setTime = useSetRecoilState(timeAtom);
 
     const queryClient = useQueryClient();
-    const { classroomId } = useParams();
+    const { classroomId = 0 } = useParams();
     const navigate = useNavigate();
 
     //도메인과 reponse값 매칭해서 리팩토링 필요

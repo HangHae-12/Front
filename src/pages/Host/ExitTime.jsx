@@ -9,7 +9,7 @@ const Time = (hostParams) => {
     const setTime = useSetRecoilState(timeAtom);
     const time = useRecoilValue(timeAtom);
     const queryClient = useQueryClient();
-    const { classroomId, scheduleId, timeId } = useParams();
+    const { classroomId = 0, scheduleId = "ENTER", timeId } = useParams();
     const navigate = useNavigate();
 
 

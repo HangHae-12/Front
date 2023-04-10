@@ -69,7 +69,18 @@ const Children = ({ bindData }) => {
                 <StyledStudentProfile imageUrl={item.profileImageUrl} />
                 <StyledProfileGroup>
                   <StyledStudentName>{item.name}</StyledStudentName>
-                  <Buttons.State colorTypes="red">{item.state}</Buttons.State>
+                  {
+                    scheduleId === "ENTER"
+                      ?
+                      item.state === "미등원"
+                        ? <Buttons.State colorTypes="red">{item.state}</Buttons.State>
+                        : <Buttons.State colorTypes="blue">{item.state}</Buttons.State>
+                      :
+                      item.state === "미하원"
+                        ? <Buttons.State colorTypes="perple">{item.state}</Buttons.State>
+                        : <Buttons.State colorTypes="orange">{item.state}</Buttons.State>
+                  }
+
                 </StyledProfileGroup>
               </StyledProfileRow>
               <StyledAttendanceGroup>
@@ -83,15 +94,15 @@ const Children = ({ bindData }) => {
                 </StyledAttendanceRow>
               </StyledAttendanceGroup>
               {
-                scheduleId === "ENTER"
+                scheduleId === "EXIT"
                   ?
-                  item.state === "미등원"
-                    ? <StyledAttendanceBtn onClick={() => handleScheduleUpdate("enter", item.id)}>등원처리</StyledAttendanceBtn>
-                    : <StyledAttendanceBtn onClick={() => handleScheduleUpdate("enter", item.id)}>등원취소</StyledAttendanceBtn>
-                  :
                   item.state === "미하원"
-                    ? <StyledAttendanceBtn onClick={() => handleScheduleUpdate("exit", item.id)}>하원처리</StyledAttendanceBtn>
-                    : <StyledAttendanceBtn onClick={() => handleScheduleUpdate("exit", item.id)}>하원취소</StyledAttendanceBtn>
+                    ? <Buttons.Attendance colorTypes="orange" onClick={() => handleScheduleUpdate("exit", item.id)}>하원처리</Buttons.Attendance>
+                    : <Buttons.Attendance outlined onClick={() => handleScheduleUpdate("exit", item.id)}>하원취소</Buttons.Attendance>
+                  :
+                  item.state === "미등원"
+                    ? <Buttons.Attendance colorTypes="blue" onClick={() => handleScheduleUpdate("enter", item.id)}>등원처리</Buttons.Attendance>
+                    : <Buttons.Attendance outlined onClick={() => handleScheduleUpdate("enter", item.id)}>등원취소</Buttons.Attendance>
               }
             </StyledStudentCard>
           );
