@@ -4,11 +4,12 @@ import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import Button from "../../components/Button";
 import { useSetRecoilState, useRecoilValue } from "recoil";
-import { scheduledIdAtom, classIdAtom, timeAtom } from "../../atom/hostButtonAtom";
+import { scheduledIdAtom, classIdAtom, timeAtom, paginationAtom } from "../../atom/hostButtonAtom";
 
 const ClassButton = ({ hostParams }) => {
     const { classroomId = 0 } = useParams();
     const setClassId = useSetRecoilState(classIdAtom);
+    const setPage = useSetRecoilState(paginationAtom);
     const setScheduleId = useSetRecoilState(scheduledIdAtom);
     const setTime = useSetRecoilState(timeAtom);
     const navigate = useNavigate();
@@ -35,6 +36,7 @@ const ClassButton = ({ hostParams }) => {
         setSelectedButton(selected);
         setScheduleId("ENTER");
         setTime("전체시간");
+        setPage(1);
         navigate(`/host/${id}/ENTER/전체시간`, () => {
             queryClient.invalidateQueries(["getManageTimeSchedule", hostParams]);
         });

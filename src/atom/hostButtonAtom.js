@@ -14,3 +14,8 @@ export const timeAtom = atom({
   key: "timeState",
   default: "전체시간",
 });
+
+export const paginationAtom = atom({
+  key: "pagination",
+  default: 1,
+});

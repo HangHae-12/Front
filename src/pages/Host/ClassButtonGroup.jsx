@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
+import { useRecoilState } from "recoil";
 import { HostAPI } from "../../api/HostAPI";
 import textVariants from "../../styles/variants/textVariants";
 import ClassButton from "./ClassButton";
@@ -11,6 +12,7 @@ import ExitTime from "./ExitTime";
 import EnterTime from "./EnterTime";
 import Children from "./Children";
 import Pagination from "../../components/CustomPagination";
+import { paginationAtom } from "../../atom/hostButtonAtom";
 
 
 const ClassButtonGroup = () => {
@@ -18,7 +20,7 @@ const ClassButtonGroup = () => {
   const queryClient = useQueryClient();
   const { classroomId = 0, scheduleId = "ENTER", timeId = "전체시간" } = useParams();
   const navigate = useNavigate();
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useRecoilState(paginationAtom);
   const [size, setSize] = useState(15);
 
   //등원,하원,timea,page param
@@ -40,8 +42,6 @@ const ClassButtonGroup = () => {
   //페이지네이션 페이지 지정
   const handlePageChange = (page) => {
     setPage(page);
-    console.log(page);
-
   };
 
   return (

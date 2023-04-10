@@ -1,18 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
-import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { HostAPI } from "../../api/HostAPI";
 import Buttons from "../../components/Buttons";
 import textVariants from "../../styles/variants/textVariants";
-import { scheduledIdAtom } from "../../atom/hostButtonAtom";
 
 const Children = ({ bindData }) => {
   const queryClient = useQueryClient();
   //useSearchParams 알아보기
-  const { classroomId, scheduleId, timeId } = useParams();
-  const navigate = useNavigate();
-  // const { enterTime, exitTime } = bindData;
+  const { scheduleId } = useParams();
 
   const updateEnterMutation = useMutation(HostAPI.updateEnter, {
     onSuccess: () => {
@@ -203,14 +200,3 @@ const StyledAttendanceValue = styled.div`
   color: ${({ theme }) => theme.color.grayScale[700]};
 `;
 
-const StyledAttendanceBtn = styled.button`
-  background-color: ${({ theme }) => theme.color.blue};
-  color: ${({ theme }) => theme.color.white};
-  border: none;
-  border-radius: 8px;
-  padding: 6.4px 8px;
-  gap: 10px;
-  width: 132px;
-  height: 32px;
-
-`;
