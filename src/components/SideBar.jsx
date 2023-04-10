@@ -1,11 +1,19 @@
+import { useState } from "react";
 import styled from "styled-components";
 import { BsFillGearFill } from "react-icons/bs";
 import { DUMMY_PROFILE_IMG_SRC } from "../assets";
 import Buttons from "./Buttons";
 import textVariants from "../styles/variants/textVariants";
 import logo from "../assets/kindergrew_logo.png";
+import { Link } from "react-router-dom";
 
 const SideBar = () => {
+  const [showAttendanceMenu, setShowAttendanceMenu] = useState(false);
+
+  const toggleAttendanceMenu = () => {
+    setShowAttendanceMenu(!showAttendanceMenu);
+  };
+
   return (
     <StyledSideBarContainer>
       <StyledLogo>
@@ -21,9 +29,17 @@ const SideBar = () => {
       </StyledUserProfileWrapper>
       <StyledSideBarBtnWrapper>
         <Buttons.NB colorTypes="primary" width="160px">학급 관리</Buttons.NB>
-        <Buttons.NB >등/하원 관리</Buttons.NB>
-        <Buttons.NB >출석부 관리</Buttons.NB>
-        <Buttons.NB >멤버 관리</Buttons.NB>
+        <Buttons.NB>등/하원 관리</Buttons.NB>
+        <div>
+          <Buttons.NB onClick={toggleAttendanceMenu}>출석부 관리</Buttons.NB>
+          {showAttendanceMenu && (
+            <StyledSubMenu>
+              <Link to="/monthAttendance">월별 출석부</Link>
+              <Link to="/dayAttendance">일별 출석부</Link>
+            </StyledSubMenu>
+          )}
+        </div>
+        <Buttons.NB>멤버 관리</Buttons.NB>
       </StyledSideBarBtnWrapper>
     </StyledSideBarContainer>
   );
@@ -99,4 +115,26 @@ const StyledSideBarBtnWrapper = styled.div`
   width: 100%;
   margin-top: 80px;
   gap: 12px;
+`;
+const StyledSubMenu = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-top: 12px;
+  gap: 14px;
+
+  a {
+    ${textVariants.Body1_SemiBold}
+    color: ${({ theme }) => theme.color.grayScale[400]};
+    padding: 8px 0px;
+    width: 100%;
+    text-align: center;
+    border-radius: 8px;
+    text-decoration: none;
+
+    &:hover {
+      color: ${({ theme }) => theme.color.primary};
+    }
+  }
 `;
