@@ -14,7 +14,7 @@ import textVariants from '../../../styles/variants/textVariants';
 import Buttons from "../../../components/Buttons";
 import ClassButton from './DayClassButton';
 import CustomDatepicker from '../../../components/CustomDatepicker'
-
+import DayExcel from './DayExcel'
 
 const Table = () => {
   const queryClient = useQueryClient();
@@ -53,37 +53,6 @@ const Table = () => {
   };
 
   const dayOfWeek = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'][selectedDate.getDay()];
-
-
-
-  const exportToExcel = () => {
-    const filteredData = data.data.filter((row) => row !== null);
-
-    const formattedData = filteredData.map((row, rowIndex) => {
-      return {
-        No: rowIndex + 1,
-        원아명: row.name,
-        출결상태: row.status,
-        등원시간: row.enterTime || "미등록",
-        하원시간: row.exitTime || "미등록",
-        결석사유: row.absentReason || "미등록",
-      };
-    });
-
-    const ws = XLSX.utils.json_to_sheet(formattedData, {
-      header: ["No", "원아명", "출결상태", "등원시간", "하원시간", "결석사유"],
-    });
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "일별 출석부");
-    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-    const dataBlob = new Blob([excelBuffer], {
-      type:
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8",
-    });
-    XLSX.writeFile(wb, `일별 출석부_${formatDate(selectedDate)}.xlsx`);
-  };
-
-
 
   const decreaseDate = () => {
     setSelectedDate((prevDate) => {
@@ -152,7 +121,7 @@ const Table = () => {
                   .filter((row) => row !== null) // null 값을 걸러내기 위한 추가 작업
                   .map((row, rowIndex) => (
                     <tr key={row.id}>
-                      <td>{rowIndex}</td>
+                      <td>{rowIndex + 1}</td>
                       <td>{getRandomIcon()} {row.name}</td>
                       <td>
                         {(() => {
@@ -176,9 +145,7 @@ const Table = () => {
             </tbody>
           </StyledTable>
         </StyledTableWrapper>
-        <StyledButtonGroup>
-          <StyledExportButton colorTypes="primary" onClick={exportToExcel}>내보내기</StyledExportButton>
-        </StyledButtonGroup>
+        <DayExcel data={data} selectedDate={selectedDate} />
       </StyledTableContainer>
 
     </div>
@@ -271,19 +238,6 @@ const StyledTable = styled.table`
     color: ${({ theme }) => theme.color.red};
   }
 `;
-
-
-
-const StyledButtonGroup = styled.div`
-    display: flex;
-    justify-content: flex-end; /* 오른쪽 정렬 */
-    margin-top: 20px;
-`;
-
-const StyledExportButton = styled(Buttons.Filter)`
-    margin-left: 10px;
-`;
-
 
 
 
