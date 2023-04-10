@@ -10,8 +10,8 @@ const Router = () => {
         <Route path="/login" element={PAGE.login} />
         <Route path="/oauth/kakao/callback" element={PAGE.kakaoLogin} />
         {/*  */}
-        {/* <Route path="/" element={< />} /> */}
-        <Route path="/signup" element={PAGE.signup.signup}>
+        <Route path="/signup" element={PAGE.signup.layout}>
+          <Route index element={PAGE.signup.signup} />
           <Route path="teacher" element={PAGE.signup.teacher} />
           <Route path="parent" element={PAGE.signup.parent} />
         </Route>

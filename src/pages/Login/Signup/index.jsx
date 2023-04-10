@@ -1,47 +1,50 @@
 import { useMatch, Link } from "react-router-dom";
 import styled from "styled-components";
-import Parent from "./Parent";
-import Teacher from "./Teacher";
+import Buttons from "../../../components/Buttons";
+import StyledLogin from "../styled";
 
 const Signup = () => {
-  const teacherMatch = useMatch(`/Signup/teacher`);
-  const parentMatch = useMatch(`/Signup/parent`);
+  const role = [
+    { link: "parent", label: "학부모로 가입하기" },
+    { link: "teacher", label: "선생님으로 가입하기" },
+    { link: "principal", label: "원장선생님으로 가입하기" },
+  ];
 
   return (
-    <>
-      <h1>Extra Info</h1>
-      <Tabs>
-        <Tab isActive={!!parentMatch}>
-          <Link to="parent">학부모</Link>
-        </Tab>
-        <Tab isActive={!!teacherMatch}>
-          <Link to="teacher">선생님</Link>
-        </Tab>
-      </Tabs>
-
-      {parentMatch && <Parent />}
-      {teacherMatch && <Teacher />}
-    </>
+    <SignupPageWrapper>
+      <StyledLogin.Title>안녕하세요</StyledLogin.Title>
+      <SignupPageBtnBox>
+        {role.map((role) => (
+          <Link key={`${role.link}`} to={role.link}>
+            <SignupPageBtn colorTypes="primary">{role.label}</SignupPageBtn>
+          </Link>
+        ))}
+      </SignupPageBtnBox>
+    </SignupPageWrapper>
   );
 };
 export default Signup;
 
-const Tabs = styled.div`
-  width: 300px;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  margin: 25px 0px;
-  gap: 10px;
+const SignupPageWrapper = styled.section`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding: 80px 200px;
 `;
 
-const Tab = styled.span`
-  padding: 7px 0px;
-  border-radius: 10px;
-  color: ${({ isActive, theme }) =>
-    isActive ? theme.color.primary : theme.color.black};
+const SignupPageBtnBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  margin-top: 60px;
   a {
     text-decoration: none;
-    color: inherit;
-    display: block;
   }
+`;
+
+const SignupPageBtn = styled(Buttons.NB)`
+  border-radius: 8px;
+  width: min-content;
+  justify-content: flex-start;
 `;
