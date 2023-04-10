@@ -80,7 +80,7 @@ const StyledAttendanceHeader = styled.h2`
 const StyledAttendanceContainer = styled.div`
   /* background-color: ${({ theme }) => theme.color.green_darker}; */
   background-color:#EDF5EECC;
-  box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.04);
+  box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.12);
   border-radius: 12px;
   padding: 40px;
 `;

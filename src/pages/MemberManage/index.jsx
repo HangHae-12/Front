@@ -1,21 +1,21 @@
 import styled from "styled-components";
 import SideBar from "../../components/SideBar";
 import List from "./List"
-const MonthTable = () => {
+const MemberManage = () => {
 
-    return (
-        <StyledContainer>
-            <StyledLeftContainer>
-                <SideBar />
-            </StyledLeftContainer>
-            <StyledRightContainer>
-                <List />
-            </StyledRightContainer >
-        </StyledContainer >
-    );
+  return (
+    <StyledContainer>
+      <StyledLeftContainer>
+        <SideBar />
+      </StyledLeftContainer>
+      <StyledRightContainer>
+        <List />
+      </StyledRightContainer >
+    </StyledContainer >
+  );
 };
 
-export default MonthTable;
+export default MemberManage;
 
 const StyledContainer = styled.div`
   display: flex;
