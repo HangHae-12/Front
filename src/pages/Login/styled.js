@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import textVariants from "../../styles/variants/textVariants";
 
 const StyledLogin = {
@@ -24,6 +24,54 @@ const StyledLogin = {
 
   Title: styled.h3`
     ${textVariants.H3_Bold}
+  `,
+
+  Label: styled.label`
+    ${textVariants.Body2_SemiBold}
+    position: relative;
+    color: ${({ theme }) => theme.color.grayScale[500]};
+    ${({ isEssential }) =>
+      isEssential &&
+      css`
+        &::after {
+          content: "*";
+          position: absolute;
+          top: 0;
+          left: -10px;
+          transform: translateX(-50%);
+          color: ${({ theme }) => theme.color.primary};
+        }
+      `}
+  `,
+
+  Input: styled.input`
+    ${textVariants.Body1_SemiBold}
+    position: relative;
+    height: 32px;
+    padding: 4px 8px;
+    background: ${({ theme }) => theme.color.grayScale[50]};
+    border: none;
+    border-radius: 2px;
+    outline: none;
+    transition: 0.3s all;
+    border: 1.5px solid transparent;
+
+    &::placeholder {
+      opacity: 0.2;
+    }
+
+    &:focus {
+      border-bottom-color: ${({ theme }) => theme.color.grayScale[300]};
+    }
+
+    ${({ valid }) =>
+      valid &&
+      css`
+        border-color: ${({ theme }) => theme.color.red};
+        &:focus {
+          border-bottom-color: ${({ theme }) => theme.color.red};
+        }
+      `}
   `,
 };
 
