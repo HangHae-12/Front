@@ -1,24 +1,34 @@
-import { useRef, useState } from "react";
+import { useRef, useCallback } from "react";
+import { useRecoilState } from "recoil";
+import { profileImageState } from "../atom/profileImageUploaderAtom";
 import { DUMMY_URL } from "../helpers/dummyUrl";
 
 export const useProfileImageUploader = (initialPreview) => {
+  const [state, setState] = useRecoilState(profileImageState);
   const inputRef = useRef();
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [previewImage, setPreviewImage] = useState(initialPreview);
-  const [isCancelled, setIsCancelled] = useState(false);
+  const { selectedFile, previewImage, isCancelled } = state;
 
-  const handleProfileImageChange = (file, preview) => {
-    setSelectedFile(file);
-    setPreviewImage(preview);
-    setIsCancelled(false);
-  };
+  const handleProfileImageChange = useCallback(
+    (file, preview) => {
+      setState((prev) => ({
+        ...prev,
+        selectedFile: file,
+        previewImage: preview,
+        isCancelled: false,
+      }));
+    },
+    [setState]
+  );
 
-  const handleProfileImageCancel = () => {
-    setSelectedFile(null);
-    setPreviewImage(initialPreview ?? DUMMY_URL.not_profile_img);
-    setIsCancelled(true);
+  const handleProfileImageCancel = useCallback(() => {
+    setState((prev) => ({
+      ...prev,
+      selectedFile: null,
+      previewImage: initialPreview ?? DUMMY_URL.not_profile_img,
+      isCancelled: true,
+    }));
     inputRef.current.value = null;
-  };
+  }, [setState, initialPreview]);
 
   return {
     inputRef,
