@@ -5,7 +5,7 @@ import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { AttendanceAPI } from "../../../api/AttendanceAPI";
 import { GrPrevious, GrNext } from "react-icons/gr";
-import { BsCalendarDate } from "react-icons/bs"
+import { BsSun } from "react-icons/bs"
 import { GoOctoface } from "react-icons/go"
 import { TbDog } from "react-icons/tb"
 import { RiBearSmileLine } from "react-icons/ri"
@@ -29,11 +29,18 @@ const Table = () => {
 
     return `${year}-${month}-${day}`;
   }
+
+  const isSunday = selectedDate.getDay() === 0;
+
+  //로딩,에러일때 처리 바꿔야함
   const { isLoading, isError, error, data } = useQuery(
     ["getDayAttendance", selectedDate, id],
     () => AttendanceAPI.getDayAttendance({ classroomId: id, date: formatDate(selectedDate) }),
-
+    {
+      enabled: !isSunday, // 일요일이 아닐 때만 API 요청을 수행
+    }
   );
+
 
 
   useEffect(() => {
@@ -131,11 +138,16 @@ const Table = () => {
               </tr>
             </thead>
             <tbody>
-              {isLoading ? (
+              {isSunday ? (
+                <tr>
+                  <td className="sunday" colSpan="6"><BsSun /> 일요일은 쉬는날</td>
+                </tr>
+              ) : isLoading ? (
                 <div>Loading...</div>
               ) : isError ? (
                 <div>Error: error</div>
-              ) : (data?.data?.length > 0 &&
+              ) : (
+                data?.data?.length > 0 &&
                 data.data
                   .filter((row) => row !== null) // null 값을 걸러내기 위한 추가 작업
                   .map((row, rowIndex) => (
@@ -253,6 +265,10 @@ const StyledTable = styled.table`
 
   tr:hover {
     background-color: ${({ theme }) => theme.color.perple_lighter};
+  }
+
+  .sunday{
+    color: ${({ theme }) => theme.color.red};
   }
 `;
 
