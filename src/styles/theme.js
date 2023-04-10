@@ -50,7 +50,8 @@ const fontWeight = {
 };
 const device = {
   mobile: "(max-width: 768px)",
-  tablet: "(max-width: 1024px)",
+  laptop: "(min-width: 769px) and (max-width: 1500px)",
+  desktop: "(min-width: 1920px)",
 };
 const defaultTheme = {
   color,
