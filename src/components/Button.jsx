@@ -2,7 +2,8 @@ import styled from "styled-components";
 import textVariants from "../styles/variants/textVariants";
 
 const Button = {
-  ClassButton: ({ selected, onClick, isSelected }) => {
+  ClassButton: ({ selected, onClick, selectedButton }) => {
+    const isSelected = selected === selectedButton;
     return (
       <StyledClassButton
         isSelected={isSelected}

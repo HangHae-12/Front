@@ -27,20 +27,15 @@ const Schedule = ({ hostParams }) => {
 
     return (
         <StyledAttendanceButtonGroup>
-            {scheduledId === "ENTER" ? (
-                <StyledABBtn
-                    onClick={() => handleAttendanceButton("ENTER")}>등원인원</StyledABBtn>
-            ) : (
-                <Buttons.AB
-                    onClick={() => handleAttendanceButton("ENTER")}>등원인원</Buttons.AB>
-            )}
-            {scheduledId === "EXIT" ? (
-                <StyledABBtn
-                    onClick={() => handleAttendanceButton("EXIT")}>하원인원</StyledABBtn>
-            ) : (
-                <Buttons.AB
-                    onClick={() => handleAttendanceButton("EXIT")}>하원인원</Buttons.AB>
-            )}
+            {
+                scheduledId === "ENTER"
+                    ? <StyledABBtn onClick={() => handleAttendanceButton("ENTER")}>등원인원</StyledABBtn>
+                    : <Buttons.AB onClick={() => handleAttendanceButton("ENTER")}>등원인원</Buttons.AB>
+            }
+            {
+                scheduledId === "EXIT"
+                    ? <StyledABBtn onClick={() => handleAttendanceButton("EXIT")}>하원인원</StyledABBtn>
+                    : <Buttons.AB onClick={() => handleAttendanceButton("EXIT")}>하원인원</Buttons.AB>}
         </StyledAttendanceButtonGroup>
     );
 };
@@ -50,8 +45,11 @@ export default Schedule;
 const StyledAttendanceButtonGroup = styled.div`
     padding-top: 20px;
     margin-left: 30px;
+    gap: 10px;
+    
 `;
 const StyledABBtn = styled(Buttons.AB)`
   color: ${({ theme }) => theme.color.primary};
   background-color: ${({ theme }) => theme.color.green_darker};
+  
 `;

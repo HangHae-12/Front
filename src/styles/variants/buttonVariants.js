@@ -4,9 +4,9 @@ import textVariants from "./textVariants";
 const buttonVariants = {
   Attendance: css`
     ${textVariants.Body1_SemiBold}
-    width: 172px;
-    height: 40px;
-    padding: 8px 10px;
+    width: 137.6px;
+    height: 36.8px;
+    padding: 6.4px 8px;
     border-radius: 8px;
   `,
 
