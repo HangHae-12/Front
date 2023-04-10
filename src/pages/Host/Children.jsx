@@ -67,15 +67,15 @@ const Children = ({ bindData }) => {
                 <StyledProfileGroup>
                   <StyledStudentName>{item.name}</StyledStudentName>
                   {
-                    scheduleId === "ENTER"
+                    scheduleId === "EXIT"
                       ?
-                      item.state === "미등원"
-                        ? <Buttons.State colorTypes="red">{item.state}</Buttons.State>
-                        : <Buttons.State colorTypes="blue">{item.state}</Buttons.State>
-                      :
                       item.state === "미하원"
                         ? <Buttons.State colorTypes="perple">{item.state}</Buttons.State>
                         : <Buttons.State colorTypes="orange">{item.state}</Buttons.State>
+                      :
+                      item.state === "미등원"
+                        ? <Buttons.State colorTypes="red">{item.state}</Buttons.State>
+                        : <Buttons.State colorTypes="blue">{item.state}</Buttons.State>
                   }
 
                 </StyledProfileGroup>

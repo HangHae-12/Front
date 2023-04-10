@@ -44,6 +44,7 @@ const Schedule = ({ hostParams }) => {
 export default Schedule;
 
 const StyledAttendanceButtonGroup = styled.div`
+    display: flex;
     padding-top: 20px;
     margin-left: 30px;
     gap: 10px;
@@ -52,5 +53,6 @@ const StyledAttendanceButtonGroup = styled.div`
 const StyledABBtn = styled(Buttons.AB)`
   color: ${({ theme }) => theme.color.primary};
   background-color: ${({ theme }) => theme.color.green_darker};
+  
   
 `;

@@ -237,6 +237,24 @@ const Table = () => {
             return newDays;
         });
     };
+    //토요일,일요일 스타일 다르게 주기위해서 
+    const isSaturday = (day) => {
+        const dayOfWeek = new Date(
+            selectedDate.getFullYear(),
+            selectedDate.getMonth(),
+            day
+        ).getDay();
+        return dayOfWeek === 6;
+    };
+
+    const isSunday = (day) => {
+        const dayOfWeek = new Date(
+            selectedDate.getFullYear(),
+            selectedDate.getMonth(),
+            day
+        ).getDay();
+        return dayOfWeek === 0;
+    };
 
     // 랜덤으로 선택될 아이콘 배열
     const iconOptions = [GoOctoface, TbDog, RiBearSmileLine, AiOutlineSmile];
@@ -274,9 +292,10 @@ const Table = () => {
                                 </StyledTopStickyHeader>
                                 {visibleDays.map((day) => {
                                     if (day > daysInMonth) {
-                                        return <StyledTopStickyHeader key={day}></StyledTopStickyHeader>;
+                                        return <StyledTopStickyHeader isWeekend={false} key={day}></StyledTopStickyHeader>;
                                     }
-                                    return <StyledTopStickyHeader key={day}>{day}</StyledTopStickyHeader>;
+                                    return <StyledTopStickyHeader isSaturday={isSaturday(day)}
+                                        isSunday={isSunday(day)} key={day}>{day}</StyledTopStickyHeader>;
                                 })}
                                 <StyledTopStickyHeader onClick={handleNextDays}>
                                     <AiOutlineRight />
@@ -289,7 +308,8 @@ const Table = () => {
                                 <StyledStickyHeader>이름</StyledStickyHeader>
                                 <StyledStickyHeader>출결정보</StyledStickyHeader>
                                 {visibleDays.map((day) => (
-                                    <StyledStickyHeader key={day}>
+                                    <StyledStickyHeader key={day} isSaturday={isSaturday(day)}
+                                        isSunday={isSunday(day)}>
                                         {
                                             daysOfWeek[
                                             new Date(
@@ -396,16 +416,20 @@ const StyledTopStickyHeader = styled.th`
   position: sticky;
   top: 0;
   background-color: ${({ theme }) => theme.color.grayScale[100]};
-  color: ${({ theme }) => theme.color.grayScale[500]};
+  color: ${({ isSaturday, isSunday, theme }) =>
+        isSunday ? theme.color.red : isSaturday ? theme.color.blue : theme.color.grayScale[500]};
   z-index: 1;
 `;
 
 const StyledStickyHeader = styled.th`
   position: sticky;
-  top: 35px; 
+  top: 35px;
   background-color: ${({ theme }) => theme.color.grayScale[100]};
-  color: ${({ theme }) => theme.color.grayScale[500]};
+  color: ${({ isSaturday, isSunday, theme }) =>
+        isSunday ? theme.color.red : isSaturday ? theme.color.blue : theme.color.grayScale[500]};
 `;
+
+
 
 
 const StyledMonthYear = styled.div`
@@ -456,7 +480,7 @@ const StyledTable = styled.table`
 
   th {
     background-color: ${({ theme }) => theme.color.grayScale[100]};
-    color: ${({ theme }) => theme.color.grayScale[500]};
+    
   }
   
 
