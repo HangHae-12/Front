@@ -5,6 +5,11 @@ import StyledSignup from "./styled";
 import { SignAPI } from "../../../api/SignAPI";
 import ProfileImageUploader from "../../../components/ProfileImageUploader";
 import { useProfileImageUploader } from "../../../hooks/useProfileImageUploader";
+import styled from "styled-components";
+
+import { REGEXP } from "../../../helpers/regexp";
+import { FaCheckCircle, FaExclamationCircle } from "react-icons/fa";
+import StyledLogin from "../styled";
 
 // 사용자가 정보를 다 입력하고 난 뒤에 도메인에 extrainfo 를 치면 이 화면이 보일 수 있으니까
 // 그걸 방지하기 위한 로직을 구현해야만 한다.
@@ -19,7 +24,7 @@ const Parent = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, touchedFields },
   } = useForm();
 
   const { mutate } = useMutation(SignAPI.signup, {
@@ -49,8 +54,14 @@ const Parent = () => {
   };
 
   return (
-    <StyledSignup.Container>
+    <StyledSignupPage.Wrapper>
+      <StyledLogin.Title>선생님! 정보를 입력해주세요</StyledLogin.Title>
+
       <StyledSignup.Form onSubmit={handleSubmit(onSubmit)}>
+        <StyledSignup.Label htmlFor="profileImage">
+          프로필 사진
+        </StyledSignup.Label>
+        <ProfileImageUploader prev={profileImageUrl} />
         <StyledSignup.Label htmlFor="name">이름 *</StyledSignup.Label>
         <StyledSignup.Input
           type="text"
@@ -80,14 +91,7 @@ const Parent = () => {
           </StyledSignup.ErrorMessage>
         )}
 
-        <StyledSignup.Label htmlFor="profileImage">
-          프로필 사진
-        </StyledSignup.Label>
-        <ProfileImageUploader pref={profileImageUrl} />
-
-        <StyledSignup.Label htmlFor="relationship">
-          관계
-        </StyledSignup.Label>
+        <StyledSignup.Label htmlFor="relationship">관계</StyledSignup.Label>
         <StyledSignup.Input
           type="text"
           {...register("relationship")}
@@ -105,8 +109,18 @@ const Parent = () => {
 
         <StyledSignup.Button type="submit">Submit</StyledSignup.Button>
       </StyledSignup.Form>
-    </StyledSignup.Container>
+    </StyledSignupPage.Wrapper>
   );
 };
 
 export default Parent;
+
+const StyledSignupPage = {
+  Wrapper: styled.div`
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    padding: 60px 140px;
+  `,
+};
