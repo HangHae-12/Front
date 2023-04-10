@@ -2,16 +2,7 @@ import React, { useState } from "react";
 import moment from "moment";
 import styled from "styled-components";
 import textVariants from "../../styles/variants/textVariants";
-
-const DATA = [
-  {
-    child_id: 0,
-    date: "2023-04-03",
-    enter_time: "07:30",
-    exit_time: "16:30",
-    status: "출석",
-  },
-];
+import DUMMY from "./DUMMY";
 
 const AttendanceCalendar = () => {
   const [currentMonth, setCurrentMonth] = useState(moment());
@@ -28,54 +19,56 @@ const AttendanceCalendar = () => {
     const days = [];
     const startOfMonth = currentMonth.clone().startOf("month");
     const endOfMonth = currentMonth.clone().endOf("month");
+    const today = moment();
     let currentDay = startOfMonth.clone().startOf("isoWeek");
 
     while (currentDay.isSameOrBefore(endOfMonth)) {
       if (currentDay.isoWeekday() <= 5) {
         days.push(
           <Day key={currentDay.format("YYYY-MM-DD")}>
-            {console.log(
-              currentDay.format("YYYY-MM-DD") >
-                currentMonth.format("YYYY-MM-DD")
-            )}
-            {currentDay.month() === currentMonth.month() &&
-            currentDay.format("YYYY-MM-DD") <=
-              currentMonth.format("YYYY-MM-DD") ? (
-              <>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "37px",
+              }}
+            >
+              {currentDay.month() === currentMonth.month() ? (
+                <Date>{currentDay.date()}</Date>
+              ) : null}
+              {currentDay.isSameOrBefore(today, "day") &&
+              currentDay.month() === currentMonth.month() ? (
+                <AttendanceLabel isAttendance={true} />
+              ) : null}
+            </div>
+            {currentDay.isSameOrBefore(today, "day") &&
+            currentDay.month() === currentMonth.month() ? (
+              <div>
                 <div
                   style={{
                     display: "flex",
+                    flexDirection: "row",
                     justifyContent: "space-between",
-                    alignItems: "center",
-                    marginBottom: "37px",
                   }}
                 >
-                  <Date>{currentDay.date()}</Date>
-                  <AttendanceLabel isAttendance={true} />
+                  <div>등원</div>
+                  <div>07:30분</div>
                 </div>
-                <div>
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <div>등원</div>
-                    <div>07:30분</div>
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <div>하원</div>
-                    <div>16:30분</div>
-                  </div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <div>하원</div>
+                  <div>16:30분</div>
                 </div>
-              </>
+              </div>
+            ) : currentDay.month() === currentMonth.month() &&
+              currentDay.isAfter(today, "day") ? (
+              <div>아직이요</div>
             ) : null}
           </Day>
         );
@@ -85,6 +78,7 @@ const AttendanceCalendar = () => {
 
     return days;
   };
+
   return (
     <>
       <CalendarWrapper>
@@ -154,7 +148,7 @@ const Day = styled.span`
 const Date = styled.div`
   position: relative;
   ${textVariants.H3_SemiBold}
-  color: ${({ theme }) => theme.color.grayScale[500]}
+  color: ${({ theme }) => theme.color.grayScale[500]};
 `;
 
 const CalendarHeader = styled.div`
@@ -162,6 +156,7 @@ const CalendarHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   width: 100%;
+
   padding: 1rem;
 `;
 
@@ -170,6 +165,7 @@ const WeekdayWrapper = styled.div`
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   width: 100%;
+  max-width: 1000px;
   color: ${({ theme }) => theme.color.grayScale[500]};
   background: ${({ theme }) => theme.color.grayScale[50]};
 `;
