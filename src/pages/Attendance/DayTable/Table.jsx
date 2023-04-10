@@ -1,43 +1,76 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import * as XLSX from "xlsx";
+import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
+import { useNavigate, useParams } from "react-router-dom";
+import { AttendanceAPI } from "../../../api/AttendanceAPI";
 import { GrPrevious, GrNext } from "react-icons/gr";
-import { BsCalendarDate } from "react-icons/bs"
+import { BsSun } from "react-icons/bs"
 import { GoOctoface } from "react-icons/go"
 import { TbDog } from "react-icons/tb"
 import { RiBearSmileLine } from "react-icons/ri"
 import { AiOutlineSmile } from "react-icons/ai"
 import textVariants from '../../../styles/variants/textVariants';
 import Buttons from "../../../components/Buttons";
-import ClassButton from './ClassButton';
+import ClassButton from './DayClassButton';
 import CustomDatepicker from '../../../components/CustomDatepicker'
 
 
-const Table = ({ data }) => {
-
-  const [selectedButton, setSelectedButton] = useState("새빛반");
+const Table = () => {
+  const queryClient = useQueryClient();
   const [selectedDate, setSelectedDate] = useState(new Date());
+
+  const { id = 1 } = useParams();
+
+  function formatDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+  }
+
+  const isSunday = selectedDate.getDay() === 0;
+
+  //로딩,에러일때 처리 바꿔야함
+  const { isLoading, isError, error, data } = useQuery(
+    ["getDayAttendance", selectedDate, id],
+    () => AttendanceAPI.getDayAttendance({ classroomId: id, date: formatDate(selectedDate) }),
+    {
+      enabled: !isSunday, // 일요일이 아닐 때만 API 요청을 수행
+    }
+  );
+
+
+
+  useEffect(() => {
+    queryClient.invalidateQueries(["getDayAttendance"]);
+  }, [selectedDate, id]);
+
   const handleDateChange = (date) => {
     setSelectedDate(date);
-  };
-  const loadClassroom = (selected, id) => {
-    setSelectedButton(selected);
-    // navigate(`/host/${id}/ENTER/전체시간`)
+    queryClient.invalidateQueries(["getDayAttendance"]);
   };
 
-
-  const [attendanceData, setAttendanceData] = useState([
-    { No: 1, 원아명: "백주원", 출결상태: "출석", 등원시간: "오전 9:00", 하원시간: "오후 4:30", 결석사유: "" },
-    { No: 2, 원아명: "김주원", 출결상태: "인정결석", 등원시간: "오전 9:00", 하원시간: "오후 7:30", 결석사유: "코로나" },
-    { No: 3, 원아명: "홍주원", 출결상태: "결석", 등원시간: "", 하원시간: "", 결석사유: "" },
-    { No: 4, 원아명: "유주원", 출결상태: "출석", 등원시간: "오전 9:00", 하원시간: "오후 7:30", 결석사유: "" },
-    { No: 5, 원아명: "이주원", 출결상태: "인정결석", 등원시간: "오전 9:00", 하원시간: "오후 4:30", 결석사유: "코로나" },
-
-
-  ]);
   const dayOfWeek = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'][selectedDate.getDay()];
+
+
+
   const exportToExcel = () => {
-    const ws = XLSX.utils.json_to_sheet(attendanceData, {
+    const filteredData = data.data.filter((row) => row !== null);
+
+    const formattedData = filteredData.map((row, rowIndex) => {
+      return {
+        No: rowIndex + 1,
+        원아명: row.name,
+        출결상태: row.status,
+        등원시간: row.enterTime || "미등록",
+        하원시간: row.exitTime || "미등록",
+        결석사유: row.absentReason || "미등록",
+      };
+    });
+
+    const ws = XLSX.utils.json_to_sheet(formattedData, {
       header: ["No", "원아명", "출결상태", "등원시간", "하원시간", "결석사유"],
     });
     const wb = XLSX.utils.book_new();
@@ -47,14 +80,10 @@ const Table = ({ data }) => {
       type:
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8",
     });
-    XLSX.writeFile(wb, `출석부.xlsx`);
+    XLSX.writeFile(wb, `일별 출석부_${formatDate(selectedDate)}.xlsx`);
   };
 
-  const filteredAttendanceData = attendanceData.filter(
-    (data) =>
-      new Date(data.date).toLocaleDateString() ===
-      selectedDate.toLocaleDateString()
-  );
+
 
   const decreaseDate = () => {
     setSelectedDate((prevDate) => {
@@ -81,6 +110,7 @@ const Table = ({ data }) => {
     return <SelectedIcon />;
   };
 
+  console.log(data)
   return (
     <div>
 
@@ -95,44 +125,57 @@ const Table = ({ data }) => {
             <CustomDatepicker selectedDate={selectedDate} onDateChange={handleDateChange} />
           </StyledMonthYear>
         </StyledHeader>
-        <StyledTable>
-          <thead>
-            <tr>
-              <th>No.</th>
-              <th>이름</th>
-              <th>출결상태</th>
-              <th>등원시간</th>
-              <th>하원시간</th>
-              <th>결석사유</th>
-            </tr>
-          </thead>
-          <tbody>
-            {attendanceData.map((row, rowIndex) => (
-              <tr key={rowIndex}>
-                <td>{row.No}</td>
-                <td>{getRandomIcon()} {row.원아명}</td>
-                <td>
-                  {(() => {
-                    switch (row.출결상태) {
-                      case "출석":
-                        return <Buttons.State colorTypes="blue">{row.출결상태}</Buttons.State>;
-                      case "인정결석":
-                        return <Buttons.State colorTypes="orange">{row.출결상태}</Buttons.State>;
-                      case "결석":
-                        return <Buttons.State colorTypes="red">{row.출결상태}</Buttons.State>;
-                      default:
-                        return <Buttons.State colorTypes="perple">{row.출결상태}</Buttons.State>;
-                    }
-                  })()}
-
-                </td>
-                <td>{row.등원시간}</td>
-                <td>{row.하원시간}</td>
-                <td>{row.결석사유}</td>
+        <StyledTableWrapper>
+          <StyledTable>
+            <thead>
+              <tr>
+                <StyledStickyHeader>No.</StyledStickyHeader>
+                <StyledStickyHeader>이름</StyledStickyHeader>
+                <StyledStickyHeader>출결상태</StyledStickyHeader>
+                <StyledStickyHeader>등원시간</StyledStickyHeader>
+                <StyledStickyHeader>하원시간</StyledStickyHeader>
+                <StyledStickyHeader>결석사유</StyledStickyHeader>
               </tr>
-            ))}
-          </tbody>
-        </StyledTable>
+            </thead>
+            <tbody>
+              {isSunday ? (
+                <tr>
+                  <td className="sunday" colSpan="6"><BsSun /> 일요일은 쉬는날</td>
+                </tr>
+              ) : isLoading ? (
+                <div>Loading...</div>
+              ) : isError ? (
+                <div>Error: error</div>
+              ) : (
+                data?.data?.length > 0 &&
+                data.data
+                  .filter((row) => row !== null) // null 값을 걸러내기 위한 추가 작업
+                  .map((row, rowIndex) => (
+                    <tr key={row.id}>
+                      <td>{rowIndex}</td>
+                      <td>{getRandomIcon()} {row.name}</td>
+                      <td>
+                        {(() => {
+                          switch (row.status) {
+                            case "출석":
+                              return <Buttons.State colorTypes="blue">{row.status}</Buttons.State>;
+                            case "인정결석":
+                              return <Buttons.State colorTypes="orange">{row.status}</Buttons.State>;
+                            case "결석":
+                              return <Buttons.State colorTypes="red">{row.status}</Buttons.State>;
+                            default:
+                              return <Buttons.State colorTypes="perple">{row.status}</Buttons.State>;
+                          }
+                        })()}
+                      </td>
+                      <td>{row.enterTime || "미등록"}</td>
+                      <td>{row.exitTime || "미등록"}</td>
+                      <td>{row.absentReason || "미등록"}</td>
+                    </tr>
+                  )))}
+            </tbody>
+          </StyledTable>
+        </StyledTableWrapper>
         <StyledButtonGroup>
           <StyledExportButton colorTypes="primary" onClick={exportToExcel}>내보내기</StyledExportButton>
         </StyledButtonGroup>
@@ -168,6 +211,16 @@ const StyledMonthYear = styled.div`
   gap: 10px;
 `;
 
+const StyledTableWrapper = styled.div`
+  max-height: 500px;
+  overflow: auto;
+`;
+const StyledStickyHeader = styled.th`
+  position: sticky;
+  top: 0px;
+  background-color: ${({ theme }) => theme.color.grayScale[100]};
+  color: ${({ theme }) => theme.color.grayScale[500]};
+`;
 
 const StyledTableContainer = styled.div`
     background-color:#EDF5EECC;
@@ -212,6 +265,10 @@ const StyledTable = styled.table`
 
   tr:hover {
     background-color: ${({ theme }) => theme.color.perple_lighter};
+  }
+
+  .sunday{
+    color: ${({ theme }) => theme.color.red};
   }
 `;
 

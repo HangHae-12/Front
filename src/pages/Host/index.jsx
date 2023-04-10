@@ -30,8 +30,6 @@ const StyledLeftContainer = styled.div`
 
 const StyledRightContainer = styled.div`
   flex-grow: 1;
-  margin-top: 60px;
-  margin-bottom: 94px;
-  margin-left: 150px;
-  margin-right: 150px;
+  margin: 60px 150px 94px 150px;
+
 `;

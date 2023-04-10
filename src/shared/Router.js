@@ -20,7 +20,7 @@ const Router = () => {
         <Route path="/dayAttendance" element={PAGE.dayAttendance} />
         <Route path="/dayAttendance/:id" element={PAGE.dayAttendance} />
         <Route path="/monthAttendance" element={PAGE.monthAttendance} />
-        <Route path="/monthAttendance/:id" element={PAGE.dayAttendance} />
+        <Route path="/monthAttendance/:sid" element={PAGE.monthAttendance} />
         <Route
           path="/host/:classroomId/:scheduleId?/:timeId?"
           element={PAGE.host}

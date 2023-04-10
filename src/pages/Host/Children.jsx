@@ -1,18 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
-import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { HostAPI } from "../../api/HostAPI";
 import Buttons from "../../components/Buttons";
 import textVariants from "../../styles/variants/textVariants";
-import { scheduledIdAtom } from "../../atom/hostButtonAtom";
 
 const Children = ({ bindData }) => {
   const queryClient = useQueryClient();
   //useSearchParams 알아보기
-  const { classroomId, scheduleId, timeId } = useParams();
-  const navigate = useNavigate();
-  // const { enterTime, exitTime } = bindData;
+  const { scheduleId } = useParams();
 
   const updateEnterMutation = useMutation(HostAPI.updateEnter, {
     onSuccess: () => {
@@ -69,7 +66,18 @@ const Children = ({ bindData }) => {
                 <StyledStudentProfile imageUrl={item.profileImageUrl} />
                 <StyledProfileGroup>
                   <StyledStudentName>{item.name}</StyledStudentName>
-                  <Buttons.State colorTypes="red">{item.state}</Buttons.State>
+                  {
+                    scheduleId === "EXIT"
+                      ?
+                      item.state === "미하원"
+                        ? <Buttons.State colorTypes="perple">{item.state}</Buttons.State>
+                        : <Buttons.State colorTypes="orange">{item.state}</Buttons.State>
+                      :
+                      item.state === "미등원"
+                        ? <Buttons.State colorTypes="red">{item.state}</Buttons.State>
+                        : <Buttons.State colorTypes="blue">{item.state}</Buttons.State>
+                  }
+
                 </StyledProfileGroup>
               </StyledProfileRow>
               <StyledAttendanceGroup>
@@ -83,15 +91,15 @@ const Children = ({ bindData }) => {
                 </StyledAttendanceRow>
               </StyledAttendanceGroup>
               {
-                scheduleId === "ENTER"
+                scheduleId === "EXIT"
                   ?
-                  item.state === "미등원"
-                    ? <StyledAttendanceBtn onClick={() => handleScheduleUpdate("enter", item.id)}>등원처리</StyledAttendanceBtn>
-                    : <StyledAttendanceBtn onClick={() => handleScheduleUpdate("enter", item.id)}>등원취소</StyledAttendanceBtn>
-                  :
                   item.state === "미하원"
-                    ? <StyledAttendanceBtn onClick={() => handleScheduleUpdate("exit", item.id)}>하원처리</StyledAttendanceBtn>
-                    : <StyledAttendanceBtn onClick={() => handleScheduleUpdate("exit", item.id)}>하원취소</StyledAttendanceBtn>
+                    ? <Buttons.Attendance colorTypes="orange" onClick={() => handleScheduleUpdate("exit", item.id)}>하원처리</Buttons.Attendance>
+                    : <Buttons.Attendance outlined onClick={() => handleScheduleUpdate("exit", item.id)}>하원취소</Buttons.Attendance>
+                  :
+                  item.state === "미등원"
+                    ? <Buttons.Attendance colorTypes="blue" onClick={() => handleScheduleUpdate("enter", item.id)}>등원처리</Buttons.Attendance>
+                    : <Buttons.Attendance outlined onClick={() => handleScheduleUpdate("enter", item.id)}>등원취소</Buttons.Attendance>
               }
             </StyledStudentCard>
           );
@@ -192,14 +200,3 @@ const StyledAttendanceValue = styled.div`
   color: ${({ theme }) => theme.color.grayScale[700]};
 `;
 
-const StyledAttendanceBtn = styled.button`
-  background-color: ${({ theme }) => theme.color.blue};
-  color: ${({ theme }) => theme.color.white};
-  border: none;
-  border-radius: 8px;
-  padding: 6.4px 8px;
-  gap: 10px;
-  width: 132px;
-  height: 32px;
-
-`;

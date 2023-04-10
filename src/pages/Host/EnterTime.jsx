@@ -4,23 +4,25 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import Buttons from "../../components/Buttons";
 import { useSetRecoilState, useRecoilValue } from "recoil";
-import { scheduledIdAtom, classIdAtom, timeAtom } from "../../atom/hostButtonAtom";
+import { scheduledIdAtom, classIdAtom, timeAtom, paginationAtom } from "../../atom/hostButtonAtom";
 const Time = (hostParams) => {
     const setTime = useSetRecoilState(timeAtom);
     const time = useRecoilValue(timeAtom);
+    const setPage = useSetRecoilState(paginationAtom);
     const queryClient = useQueryClient();
-    const { classroomId, scheduleId, timeId } = useParams();
+    const { classroomId = 0, scheduleId = "ENTER", timeId } = useParams();
     const navigate = useNavigate();
 
 
 
     const handleTimeButton = (timeId) => {
-
         setTime(timeId);
+        setPage(1);
         navigate(`/host/${classroomId}/${scheduleId}/${timeId}`)
     };
     return (
         <StyledTimeButtonGroup>
+
             {time === "전체시간" ? (
                 <Buttons.Time
                     colorTypes="primary"
@@ -62,4 +64,5 @@ export default Time;
 const StyledTimeButtonGroup = styled.div`
   display: flex;
   flex-direction: row;
+  gap:12px;
 `;
