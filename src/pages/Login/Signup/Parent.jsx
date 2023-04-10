@@ -6,7 +6,6 @@ import { SignAPI } from "../../../api/SignAPI";
 import ProfileImageUploader from "../../../components/ProfileImageUploader";
 import { useProfileImageUploader } from "../../../hooks/useProfileImageUploader";
 import styled from "styled-components";
-
 import { REGEXP } from "../../../helpers/regexp";
 import { FaCheckCircle, FaExclamationCircle } from "react-icons/fa";
 import StyledLogin from "../styled";
@@ -37,12 +36,12 @@ const Parent = () => {
   });
 
   const onSubmit = (data) => {
+    console.log(isCancelled, selectedFile);
     const formData = new FormData();
     formData.append("name", data.name);
     formData.append("phoneNumber", data.phoneNumber);
     formData.append("isCancelled", isCancelled);
     selectedFile && formData.append("profileImage", selectedFile);
-    formData.append("relationship", data.relationship);
     formData.append("emergencyPhoneNumber", data.emergencyPhoneNumber);
 
     for (const [key, value] of formData.entries()) {
@@ -55,7 +54,7 @@ const Parent = () => {
 
   return (
     <StyledSignupPage.Wrapper>
-      <StyledLogin.Title>선생님! 정보를 입력해주세요</StyledLogin.Title>
+      <StyledLogin.Title>학부모님! 정보를 입력해주세요</StyledLogin.Title>
 
       <StyledSignup.Form onSubmit={handleSubmit(onSubmit)}>
         <StyledSignup.Label htmlFor="profileImage">
@@ -90,13 +89,6 @@ const Parent = () => {
             {errors.phoneNumber.message}
           </StyledSignup.ErrorMessage>
         )}
-
-        <StyledSignup.Label htmlFor="relationship">관계</StyledSignup.Label>
-        <StyledSignup.Input
-          type="text"
-          {...register("relationship")}
-          id="relationship"
-        />
 
         <StyledSignup.Label htmlFor="emergencyPhoneNumber">
           비상연락망
