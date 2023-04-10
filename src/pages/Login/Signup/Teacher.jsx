@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { useLocation } from "react-router-dom";
-import StyledExtraInfo from "./styled";
+import StyledSignup from "./styled";
 import { SignAPI } from "../../../api/SignAPI";
 import ProfileImageUploader from "../../../components/ProfileImageUploader";
 
@@ -16,7 +16,7 @@ const Teacher = () => {
     formState: { errors },
   } = useForm();
 
-  const { mutate } = useMutation(SignAPI.putExtraInfo, {
+  const { mutate } = useMutation(SignAPI.signup, {
     onSuccess: (res) => {
       console.log(res);
     },
@@ -43,24 +43,24 @@ const Teacher = () => {
   };
 
   return (
-    <StyledExtraInfo.Container>
-      <StyledExtraInfo.Form onSubmit={handleSubmit(onSubmit)}>
-        <StyledExtraInfo.Label htmlFor="name">이름 *</StyledExtraInfo.Label>
-        <StyledExtraInfo.Input
+    <StyledSignup.Container>
+      <StyledSignup.Form onSubmit={handleSubmit(onSubmit)}>
+        <StyledSignup.Label htmlFor="name">이름 *</StyledSignup.Label>
+        <StyledSignup.Input
           type="text"
           {...register("name", { required: "이름을 입력해주세요." })}
           id="name"
         />
         {errors.name && (
-          <StyledExtraInfo.ErrorMessage>
+          <StyledSignup.ErrorMessage>
             {errors.name.message}
-          </StyledExtraInfo.ErrorMessage>
+          </StyledSignup.ErrorMessage>
         )}
 
-        <StyledExtraInfo.Label htmlFor="phoneNumber">
+        <StyledSignup.Label htmlFor="phoneNumber">
           휴대폰 번호 *
-        </StyledExtraInfo.Label>
-        <StyledExtraInfo.Input
+        </StyledSignup.Label>
+        <StyledSignup.Input
           type="text"
           {...register("phoneNumber", {
             required: "휴대폰 번호를 입력해주세요",
@@ -68,49 +68,49 @@ const Teacher = () => {
           id="phoneNumber"
         />
         {errors.phoneNumber && (
-          <StyledExtraInfo.ErrorMessage>
+          <StyledSignup.ErrorMessage>
             {errors.phoneNumber.message}
-          </StyledExtraInfo.ErrorMessage>
+          </StyledSignup.ErrorMessage>
         )}
 
-        <StyledExtraInfo.Label htmlFor="profileImage">
+        <StyledSignup.Label htmlFor="profileImage">
           프로필 사진
-        </StyledExtraInfo.Label>
+        </StyledSignup.Label>
         <ProfileImageUploader
           {...register("profileImage")}
           id="profileImage"
           ref={profileInputRef}
         />
 
-        <StyledExtraInfo.Label htmlFor="birthday">생일</StyledExtraInfo.Label>
-        <StyledExtraInfo.Input
+        <StyledSignup.Label htmlFor="birthday">생일</StyledSignup.Label>
+        <StyledSignup.Input
           type="text"
           {...register("birthday")}
           id="birthday"
         />
         {/* date 형식으로 변경해야함 */}
 
-        <StyledExtraInfo.Label htmlFor="resolution">
+        <StyledSignup.Label htmlFor="resolution">
           자기소개
-        </StyledExtraInfo.Label>
-        <StyledExtraInfo.Input
+        </StyledSignup.Label>
+        <StyledSignup.Input
           type="text"
           {...register("resolution")}
           id="resolution"
         />
         {/* testarea를 사용할 지 몇글자 까지 허용할건지 */}
-        <StyledExtraInfo.Label htmlFor="ADMIN_TOKEN">
+        <StyledSignup.Label htmlFor="ADMIN_TOKEN">
           인증코드
-        </StyledExtraInfo.Label>
-        <StyledExtraInfo.Input
+        </StyledSignup.Label>
+        <StyledSignup.Input
           type="text"
           {...register("ADMIN_TOKEN")}
           id="ADMIN_TOKEN"
         />
 
-        <StyledExtraInfo.Button type="submit">Submit</StyledExtraInfo.Button>
-      </StyledExtraInfo.Form>
-    </StyledExtraInfo.Container>
+        <StyledSignup.Button type="submit">Submit</StyledSignup.Button>
+      </StyledSignup.Form>
+    </StyledSignup.Container>
   );
 };
 export default Teacher;

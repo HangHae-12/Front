@@ -10,15 +10,13 @@ export const SignAPI = {
           cancelToken: cancelToken,
         }
       );
-      // const data = response.data;
-      // return data;
       return response;
     } catch (error) {
       console.error(error);
     }
   },
 
-  putExtraInfo: async (payload) => {
+  signup: async (payload) => {
     const { role, info } = payload;
     console.log(payload);
     try {

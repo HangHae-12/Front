@@ -6,12 +6,14 @@ const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
+        {/* 로그인 페이지는 private route 를 적용하지  */}
         <Route path="/login" element={PAGE.login} />
         <Route path="/oauth/kakao/callback" element={PAGE.kakaoLogin} />
+        {/*  */}
         {/* <Route path="/" element={< />} /> */}
-        <Route path="/extrainfo" element={PAGE.extraInfo.index}>
-          <Route path="teacher" element={PAGE.extraInfo.teacher} />
-          <Route path="parent" element={PAGE.extraInfo.parent} />
+        <Route path="/signup" element={PAGE.signup.signup}>
+          <Route path="teacher" element={PAGE.signup.teacher} />
+          <Route path="parent" element={PAGE.signup.parent} />
         </Route>
 
         <Route path="/classes" element={PAGE.member} />

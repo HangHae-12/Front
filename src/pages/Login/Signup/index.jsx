@@ -3,9 +3,9 @@ import styled from "styled-components";
 import Parent from "./Parent";
 import Teacher from "./Teacher";
 
-const Extrainfo = () => {
-  const teacherMatch = useMatch(`/extrainfo/teacher`);
-  const parentMatch = useMatch(`/extrainfo/parent`);
+const Signup = () => {
+  const teacherMatch = useMatch(`/Signup/teacher`);
+  const parentMatch = useMatch(`/Signup/parent`);
 
   return (
     <>
@@ -18,13 +18,13 @@ const Extrainfo = () => {
           <Link to="teacher">선생님</Link>
         </Tab>
       </Tabs>
-      
+
       {parentMatch && <Parent />}
       {teacherMatch && <Teacher />}
     </>
   );
 };
-export default Extrainfo;
+export default Signup;
 
 const Tabs = styled.div`
   width: 300px;

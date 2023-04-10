@@ -5,9 +5,10 @@ import Host from "../pages/Host";
 import DayTable from "../pages/Attendance/DayTable";
 import MonthTable from "../pages/Attendance/MonthTable";
 import Member from "../pages/Member/Member";
-import Teacher from "../pages/Login/ExtraInfo/Teacher";
-import Parent from "../pages/Login/ExtraInfo/Parent";
-import ExtraInfo from "../pages/Login/ExtraInfo";
+import Signup from "../pages/Login/Signup";
+import Teacher from "../pages/Login/Signup/Teacher";
+import Parent from "../pages/Login/Signup/Parent";
+
 import ChildManage from "../pages/ChildManage";
 import Layout from "../pages/Layout";
 
@@ -15,8 +16,8 @@ export const PAGE = {
   layout: <Layout />,
   preview: <Preview />,
   login: <Login />,
-  extraInfo: {
-    index: <ExtraInfo />,
+  signup: {
+    signup: <Signup />,
     teacher: <Teacher />,
     parent: <Parent />,
   },
