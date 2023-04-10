@@ -6,17 +6,20 @@ import { MemberAPI } from "../../api/MemberAPI";
 import ClassMember from "./ClassMember";
 import Gallery from "./Gallery";
 import Button from "../../components/Button";
+import { BsFillGearFill } from "react-icons/bs";
 import textVariants from "../../styles/variants/textVariants";
 import Buttons from "../../components/Buttons";
-import { useMutation,useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
+import { ClassAddModal } from "./ClassModal";
+import useModal from "../../hooks/useModal";
+import Modal from "../../components/Modal";
 
 const ClassButton = () => {
-  const queryClient = useQueryClient();
   const [selectedButton, setSelectedButton] = useState("");
   const [selectedTab, setSelectedTab] = useState("");
+  const { openModal, closeModal } = useModal();
   const { id } = useParams();
-  // const [data, setData] = useState("")
 
   const { data } = useQuery(
     ["classesPage", id],
@@ -31,16 +34,6 @@ const ClassButton = () => {
     }
   );
 
-  // const getClassesPageMutation = useMutation(MemberAPI.getClassesPage, {
-  //   onSuccess: (response) => {
-  //     setData(response)
-  //     console.log(response);
-  //   },
-  //   onError: (response) => {
-  //     console.log(response);
-  //   },
-  // })
-
   const handleMemberClick = () => {
     setSelectedTab("member");
   };
@@ -53,16 +46,15 @@ const ClassButton = () => {
 
   const handleButtonClick = async (selected, id) => {
     setSelectedButton(selected);
-    // getClassesPageMutation.mutate(id);
     navigate(`/classes/${id}`);
-    // queryClient.invalidateQueries("classesPage");
-    // const newData = await MemberAPI.getClassesPage(id);
-    // setData(newData);
   };
 
   return (
     <>
-      <StyledHeaderFont>학급관리</StyledHeaderFont>
+      <StyledInputWrapper>
+        <StyledHeaderFont>학급관리</StyledHeaderFont>
+        <StyledGearButton marginLeft="5px"/>
+      </StyledInputWrapper>
       <StyledButtonWrapper>
         <Button.ClassButton
           selected={"세빛반"}
@@ -80,16 +72,24 @@ const ClassButton = () => {
           onClick={() => handleButtonClick("빛살반", 3)}
         />
       </StyledButtonWrapper>
-      <TeacherInformation data={data}/>
+      <TeacherInformation data={data} />
       {selectedTab === "member" ? (
-        <StyledABBtn marginLeft="30px" onClick={handleMemberClick}>학급인원</StyledABBtn>
+        <StyledABBtn marginLeft="30px" onClick={handleMemberClick}>
+          학급인원
+        </StyledABBtn>
       ) : (
-        <StyledABButton marginLeft="30px" onClick={handleMemberClick}>학급인원</StyledABButton>
+        <StyledABButton marginLeft="30px" onClick={handleMemberClick}>
+          학급인원
+        </StyledABButton>
       )}
       {selectedTab === "gallery" ? (
-        <StyledABBtn marginLeft="10px" onClick={handleGalleryClick}>갤러리</StyledABBtn>
+        <StyledABBtn marginLeft="10px" onClick={handleGalleryClick}>
+          갤러리
+        </StyledABBtn>
       ) : (
-        <StyledABButton marginLeft="10px" onClick={handleGalleryClick}>갤러리</StyledABButton>
+        <StyledABButton marginLeft="10px" onClick={handleGalleryClick}>
+          갤러리
+        </StyledABButton>
       )}
       {selectedTab === "member" ? (
         <ClassMember />
@@ -100,6 +100,7 @@ const ClassButton = () => {
       ) : (
         <StyledChildrenWrapper />
       )}
+   {/* <Modal /> */}
     </>
   );
 };
@@ -142,4 +143,17 @@ const StyledChildrenWrapper = styled.div`
     width: calc(7 * (140px + 15px));
     height: 360px;
   }
+`;
+
+const StyledGearButton = styled(BsFillGearFill)`
+  width: 12px;
+  height: 12px;
+  color: ${({ theme }) => theme.color.grayScale[500]};
+  margin-left: ${({ marginLeft }) => marginLeft};
+`;
+
+const StyledInputWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  margin-left: ${({ marginLeft }) => marginLeft};
 `;

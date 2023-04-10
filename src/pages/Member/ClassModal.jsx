@@ -26,7 +26,7 @@ export const ClassModal = ({ response }) => {
           </StyledInputWrapper>
           <StyledInputWrapper>
             <StyledQuestionFont>생년월일 </StyledQuestionFont>
-            <StyledAnswerFont>2015.12.07</StyledAnswerFont>
+            <StyledAnswerFont>{response?.data.data.birth}</StyledAnswerFont>
           </StyledInputWrapper>
           <StyledInputWrapper>
             <StyledQuestionFont>등원시간 </StyledQuestionFont>
@@ -39,7 +39,7 @@ export const ClassModal = ({ response }) => {
         </StyledRightWrapper>
       </StyledChildrenProfileWrapper>
       <StyledNote>특이사항</StyledNote>
-      <StyledInputBox />
+      <StyleNoteBox value={response?.data.data.significant} />
       <StyledParentProfileWrapper>
         <StyledParentBox>
           <StyledLeftWrapper>
@@ -53,22 +53,29 @@ export const ClassModal = ({ response }) => {
           <StyledRightWrapper>
             <StyledInputWrapper>
               <StyledQuestionFont>이름</StyledQuestionFont>
-              <StyledAnswerFont marginLeft="280px">정길숙</StyledAnswerFont>
+              <StyledAnswerFont marginLeft="280px">
+                {response?.data?.data?.parentProfileResponseDto?.name}
+              </StyledAnswerFont>
             </StyledInputWrapper>
             <StyledInputWrapper>
-              <StyledQuestionFont>관계</StyledQuestionFont>
-              <StyledAnswerFont marginLeft="310px">모</StyledAnswerFont>
+              <StyledQuestionFont>이메일</StyledQuestionFont>
+              <StyledAnswerFont marginLeft="220px">
+                {response?.data?.data?.parentProfileResponseDto?.email}
+              </StyledAnswerFont>
             </StyledInputWrapper>
             <StyledInputWrapper>
               <StyledQuestionFont>연락처</StyledQuestionFont>
               <StyledAnswerFont marginLeft="195px">
-                010-0000-0000
+                {response?.data?.data?.parentProfileResponseDto?.phoneNumber}
               </StyledAnswerFont>
             </StyledInputWrapper>
             <StyledInputWrapper>
               <StyledQuestionFont>비상 연락</StyledQuestionFont>
               <StyledAnswerFont marginLeft="180px">
-                010-0000-0000
+                {
+                  response?.data?.data?.parentProfileResponseDto
+                    ?.emergencyPhoneNumber
+                }
               </StyledAnswerFont>
             </StyledInputWrapper>
           </StyledRightWrapper>
@@ -100,7 +107,7 @@ export const ClassParentModal = ({ response }) => {
           </StyledInputWrapper>
           <StyledInputWrapper marginLeft="40px">
             <StyledQuestionFont>생년월일 </StyledQuestionFont>
-            <StyledAnswerFont>2015.12.07</StyledAnswerFont>
+            <StyledAnswerFont>{response?.data.data.birth}</StyledAnswerFont>
           </StyledInputWrapper>
         </StyledRightWrapper>
       </StyledChildrenProfileWrapper>
@@ -109,7 +116,7 @@ export const ClassParentModal = ({ response }) => {
 };
 
 //반별 아이들 인원 등록 모달
-export const MemberAddModal = () => {
+export const MemberAddModal = ({ response }) => {
   const queryClient = useQueryClient();
   const [checkParent, setCheckedParent] = useState({});
   const [preview, setPreview] = useState("");
@@ -148,24 +155,26 @@ export const MemberAddModal = () => {
       setPreview(reader.result);
     };
     setMemberAdd({ ...memberAdd, image: file });
+    console.log(preview);
   };
 
   const handleCheckBoxChange = (e, item) => {
     setIsChecked(e.target.checked);
     setCheckedParent({
       ...checkParent,
-      [item.id]: e.target.checked,
+      [item.parentId]: e.target.checked,
     });
     if (e.target.checked) {
       setParentAdd({
-        ...memberAdd,
-        id: item.id,
+        ...parentAdd,
+        parentId: item.parentId,
         name: item.name,
         phone: item.phoneNumber,
         imgSrc: item.profileImageUrl,
       });
+      console.log(parentAdd);
     } else {
-      setParentAdd("");
+      setParentAdd(null);
     }
   };
 
@@ -177,7 +186,7 @@ export const MemberAddModal = () => {
           {preview ? (
             <StyledProfileImage src={preview} />
           ) : (
-            <StyledProfileImg />
+            <StyledProfileImg src={response?.profileImageUrl} />
           )}
           <StyledAddInput
             type="file"
@@ -198,6 +207,7 @@ export const MemberAddModal = () => {
             <StyledAnswerInputBox
               width="58px"
               height="32px"
+              value={response?.name}
               onChange={(e) =>
                 setMemberAdd({ ...memberAdd, name: e.target.value })
               }
@@ -209,6 +219,7 @@ export const MemberAddModal = () => {
               onChange={(e) =>
                 setMemberAdd({ ...memberAdd, gender: e.target.value })
               }
+              value={response?.gender}
             >
               <option value=""></option>
               <option value="MALE">남자</option>
@@ -220,6 +231,7 @@ export const MemberAddModal = () => {
             <StyledAnswerInputBox
               width="109px"
               height="32px"
+              value={response?.birth}
               placeholder="2000-01-01"
               onChange={(e) =>
                 setMemberAdd({ ...memberAdd, birth: e.target.value })
@@ -240,7 +252,10 @@ export const MemberAddModal = () => {
       <StyledInputBox
         width="560px"
         height="115px"
-        onChange={(e) => setMemberAdd({ ...memberAdd, note: e.target.value })}
+        value={response?.significant}
+        onChange={(e) =>
+          setMemberAdd({ ...memberAdd, significant: e.target.value })
+        }
       />
       <StyledParentProfileWrapper>
         <StyledParentBox flexDirection="column" padding="0px">
@@ -250,15 +265,27 @@ export const MemberAddModal = () => {
           <StyledInputWrapper marginTop="20px">
             {isChecked ? (
               <>
-                <StyledCheckInformationBox marginLeft="12px">
+                <StyledCheckInformationBox
+                  marginLeft="12px"
+                  key={parentAdd.parentId}
+                >
                   <StyledProfileImage
                     width="40px"
                     height="40px"
                     marginTop="0px"
                     src={parentAdd.imgSrc}
+                    value={response?.parentProfileResponseDto?.profileImageUrl}
                   />
-                  <StyledParentName>{parentAdd.name}</StyledParentName>
-                  <StyledParentPhone>{parentAdd.phone}</StyledParentPhone>
+                  <StyledParentName
+                    value={response?.parentProfileResponseDto?.name}
+                  >
+                    {parentAdd.name}
+                  </StyledParentName>
+                  <StyledParentPhone
+                    value={response?.parentProfileResponseDto?.phoneNumber}
+                  >
+                    {parentAdd.phone}
+                  </StyledParentPhone>
                 </StyledCheckInformationBox>
               </>
             ) : (
@@ -270,29 +297,27 @@ export const MemberAddModal = () => {
               value={searchParent}
             />
           </StyledInputWrapper>
-          {/* <StyledChoiceparentWrapper>
-            {data?.data?.data?.childResponseDtoList?.map((item) => {
-            return (
-                  <StyledParentInformationBox key={item.id}>
-              <CheckBox
-                type="checkbox"
-                checked={checkParent[item.id] || false}
-                onChange={(e) => handleCheckBoxChange(e, item)}
-                />
-              <StyledProfileImage
-                width="40px"
-                height="40px"
-                marginTop="0px"
-                src={
-                  "https://outlooksformen.com/sites/default/files/2020-09/testiminials-img-01.png"
-                }
-              />
-              <StyledParentName>{item.name}</StyledParentName>
-              <StyledParentPhone>{item.phoneNumber}</StyledParentPhone>
-            </StyledParentInformationBox>
-            );
-              })}
-          </StyledChoiceparentWrapper> */}
+          <StyledChoiceparentWrapper>
+            {data?.data?.data?.map((item) => {
+              return (
+                <StyledParentInformationBox key={item.parentId}>
+                  <CheckBox
+                    type="checkbox"
+                    checked={checkParent[item.parentId] || false}
+                    onChange={(e) => handleCheckBoxChange(e, item)}
+                  />
+                  <StyledProfileImage
+                    width="40px"
+                    height="40px"
+                    marginTop="0px"
+                    src={item.profileImageUrl}
+                  />
+                  <StyledParentName>{item.name}</StyledParentName>
+                  <StyledParentPhone>{item.phoneNumber}</StyledParentPhone>
+                </StyledParentInformationBox>
+              );
+            })}
+          </StyledChoiceparentWrapper>
         </StyledParentBox>
       </StyledParentProfileWrapper>
     </StyledModalWrapper>
@@ -617,10 +642,31 @@ const StyledAddInput = styled.input`
   display: none;
 `;
 
-const StyledProfileImg = styled.div`
+const StyledProfileImg = styled.img`
   width: 120px;
   height: 120px;
   background: ${({ theme }) => theme.color.grayScale[300]};
   border-radius: 70%;
   margin-top: 20px;
+`;
+
+const StyledHeaderFont = styled.div`
+  font-size: 30px;
+`;
+
+const StyledClassAddModalWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: start;
+`;
+
+const StyleNoteBox = styled.div`
+  width: 560px;
+  height: 115px;
+  border: 0;
+  border-radius: 4px;
+  outline: none;
+  background-color: ${({ theme }) => theme.color.grayScale[50]};
+  margin-top: 10px;
 `;

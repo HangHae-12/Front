@@ -8,6 +8,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import Modal from "../../components/Modal";
 import useModal from "../../hooks/useModal";
 import { IoIosAdd } from "react-icons/io";
+import { AiFillAppstore } from "react-icons/ai";
 import Buttons from "../../components/Buttons";
 import textVariants from "../../styles/variants/textVariants";
 import { GallerySlider } from "./ClassModal";
@@ -245,8 +246,10 @@ const Gallery = () => {
           <StyledGalleryModalTitleBox>
             <StyledModalTitle>{response?.data.data.title}</StyledModalTitle>
             <StyledModalDate>{response?.data.data.createdAt}</StyledModalDate>
-            <button onClick={() => handleClickSlide(response)}>슬라이드</button>
-            <button onClick={() => handleClickSplit(response)}>분할</button>
+            <StyledButtonWrapper>
+              <StyledSplitIcon onClick={() => handleClickSlide(response)} />
+              <StyledSlideIcon onClick={() => handleClickSplit(response)} />
+            </StyledButtonWrapper>
           </StyledGalleryModalTitleBox>
         </>
       ),
@@ -603,6 +606,18 @@ const StyledAddIcon = styled(IoIosAdd)`
   color: ${({ theme }) => theme.color.grayScale[500]};
 `;
 
+const StyledSplitIcon = styled(AiFillAppstore)`
+  width: 28px;
+  height: 28px;
+  color: #d9d9d9;
+`;
+
+const StyledSlideIcon = styled.div`
+  width: 21px;
+  height: 21px;
+  background: #d9d9d9;
+`;
+
 const StyledModalContent = styled.div`
   display: flex;
   justify-content: center;
@@ -675,7 +690,7 @@ const StyledGalleryModalHeader = styled.div`
 `;
 
 const StyledGalleryModalTitleBox = styled.div`
-  padding: 20px;
+  padding: 30px;
   gap: 12px;
   border-bottom: 2px solid ${({ theme }) => theme.color.grayScale[200]};
 `;
@@ -698,4 +713,11 @@ const StyledModalInputBox = styled.input`
   border-radius: 4px;
   outline: none;
   background-color: ${({ theme }) => theme.color.grayScale[50]};
+`;
+
+const StyledButtonWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  float: right;
 `;

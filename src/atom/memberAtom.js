@@ -3,9 +3,10 @@ import { atom } from "recoil";
 export const memberAtom = atom({
   key: "memberAdd",
   default: {
+    childId: "",
     name: "",
     birth: "",
-    note: "",
+    significant: "",
     gender:"",
     image: "",
   },
@@ -14,7 +15,7 @@ export const memberAtom = atom({
 export const parentAtom = atom({
   key: "parentAdd",
   default: {
-    id: "",
+    parentId: "",
     name: "",
     phone: "",
     imgSrc:"",

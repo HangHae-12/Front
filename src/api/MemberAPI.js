@@ -175,6 +175,21 @@ export const MemberAPI = {
     }
   },
 
+  setChildModify: async (payload) => {
+    try {
+      const response = await instance.put(
+        `/classroom/${payload.id}/child/${payload.childId}`,
+        payload.formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   removeGallery: async (payload) => {
     try {
       const response = await instance.delete(

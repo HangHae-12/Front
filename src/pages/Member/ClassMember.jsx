@@ -8,18 +8,26 @@ import textVariants from "../../styles/variants/textVariants";
 import { MemberAddModal, ClassModal, ClassParentModal } from "./ClassModal";
 import Modal from "../../components/Modal";
 import CustomPagination from "../../components/CustomPagination";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useRecoilState } from "recoil";
+import { modalAtom } from "../../atom/modalAtoms";
 import { memberAtom, parentAtom } from "../../atom/memberAtom";
+import Buttons from "../../components/Buttons";
 
 const ClassMember = () => {
   const queryClient = useQueryClient();
   const { id } = useParams();
   const [searchMember, setSearchMember] = useState("");
-  const { openModal } = useModal();
+  const { openModal, closeModal } = useModal();
   const [currentPage, setCurrentPage] = useState(1);
   const [render, setRender] = useState(true);
+  const [render2, setRender2] = useState(true);
   const memberinfor = useRecoilValue(memberAtom);
   const parentinfor = useRecoilValue(parentAtom);
+  const [memberAdd, setMemberAdd] = useRecoilState(memberAtom);
+  const [modalState, setModalState] = useRecoilState(modalAtom);
+  const [parentAdd, setParentAdd] = useRecoilState(parentAtom);
+  const [isChildModify, setIsChildModify] = useState(false);
+  const [isChildAdd, setIsChildAdd] = useState(false);
   const [modalOption, setmodalOption] = useState({
     padding: "",
     width: "",
@@ -59,6 +67,12 @@ const ClassMember = () => {
     },
   });
 
+  const setChildModifyMutation = useMutation(MemberAPI.setChildModify, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("classesMember");
+    },
+  });
+
   //검색기능
   const handleSearch = (e) => {
     e.preventDefault();
@@ -67,9 +81,31 @@ const ClassMember = () => {
     console.log(data);
   };
 
+  useEffect(() => {
+    if (!render2 && isChildModify) {
+      handleClickModify();
+    } else {
+      setRender2(false);
+    }
+  }, [memberinfor, isChildModify]);
+
   //아이 상세 조회 모달
   const getChildInformation = (response) => {
-    console.log(response?.data.data.name);
+    setMemberAdd((prev) => ({
+      ...prev,
+      childId: response.data.data.childId,
+      gender: response.data.data.gender,
+      name: response.data.data.name,
+      significant: response.data.data.significant,
+      image: response.data.data.profileImageUrl,
+    }));
+    setParentAdd((prev) => ({
+      ...prev,
+      // parentId: response.data.data.parentProfileResponseDto,
+      name: response.data.data.parentProfileResponseDto.name,
+      phone: response.data.data.parentProfileResponseDto.phoneNumber,
+      imgSrc: response.data.data.parentProfileResponseDto.profileImageUrl,
+    }));
     // setmodalOption ({
     //   padding: "10px",
     //   width: "620px",
@@ -82,13 +118,63 @@ const ClassMember = () => {
     });
     return {
       title: <StyledModalHeader>인원정보</StyledModalHeader>,
-      contents: (
-        // <ClassParentModal response={response} />
-        <ClassModal response={response} />
+      contents: <ClassModal response={response} />,
+      // <ClassParentModal esponse={response} />,
+      footer: (
+        <StyledModalButton
+          onClick={() => handleClickModify(response.data.data)}
+        >
+          수정하기
+        </StyledModalButton>
       ),
-      footer: <StyledModalButton>수정하기</StyledModalButton>,
       callback: () => alert("modal"),
     };
+  };
+
+  //반별 아이들 인원 수정 모달
+  const handleClickModify = (response) => {
+    setIsChildModify(true);
+    console.log(memberAdd);
+    console.log(isChildModify);
+    setModalState((prevState) => ({
+      ...prevState,
+      title: <StyledModalHeader>인원수정</StyledModalHeader>,
+      contents: <MemberAddModal response={response} />,
+      footer: (
+        <>
+          <Buttons.Filter
+            colorTypes="primary"
+            onClick={() => handleModifySubmit(id)}
+          >
+            저장하기
+          </Buttons.Filter>
+        </>
+      ),
+      callback: () => alert("modal"),
+      onClose: () => setIsChildModify(false),
+    }));
+  };
+
+  //반별 아이들 인원 수정 버튼
+  const handleModifySubmit = (id) => {
+    const formData = new FormData();
+    formData.append("name", memberinfor.name);
+    formData.append("birth", memberinfor.birth);
+    formData.append("significant", memberinfor.significant);
+    formData.append("gender", memberinfor.gender);
+    formData.append("image", memberinfor.image);
+    formData.append("parentId", parentinfor.parentId);
+    formData.append("dailyEnterTime", "07시~08시");
+    formData.append("dailyExitTime", "16시~17시");
+
+    const payload = {
+      id: id,
+      childId: memberinfor.childId,
+      formData: formData,
+    };
+    setChildModifyMutation.mutate(payload);
+    setIsChildModify(false);
+    closeModal();
   };
 
   const getDetailMember = (childid) => {
@@ -100,31 +186,35 @@ const ClassMember = () => {
   };
 
   useEffect(() => {
-    if (!render) {
+    if (!render && isChildAdd) {
       setChildInformation();
     } else {
       setRender(false);
     }
-  }, [memberinfor]);
+  }, [memberinfor, parentinfor]);
 
-  //반별 아이들 인원 등록 모달
+  //반별 아이들 인원 등록 버튼
   const handleMemberSubmit = (id) => {
     const formData = new FormData();
     formData.append("name", memberinfor.name);
     formData.append("birth", memberinfor.birth);
-    formData.append("note", memberinfor.note);
+    formData.append("significant", memberinfor.significant);
     formData.append("gender", memberinfor.gender);
     formData.append("image", memberinfor.image);
-    formData.append("parentId", parentinfor.id);
+    formData.append("parentId", parentinfor.parentId);
 
     const payload = {
       id: id,
       formData: formData,
     };
     setMemberSubmitMutation.mutate(payload);
+    setIsChildAdd(false);
+    closeModal();
   };
 
+  //반별 아이들 인원 등록 모달
   const setChildInformation = () => {
+    setIsChildAdd(true);
     setmodalOption({
       padding: "10px",
       width: "660px",
@@ -143,6 +233,7 @@ const ClassMember = () => {
         </StyledModalButton>
       ),
       callback: () => alert("modal"),
+      onClose: () => setIsChildAdd(false),
     };
     openModal(modalData);
   };

@@ -16,6 +16,9 @@ const Modal = ({ modalOption = {} }) => {
   const handleOverlayClick = (e) => {
     if (canCloseOnOverlayClick) {
       closeModal(e);
+      if (modalState.onClose) {
+        modalState.onClose();
+      }
     }
   };
 
@@ -33,16 +36,21 @@ const Modal = ({ modalOption = {} }) => {
               height={height}
             >
               {isCloseButton && (
-                <StyledModal.CloseButton onClick={closeModal}>
+                <StyledModal.CloseButton
+                  onClick={() => {
+                    closeModal();
+                    if (modalState.onClose) {
+                      modalState.onClose();
+                    }
+                  }}
+                >
                   &times;
                 </StyledModal.CloseButton>
               )}
               <StyledModal.Title>{modalState.title}</StyledModal.Title>
               <StyledModal.Contents>{modalState.contents}</StyledModal.Contents>
               {modalState.callback && (
-                <StyledModal.Footer>
-                  {modalState.footer}
-                </StyledModal.Footer>
+                <StyledModal.Footer>{modalState.footer}</StyledModal.Footer>
               )}
             </StyledModal.Container>
           </StyledModal.Overlay>
@@ -69,7 +77,7 @@ const StyledModal = {
   `,
 
   Container: styled.div`
-    background-color: ${({ color, theme }) => color?? theme.color.white};
+    background-color: ${({ color, theme }) => color ?? theme.color.white};
     border-radius: 12px;
     border: 1px solid ${({ theme }) => theme.color.grayScale[200]};
     padding: ${({ padding }) => padding ?? "10px"};
