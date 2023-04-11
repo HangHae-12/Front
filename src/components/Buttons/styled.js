@@ -9,27 +9,43 @@ export const StyledButton = styled.button`
   justify-content: center;
   align-items: center;
 
-  background-color: ${({ colorTypes, bgColor, theme }) =>
-    colorTypes
+  background-color: ${({ colorTypes, bgColor, theme, outlined }) => {
+    if (outlined) {
+      return bgColor ? bgColor : theme.color.white;
+    }
+    return colorTypes
       ? theme.color[colorTypes]
-      : bgColor ?? theme.color.grayScale[50]};
+      : bgColor ?? theme.color.grayScale[50];
+  }};
 
   border: ${({ outlined }) => (outlined ? "1px solid" : "none")};
-  border-color: ${({ outlined, bgColor, theme }) =>
-    outlined ? bgColor : theme.color.grayScale[400]};
+  border-color: ${({ outlined, bgColor, theme, colorTypes }) =>
+    outlined
+      ? colorTypes
+        ? theme.color[colorTypes]
+        : bgColor
+        ? bgColor
+        : theme.color.grayScale[400]
+      : null};
 
   color: ${({ outlined, theme, colorTypes, color }) =>
     color
       ? color
       : outlined
-      ? theme.color.grayScale[400]
+      ? colorTypes
+        ? theme.color[colorTypes]
+        : theme.color.grayScale[400]
       : colorTypes
       ? theme.color.white
       : theme.color.grayScale[200]};
 
   &:hover {
-    background-color: ${({ colorTypes, bgColor, theme }) =>
-      colorTypes
+    background-color: ${({ colorTypes, bgColor, theme, outlined }) =>
+      outlined
+        ? bgColor
+          ? lighten(0.1, bgColor)
+          : theme.color.white
+        : colorTypes
         ? lighten(0.1, theme.color[colorTypes])
         : bgColor
         ? lighten(0.1, bgColor)
