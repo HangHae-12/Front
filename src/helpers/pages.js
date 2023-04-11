@@ -13,6 +13,7 @@ import Parent from "../pages/Login/Signup/Parent";
 import ChildManage from "../pages/ChildManage";
 import Layout from "../pages/Layout";
 import SignupSuccess from "../pages/Login/Signup/SignupSuccess";
+import Search from "../pages/Login/Signup/Search";
 
 export const PAGE = {
   layout: <Layout />,
@@ -21,6 +22,7 @@ export const PAGE = {
   signup: {
     layout: <SignupLayout />,
     signup: <Signup />,
+    search: <Search />,
     teacher: <Teacher />,
     parent: <Parent />,
     success: <SignupSuccess />,

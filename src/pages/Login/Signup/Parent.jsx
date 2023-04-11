@@ -139,6 +139,7 @@ const Parent = () => {
           <Buttons.Filter colorTypes="primary" type="submit">
             작성완료
           </Buttons.Filter>
+          
         </StyledSignup.SubmitBtnWrapper>
       </StyledSignup.Form>
     </StyledSignup.Container>
