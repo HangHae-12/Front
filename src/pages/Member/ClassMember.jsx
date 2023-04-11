@@ -20,7 +20,6 @@ const ClassMember = () => {
   const { openModal, closeModal } = useModal();
   const [currentPage, setCurrentPage] = useState(1);
   const [render, setRender] = useState(true);
-  const [render2, setRender2] = useState(true);
   const memberinfor = useRecoilValue(memberAtom);
   const parentinfor = useRecoilValue(parentAtom);
   const [memberAdd, setMemberAdd] = useRecoilState(memberAtom);
@@ -82,12 +81,12 @@ const ClassMember = () => {
   };
 
   useEffect(() => {
-    if (!render2 && isChildModify) {
+    if (!render && isChildModify) {
       handleClickModify();
     } else {
-      setRender2(false);
+      setRender(false);
     }
-  }, [memberinfor, isChildModify]);
+  }, [memberinfor, isChildModify, parentinfor]);
 
   //아이 상세 조회 모달
   const getChildInformation = (response) => {
@@ -98,10 +97,11 @@ const ClassMember = () => {
       name: response.data.data.name,
       significant: response.data.data.significant,
       image: response.data.data.profileImageUrl,
+      birth: response.data.data.birth,
     }));
     setParentAdd((prev) => ({
       ...prev,
-      // parentId: response.data.data.parentProfileResponseDto,
+      //   // parentId: response.data.data.parentProfileResponseDto,
       name: response.data.data.parentProfileResponseDto.name,
       phone: response.data.data.parentProfileResponseDto.phoneNumber,
       imgSrc: response.data.data.parentProfileResponseDto.profileImageUrl,
@@ -119,7 +119,7 @@ const ClassMember = () => {
     return {
       title: <StyledModalHeader>인원정보</StyledModalHeader>,
       contents: <ClassModal response={response} />,
-      // <ClassParentModal esponse={response} />,
+      // <ClassParentModal response={response} />,
       footer: (
         <StyledModalButton
           onClick={() => handleClickModify(response.data.data)}
@@ -134,8 +134,6 @@ const ClassMember = () => {
   //반별 아이들 인원 수정 모달
   const handleClickModify = (response) => {
     setIsChildModify(true);
-    console.log(memberAdd);
-    console.log(isChildModify);
     setModalState((prevState) => ({
       ...prevState,
       title: <StyledModalHeader>인원수정</StyledModalHeader>,

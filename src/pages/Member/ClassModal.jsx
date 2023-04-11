@@ -172,7 +172,6 @@ export const MemberAddModal = ({ response }) => {
         phone: item.phoneNumber,
         imgSrc: item.profileImageUrl,
       });
-      console.log(parentAdd);
     } else {
       setParentAdd(null);
     }
@@ -186,7 +185,7 @@ export const MemberAddModal = ({ response }) => {
           {preview ? (
             <StyledProfileImage src={preview} />
           ) : (
-            <StyledProfileImg src={response?.profileImageUrl} />
+            <StyledProfileImg value={response?.profileImageUrl} />
           )}
           <StyledAddInput
             type="file"
@@ -367,6 +366,70 @@ export const GallerySlider = ({ images }) => {
       </StyledModalSlideWrapper>
       <StlyedSlideButton onClick={nextSlide}>＞</StlyedSlideButton>
     </StyledModalSlideContainer>
+  );
+};
+
+// 반 관리 모달
+export const ClassMangeModal = () => {
+  const [isEditing, setIsEditing] = useState(false);
+
+  const handleModiftButton = () => {
+    setIsEditing(true);
+  };
+
+  const handleDeleteButton = () => {
+    if (
+      window.confirm(
+        "반을 삭제시 모든 데이터가 삭제됩니다. 그래도 삭제하십니까?"
+      )
+    ) {
+      alert("삭제되었습니다.");
+    } else {
+      alert("취소합니다.");
+    }
+  };
+
+  const handleConfirmButton = () => {
+    setIsEditing(false);
+  };
+
+  const handleCancelButton = () => {
+    setIsEditing(false);
+  };
+  return (
+    <>
+      <StyledClassAddModalWrapper>
+        <StyledClassMangeBox>
+          <StyledInputWrapper marginTop="10px">
+            <StyledClassMangeInput placeholder="반 이름을 적어주세요" />
+            <StlyedClassMangeAddButton>추가</StlyedClassMangeAddButton>
+          </StyledInputWrapper>
+          <StyledInputWrapper marginTop="10px">
+            {!isEditing ? (
+              <>
+                <StyledClassMangeDiv>세빛반</StyledClassMangeDiv>
+                <StyledClassMangeButtons onClick={handleModiftButton}>
+                  수정
+                </StyledClassMangeButtons>
+                <StyledClassMangeButtons onClick={handleDeleteButton}>
+                  삭제
+                </StyledClassMangeButtons>
+              </>
+            ) : (
+              <>
+                <StyledClassMangeInput />
+                <StyledClassMangeButtons onClick={handleConfirmButton}>
+                  확인
+                </StyledClassMangeButtons>
+                <StyledClassMangeButtons onClick={handleCancelButton}>
+                  취소
+                </StyledClassMangeButtons>
+              </>
+            )}
+          </StyledInputWrapper>
+        </StyledClassMangeBox>
+      </StyledClassAddModalWrapper>
+    </>
   );
 };
 
@@ -650,10 +713,6 @@ const StyledProfileImg = styled.img`
   margin-top: 20px;
 `;
 
-const StyledHeaderFont = styled.div`
-  font-size: 30px;
-`;
-
 const StyledClassAddModalWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -669,4 +728,62 @@ const StyleNoteBox = styled.div`
   outline: none;
   background-color: ${({ theme }) => theme.color.grayScale[50]};
   margin-top: 10px;
+`;
+
+const StyledClassMangeBox = styled.div`
+  width: 424px;
+  height: 380px;
+  border: none;
+  border-top: 1px solid ${({ theme }) => theme.color.grayScale[400]};
+  border-bottom: 1px solid ${({ theme }) => theme.color.grayScale[400]};
+  display: flex;
+  flex-direction: column;
+`;
+
+const StyledClassMangeInput = styled.input`
+  width: 300px;
+  height: 32px;
+  background: ${({ theme }) => theme.color.grayScale[50]};
+  border: 1px solid ${({ theme }) => theme.color.grayScale[200]};
+  border-radius: 4px;
+  padding: 4px 12px;
+`;
+
+const StlyedClassMangeAddButton = styled.button`
+  ${textVariants.Body1_SemiBold}
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 113px;
+  height: 32px;
+  background: ${({ theme }) => theme.color.white};
+  border: 1px solid ${({ theme }) => theme.color.primary};
+  border-radius: 4px;
+  color: ${({ theme }) => theme.color.primary};
+`;
+
+const StyledClassMangeButtons = styled.button`
+  ${textVariants.Body1_SemiBold}
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 52px;
+  height: 32px;
+  background: ${({ theme }) => theme.color.white};
+  border: 1px solid ${({ theme }) => theme.color.grayScale[400]};
+  border-radius: 4px;
+  color: ${({ theme }) => theme.color.grayScale[400]};
+`;
+
+const StyledClassMangeDiv = styled.div`
+  ${textVariants.Body1_SemiBold}
+  width: 300px;
+  height: 32px;
+  background: ${({ theme }) => theme.color.grayScale[50]};
+  border: 1px solid ${({ theme }) => theme.color.grayScale[200]};
+  border-radius: 4px;
+  padding: 4px 12px;
+  color: ${({ theme }) => theme.color.grayScale[600]};
+  display: flex;
+  align-items: center;
 `;

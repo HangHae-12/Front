@@ -247,8 +247,8 @@ const Gallery = () => {
             <StyledModalTitle>{response?.data.data.title}</StyledModalTitle>
             <StyledModalDate>{response?.data.data.createdAt}</StyledModalDate>
             <StyledButtonWrapper>
-              <StyledSplitIcon onClick={() => handleClickSlide(response)} />
-              <StyledSlideIcon onClick={() => handleClickSplit(response)} />
+              <StyledSlideIcon onClick={() => handleClickSlide(response)} />
+              <StyledSplitIcon onClick={() => handleClickSplit(response)} />
             </StyledButtonWrapper>
           </StyledGalleryModalTitleBox>
         </>

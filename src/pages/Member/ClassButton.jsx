@@ -11,7 +11,7 @@ import textVariants from "../../styles/variants/textVariants";
 import Buttons from "../../components/Buttons";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-import { ClassAddModal } from "./ClassModal";
+import { ClassMangeModal } from "./ClassModal";
 import useModal from "../../hooks/useModal";
 import Modal from "../../components/Modal";
 
@@ -34,6 +34,22 @@ const ClassButton = () => {
     }
   );
 
+  const modalOption = {
+    padding: "20px",
+    width: "484px",
+    height: "512px",
+  };
+
+  const setClassModal = () => {
+    const modalData = {
+      title: <StyledClassMangeHeader>반 관리</StyledClassMangeHeader>,
+      contents: <ClassMangeModal />,
+      footer: null,
+      callback: () => alert("modal"),
+    };
+    openModal(modalData);
+  };
+
   const handleMemberClick = () => {
     setSelectedTab("member");
   };
@@ -53,7 +69,7 @@ const ClassButton = () => {
     <>
       <StyledInputWrapper>
         <StyledHeaderFont>학급관리</StyledHeaderFont>
-        <StyledGearButton marginLeft="5px"/>
+        <StyledGearButton marginLeft="5px" onClick={setClassModal} />
       </StyledInputWrapper>
       <StyledButtonWrapper>
         <Button.ClassButton
@@ -100,7 +116,7 @@ const ClassButton = () => {
       ) : (
         <StyledChildrenWrapper />
       )}
-   {/* <Modal /> */}
+      {/* <Modal modalOption={modalOption} /> */}
     </>
   );
 };
@@ -156,4 +172,12 @@ const StyledInputWrapper = styled.div`
   display: flex;
   align-items: center;
   margin-left: ${({ marginLeft }) => marginLeft};
+`;
+
+const StyledClassMangeHeader = styled.div`
+  ${textVariants.Body1_Bold}
+  color: ${({ theme }) => theme.color.grayScale[700]};
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
