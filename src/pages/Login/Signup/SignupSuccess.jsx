@@ -10,7 +10,7 @@ const SignupSuccess = () => {
   console.log(location.state);
   console.log(name, profileImageUrl);
   return (
-    <StyledSignupSuccessPage.Container>
+    <StyledSignupSuccess.Container>
       <img
         src={profileImageUrl ?? DUMMY_URL.not_profile_img}
         alt="프로필_이미지"
@@ -22,13 +22,13 @@ const SignupSuccess = () => {
       <Link to="/host">
         <Buttons.AB colorTypes="primary">킨더그루 이용하러가기</Buttons.AB>
       </Link>
-    </StyledSignupSuccessPage.Container>
+    </StyledSignupSuccess.Container>
   );
 };
 
 export default SignupSuccess;
 
-const StyledSignupSuccessPage = {
+const StyledSignupSuccess = {
   Container: styled.section`
     display: flex;
     flex-direction: column;

@@ -24,7 +24,7 @@ const KakaoLogin = () => {
         tokenCookie.set(res.headers.authorization);
         switch (res.data.statusCode) {
           case 200:
-            navigate("/signup/parent", { state: res.data });
+            navigate("/signup", { state: res.data });
             break;
           default:
             navigate("/host");

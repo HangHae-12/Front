@@ -1,20 +1,23 @@
-import styled from "styled-components";
-import StyledLogin from "../styled";
-import textVariants from "../../../styles/variants/textVariants";
-import SearchInput from "../../../components/SearchInput";
-import useSearch from "../../../hooks/useSearch";
-import { SignAPI } from "../../../api/SignAPI";
+import styled, { css } from "styled-components";
+import StyledLogin from "../../styled";
+import textVariants from "../../../../styles/variants/textVariants";
+import SearchInput from "../../../../components/SearchInput";
+import useSearch from "../../../../hooks/useSearch";
+import { SignAPI } from "../../../../api/SignAPI";
 
 const Search = () => {
   const { data, isLoading, handleSearch } = useSearch(SignAPI.search);
-  
+  const style = css`
+    flex-grow: 1;
+  `;
+
   return (
     <StyledSearch.Container>
       <StyledLogin.Title>가입하시려는 유치원을 선택해주세요</StyledLogin.Title>
       <StyledSearch.KinderListSearch>
         <StyledSearch.SearchBarWrapper>
           <h3>유치원 리스트</h3>
-          <SearchInput onSearch={handleSearch} />
+          <SearchInput onSearch={handleSearch} inputBodyStyle={style} />
         </StyledSearch.SearchBarWrapper>
       </StyledSearch.KinderListSearch>
     </StyledSearch.Container>
@@ -44,9 +47,16 @@ const StyledSearch = {
   `,
 
   SearchBarWrapper: styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
     h3 {
       ${textVariants.Body1_Bold}
-      color: ${({ theme }) => theme.color.grayScale[600]}
+      color: ${({ theme }) => theme.color.grayScale[600]};
+      flex-grow: 4;
+      text-align: center;
     }
   `,
 };
