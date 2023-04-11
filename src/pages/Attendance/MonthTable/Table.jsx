@@ -3,8 +3,6 @@ import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import styled from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
 import "react-datepicker/dist/react-datepicker.css";
-import * as XLSX from "xlsx";
-import ko from "date-fns/locale/ko";
 import { GrPrevious, GrNext } from "react-icons/gr";
 import { GoOctoface } from "react-icons/go"
 import { TbDog } from "react-icons/tb"
@@ -15,6 +13,7 @@ import Buttons from '../../../components/Buttons';
 import ClassButton from './MonthClassButton';
 import CustomDatepicker from '../../../components/CustomDatepicker'
 import { AttendanceAPI } from "../../../api/AttendanceAPI";
+import MonthExcel from './MonthExcel';
 const Table = () => {
     const queryClient = useQueryClient();
     const { sid = 1 } = useParams();
@@ -59,76 +58,6 @@ const Table = () => {
     useEffect(() => {
         setVisibleDays(getInitialVisibleDays(selectedDate));
     }, [selectedDate]);
-
-    const exportToExcel = () => {
-        const wb = XLSX.utils.book_new();
-        const ws = XLSX.utils.aoa_to_sheet([]);
-
-        // 시트 헤더 행 추가
-        const headerRow1 = ["", "", ""];
-        const headerRow2 = ["No", "원아명", "출결정보"];
-        Array.from({ length: daysInMonth }, (_, i) => i + 1).forEach((day) => {
-            const date = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), day);
-            headerRow1.push(date.getDate());
-            headerRow2.push(daysOfWeek[date.getDay()]);
-        });
-
-        headerRow2.push("출석일수");
-        headerRow2.push("결석일수");
-
-        XLSX.utils.sheet_add_aoa(ws, [headerRow1, headerRow2], { origin: "A1" });
-
-        // 시트 데이터 행 추가
-        const rowIndex = 3;
-        data?.data?.forEach((student, index) => {
-
-            const rowData = [
-                student.id,
-                student.name,
-                "출결상태",
-                ...Array.from({ length: daysInMonth }, (_, i) => i + 1).map((day) => {
-                    const attendance = student.monthAttendanceList.find(
-                        (attendance) => new Date(attendance.date).getDate() === day
-                    );
-                    return attendance ? attendance.status : '';
-                }),
-                student.attendanceCount,
-                student.absentCount
-            ];
-
-            XLSX.utils.sheet_add_aoa(ws, [rowData], { origin: `A${rowIndex + index * 3}` });
-
-            const arrivalTimeData = [
-                "",
-                "",
-                "등원시간",
-                ...Array.from({ length: daysInMonth }, (_, i) => i + 1).map((day) => {
-                    const attendance = student.monthAttendanceList.find(
-                        (attendance) => new Date(attendance.date).getDate() === day
-                    );
-                    return attendance ? attendance.enterTime : '';
-                }),
-            ];
-            XLSX.utils.sheet_add_aoa(ws, [arrivalTimeData], { origin: `A${rowIndex + index * 3 + 1}` });
-
-            const leaveTimeData = [
-                "",
-                "",
-                "하원시간",
-                ...Array.from({ length: daysInMonth }, (_, i) => i + 1).map((day) => {
-                    const attendance = student.monthAttendanceList.find(
-                        (attendance) => new Date(attendance.date).getDate() === day
-                    );
-                    return attendance ? attendance.exitTime : '';
-                }),
-            ];
-            XLSX.utils.sheet_add_aoa(ws, [leaveTimeData], { origin: `A${rowIndex + index * 3 + 2}` });
-        });
-        // 워크북에 시트 추가
-        XLSX.utils.book_append_sheet(wb, ws, "월별 출석부");
-        // 엑셀 파일 다운로드
-        XLSX.writeFile(wb, `출석부.xlsx`);
-    };
 
     // 달 넘기기 버튼 핸들러
 
@@ -279,6 +208,7 @@ const Table = () => {
                         <GrNext style={{ marginLeft: "8px" }} onClick={handleIncreaseMonth} size={24} />
                         <CustomDatepicker mode="month" selectedDate={selectedDate} onDateChange={handleDateChange} />
                     </StyledMonthYear>
+                    <MonthExcel data={data} selectedDate={selectedDate} />
                 </StyledHeader>
                 <StyledTableWrapper>
                     <StyledTable>
@@ -343,13 +273,13 @@ const Table = () => {
                                                     <td key={day}>
                                                         {attendance ? (
                                                             attendance.status === "출석" ? (
-                                                                <Buttons.State colorTypes="blue">
-                                                                    {attendance.status}
-                                                                </Buttons.State>
+                                                                <Buttons.State colorTypes="blue">{attendance.status}</Buttons.State>
+                                                            ) : attendance.status === "결석" ? (
+                                                                <Buttons.State colorTypes="red">{attendance.status}</Buttons.State>
+                                                            ) : attendance.status === "미등원" || attendance.status === "미하원" ? (
+                                                                <Buttons.State colorTypes="perple">{attendance.status}</Buttons.State>
                                                             ) : (
-                                                                <Buttons.State colorTypes="orange">
-                                                                    {attendance.status}
-                                                                </Buttons.State>
+                                                                <Buttons.State colorTypes="orange">{attendance.status}</Buttons.State>
                                                             )
                                                         ) : (
                                                             <></>
@@ -388,9 +318,6 @@ const Table = () => {
 
                     </StyledTable>
                 </StyledTableWrapper>
-                <StyledButtonGroup>
-                    <StyledExportButton colorTypes="primary" onClick={exportToExcel}>내보내기</StyledExportButton>
-                </StyledButtonGroup>
             </StyledTableContainer>
 
         </div>
@@ -407,10 +334,10 @@ const StyledTableTitle = styled.h2`
 
 const StyledHeader = styled.div`
   display: flex;
-  justify-content:center;
+  justify-content: center;
   align-items: center;
   margin: 20px;
-  
+  position: relative;
 `;
 const StyledTopStickyHeader = styled.th`
   position: sticky;
@@ -506,15 +433,6 @@ const StyledTable = styled.table`
   }
 `;
 
-const StyledButtonGroup = styled.div`
-    display: flex;
-    justify-content: flex-end; /* 오른쪽 정렬 */
-    margin-top: 20px;
-`;
-
-const StyledExportButton = styled(Buttons.Filter)`
-    margin-left: 10px;
-`;
 
 
 

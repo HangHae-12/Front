@@ -4,6 +4,7 @@ import Preview from "../pages/Preview";
 import Host from "../pages/Host";
 import DayTable from "../pages/Attendance/DayTable";
 import MonthTable from "../pages/Attendance/MonthTable";
+import MemberManage from "../pages/MemberManage";
 import Member from "../pages/Member/Member";
 import SignupLayout from "../pages/Login/Signup/Layout";
 import Signup from "../pages/Login/Signup";
@@ -28,6 +29,7 @@ export const PAGE = {
   host: <Host />,
   dayAttendance: <DayTable />,
   monthAttendance: <MonthTable />,
+  memberManage: <MemberManage />,
   member: <Member />,
   childmanage: <ChildManage />,
 };
