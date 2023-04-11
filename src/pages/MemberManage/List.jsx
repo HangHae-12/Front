@@ -45,6 +45,12 @@ const List = () => {
     { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
     { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
     { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
+    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
+    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
+    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
+    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
+    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
+    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
   ];
 
   return (
@@ -81,11 +87,14 @@ const List = () => {
               return (
                 <StyledMemberCard>
                   <StyledMemberProfile src={child.image} />
-                  {child.name}
+                  <StyledMemberProfileName>
+                    {child.name}
+                  </StyledMemberProfileName>
                 </StyledMemberCard>
               );
             })}
           </StyledMemberGrid>
+          <></>
           <CustomPagination
             current={currentPage}
             pageSize="14"
@@ -109,11 +118,15 @@ const List = () => {
             {approvalData.map((member) => {
               return (
                 <StyledInviteRow>
-                  <StyledInviteProfile src={member.image} />
-                  {member.name}
+                  <StyledInviteProfileWrapper>
+                    <StyledInviteProfile src={member.image} />
+                    <StyledInviteProfileName>
+                      {member.name}
+                    </StyledInviteProfileName>
+                  </StyledInviteProfileWrapper>
                   <StyledInviteButtonWrapper>
-                    <StyledApproveButton onClick={() => console.log('Approved!')}>승인</StyledApproveButton>
-                    <StyledCancelButton onClick={() => console.log('Canceled!')}>취소</StyledCancelButton>
+                    <StyledApproveButton>승인</StyledApproveButton>
+                    <StyledCancelButton>거절</StyledCancelButton>
                   </StyledInviteButtonWrapper>
                 </StyledInviteRow>
               );
@@ -191,7 +204,6 @@ const StyledMemberHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px;
   margin-bottom: 25px;
 `;
 
@@ -299,6 +311,15 @@ const StyledMemberProfile = styled.img`
   }
 `;
 
+const StyledMemberProfileName = styled.div`
+${textVariants.Body1_SemiBold}
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color:${({ theme }) => theme.color.grayScale[600]};
+
+`
+
 const StyledInviteHeader = styled.div`
   ${textVariants.Body1_Bold}
   display: flex;
@@ -338,6 +359,24 @@ const StyledInviteList = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
+  max-height: 360px;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: ${({ theme }) => theme.color.grayScale[200]};
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: ${({ theme }) => theme.color.grayScale[50]};
+  }
+  @media ${({ theme }) => theme.device.desktop} {
+    max-height: 570px;
+  }
 `;
 
 const StyledInviteRow = styled.div`
@@ -350,6 +389,13 @@ const StyledInviteRow = styled.div`
   border: 1px solid ${({ theme }) => theme.color.grayScale[100]};
   border-radius: 8px;
 `;
+
+const StyledInviteProfileWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  gap:8px;
+`;
+
 const StyledInviteProfile = styled.img`
   border-radius: 70%;
   width: 40px;
@@ -370,6 +416,14 @@ const StyledInviteProfile = styled.img`
     height: 30px;
   }
 `;
+const StyledInviteProfileName = styled.div`
+${textVariants.Body2_SemiBold}
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color:${({ theme }) => theme.color.grayScale[600]};
+
+`
 const StyledInviteButtonWrapper = styled.div`
   display: flex;
   justify-content: center;
@@ -377,19 +431,21 @@ const StyledInviteButtonWrapper = styled.div`
 `;
 
 const StyledApproveButton = styled.button`
-  background-color: ${({ theme }) => theme.color.green};
+${textVariants.Body2_SemiBold}
+  background-color: ${({ theme }) => theme.color.blue_lighter};
+  color: ${({ theme }) => theme.color.blue};
   border: none;
   border-radius: 4px;
-  color: ${({ theme }) => theme.color.white};
   padding: 5px 10px;
   cursor: pointer;
 `;
 
 const StyledCancelButton = styled.button`
-  background-color: ${({ theme }) => theme.color.red};
+${textVariants.Body2_SemiBold}
+  background-color: ${({ theme }) => theme.color.red_lighter};
+  color: ${({ theme }) => theme.color.red};
   border: none;
   border-radius: 4px;
-  color: ${({ theme }) => theme.color.white};
   padding: 5px 10px;
   cursor: pointer;
 `;
