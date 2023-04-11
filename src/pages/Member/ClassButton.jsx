@@ -11,14 +11,10 @@ import textVariants from "../../styles/variants/textVariants";
 import Buttons from "../../components/Buttons";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-import { ClassAddModal } from "./ClassModal";
-import useModal from "../../hooks/useModal";
-import Modal from "../../components/Modal";
 
 const ClassButton = () => {
   const [selectedButton, setSelectedButton] = useState("");
   const [selectedTab, setSelectedTab] = useState("");
-  const { openModal, closeModal } = useModal();
   const { id } = useParams();
 
   const { data } = useQuery(
@@ -53,7 +49,7 @@ const ClassButton = () => {
     <>
       <StyledInputWrapper>
         <StyledHeaderFont>학급관리</StyledHeaderFont>
-        <StyledGearButton marginLeft="5px"/>
+        <StyledGearButton marginLeft="5px" />
       </StyledInputWrapper>
       <StyledButtonWrapper>
         <Button.ClassButton
@@ -100,7 +96,6 @@ const ClassButton = () => {
       ) : (
         <StyledChildrenWrapper />
       )}
-   {/* <Modal /> */}
     </>
   );
 };

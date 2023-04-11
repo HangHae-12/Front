@@ -186,7 +186,7 @@ export const MemberAddModal = ({ response }) => {
           {preview ? (
             <StyledProfileImage src={preview} />
           ) : (
-            <StyledProfileImg src={response?.profileImageUrl} />
+            <StyledProfileImg value={response?.profileImageUrl} />
           )}
           <StyledAddInput
             type="file"
