@@ -30,7 +30,8 @@ const Router = () => {
         <Route path="/monthAttendance" element={PAGE.monthAttendance} />
         <Route path="/monthAttendance/:sid" element={PAGE.monthAttendance} />
         {/* 멤버관리페이지 */}
-        <Route path="/memberManage" element={PAGE.memberManage} />
+        <Route path="/memberManage/" element={PAGE.memberManage} />
+        <Route path="/memberManage/:id" element={PAGE.memberManage} />
 
         <Route path="/" element={PAGE.layout}>
           {/* layout 컴포넌트를 전체 적용시킬 수 있도록 수정할 것. */}

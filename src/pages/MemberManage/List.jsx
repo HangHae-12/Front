@@ -1,9 +1,19 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 import textVariants from "../../styles/variants/textVariants";
 import CustomPagination from "../../components/CustomPagination";
 import { AiOutlineSearch } from "react-icons/ai"
+import Button from "../../components/Button";
 const List = () => {
+  const navigate = useNavigate();
+  const [selectedButton, setSelectedButton] = useState("학부모");
+
+  const handleButtonClick = async (selected, id) => {
+    setSelectedButton(selected);
+    navigate(`/memberManage/${id}`);
+  };
+
   const [currentPage, setCurrentPage] = useState(1);
   const handleMemberSearch = () => {
 
@@ -19,14 +29,41 @@ const List = () => {
     { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
     { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
     { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
+    { name: "김주원", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
+    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
+    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
+    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
+    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
 
+  ];
+
+  const approvalData = [
+    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
+    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
+    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
+    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
+    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
+    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
+    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
   ];
 
   return (
     <>
-      <StyledAttendanceHeader>멤버 관리</StyledAttendanceHeader>
-      <StyledManageContainer>
+      <StyledMemberManageHeader>멤버 관리</StyledMemberManageHeader>
+      <StyledButtonWrapper>
+        <Button.ClassButton
+          selected={"학부모"}
+          selectedButton={selectedButton}
+          onClick={() => handleButtonClick("학부모", 1)}
+        />
+        <Button.ClassButton
+          selected={"선생님"}
+          selectedButton={selectedButton}
+          onClick={() => handleButtonClick("선생님", 2)}
+        />
 
+      </StyledButtonWrapper>
+      <StyledManageContainer>
         <StyledMemberContainer>
           <StyledMemberHeader>
             <StyledTotalLabel>
@@ -34,9 +71,9 @@ const List = () => {
             </StyledTotalLabel>
             <StyledMemberSearchInputWrapper>
               <StyledMemberSearchInput type="text" onChange={handleMemberSearch} />
-              <StyledSearchIcon>
+              {/* <StyledSearchIcon>
                 <AiOutlineSearch />
-              </StyledSearchIcon>
+              </StyledSearchIcon> */}
             </StyledMemberSearchInputWrapper>
           </StyledMemberHeader>
           <StyledMemberGrid>
@@ -55,10 +92,33 @@ const List = () => {
             total="10"
             onChange={(page) => setCurrentPage(page)}
           />
-
         </StyledMemberContainer>
         <StyledInviteContainer>
-
+          <StyledInviteHeader>
+            <StyledInviteLabel>
+              승인 대기 인원
+            </StyledInviteLabel>
+            <StyledMemberSearchInputWrapper>
+              <StyledInviteSearchInput type="text" onChange={handleMemberSearch} />
+              {/* <StyledSearchIcon>
+      <AiOutlineSearch />
+    </StyledSearchIcon> */}
+            </StyledMemberSearchInputWrapper>
+          </StyledInviteHeader>
+          <StyledInviteList>
+            {approvalData.map((member) => {
+              return (
+                <StyledInviteRow>
+                  <StyledInviteProfile src={member.image} />
+                  {member.name}
+                  <StyledInviteButtonWrapper>
+                    <StyledApproveButton onClick={() => console.log('Approved!')}>승인</StyledApproveButton>
+                    <StyledCancelButton onClick={() => console.log('Canceled!')}>취소</StyledCancelButton>
+                  </StyledInviteButtonWrapper>
+                </StyledInviteRow>
+              );
+            })}
+          </StyledInviteList>
         </StyledInviteContainer>
       </StyledManageContainer>
     </>
@@ -71,15 +131,19 @@ const StyledManageContainer = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
-  @media ${({ theme }) => theme.device.laptop} {
+  gap: 20px;
+    @media ${({ theme }) => theme.device.laptop} {
     flex-direction: column;
   }
   
 `
+const StyledMemberManageHeader = styled.h2`
+  ${textVariants.H2_SemiBold}
+  margin-bottom: 24px;
+`;
 
-const StyledAttendanceHeader = styled.h2`
-  ${textVariants.H2_Bold}
-  margin-bottom: 20px;
+const StyledButtonWrapper = styled.div`
+  padding-bottom: 24px;
 `;
 
 const StyledMemberContainer = styled.div`
@@ -88,12 +152,16 @@ const StyledMemberContainer = styled.div`
   box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.12);
   border-radius: 12px;
   padding: 20px 40px;
-  width: 70%;
+  width: 60%;
   margin-right: 10px;
 
+  @media ${({ theme }) => theme.device.desktop} {
+    width: 70%;
+    height: 688px;
+    /* margin-bottom: 199px; */
+  }
   @media ${({ theme }) => theme.device.laptop} {
     width: 100%;
-    margin-right: 0;
     margin-bottom: 20px;
   }
 `;
@@ -105,8 +173,13 @@ const StyledInviteContainer = styled.div`
   box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.04);
   border-radius: 12px;
   padding: 40px;
-  width: 30%;
-
+  width: 40%;
+  
+  @media ${({ theme }) => theme.device.desktop} {
+    width: 30%;
+    height: 688px;
+    
+  }
   @media ${({ theme }) => theme.device.laptop} {
     width: 100%;
   }
@@ -161,19 +234,20 @@ const StyledMemberSearchInputWrapper = styled.div`
   position: relative;
   display: inline-flex;
   align-items: center;
+  
 `;
 
 const StyledMemberSearchInput = styled.input`
   padding-left: 30px;
   border: 1px solid ${({ theme }) => theme.color.grayScale[100]};
   border-radius: 4px;
-  
 `;
 
-const StyledSearchIcon = styled.div`
-  position: absolute;
-  right: 8px;
-`;
+
+// const StyledSearchIcon = styled.div`
+//   position: absolute;
+//   right: 48px;
+// `;
 
 
 const StyledMemberCard = styled.div`
@@ -185,16 +259,16 @@ const StyledMemberCard = styled.div`
   border: 1px solid ${({ theme }) => theme.color.grayScale[100]};
   border-radius: 8px;
   gap: 12px;
-  width: 120px;
-  height: 110px;
+  width: 110px;
+  height: 100px;
 
   @media ${({ theme }) => theme.device.desktop} {
     width: 180px;
     height: 160px;
   }
   @media ${({ theme }) => theme.device.laptop} {
-    width: 120px;
-    height: 110px;
+    width: 140px;
+    height: 130px;
   }
 
   @media ${({ theme }) => theme.device.mobile} {
@@ -215,8 +289,8 @@ const StyledMemberProfile = styled.img`
   }
 
   @media ${({ theme }) => theme.device.laptop} {
-    width: 40px;
-    height: 40px;
+    width: 70px;
+    height: 70px;
   }
 
   @media ${({ theme }) => theme.device.mobile} {
@@ -224,6 +298,106 @@ const StyledMemberProfile = styled.img`
     height: 30px;
   }
 `;
+
+const StyledInviteHeader = styled.div`
+  ${textVariants.Body1_Bold}
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  gap: 10px;
+  width: 100%;
+
+  @media ${({ theme }) => theme.device.desktop} {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+`;
+
+const StyledInviteLabel = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  ${textVariants.Body1_Bold}
+  color: ${({ theme }) => theme.color.grayScale[400]};
+`;
+
+const StyledInviteSearchInput = styled.input`
+  padding-left: 30px;
+  border: 1px solid ${({ theme }) => theme.color.grayScale[100]};
+  border-radius: 4px;
+  width: 100%;
+
+  @media ${({ theme }) => theme.device.mobile} {
+    display: none;
+  }
+`;
+
+const StyledInviteList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
+
+const StyledInviteRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px;
+  background-color: ${({ theme }) => theme.color.white};
+  border: 1px solid ${({ theme }) => theme.color.grayScale[100]};
+  border-radius: 8px;
+`;
+const StyledInviteProfile = styled.img`
+  border-radius: 70%;
+  width: 40px;
+  height: 40px;
+
+  @media ${({ theme }) => theme.device.desktop} {
+    width: 40px;
+    height: 40px;
+  }
+
+  @media ${({ theme }) => theme.device.laptop} {
+    width: 70px;
+    height: 70px;
+  }
+
+  @media ${({ theme }) => theme.device.mobile} {
+    width: 30px;
+    height: 30px;
+  }
+`;
+const StyledInviteButtonWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  gap:8px;
+`;
+
+const StyledApproveButton = styled.button`
+  background-color: ${({ theme }) => theme.color.green};
+  border: none;
+  border-radius: 4px;
+  color: ${({ theme }) => theme.color.white};
+  padding: 5px 10px;
+  cursor: pointer;
+`;
+
+const StyledCancelButton = styled.button`
+  background-color: ${({ theme }) => theme.color.red};
+  border: none;
+  border-radius: 4px;
+  color: ${({ theme }) => theme.color.white};
+  padding: 5px 10px;
+  cursor: pointer;
+`;
+
+
+
+
+
 
 
 
