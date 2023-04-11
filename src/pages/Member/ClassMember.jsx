@@ -20,7 +20,6 @@ const ClassMember = () => {
   const { openModal, closeModal } = useModal();
   const [currentPage, setCurrentPage] = useState(1);
   const [render, setRender] = useState(true);
-  const [render2, setRender2] = useState(true);
   const memberinfor = useRecoilValue(memberAtom);
   const parentinfor = useRecoilValue(parentAtom);
   const [memberAdd, setMemberAdd] = useRecoilState(memberAtom);
@@ -82,10 +81,10 @@ const ClassMember = () => {
   };
 
   useEffect(() => {
-    if (!render2 && isChildModify) {
+    if (!render && isChildModify) {
       handleClickModify();
     } else {
-      setRender2(false);
+      setRender(false);
     }
   }, [memberinfor, isChildModify, parentinfor]);
 
