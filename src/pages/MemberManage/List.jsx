@@ -1,57 +1,99 @@
 import React, { useEffect, useState } from "react";
+import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { ManageAPI } from "../../api/ManageAPI";
 import textVariants from "../../styles/variants/textVariants";
 import CustomPagination from "../../components/CustomPagination";
 import { AiOutlineSearch } from "react-icons/ai"
 import Button from "../../components/Button";
 const List = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const [page, setPage] = useState(1);
+  const [userRole, setUserRole] = useState("PARENT");
+
+  const [searchText, setSearchText] = useState("");
+  const [debouncedSearchText, setDebouncedSearchText] = useState(searchText);
+  const [searchTimeout, setSearchTimeout] = useState(null);
+
+  const { isLoading, isError, data } = useQuery(
+    ["getMemberManage", page, userRole],
+    () =>
+      ManageAPI.getMemberManage({
+        kindergartenId: 1,
+        userRole: userRole,
+        page: page - 1,
+        size: 15,
+      })
+  );
+  // const { isLoading, isError, data } = useQuery(
+  //   ["getMemberManage", page, userRole, debouncedSearchText],
+  //   () =>
+  //     ManageAPI.getMemberManage({
+  //       kindergartenId: 1,
+  //       userRole: userRole,
+  //       page: page - 1,
+  //       size: 15,
+  //       searchText: debouncedSearchText,
+  //     })
+  // );
+
+  const handleMemberSearch = (e) => {
+    const searchText = e.target.value;
+    setSearchText(searchText);
+    clearTimeout(searchTimeout);
+    setSearchTimeout(setTimeout(() => setDebouncedSearchText(searchText), 500));
+  };
+
+  const handlePageChange = (page) => {
+    setPage(page);
+  };
+
+  useEffect(() => {
+    queryClient.invalidateQueries(["getMemberManage", page]);
+  }, [debouncedSearchText]);
+
+
+
+  const data2 = data?.data;
+
+  // useEffect(() => {
+  //   queryClient.invalidateQueries(["getMemberManage", page]);
+  // }, [queryClient, page]);
+
   const [selectedButton, setSelectedButton] = useState("학부모");
 
   const handleButtonClick = async (selected, id) => {
     setSelectedButton(selected);
+    setPage(1);
     navigate(`/memberManage/${id}`);
+    setUserRole(selected === "학부모" ? "PARENT" : "TEACHER");
+    queryClient.invalidateQueries(["getMemberManage", page]);
   };
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const handleMemberSearch = () => {
+  const approveMutation = useMutation((id) => ManageAPI.updateApprove(id), {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["getMemberManage", page]);
+    },
+  });
 
+  const rejectMutation = useMutation((id) => ManageAPI.updateReject(id), {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["getMemberManage", page]);
+    },
+  });
+
+  const handleApprove = (id) => {
+    approveMutation.mutate(id);
   };
-  const childrenData = [
-    { name: "백주원", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "홍주원", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "우주원", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "이주원", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "김주원", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "김주원", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
 
-  ];
+  const handleReject = (id) => {
+    rejectMutation.mutate(id);
+  };
 
-  const approvalData = [
-    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-  ];
+
+
 
   return (
     <>
@@ -73,7 +115,7 @@ const List = () => {
         <StyledMemberContainer>
           <StyledMemberHeader>
             <StyledTotalLabel>
-              총원 <StyledTotalCount>10</StyledTotalCount>명
+              총원 <StyledTotalCount>{data2?.memberCount}</StyledTotalCount>명
             </StyledTotalLabel>
             <StyledMemberSearchInputWrapper>
               <StyledMemberSearchInput type="text" onChange={handleMemberSearch} />
@@ -83,10 +125,10 @@ const List = () => {
             </StyledMemberSearchInputWrapper>
           </StyledMemberHeader>
           <StyledMemberGrid>
-            {childrenData.map((child) => {
+            {data2?.memberList.map((child) => {
               return (
-                <StyledMemberCard>
-                  <StyledMemberProfile src={child.image} />
+                <StyledMemberCard key={child.id}>
+                  <StyledMemberProfile src={child.profileImageUrl} />
                   <StyledMemberProfileName>
                     {child.name}
                   </StyledMemberProfileName>
@@ -96,10 +138,10 @@ const List = () => {
           </StyledMemberGrid>
           <></>
           <CustomPagination
-            current={currentPage}
-            pageSize="14"
-            total="10"
-            onChange={(page) => setCurrentPage(page)}
+            current={page}
+            pageSize="15"
+            total={data2?.memberCount}
+            onChange={handlePageChange}
           />
         </StyledMemberContainer>
         <StyledInviteContainer>
@@ -110,23 +152,23 @@ const List = () => {
             <StyledMemberSearchInputWrapper>
               <StyledInviteSearchInput type="text" onChange={handleMemberSearch} />
               {/* <StyledSearchIcon>
-      <AiOutlineSearch />
-    </StyledSearchIcon> */}
+                <AiOutlineSearch />
+              </StyledSearchIcon> */}
             </StyledMemberSearchInputWrapper>
           </StyledInviteHeader>
           <StyledInviteList>
-            {approvalData.map((member) => {
+            {data2?.earlyMemberList?.map((member) => {
               return (
-                <StyledInviteRow>
+                <StyledInviteRow key={member.id}>
                   <StyledInviteProfileWrapper>
-                    <StyledInviteProfile src={member.image} />
+                    <StyledInviteProfile src={member.profileImageUrl} />
                     <StyledInviteProfileName>
                       {member.name}
                     </StyledInviteProfileName>
                   </StyledInviteProfileWrapper>
                   <StyledInviteButtonWrapper>
-                    <StyledApproveButton>승인</StyledApproveButton>
-                    <StyledRejectButton>거절</StyledRejectButton>
+                    <StyledApproveButton onClick={() => handleApprove(member.id)}>승인</StyledApproveButton>
+                    <StyledRejectButton onClick={() => handleReject(member.id)}>거절</StyledRejectButton>
                   </StyledInviteButtonWrapper>
                 </StyledInviteRow>
               );
@@ -183,7 +225,7 @@ const StyledMemberContainer = styled.div`
 const StyledInviteContainer = styled.div`
 
   background-color:${({ theme }) => theme.color.grayScale[50]};
-  box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.04);
+  box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.12);
   border-radius: 12px;
   padding: 40px;
   width: 40%;
@@ -432,22 +474,31 @@ const StyledInviteButtonWrapper = styled.div`
 
 const StyledApproveButton = styled.button`
 ${textVariants.Body2_SemiBold}
-  background-color: ${({ theme }) => theme.color.blue_lighter};
-  color: ${({ theme }) => theme.color.blue};
-  border: none;
+  background-color: ${({ theme }) => theme.color.white};
+  color: ${({ theme }) => theme.color.grayScale[400]};
+  border: 1px solid ${({ theme }) => theme.color.grayScale[100]};
   border-radius: 4px;
-  padding: 5px 10px;
+  padding: 6px 12px;
   cursor: pointer;
+  :hover{
+    background-color: ${({ theme }) => theme.color.blue_lighter};
+    color: ${({ theme }) => theme.color.blue};
+  }
 `;
 
 const StyledRejectButton = styled.button`
 ${textVariants.Body2_SemiBold}
-  background-color: ${({ theme }) => theme.color.red_lighter};
-  color: ${({ theme }) => theme.color.red};
-  border: none;
-  border-radius: 4px;
-  padding: 5px 10px;
-  cursor: pointer;
+    background-color: ${({ theme }) => theme.color.white};
+    color: ${({ theme }) => theme.color.grayScale[400]};
+    border: 1px solid ${({ theme }) => theme.color.grayScale[100]};
+    border-radius: 4px;
+    padding: 6px 12px;
+    cursor: pointer;
+
+  :hover{
+    background-color: ${({ theme }) => theme.color.red_lighter};
+    color: ${({ theme }) => theme.color.red};
+  }
 `;
 
 

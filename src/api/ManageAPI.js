@@ -4,7 +4,13 @@ export const ManageAPI = {
   getMemberManage: async (payload) => {
     try {
       const response = await instance.get(
-        `/kindergarten/${payload.kindergartenId}/user_role/${payload.userRole}`
+        `/kindergarten/${payload.kindergartenId}/user_role/${payload.userRole}`,
+        {
+          params: {
+            page: payload.page,
+            size: payload.size,
+          },
+        }
       );
       return response.data;
     } catch (error) {
