@@ -126,7 +126,7 @@ const List = () => {
                   </StyledInviteProfileWrapper>
                   <StyledInviteButtonWrapper>
                     <StyledApproveButton>승인</StyledApproveButton>
-                    <StyledCancelButton>거절</StyledCancelButton>
+                    <StyledRejectButton>거절</StyledRejectButton>
                   </StyledInviteButtonWrapper>
                 </StyledInviteRow>
               );
@@ -387,7 +387,7 @@ const StyledInviteRow = styled.div`
   padding: 10px;
   background-color: ${({ theme }) => theme.color.white};
   border: 1px solid ${({ theme }) => theme.color.grayScale[100]};
-  border-radius: 8px;
+  border-radius: 4px;
 `;
 
 const StyledInviteProfileWrapper = styled.div`
@@ -440,7 +440,7 @@ ${textVariants.Body2_SemiBold}
   cursor: pointer;
 `;
 
-const StyledCancelButton = styled.button`
+const StyledRejectButton = styled.button`
 ${textVariants.Body2_SemiBold}
   background-color: ${({ theme }) => theme.color.red_lighter};
   color: ${({ theme }) => theme.color.red};
