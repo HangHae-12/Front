@@ -93,6 +93,7 @@ const Table = () => {
             <GrNext style={{ marginLeft: "8px" }} onClick={increaseDate} size={24} />
             <CustomDatepicker selectedDate={selectedDate} onDateChange={handleDateChange} />
           </StyledMonthYear>
+          <DayExcel data={data} selectedDate={selectedDate} />
         </StyledHeader>
         <StyledTableWrapper>
           <StyledTable>
@@ -145,7 +146,7 @@ const Table = () => {
             </tbody>
           </StyledTable>
         </StyledTableWrapper>
-        <DayExcel data={data} selectedDate={selectedDate} />
+
       </StyledTableContainer>
 
     </div>
@@ -162,10 +163,12 @@ const StyledTableTitle = styled.h2`
 
 const StyledHeader = styled.div`
   display: flex;
-  justify-content:center;
+  justify-content: center;
   align-items: center;
   margin: 20px;
+  position: relative;
 `;
+
 
 const StyledMonthYear = styled.div`
   ${textVariants.H2_SemiBold}

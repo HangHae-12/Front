@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import * as XLSX from "xlsx";
 import styled from "styled-components";
-import Buttons from '../../../components/Buttons';
+import textVariants from '../../../styles/variants/textVariants';
 
 const MonthExcel = ({ data, selectedDate }) => {
     const exportToExcel = () => {
@@ -82,21 +82,26 @@ const MonthExcel = ({ data, selectedDate }) => {
     };
 
     return (
-        <StyledButtonGroup>
-            <StyledExportButton colorTypes="primary" onClick={exportToExcel}>내보내기</StyledExportButton>
-        </StyledButtonGroup>
+        <StyledExportButton colorTypes="primary" onClick={exportToExcel}>내보내기</StyledExportButton>
     )
 }
 
 export default MonthExcel;
 
-const StyledButtonGroup = styled.div`
-    display: flex;
-    justify-content: flex-end; /* 오른쪽 정렬 */
-    margin-top: 20px;
-`;
+const StyledExportButton = styled.button`
+  ${textVariants.Body1_SemiBold}
+        display: flex;
+        position: absolute;
+        background: ${({ theme }) => theme.color.white};
+        color: ${({ theme }) => theme.color.primary};
+        border: 1px solid ${({ theme }) => theme.color.primary};
+        padding: 8px 12px;
+        right: 0;
+        margin-left: auto;
+        border-radius: 4px;
 
-const StyledExportButton = styled(Buttons.Filter)`
-    margin-left: 10px;
+  @media ${({ theme }) => theme.device.laptop} {
+    display:none;
+  }
 `;
 
