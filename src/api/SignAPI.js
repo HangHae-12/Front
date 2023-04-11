@@ -26,4 +26,16 @@ export const SignAPI = {
       console.error(error);
     }
   },
+
+  search: async (keyword) => {
+    try {
+      const response = await instance.get(
+        `/search/kindergarten?keyword=${keyword}`
+      );
+      console.log(response);
+      // return response
+    } catch (error) {
+      console.error(error);
+    }
+  },
 };

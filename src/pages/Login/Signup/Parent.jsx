@@ -1,20 +1,20 @@
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import StyledSignup from "./styled";
+import StyledLogin from "../styled";
 import { SignAPI } from "../../../api/SignAPI";
+import Buttons from "../../../components/Buttons";
 import ProfileImageUploader from "../../../components/ProfileImageUploader";
 import { useProfileImageUploader } from "../../../hooks/useProfileImageUploader";
-import styled from "styled-components";
 import { REGEXP } from "../../../helpers/regexp";
-import { FaCheckCircle, FaExclamationCircle } from "react-icons/fa";
-import StyledLogin from "../styled";
 
 // 사용자가 정보를 다 입력하고 난 뒤에 도메인에 extrainfo 를 치면 이 화면이 보일 수 있으니까
 // 그걸 방지하기 위한 로직을 구현해야만 한다.
 
 const Parent = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { name, profileImageUrl } = location.state?.data ?? {};
 
   const { selectedFile, isCancelled } =
@@ -23,7 +23,7 @@ const Parent = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, touchedFields },
+    formState: { errors, isSubmitSuccessful },
   } = useForm();
 
   const { mutate } = useMutation(SignAPI.signup, {
@@ -36,7 +36,6 @@ const Parent = () => {
   });
 
   const onSubmit = (data) => {
-    console.log(isCancelled, selectedFile);
     const formData = new FormData();
     formData.append("name", data.name);
     formData.append("phoneNumber", data.phoneNumber);
@@ -50,69 +49,101 @@ const Parent = () => {
     const role = location.pathname.split("/")[2];
 
     // mutate({ role: role, info: formData });
+    navigate("/signup/success", {
+      state: { name: "이름", profileImageUrl: "프로필" },
+    });
   };
 
   return (
-    <StyledSignupPage.Wrapper>
+    <StyledSignup.Container>
       <StyledLogin.Title>학부모님! 정보를 입력해주세요</StyledLogin.Title>
-
       <StyledSignup.Form onSubmit={handleSubmit(onSubmit)}>
-        <StyledSignup.Label htmlFor="profileImage">
-          프로필 사진
-        </StyledSignup.Label>
-        <ProfileImageUploader prev={profileImageUrl} />
-        <StyledSignup.Label htmlFor="name">이름 *</StyledSignup.Label>
-        <StyledSignup.Input
-          type="text"
-          {...register("name", { required: "이름을 입력해주세요." })}
-          id="name"
-          defaultValue={name ?? ""}
-        />
-        {errors.name && (
-          <StyledSignup.ErrorMessage>
-            {errors.name.message}
-          </StyledSignup.ErrorMessage>
-        )}
-
-        <StyledSignup.Label htmlFor="phoneNumber">
-          휴대폰 번호 *
-        </StyledSignup.Label>
-        <StyledSignup.Input
-          type="text"
-          {...register("phoneNumber", {
-            required: "휴대폰 번호를 입력해주세요",
-          })}
-          id="phoneNumber"
-        />
-        {errors.phoneNumber && (
-          <StyledSignup.ErrorMessage>
-            {errors.phoneNumber.message}
-          </StyledSignup.ErrorMessage>
-        )}
-
-        <StyledSignup.Label htmlFor="emergencyPhoneNumber">
-          비상연락망
-        </StyledSignup.Label>
-        <StyledSignup.Input
-          type="text"
-          {...register("emergencyPhoneNumber")}
-          id="emergencyPhoneNumber"
-        />
-
-        <StyledSignup.Button type="submit">Submit</StyledSignup.Button>
+        <StyledSignup.Wrapper>
+          <ProfileImageUploader prev={profileImageUrl} />
+          <StyledSignup.Box>
+            <StyledSignup.ContentsWrapper>
+              <StyledLogin.Label htmlFor="name" isEssential>
+                이름
+              </StyledLogin.Label>
+              <StyledLogin.Input
+                placeholder="홍길동"
+                type="text"
+                {...register("name", {
+                  required: "이름을 입력해주세요.",
+                  pattern: {
+                    value: REGEXP.name,
+                    message: "유효하지 않은 이름입니다.",
+                  },
+                })}
+                id="name"
+                defaultValue={name ?? ""}
+                valid={errors.name}
+                size={4}
+              />
+              {!isSubmitSuccessful && errors.name && (
+                <StyledSignup.ErrorMessage>
+                  {errors.name.message}
+                </StyledSignup.ErrorMessage>
+              )}
+            </StyledSignup.ContentsWrapper>
+            <StyledSignup.ContentsWrapper>
+              <StyledLogin.Label htmlFor="phoneNumber" isEssential>
+                연락처
+              </StyledLogin.Label>
+              <StyledLogin.Input
+                placeholder="010-0000-0000"
+                type="text"
+                {...register("phoneNumber", {
+                  required: "연락처를 입력해주세요",
+                  pattern: {
+                    value: REGEXP.phone,
+                    message: "전화번호를 정확하게 입력해 주세요.",
+                  },
+                })}
+                id="phoneNumber"
+                valid={errors.phoneNumber}
+                size={12}
+              />
+              {!isSubmitSuccessful && errors.phoneNumber && (
+                <StyledSignup.ErrorMessage>
+                  {errors.phoneNumber.message}
+                </StyledSignup.ErrorMessage>
+              )}
+            </StyledSignup.ContentsWrapper>
+            <StyledSignup.ContentsWrapper>
+              <StyledLogin.Label htmlFor="emergencyPhoneNumber">
+                비상연락처
+              </StyledLogin.Label>
+              <StyledLogin.Input
+                placeholder="010-0000-0000"
+                type="text"
+                {...register("emergencyPhoneNumber", {
+                  pattern: {
+                    value: REGEXP.phone,
+                    message: "전화번호를 정확하게 입력해 주세요.",
+                  },
+                })}
+                id="emergencyPhoneNumber"
+                valid={errors.emergencyPhoneNumber}
+                size={12}
+              />
+              {!isSubmitSuccessful && errors.emergencyPhoneNumber && (
+                <StyledSignup.ErrorMessage>
+                  {errors.emergencyPhoneNumber.message}
+                </StyledSignup.ErrorMessage>
+              )}
+            </StyledSignup.ContentsWrapper>
+          </StyledSignup.Box>
+        </StyledSignup.Wrapper>
+        <StyledSignup.SubmitBtnWrapper>
+          <Buttons.Filter colorTypes="primary" type="submit">
+            작성완료
+          </Buttons.Filter>
+          
+        </StyledSignup.SubmitBtnWrapper>
       </StyledSignup.Form>
-    </StyledSignupPage.Wrapper>
+    </StyledSignup.Container>
   );
 };
 
 export default Parent;
-
-const StyledSignupPage = {
-  Wrapper: styled.div`
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 100%;
-    padding: 60px 140px;
-  `,
-};

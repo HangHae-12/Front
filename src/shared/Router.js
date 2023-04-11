@@ -12,8 +12,10 @@ const Router = () => {
         {/*  */}
         <Route path="/signup" element={PAGE.signup.layout}>
           <Route index element={PAGE.signup.signup} />
+          <Route path="search" element={PAGE.signup.search} />
           <Route path="teacher" element={PAGE.signup.teacher} />
           <Route path="parent" element={PAGE.signup.parent} />
+          <Route path="success" element={PAGE.signup.success} />
         </Route>
 
         <Route path="/classes" element={PAGE.member} />

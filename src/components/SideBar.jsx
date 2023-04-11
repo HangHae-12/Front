@@ -131,7 +131,6 @@ const StyledSubMenu = styled.div`
     width: 100%;
     text-align: center;
     border-radius: 8px;
-    text-decoration: none;
 
     &:hover {
       color: ${({ theme }) => theme.color.primary};

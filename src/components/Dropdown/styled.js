@@ -40,7 +40,7 @@ const StyledDropdown = {
     display: block;
     color: ${({ theme }) => theme.color.grayScale[500]};
     padding: 8px 16px;
-    text-decoration: none;
+    
     cursor: pointer;
 
     &:hover {
