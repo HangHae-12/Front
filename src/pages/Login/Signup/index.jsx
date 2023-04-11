@@ -39,9 +39,6 @@ const SignupPage = {
     flex-direction: column;
     gap: 25px;
     margin-top: 60px;
-    a {
-      text-decoration: none;
-    }
   `,
 
   Btn: styled(Buttons.NB)`

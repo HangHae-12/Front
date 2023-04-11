@@ -74,6 +74,7 @@ const StyledProfileImageUploader = {
     height: 120px;
     border-radius: 50%;
     object-fit: cover;
+    cursor: default;
   `,
 
   ThumbnailWrapper: styled.div`

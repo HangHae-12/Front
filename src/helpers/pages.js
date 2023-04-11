@@ -12,6 +12,7 @@ import Parent from "../pages/Login/Signup/Parent";
 
 import ChildManage from "../pages/ChildManage";
 import Layout from "../pages/Layout";
+import SignupSuccess from "../pages/Login/Signup/SignupSuccess";
 
 export const PAGE = {
   layout: <Layout />,
@@ -22,6 +23,7 @@ export const PAGE = {
     signup: <Signup />,
     teacher: <Teacher />,
     parent: <Parent />,
+    success: <SignupSuccess />,
   },
 
   kakaoLogin: <KakaoLogin />,

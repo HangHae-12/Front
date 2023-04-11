@@ -8,11 +8,7 @@ const StyledSignup = {
     flex-direction: column;
   `,
 
-  Form: styled.form`
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  `,
+  
 
   Label: styled.label`
     ${textVariants.Body2_Bold}

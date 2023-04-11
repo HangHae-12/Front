@@ -1,13 +1,11 @@
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
-import { useLocation } from "react-router-dom";
-import StyledSignup from "./styled";
+import { useLocation, useNavigate } from "react-router-dom";
 import { SignAPI } from "../../../api/SignAPI";
 import ProfileImageUploader from "../../../components/ProfileImageUploader";
 import { useProfileImageUploader } from "../../../hooks/useProfileImageUploader";
 import styled from "styled-components";
 import { REGEXP } from "../../../helpers/regexp";
-import { FaCheckCircle, FaExclamationCircle } from "react-icons/fa";
 import StyledLogin from "../styled";
 import Buttons from "../../../components/Buttons";
 
@@ -16,6 +14,7 @@ import Buttons from "../../../components/Buttons";
 
 const Parent = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { name, profileImageUrl } = location.state?.data ?? {};
 
   const { selectedFile, isCancelled } =
@@ -24,13 +23,11 @@ const Parent = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, touchedFields },
+    formState: { errors, isSubmitSuccessful },
   } = useForm();
 
   const { mutate } = useMutation(SignAPI.signup, {
-    onSuccess: (res) => {
-      console.log(res);
-    },
+    onSuccess: (res) => {},
     onError: (error) => {
       console.log(error);
     },
@@ -50,12 +47,16 @@ const Parent = () => {
     const role = location.pathname.split("/")[2];
 
     // mutate({ role: role, info: formData });
+    navigate("/signup/success", {
+      state: { name: "이름", profileImageUrl: "프로필" },
+    });
   };
+  console.log(errors);
 
   return (
     <StyledParentPage.Container>
       <StyledLogin.Title>학부모님! 정보를 입력해주세요</StyledLogin.Title>
-      <StyledSignup.Form onSubmit={handleSubmit(onSubmit)}>
+      <StyledParentPage.Form onSubmit={handleSubmit(onSubmit)}>
         <StyledParentPage.Wrapper>
           <ProfileImageUploader prev={profileImageUrl} />
           <StyledParentPage.Box>
@@ -66,16 +67,22 @@ const Parent = () => {
               <StyledLogin.Input
                 placeholder="홍길동"
                 type="text"
-                {...register("name", { required: "이름을 입력해주세요." })}
+                {...register("name", {
+                  required: "이름을 입력해주세요.",
+                  pattern: {
+                    value: REGEXP.name,
+                    message: "이름은 한글 또는 영문 2~15자리로 입력해주세요",
+                  },
+                })}
                 id="name"
                 defaultValue={name ?? ""}
                 valid={errors.name}
                 size={4}
               />
-              {errors.name && (
-                <StyledSignup.ErrorMessage>
+              {!isSubmitSuccessful && errors.name && (
+                <StyledParentPage.ErrorMessage>
                   {errors.name.message}
-                </StyledSignup.ErrorMessage>
+                </StyledParentPage.ErrorMessage>
               )}
             </StyledParentPage.ContentsWrapper>
             <StyledParentPage.ContentsWrapper>
@@ -86,16 +93,20 @@ const Parent = () => {
                 placeholder="010-0000-0000"
                 type="text"
                 {...register("phoneNumber", {
-                  required: "휴대폰 번호를 입력해주세요",
+                  required: "연락처를 입력해주세요",
+                  pattern: {
+                    value: REGEXP.phone,
+                    message: "휴대폰 또는 집 전화번호를 입력해주세요.",
+                  },
                 })}
                 id="phoneNumber"
-                valid={errors.name}
+                valid={errors.phoneNumber}
                 size={12}
               />
-              {errors.phoneNumber && (
-                <StyledSignup.ErrorMessage>
+              {!isSubmitSuccessful && errors.phoneNumber && (
+                <StyledParentPage.ErrorMessage>
                   {errors.phoneNumber.message}
-                </StyledSignup.ErrorMessage>
+                </StyledParentPage.ErrorMessage>
               )}
             </StyledParentPage.ContentsWrapper>
             <StyledParentPage.ContentsWrapper>
@@ -105,11 +116,21 @@ const Parent = () => {
               <StyledLogin.Input
                 placeholder="010-0000-0000"
                 type="text"
-                {...register("emergencyPhoneNumber")}
+                {...register("emergencyPhoneNumber", {
+                  pattern: {
+                    value: REGEXP.phone,
+                    message: "휴대폰 번호 또는 집 전화번호를 입력해주세요.",
+                  },
+                })}
                 id="emergencyPhoneNumber"
-                valid={errors.name}
+                valid={errors.emergencyPhoneNumber}
                 size={12}
               />
+              {!isSubmitSuccessful && errors.emergencyPhoneNumber && (
+                <StyledParentPage.ErrorMessage>
+                  {errors.emergencyPhoneNumber.message}
+                </StyledParentPage.ErrorMessage>
+              )}
             </StyledParentPage.ContentsWrapper>
           </StyledParentPage.Box>
         </StyledParentPage.Wrapper>
@@ -118,7 +139,7 @@ const Parent = () => {
             작성완료
           </Buttons.Filter>
         </StyledParentPage.SubmitBtnWrapper>
-      </StyledSignup.Form>
+      </StyledParentPage.Form>
     </StyledParentPage.Container>
   );
 };
@@ -142,6 +163,12 @@ const StyledParentPage = {
     margin-top: 50px;
   `,
 
+  Form: styled.form`
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  `,
+
   Box: styled.div`
     display: flex;
     width: 100%;
@@ -151,8 +178,18 @@ const StyledParentPage = {
 
   ContentsWrapper: styled.div`
     display: flex;
+    position: relative;
     align-items: center;
     justify-content: space-between;
+  `,
+
+  ErrorMessage: styled.span`
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    color: ${({ theme }) => theme.color.red};
+    transform: translateY(100%);
+    font-size: 3px;
   `,
 
   SubmitBtnWrapper: styled.div`
