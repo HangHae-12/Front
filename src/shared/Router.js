@@ -1,7 +1,6 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { PAGE } from "../helpers/pages";
-import Layout from "../pages/Layout";
 
 const Router = () => {
   return (
@@ -11,7 +10,7 @@ const Router = () => {
         <Route path="/login" element={PAGE.login} />
         <Route path="/oauth/kakao/callback" element={PAGE.kakaoLogin} />
         {/* 모든 페이지에 공통 레이아웃 적용 */}
-        <Route path="/" element={<Layout />}>
+        <Route path="/" element={PAGE.layout}>
           <Route path="/signup" element={PAGE.signup.layout}>
             <Route index element={PAGE.signup.signup} />
             <Route path="search" element={PAGE.signup.search} />
