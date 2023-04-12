@@ -28,23 +28,21 @@ const Children = ({ bindData }) => {
     const currentTime = new Date();
     const childData = bindData.find((item) => item.id === childId);
 
-    const newEnterTime = type === "enter" && !childData.enterTime ? currentTime : childData.enterTime;
-    const newExitTime = type === "exit" && !childData.exitTime ? currentTime : childData.exitTime;
+    const updatedChildData = {
+      ...childData,
+      enterTime: type === "enter" && !childData.enterTime ? currentTime : childData.enterTime,
+      exitTime: type === "exit" && !childData.exitTime ? currentTime : childData.exitTime,
+    };
 
     const updatedData = bindData.map((item) => {
       if (item.id === childId) {
-        return { ...item, enterTime: newEnterTime, exitTime: newExitTime };
+        return updatedChildData;
       } else {
         return item;
       }
     });
-    queryClient.setQueryData(["getManageSchedule"], updatedData);
 
-    const updatedChildData = {
-      ...childData,
-      enterTime: newEnterTime,
-      exitTime: newExitTime,
-    };
+    queryClient.setQueryData(["getManageSchedule"], updatedData);
 
     if (type === "enter") {
       updateEnterMutation.mutate(updatedChildData);
@@ -52,6 +50,7 @@ const Children = ({ bindData }) => {
       updateExitMutation.mutate(updatedChildData);
     }
   };
+
 
 
   return (
