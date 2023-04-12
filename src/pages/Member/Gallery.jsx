@@ -8,12 +8,13 @@ import "react-datepicker/dist/react-datepicker.css";
 import Modal from "../../components/Modal";
 import useModal from "../../hooks/useModal";
 import { IoIosAdd } from "react-icons/io";
-import { AiFillAppstore } from "react-icons/ai";
+import { AiFillAppstore, AiOutlineSearch } from "react-icons/ai";
 import Buttons from "../../components/Buttons";
 import textVariants from "../../styles/variants/textVariants";
 import { GallerySlider } from "./ClassModal";
-import { useRecoilState } from "recoil";
+import { useRecoilValue, useRecoilState } from "recoil";
 import { modalAtom } from "../../atom/modalAtoms";
+import { userProfileAtom } from "../../atom/sideBarAtom";
 import CustomPagination from "../../components/CustomPagination";
 
 const Gallery = () => {
@@ -29,10 +30,10 @@ const Gallery = () => {
   const [previewImages, setPreviewImages] = useState([]); // 프리뷰 보여줄 이미지 데이터
   const [severImages, setSeverImages] = useState([]); // 서버로 보낼 이미지 데이터
   const [render, setRender] = useState(true);
-  const [render2, setRender2] = useState(true);
   const [title, setTitle] = useState("");
   const [modalState, setModalState] = useRecoilState(modalAtom);
   const [imageUrlList, setImageUrlList] = useState([]);
+  const userRole = useRecoilValue(userProfileAtom);
 
   const { data } = useQuery(
     [
@@ -112,8 +113,12 @@ const Gallery = () => {
 
   //날짜 검색 기능
   const handleDateSearch = () => {
-    setFormattedStartDate(dateToString(startDate));
-    setFormattedEndDate(dateToString(endDate));
+    if (startDate === "" || endDate === "") {
+      alert("기간을 선택해주세요");
+    } else {
+      setFormattedStartDate(dateToString(startDate));
+      setFormattedEndDate(dateToString(endDate));
+    }
   };
 
   //전체기간 조회
@@ -272,12 +277,12 @@ const Gallery = () => {
       ),
       footer: (
         <>
-          <Buttons.Filter
+          {/* <Buttons.Filter
             colorTypes="primary"
             onClick={() => handleClickModify(response)}
           >
             수정하기
-          </Buttons.Filter>
+          </Buttons.Filter> */}
         </>
       ),
       callback: () => alert("modal"),
@@ -296,6 +301,25 @@ const Gallery = () => {
     setModalState((prevState) => ({
       ...prevState,
       isOpen: true,
+      title: (
+        <>
+          <StyledGalleryModalHeader>갤러리</StyledGalleryModalHeader>
+          <StyledGalleryModalTitleBox>
+            <StyledModalTitle>{response?.data.data.title}</StyledModalTitle>
+            <StyledModalDate>{response?.data.data.createdAt}</StyledModalDate>
+            <StyledButtonWrapper>
+              <StyledSlideIcon
+                color="#3cc678"
+                onClick={() => handleClickSlide(response)}
+              />
+              <StyledSplitIcon
+                color="#d9d9d9"
+                onClick={() => handleClickSplit(response)}
+              />
+            </StyledButtonWrapper>
+          </StyledGalleryModalTitleBox>
+        </>
+      ),
       contents: (
         <GallerySlider images={response?.data?.data?.imageUrlList || []} />
       ),
@@ -306,6 +330,19 @@ const Gallery = () => {
     setModalState((prevState) => ({
       ...prevState,
       isOpen: true,
+      title: (
+        <>
+          <StyledGalleryModalHeader>갤러리</StyledGalleryModalHeader>
+          <StyledGalleryModalTitleBox>
+            <StyledModalTitle>{response?.data.data.title}</StyledModalTitle>
+            <StyledModalDate>{response?.data.data.createdAt}</StyledModalDate>
+            <StyledButtonWrapper>
+              <StyledSlideIcon onClick={() => handleClickSlide(response)} />
+              <StyledSplitIcon onClick={() => handleClickSplit(response)} />
+            </StyledButtonWrapper>
+          </StyledGalleryModalTitleBox>
+        </>
+      ),
       contents: (
         <StyledModalContent>
           {response?.data.data.imageUrlList.map((item) => {
@@ -321,10 +358,10 @@ const Gallery = () => {
   };
 
   // useEffect(() => {
-  //   if (!render2) {
+  //   if (!render) {
   //     handleClickModify();
   //   } else {
-  //     setRender2(false);
+  //     setRender(false);
   //   }
   // }, [imageUrlList]);
 
@@ -462,16 +499,20 @@ const Gallery = () => {
               selectsEnd
               startDate={startDate}
               endDate={endDate}
-              minDate={startDate}
             />
           </StyledDatePickerWrapper>
           <Buttons.Filter colorTypes="primary" onClick={handleDateSearch}>
             적용하기
           </Buttons.Filter>
-          <SyledAddGalleryButton onClick={createGallery}>
-            사진 등록
-          </SyledAddGalleryButton>
-          <StyledGallerySearchInput onChange={handleSearch} />
+          {userRole.role === "PRINCIPAL" || userRole.role === "TEACHER" ? (
+            <SyledAddGalleryButton onClick={createGallery}>
+              사진 등록
+            </SyledAddGalleryButton>
+          ) : null}
+          <StyledSearchWrapper>
+            <StyledGallerySearchInput onChange={handleSearch} />
+            <StyledInputIcon />
+          </StyledSearchWrapper>{" "}
         </StyledGalleryHeader>
         <StyledGalleryContainer>
           {data?.data.data.imagePostResponseDtoList.map((item) => {
@@ -609,13 +650,13 @@ const StyledAddIcon = styled(IoIosAdd)`
 const StyledSplitIcon = styled(AiFillAppstore)`
   width: 28px;
   height: 28px;
-  color: #d9d9d9;
+  color: ${({ color }) => color || "#3cc678"};
 `;
 
 const StyledSlideIcon = styled.div`
   width: 21px;
   height: 21px;
-  background: #d9d9d9;
+  background: ${({ color }) => color || "#d9d9d9"};
 `;
 
 const StyledModalContent = styled.div`
@@ -659,7 +700,14 @@ const StyledPreviewImage = styled.img`
 `;
 
 const StyledDatePicker = styled(DatePicker)`
+  border: 1px solid ${({ theme }) => theme.color.primary};
+  padding: 10px;
+  border-radius: 4px;
   margin-left: 7px;
+  width: 124px;
+  height: 32px;
+  color: ${({ theme }) => theme.color.primary};
+  text-align: center;
 `;
 
 const StyledDatePickerWrapper = styled.div`
@@ -677,7 +725,12 @@ const SyledAddGalleryButton = styled.button`
 `;
 
 const StyledGallerySearchInput = styled.input`
-  margin-left: 10px;
+  width: 200px;
+  height: 32px;
+  margin-left: 12px;
+  padding: 3px;
+  border: 1px solid ${({ theme }) => theme.color.grayScale[100]};
+  border-radius: 4px;
 `;
 
 const StyledGalleryModalHeader = styled.div`
@@ -720,4 +773,17 @@ const StyledButtonWrapper = styled.div`
   flex-direction: row;
   align-items: center;
   float: right;
+`;
+
+const StyledSearchWrapper = styled.div`
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 200px;
+  height: 32px;
+`;
+
+const StyledInputIcon = styled(AiOutlineSearch)`
+  position: absolute;
+  right: 15px;
 `;

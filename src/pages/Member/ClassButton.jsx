@@ -14,12 +14,15 @@ import { useParams } from "react-router-dom";
 import { ClassMangeModal } from "./ClassModal";
 import useModal from "../../hooks/useModal";
 import Modal from "../../components/Modal";
+import { useRecoilValue } from "recoil";
+import { userProfileAtom } from "../../atom/sideBarAtom";
 
 const ClassButton = () => {
   const [selectedButton, setSelectedButton] = useState("");
   const [selectedTab, setSelectedTab] = useState("");
   const { openModal, closeModal } = useModal();
   const { id } = useParams();
+  const userRole = useRecoilValue(userProfileAtom);
 
   const { data } = useQuery(
     ["classesPage", id],
@@ -69,7 +72,9 @@ const ClassButton = () => {
     <>
       <StyledInputWrapper>
         <StyledHeaderFont>학급관리</StyledHeaderFont>
-        <StyledGearButton marginLeft="5px" onClick={setClassModal} />
+        {userRole.role === "PRINCIPAL" ? (
+          <StyledGearButton marginLeft="5px" onClick={setClassModal} />
+        ) : null}
       </StyledInputWrapper>
       <StyledButtonWrapper>
         <Button.ClassButton

@@ -7,6 +7,8 @@ import { MemberAPI } from "../../api/MemberAPI";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { BsFillGearFill } from "react-icons/bs";
 import textVariants from "../../styles/variants/textVariants";
+import { useRecoilValue } from "recoil";
+import { userProfileAtom } from "../../atom/sideBarAtom";
 
 const TeacherInformation = ({ data }) => {
   const queryClient = useQueryClient();
@@ -16,6 +18,7 @@ const TeacherInformation = ({ data }) => {
   const [checkedTeachers, setCheckedTeachers] = useState({});
   const [selectedTeacher, setSelectedTeacher] = useState(null);
   const [searchTeacher, setSearchTeacher] = useState("");
+  const userRole = useRecoilValue(userProfileAtom);
 
   const { data: TeacherData } = useQuery(
     ["TeacherInformation"],
@@ -163,7 +166,12 @@ const TeacherInformation = ({ data }) => {
               <StyledQuestionFont marginLeft="5px">
                 담임선생님
               </StyledQuestionFont>
-              <StyledGearButton marginLeft="5px" onClick={setTeacherAppoint} />
+              {userRole.role === "PRINCIPAL" ? (
+                <StyledGearButton
+                  marginLeft="5px"
+                  onClick={setTeacherAppoint}
+                />
+              ) : null}
             </StyledInputWrapper>
             <StyledTeacherImage
               src={data?.data?.data?.classroomTeacher?.profileImageUrl}
@@ -172,9 +180,9 @@ const TeacherInformation = ({ data }) => {
           <StyledMiddleWrapper>
             <StyledInputWrapper>
               <StyledQuestionFont>한마디 </StyledQuestionFont>
-              <StyledQuestionFont marginLeft="30px">
+              <StyledAnswerFont marginLeft="30px">
                 {data?.data?.data?.classroomTeacher?.resolution}
-              </StyledQuestionFont>
+              </StyledAnswerFont>
             </StyledInputWrapper>
             <StyledInputWrapper>
               <StyledQuestionFont>이름</StyledQuestionFont>
@@ -241,8 +249,8 @@ const StyledLeftWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  text-align: center;
   margin-left: 40px;
-  margin-top: 10px;
 `;
 
 const StyledQuestionFont = styled.div`
@@ -255,6 +263,7 @@ const StyledTeacherImage = styled.img`
   width: 120px;
   height: 120px;
   border-radius: 70%;
+  margin-top:12px;
 `;
 
 const StyledAnswerFont = styled.div`
