@@ -12,7 +12,7 @@ export const classIdAtom = atom({
 
 export const timeAtom = atom({
   key: "timeState",
-  default: "전체시간",
+  default: 0,
 });
 
 export const paginationAtom = atom({

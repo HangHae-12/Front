@@ -34,9 +34,9 @@ const ClassButton = ({ hostParams }) => {
     const loadClassroom = (selected, id) => {
         setSelectedButton(selected);
         setScheduleId("ENTER");
-        setTime("전체시간");
+        setTime(0);
         setPage(1);
-        navigate(`/host/${id}/ENTER/전체시간`, () => {
+        navigate(`/host/${id}/ENTER/0`, () => {
             queryClient.invalidateQueries(["getManageTimeSchedule", hostParams]);
         });
     };
