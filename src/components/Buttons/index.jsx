@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { StyledButton } from "./styled";
 
 export const CustomButton = ({
@@ -12,6 +13,8 @@ export const CustomButton = ({
   children,
   ...props
 }) => {
+
+
   return (
     <StyledButton
       width={width}
@@ -28,6 +31,7 @@ export const CustomButton = ({
     </StyledButton>
   );
 };
+
 
 const Buttons = {
   Attendance: (props) => <StyledButton buttonsTypes="Attendance" {...props} />,

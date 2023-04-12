@@ -173,12 +173,12 @@ const StyledUserProfileWrapper = styled.div`
   p {
     ${textVariants.Body2_Bold}
     margin-top: 16px;
-    color: ${({ theme }) => theme.color.grayScale[500]};
+    color: ${({ theme }) => theme.color.grayScale[400]};
   }
 
   h3 {
     ${textVariants.H3_SemiBold}
-    margin-top: 4px;
+    margin-top: 11px;
     color: ${({ theme }) => theme.color.grayScale[600]};
     display: flex;
     justify-content: center;
