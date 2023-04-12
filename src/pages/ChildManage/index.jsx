@@ -2,6 +2,7 @@ import styled from "styled-components";
 import StyledChildManage from "./styled";
 import Dropdown from "../../components/Dropdown";
 import ChildProfile from "./ChildProfile";
+import AttendanceCalendar from "./AttendanceCalendar";
 
 const ChildManage = () => {
   // 수정모드 로직에 대해서 고민해볼 것.
@@ -10,7 +11,7 @@ const ChildManage = () => {
   return (
     <StyledChildManage.Container>
       <StyledChildManage.Header>아이 관리</StyledChildManage.Header>
-      <StyledChildManage.Section>
+      {/* <StyledChildManage.Section>
         <ChildProfile />
         <ChildCommuteTimesWrapper>
           <StyledChildManage.Title>등/하원 시간</StyledChildManage.Title>
@@ -27,7 +28,8 @@ const ChildManage = () => {
             </Dropdown.Item>
           </Dropdown>
         </ChildCommuteTimesWrapper>
-      </StyledChildManage.Section>
+      </StyledChildManage.Section> */}
+      <AttendanceCalendar />
     </StyledChildManage.Container>
   );
 };

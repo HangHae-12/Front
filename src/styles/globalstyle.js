@@ -41,8 +41,11 @@ const GlobalStyle = createGlobalStyle`
   body {
     background-color: ${({ theme }) => theme.color.gray_100};
     font-family: 'Pretendard';
-    
-    
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
   }
 `;
 

@@ -1,25 +1,24 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import textVariants from "../../styles/variants/textVariants";
+import { memberAtom, parentAtom } from "../../atom/memberAtom";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { MemberAPI } from "../../api/MemberAPI";
 
 //반별 아이들 상세 조회 모달
-export const ClassModal = () => {
+export const ClassModal = ({ response }) => {
   return (
     <StyledModalWrapper>
       <StyledChildrenProfileWrapper>
         <StyledLeftWrapper>
           <StyledProfileHeaderFont>원생 프로필</StyledProfileHeaderFont>
-          <StyledProfileImage
-            src={
-              "https://outlooksformen.com/sites/default/files/2020-09/testiminials-img-01.png"
-            }
-          />
-          <StyledProfileButton>이미지 변경</StyledProfileButton>
+          <StyledProfileImage src={response?.data.data.profileImageUrl} />
         </StyledLeftWrapper>
         <StyledRightWrapper>
           <StyledInputWrapper>
             <StyledQuestionFont>이름 </StyledQuestionFont>
-            <StyledAnswerFont>정길숙</StyledAnswerFont>
+            <StyledAnswerFont>{response?.data.data.name}</StyledAnswerFont>
           </StyledInputWrapper>
           <StyledInputWrapper>
             <StyledQuestionFont>성별 </StyledQuestionFont>
@@ -27,7 +26,7 @@ export const ClassModal = () => {
           </StyledInputWrapper>
           <StyledInputWrapper>
             <StyledQuestionFont>생년월일 </StyledQuestionFont>
-            <StyledAnswerFont>2015.12.07</StyledAnswerFont>
+            <StyledAnswerFont>{response?.data.data.birth}</StyledAnswerFont>
           </StyledInputWrapper>
           <StyledInputWrapper>
             <StyledQuestionFont>등원시간 </StyledQuestionFont>
@@ -40,36 +39,44 @@ export const ClassModal = () => {
         </StyledRightWrapper>
       </StyledChildrenProfileWrapper>
       <StyledNote>특이사항</StyledNote>
-      <StyledInputBox />
+      <StyleNoteBox>{response?.data.data.significant}</StyleNoteBox>
       <StyledParentProfileWrapper>
         <StyledParentBox>
           <StyledLeftWrapper>
             <StyledProfileHeaderFont>학부모 프로필</StyledProfileHeaderFont>
             <StyledProfileImage
+              marginTop="40px"
               src={
-                "https://outlooksformen.com/sites/default/files/2020-09/testiminials-img-01.png"
+                response?.data?.data?.parentProfileResponseDto?.profileImageUrl
               }
             />
           </StyledLeftWrapper>
           <StyledRightWrapper>
             <StyledInputWrapper>
               <StyledQuestionFont>이름</StyledQuestionFont>
-              <StyledAnswerFont marginLeft="280px">정길숙</StyledAnswerFont>
+              <StyledAnswerFont marginLeft="260px">
+                {response?.data?.data?.parentProfileResponseDto?.name}
+              </StyledAnswerFont>
             </StyledInputWrapper>
             <StyledInputWrapper>
-              <StyledQuestionFont>관계</StyledQuestionFont>
-              <StyledAnswerFont marginLeft="310px">모</StyledAnswerFont>
+              <StyledQuestionFont>이메일</StyledQuestionFont>
+              <StyledAnswerFont marginLeft="200px">
+                {response?.data?.data?.parentProfileResponseDto?.email}
+              </StyledAnswerFont>
             </StyledInputWrapper>
             <StyledInputWrapper>
               <StyledQuestionFont>연락처</StyledQuestionFont>
               <StyledAnswerFont marginLeft="195px">
-                010-0000-0000
+                {response?.data?.data?.parentProfileResponseDto?.phoneNumber}
               </StyledAnswerFont>
             </StyledInputWrapper>
             <StyledInputWrapper>
               <StyledQuestionFont>비상 연락</StyledQuestionFont>
               <StyledAnswerFont marginLeft="180px">
-                010-0000-0000
+                {
+                  response?.data?.data?.parentProfileResponseDto
+                    ?.emergencyPhoneNumber
+                }
               </StyledAnswerFont>
             </StyledInputWrapper>
           </StyledRightWrapper>
@@ -79,51 +86,158 @@ export const ClassModal = () => {
   );
 };
 
-//반별 아이들 인원 등록 모달
-export const MemberAddModal = () => {
-  const [isChecked, setIsChecked] = useState(false);
-  const [selectedParent, setSelectedParent] = useState(null);
-
-  const handleCheckBoxChange = (e) => {
-    setIsChecked(e.target.checked);
-    if (e.target.checked) {
-      setSelectedParent({
-        name: "박병근",
-        phone: "010-9999-9999",
-        imgSrc:
-          "https://outlooksformen.com/sites/default/files/2020-09/testiminials-img-01.png",
-      });
-    } else {
-      setSelectedParent(null);
-    }
-  };
+// 학부모 아이 상세 조회 모달
+export const ClassParentModal = ({ response }) => {
   return (
     <StyledModalWrapper>
       <StyledChildrenProfileWrapper>
         <StyledLeftWrapper>
           <StyledProfileHeaderFont>원생 프로필</StyledProfileHeaderFont>
-          <StyledProfileImage
-            src={
-              "https://outlooksformen.com/sites/default/files/2020-09/testiminials-img-01.png"
-            }
+          <StyledProfileImage src={response?.data.data.profileImageUrl} />
+        </StyledLeftWrapper>
+        <StyledRightWrapper>
+          <StyledInputWrapper marginLeft="40px">
+            <StyledQuestionFont>이름 </StyledQuestionFont>
+            <StyledAnswerFont marginLeft="250px">
+              {response?.data.data.name}
+            </StyledAnswerFont>
+          </StyledInputWrapper>
+          <StyledInputWrapper marginLeft="40px">
+            <StyledQuestionFont>성별 </StyledQuestionFont>
+            <StyledAnswerFont>남자</StyledAnswerFont>
+          </StyledInputWrapper>
+          <StyledInputWrapper marginLeft="40px">
+            <StyledQuestionFont>생년월일 </StyledQuestionFont>
+            <StyledAnswerFont>{response?.data.data.birth}</StyledAnswerFont>
+          </StyledInputWrapper>
+        </StyledRightWrapper>
+      </StyledChildrenProfileWrapper>
+    </StyledModalWrapper>
+  );
+};
+
+//반별 아이들 인원 등록 모달
+export const MemberAddModal = () => {
+  const queryClient = useQueryClient();
+  const [checkParent, setCheckedParent] = useState({});
+  const [preview, setPreview] = useState("");
+  const [memberAdd, setMemberAdd] = useRecoilState(memberAtom);
+  const [parentAdd, setParentAdd] = useRecoilState(parentAtom);
+  const [isChecked, setIsChecked] = useState(false);
+  const [searchParent, setSearchParent] = useState("");
+  const memberinfor = useRecoilValue(memberAtom);
+  const parentInfor = useRecoilValue(parentAtom);
+
+  const { data } = useQuery(
+    ["searchParent", searchParent],
+    () => MemberAPI.getSearchParent(searchParent),
+    {
+      onSuccess: (data) => {
+        console.log(data.data);
+      },
+      onError: () => {
+        console.log("error");
+      },
+    }
+  );
+
+  //검색기능
+  const handleSearch = (e) => {
+    e.preventDefault();
+    setSearchParent(e.target.value);
+    queryClient.invalidateQueries(["searchParent", searchParent]);
+    console.log(data);
+  };
+
+  const saveImgFile = (e) => {
+    e.preventDefault();
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = () => {
+      setMemberAdd({ ...memberAdd, preview: reader.result });
+    };
+    setMemberAdd({ ...memberAdd, image: file });
+  };
+
+  const handleCheckBoxChange = (e, item) => {
+    setIsChecked(e.target.checked);
+    setCheckedParent({
+      ...checkParent,
+      [item.parentId]: e.target.checked,
+    });
+    if (e.target.checked) {
+      setParentAdd({
+        ...parentAdd,
+        parentId: item.parentId,
+        name: item.name,
+        phone: item.phoneNumber,
+        imgSrc: item.profileImageUrl,
+      });
+    } else {
+      setParentAdd(null);
+    }
+  };
+
+  return (
+    <StyledModalWrapper>
+      <StyledChildrenProfileWrapper>
+        <StyledLeftWrapper>
+          <StyledProfileHeaderFont>원생 프로필</StyledProfileHeaderFont>
+          {memberAdd.preview ? (
+            <StyledProfileImage src={memberAdd.preview} />
+          ) : (
+            <StyledProfileImg src={memberinfor.image} />
+          )}
+          <StyledAddInput
+            type="file"
+            name="upload-img"
+            id="upload-img"
+            accept="image/*"
+            aria-hidden="false"
+            tabIndex="0"
+            onChange={saveImgFile}
           />
-          <StyledProfileButton>이미지 추가</StyledProfileButton>
+          <StyledProfileButton htmlFor="upload-img" id="upload-img-label">
+            이미지 추가
+          </StyledProfileButton>
         </StyledLeftWrapper>
         <StyledRightWrapper>
           <StyledInputWrapper marginTop="20px">
             <StyledQuestionFont>이름 </StyledQuestionFont>
-            <StyledAnswerInputBox width="58px" height="32px" />
+            <StyledAnswerInputBox
+              width="58px"
+              height="32px"
+              value={memberinfor.name}
+              onChange={(e) =>
+                setMemberAdd({ ...memberAdd, name: e.target.value })
+              }
+            />
           </StyledInputWrapper>
           <StyledInputWrapper marginTop="15px">
             <StyledQuestionFont>성별 </StyledQuestionFont>
-            <StyledSelectBox>
-              <option value="남자">남자</option>
-              <option value="여자">여자</option>
+            <StyledSelectBox
+              onChange={(e) =>
+                setMemberAdd({ ...memberAdd, gender: e.target.value })
+              }
+              value={memberinfor.gender}
+            >
+              <option value=""></option>
+              <option value="MALE">남자</option>
+              <option value="FEMALE">여자</option>
             </StyledSelectBox>
           </StyledInputWrapper>
           <StyledInputWrapper marginTop="15px">
             <StyledQuestionFont>생년월일 </StyledQuestionFont>
-            <StyledAnswerInputBox width="109px" height="32px" />
+            <StyledAnswerInputBox
+              width="109px"
+              height="32px"
+              value={memberinfor.birth}
+              placeholder="2000-01-01"
+              onChange={(e) =>
+                setMemberAdd({ ...memberAdd, birth: e.target.value })
+              }
+            />
           </StyledInputWrapper>
           <StyledInputWrapper marginTop="25px">
             <StyledQuestionFont>등원시간 </StyledQuestionFont>
@@ -136,49 +250,71 @@ export const MemberAddModal = () => {
         </StyledRightWrapper>
       </StyledChildrenProfileWrapper>
       <StyledNote>특이사항</StyledNote>
-      <StyledInputBox width="560px" height="115px" />
+      <StyledInputBox
+        width="560px"
+        height="115px"
+        value={memberinfor.significant}
+        onChange={(e) =>
+          setMemberAdd({ ...memberAdd, significant: e.target.value })
+        }
+      />
       <StyledParentProfileWrapper>
         <StyledParentBox flexDirection="column" padding="0px">
           <StyledProfileHeaderFont marginTop="20px">
             학부모 등록
           </StyledProfileHeaderFont>
           <StyledInputWrapper marginTop="20px">
-            {selectedParent ? (
+            {isChecked || parentAdd.parentId > 0 ? (
               <>
-                <StyledCheckInformationBox marginLeft="12px">
+                <StyledCheckInformationBox
+                  marginLeft="12px"
+                  key={parentAdd.parentId}
+                  value={parentInfor.parentId}
+                >
                   <StyledProfileImage
                     width="40px"
                     height="40px"
                     marginTop="0px"
-                    src={selectedParent.imgSrc}
+                    src={parentAdd.imgSrc}
+                    value={parentInfor.imgSrc}
                   />
-                  <StyledParentName>{selectedParent.name}</StyledParentName>
-                  <StyledParentPhone>{selectedParent.phone}</StyledParentPhone>
+                  <StyledParentName value={parentInfor.name}>
+                    {parentAdd.name}
+                  </StyledParentName>
+                  <StyledParentPhone value={parentInfor.phone}>
+                    {parentAdd.phone}
+                  </StyledParentPhone>
                 </StyledCheckInformationBox>
               </>
             ) : (
               <StyledParentAddBox>학부모를 선택 해주세요</StyledParentAddBox>
             )}
-            <StyledSearchInput />
+            <StyledSearchInput
+              type="text"
+              onChange={handleSearch}
+              value={searchParent}
+            />
           </StyledInputWrapper>
           <StyledChoiceparentWrapper>
-            <StyledParentInformationBox>
-              <CheckBox
-                type="checkbox"
-                checked={isChecked}
-                onChange={handleCheckBoxChange}
-              />
-              <StyledProfileImage
-                width="40px"
-                height="40px"
-                marginTop="0px"
-                src={
-                  "https://outlooksformen.com/sites/default/files/2020-09/testiminials-img-01.png"
-                }
-              />
-              <StyledParentName>준수형</StyledParentName>
-              <StyledParentPhone>010-8888-8888</StyledParentPhone>
-            </StyledParentInformationBox>
+            {data?.data?.data?.map((item) => {
+              return (
+                <StyledParentInformationBox key={item.parentId}>
+                  <CheckBox
+                    type="checkbox"
+                    checked={checkParent[item.parentId] || false}
+                    onChange={(e) => handleCheckBoxChange(e, item)}
+                  />
+                  <StyledProfileImage
+                    width="40px"
+                    height="40px"
+                    marginTop="0px"
+                    src={item.profileImageUrl}
+                  />
+                  <StyledParentName>{item.name}</StyledParentName>
+                  <StyledParentPhone>{item.phoneNumber}</StyledParentPhone>
+                </StyledParentInformationBox>
+              );
+            })}
           </StyledChoiceparentWrapper>
         </StyledParentBox>
       </StyledParentProfileWrapper>
@@ -232,6 +368,70 @@ export const GallerySlider = ({ images }) => {
   );
 };
 
+// 반 관리 모달
+export const ClassMangeModal = () => {
+  const [isEditing, setIsEditing] = useState(false);
+
+  const handleModiftButton = () => {
+    setIsEditing(true);
+  };
+
+  const handleDeleteButton = () => {
+    if (
+      window.confirm(
+        "반을 삭제시 모든 데이터가 삭제됩니다. 그래도 삭제하십니까?"
+      )
+    ) {
+      alert("삭제되었습니다.");
+    } else {
+      alert("취소합니다.");
+    }
+  };
+
+  const handleConfirmButton = () => {
+    setIsEditing(false);
+  };
+
+  const handleCancelButton = () => {
+    setIsEditing(false);
+  };
+  return (
+    <>
+      <StyledClassAddModalWrapper>
+        <StyledClassMangeBox>
+          <StyledInputWrapper marginTop="10px">
+            <StyledClassMangeInput placeholder="반 이름을 적어주세요" />
+            <StlyedClassMangeAddButton>추가</StlyedClassMangeAddButton>
+          </StyledInputWrapper>
+          <StyledInputWrapper marginTop="10px">
+            {!isEditing ? (
+              <>
+                <StyledClassMangeDiv>세빛반</StyledClassMangeDiv>
+                <StyledClassMangeButtons onClick={handleModiftButton}>
+                  수정
+                </StyledClassMangeButtons>
+                <StyledClassMangeButtons onClick={handleDeleteButton}>
+                  삭제
+                </StyledClassMangeButtons>
+              </>
+            ) : (
+              <>
+                <StyledClassMangeInput />
+                <StyledClassMangeButtons onClick={handleConfirmButton}>
+                  확인
+                </StyledClassMangeButtons>
+                <StyledClassMangeButtons onClick={handleCancelButton}>
+                  취소
+                </StyledClassMangeButtons>
+              </>
+            )}
+          </StyledInputWrapper>
+        </StyledClassMangeBox>
+      </StyledClassAddModalWrapper>
+    </>
+  );
+};
+
 const StyledModalWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -269,6 +469,7 @@ const StyledInputWrapper = styled.div`
   align-items: center;
   margin-top: ${({ marginTop }) => marginTop || "30px"};
   justify-content: space-between;
+  margin-left: ${({ marginLeft }) => marginLeft};
 `;
 
 const StyledLeftWrapper = styled.div`
@@ -287,12 +488,15 @@ const StyledAnswerFont = styled.div`
   margin-left: ${({ marginLeft }) => marginLeft};
 `;
 
-const StyledProfileButton = styled.button`
+const StyledProfileButton = styled.label`
   ${textVariants.Body3_SemiBold}
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border: 1px solid ${({ theme }) => theme.color.grayScale[200]};
   background: ${({ theme }) => theme.color.white};
   border-radius: 2px;
-  padding: 4px;
+  padding: 10px;
   color: ${({ theme }) => theme.color.grayScale[500]};
   margin-top: 10px;
 `;
@@ -346,6 +550,9 @@ const StyledAnswerInputBox = styled.input`
   border-radius: 2px;
   outline: none;
   background-color: ${({ theme }) => theme.color.grayScale[50]};
+  ::placeholder {
+    text-align: center;
+  }
 `;
 
 const StyledSelectBox = styled.select`
@@ -491,4 +698,96 @@ const StlyedSlideButton = styled.button`
   background: ${({ theme }) => theme.color.grayScale[100]};
   border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.color.grayScale[100]};
+`;
+
+const StyledAddInput = styled.input`
+  display: none;
+`;
+
+const StyledProfileImg = styled.img`
+  width: 120px;
+  height: 120px;
+  background: ${({ theme }) => theme.color.grayScale[300]};
+  border-radius: 70%;
+  margin-top: 20px;
+`;
+
+const StyledClassAddModalWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: start;
+`;
+
+const StyleNoteBox = styled.div`
+  ${textVariants.Body1_Medium}
+  color: ${({ theme }) => theme.color.grayScale[600]};
+  width: 560px;
+  height: 115px;
+  border: 0;
+  border-radius: 4px;
+  outline: none;
+  background-color: ${({ theme }) => theme.color.grayScale[50]};
+  margin-top: 10px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+`;
+
+const StyledClassMangeBox = styled.div`
+  width: 424px;
+  height: 380px;
+  border: none;
+  border-top: 1px solid ${({ theme }) => theme.color.grayScale[400]};
+  border-bottom: 1px solid ${({ theme }) => theme.color.grayScale[400]};
+  display: flex;
+  flex-direction: column;
+`;
+
+const StyledClassMangeInput = styled.input`
+  width: 300px;
+  height: 32px;
+  background: ${({ theme }) => theme.color.grayScale[50]};
+  border: 1px solid ${({ theme }) => theme.color.grayScale[200]};
+  border-radius: 4px;
+  padding: 4px 12px;
+`;
+
+const StlyedClassMangeAddButton = styled.button`
+  ${textVariants.Body1_SemiBold}
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 113px;
+  height: 32px;
+  background: ${({ theme }) => theme.color.white};
+  border: 1px solid ${({ theme }) => theme.color.primary};
+  border-radius: 4px;
+  color: ${({ theme }) => theme.color.primary};
+`;
+
+const StyledClassMangeButtons = styled.button`
+  ${textVariants.Body1_SemiBold}
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 52px;
+  height: 32px;
+  background: ${({ theme }) => theme.color.white};
+  border: 1px solid ${({ theme }) => theme.color.grayScale[400]};
+  border-radius: 4px;
+  color: ${({ theme }) => theme.color.grayScale[400]};
+`;
+
+const StyledClassMangeDiv = styled.div`
+  ${textVariants.Body1_SemiBold}
+  width: 300px;
+  height: 32px;
+  background: ${({ theme }) => theme.color.grayScale[50]};
+  border: 1px solid ${({ theme }) => theme.color.grayScale[200]};
+  border-radius: 4px;
+  padding: 4px 12px;
+  color: ${({ theme }) => theme.color.grayScale[600]};
+  display: flex;
+  align-items: center;
 `;

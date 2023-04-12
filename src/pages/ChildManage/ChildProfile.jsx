@@ -1,8 +1,8 @@
 import { useState } from "react";
 import styled from "styled-components";
-import textVariants from "../../styles/variants/textVariants";
 import { DUMMY_PROFILE_IMG_SRC } from "../../assets";
 import StyledChildManage from "./styled";
+import AutoResizeInput from "../../components/AutoResizeInput";
 
 const ChildProfile = () => {
   const [isFixMode, setIsFixMode] = useState(true);
@@ -19,15 +19,15 @@ const ChildProfile = () => {
         <StyledProfile.InfoBox>
           <li>
             <StyledChildManage.SubTitle>이름</StyledChildManage.SubTitle>
-            <span>김민재</span>
+            <AutoResizeInput defaultValue="김민재" readOnly={isFixMode} />
           </li>
           <li>
             <StyledChildManage.SubTitle>성별</StyledChildManage.SubTitle>
-            <span>남자</span>
+            <AutoResizeInput defaultValue="남자" readOnly={isFixMode} />
           </li>
           <li>
             <StyledChildManage.SubTitle>생년월일</StyledChildManage.SubTitle>
-            <span>2015.12.07</span>
+            <AutoResizeInput defaultValue="2015.12.07" readOnly={isFixMode} />
           </li>
         </StyledProfile.InfoBox>
       </StyledProfile.ProfileBox>
@@ -68,15 +68,8 @@ const StyledProfile = {
       align-items: center;
     }
 
-    p,
-    span {
+    p {
       padding: 10px;
-    }
-
-    span {
-      ${textVariants.Body1_SemiBold}
-      color: ${({ theme }) => theme.color.grayScale[500]};
-      background-color: ${({ theme }) => theme.color.grayScale[50]};
     }
   `,
 

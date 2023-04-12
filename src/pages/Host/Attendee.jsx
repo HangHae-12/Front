@@ -10,7 +10,7 @@ const Attendee = ({ classData }) => {
   const todayString = `${year}.${month}.${day}`;
   const dayOfWeek = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'][today.getDay()];
 
-  // console.log(classData);
+
   return (
     <StyledInfoContainer>
       <StyledInfoColomn>
@@ -19,24 +19,24 @@ const Attendee = ({ classData }) => {
       </StyledInfoColomn>
       <StyledInfoRow>
         <StyledInfoLabel>총원</StyledInfoLabel>
-        <StyledInfoValue>{classData?.data?.totalNumber}</StyledInfoValue>
+        <StyledInfoValue>{classData?.total}</StyledInfoValue>
         <StyleddateLabel>명</StyleddateLabel>
       </StyledInfoRow>
       <StyledInfoRow>
         <StyledInfoLabel>등원</StyledInfoLabel>
-        <StyledInfoValue>{classData?.data?.notEnterNumber}</StyledInfoValue>
+        <StyledInfoValue>{classData?.entered}</StyledInfoValue>
         <StyleddateLabel>명</StyleddateLabel>
       </StyledInfoRow>
       <StyledInfoRow>
         <StyledInfoLabel>미등원</StyledInfoLabel>
-        <StyledInfoValue>{classData?.data?.exitNumber}</StyledInfoValue>
+        <StyledInfoValue>{classData?.notEntered}</StyledInfoValue>
         <StyleddateLabel>명</StyleddateLabel>
       </StyledInfoRow>
-      {/* <StyledInfoRow>
-          <StyledInfoLabel>결석</StyledInfoLabel>
-          <StyledInfoValue>{data.totalNumber}</StyledInfoValue>
-          <StyleddateLabel>명</StyleddateLabel>
-        </StyledInfoRow> */}
+      <StyledInfoRow>
+        <StyledInfoLabel>하원</StyledInfoLabel>
+        <StyledInfoValue>{classData?.exited}</StyledInfoValue>
+        <StyleddateLabel>명</StyleddateLabel>
+      </StyledInfoRow>
     </StyledInfoContainer>
   );
 };
@@ -47,7 +47,7 @@ const StyledInfoContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   align-items: center;
-  margin: 64px auto;
+  margin: 24px auto;
   border: 2px solid ${({ theme }) => theme.color.grayScale[200]};
   box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.04);
   border-radius: 12px;
