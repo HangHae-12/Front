@@ -1,7 +1,8 @@
 import styled from "styled-components";
-import SideBar from "../../components/SideBar";
+import SideBar from "../../../components/SideBar";
 import Table from "./Table"
-const Host = () => {
+
+const MonthTable = () => {
 
   return (
     <StyledContainer>
@@ -15,7 +16,7 @@ const Host = () => {
   );
 };
 
-export default Host;
+export default MonthTable;
 
 const StyledContainer = styled.div`
   display: flex;

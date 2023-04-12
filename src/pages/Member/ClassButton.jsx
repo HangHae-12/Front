@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import TeacherInformation from "./TeacherInformation";
@@ -6,63 +6,110 @@ import { MemberAPI } from "../../api/MemberAPI";
 import ClassMember from "./ClassMember";
 import Gallery from "./Gallery";
 import Button from "../../components/Button";
+import { BsFillGearFill } from "react-icons/bs";
 import textVariants from "../../styles/variants/textVariants";
 import Buttons from "../../components/Buttons";
-import { useMutation,useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
+import { ClassMangeModal } from "./ClassModal";
+import useModal from "../../hooks/useModal";
+import Modal from "../../components/Modal";
+import { useRecoilValue } from "recoil";
+import { userProfileAtom } from "../../atom/sideBarAtom";
 
 const ClassButton = () => {
-  const queryClient = useQueryClient();
   const [selectedButton, setSelectedButton] = useState("");
   const [selectedTab, setSelectedTab] = useState("");
+  const { openModal, closeModal } = useModal();
   const { id } = useParams();
-  const [data, setData] = useState("")
+  const userRole = useRecoilValue(userProfileAtom);
 
-  // const { data } = useQuery(
-  //   ["classesPage"],
-  //   () => MemberAPI.getClassesMember(id),
-  //   {
-  //     onSuccess: (data) => {
-  //       console.log(data);
-  //     },
-  //     onError: () => {
-  //       console.log("error");
-  //     },
-  //   }
-  // );
+  const { data } = useQuery(
+    ["classesPage", id],
+    () => MemberAPI.getClassesPage(id),
+    {
+      onSuccess: (data) => {
+        console.log(data);
+      },
+      onError: () => {
+        console.log("error");
+      },
+    }
+  );
 
-  const getClassesPageMutation = useMutation(MemberAPI.getClassesPage, {
-    onSuccess: (response) => {
-      setData(response)
-      console.log(response);
-    },
-    onError: (response) => {
-      console.log(response);
-    },
-  })
+  const modalOption = {
+    padding: "20px",
+      width: "660px",
+      height: "837px",
+  };
+
+  const setClassModal = () => {
+    const modalData = {
+      title: <StyledClassMangeHeader>반 관리</StyledClassMangeHeader>,
+      contents: <ClassMangeModal />,
+      footer: null,
+      callback: () => alert("modal"),
+    };
+    openModal(modalData);
+  };
+
+  useEffect(() => {
+    if (id === undefined || id === "") {
+      navigate("/classes/1");
+    }
+  }, [id]);
+
+  useEffect(() => {
+    const storedSelectedTab = localStorage.getItem("selectedTab");
+    if (storedSelectedTab) {
+      setSelectedTab(storedSelectedTab);
+    } else {
+      setSelectedTab("member");
+    }
+  }, []);
+
+  useEffect(() => {
+    setSelectedButton(idToButtonName(id));
+  }, [id]);
+
+  const idToButtonName = (id) => {
+    switch (id) {
+      case "1":
+        return "세빛반";
+      case "2":
+        return "둥둥반";
+      case "3":
+        return "빛살반";
+      default:
+        return "세빛반";
+    }
+  };
 
   const handleMemberClick = () => {
     setSelectedTab("member");
+    localStorage.setItem("selectedTab", "member");
   };
 
   const handleGalleryClick = () => {
     setSelectedTab("gallery");
+    localStorage.setItem("selectedTab", "gallery");
   };
 
   const navigate = useNavigate();
 
-  const handleButtonClick = async (selected, id) => {
+  const handleButtonClick = (selected, id) => {
     setSelectedButton(selected);
-    getClassesPageMutation.mutate(id);
     navigate(`/classes/${id}`);
-    // queryClient.invalidateQueries("classesPage");
-    // const newData = await MemberAPI.getClassesPage(id);
-    // setData(newData);
   };
 
   return (
     <>
-      <StyledHeaderFont>학급관리</StyledHeaderFont>
+      <StyledInputWrapper>
+        <StyledHeaderFont>학급관리</StyledHeaderFont>
+        {userRole.role === "PRINCIPAL" ? (
+          <StyledGearButton marginLeft="5px" onClick={setClassModal} />
+        ) : null}
+      </StyledInputWrapper>
       <StyledButtonWrapper>
         <Button.ClassButton
           selected={"세빛반"}
@@ -80,26 +127,35 @@ const ClassButton = () => {
           onClick={() => handleButtonClick("빛살반", 3)}
         />
       </StyledButtonWrapper>
-      <TeacherInformation data={data}/>
+      <TeacherInformation data={data} />
       {selectedTab === "member" ? (
-        <StyledABBtn marginLeft="30px" onClick={handleMemberClick}>학급인원</StyledABBtn>
+        <StyledABBtn marginLeft="30px" onClick={handleMemberClick}>
+          학급인원
+        </StyledABBtn>
       ) : (
-        <StyledABButton marginLeft="30px" onClick={handleMemberClick}>학급인원</StyledABButton>
+        <StyledABButton marginLeft="30px" onClick={handleMemberClick}>
+          학급인원
+        </StyledABButton>
       )}
       {selectedTab === "gallery" ? (
-        <StyledABBtn marginLeft="10px" onClick={handleGalleryClick}>갤러리</StyledABBtn>
+        <StyledABBtn marginLeft="10px" onClick={handleGalleryClick}>
+          갤러리
+        </StyledABBtn>
       ) : (
-        <StyledABButton marginLeft="10px" onClick={handleGalleryClick}>갤러리</StyledABButton>
+        <StyledABButton marginLeft="10px" onClick={handleGalleryClick}>
+          갤러리
+        </StyledABButton>
       )}
       {selectedTab === "member" ? (
         <ClassMember />
       ) : selectedTab === "gallery" ? (
         <Gallery />
       ) : selectedTab === "" ? (
-        <StyledChildrenWrapper />
+        <ClassMember />
       ) : (
-        <StyledChildrenWrapper />
+        <ClassMember />
       )}
+      <Modal modalOption={modalOption} />
     </>
   );
 };
@@ -130,16 +186,23 @@ const StyledABButton = styled(Buttons.AB)`
   border-radius: 4px 4px 0px 0px;
 `;
 
-const StyledChildrenWrapper = styled.div`
-  padding: 0px 0px 20px;
-  gap: 40px;
-  width: calc(7 * (190px + 15px));
-  height: 484px;
-  background: rgba(237, 245, 238, 0.8);
-  border-radius: 12px;
+const StyledGearButton = styled(BsFillGearFill)`
+  width: 12px;
+  height: 12px;
+  color: ${({ theme }) => theme.color.grayScale[500]};
+  margin-left: ${({ marginLeft }) => marginLeft};
+`;
 
-  @media (max-width: 1800px) {
-    width: calc(7 * (140px + 15px));
-    height: 360px;
-  }
+const StyledInputWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  margin-left: ${({ marginLeft }) => marginLeft};
+`;
+
+const StyledClassMangeHeader = styled.div`
+  ${textVariants.Body1_Bold}
+  color: ${({ theme }) => theme.color.grayScale[700]};
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;

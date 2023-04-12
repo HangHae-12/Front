@@ -1,26 +1,44 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import Button from "../../components/Button";
-import { useSetRecoilState, useRecoilValue } from "recoil";
-import { scheduledIdAtom, classIdAtom, timeAtom } from "../../atom/hostButtonAtom";
+import { useSetRecoilState } from "recoil";
+import { scheduledIdAtom, timeAtom, paginationAtom } from "../../atom/hostButtonAtom";
 
-const ClassButton = () => {
-    const setClassId = useSetRecoilState(classIdAtom);
+const ClassButton = ({ hostParams }) => {
+    const { classroomId = 0 } = useParams();
+    const setPage = useSetRecoilState(paginationAtom);
     const setScheduleId = useSetRecoilState(scheduledIdAtom);
     const setTime = useSetRecoilState(timeAtom);
     const navigate = useNavigate();
     const [selectedButton, setSelectedButton] = useState("모든반");
-
-
+    const queryClient = useQueryClient();
+    useEffect(() => {
+        switch (classroomId) {
+            case "1":
+                setSelectedButton("새빛반");
+                break;
+            case "2":
+                setSelectedButton("동동반");
+                break;
+            case "3":
+                setSelectedButton("빗살반");
+                break;
+            default:
+                setSelectedButton("모든반");
+                break;
+        }
+    }, [classroomId]);
 
     const loadClassroom = (selected, id) => {
         setSelectedButton(selected);
-        setClassId(id);
         setScheduleId("ENTER");
-        setTime("전체시간");
-        navigate(`/host/${id}/ENTER/전체시간`)
+        setTime(0);
+        setPage(1);
+        navigate(`/host/${id}/ENTER/0`, () => {
+            queryClient.invalidateQueries(["getManageTimeSchedule", hostParams]);
+        });
     };
 
     return (

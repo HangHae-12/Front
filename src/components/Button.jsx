@@ -3,9 +3,10 @@ import textVariants from "../styles/variants/textVariants";
 
 const Button = {
   ClassButton: ({ selected, onClick, selectedButton }) => {
+    const isSelected = selected === selectedButton;
     return (
       <StyledClassButton
-        selected={selected === selectedButton}
+        isSelected={isSelected}
         onClick={onClick}
       >
         {selected}
@@ -13,15 +14,16 @@ const Button = {
     );
   },
 
-  NormalButton: () => {},
+  NormalButton: () => { },
 };
+
 
 export default Button;
 const StyledClassButton = styled.button`
   ${textVariants.Body1_Bold}
   background-color: ${({ theme }) => theme.color.white};
-  color: ${({ theme, selected }) =>
-    selected ? theme.color.primary : theme.color.grayScale[300]};
+  color: ${({ theme, isSelected }) =>
+    isSelected ? theme.color.primary : theme.color.grayScale[300]};
   border: none;
   padding: 10px;
   margin-left: auto;
@@ -47,7 +49,7 @@ const StyledClassButton = styled.button`
     bottom: -2px;
     width: calc(100% - 15px);
     height: 2px;
-    background-color: ${({ theme, selected }) =>
-      selected ? theme.color.primary : theme.color.grayScale[300]};
+    background-color: ${({ theme, isSelected }) =>
+    isSelected ? theme.color.primary : theme.color.grayScale[300]};
   }
 `;

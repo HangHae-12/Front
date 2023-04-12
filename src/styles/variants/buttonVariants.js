@@ -4,9 +4,9 @@ import textVariants from "./textVariants";
 const buttonVariants = {
   Attendance: css`
     ${textVariants.Body1_SemiBold}
-    width: 172px;
-    height: 40px;
-    padding: 8px 10px;
+    width: 137.6px;
+    height: 36.8px;
+    padding: 6.4px 8px;
     border-radius: 8px;
   `,
 
@@ -20,9 +20,9 @@ const buttonVariants = {
 
   NB_Button: css`
     ${textVariants.H3_SemiBold}
-    width: 200px;
+    width: 160px;
     height: 46px;
-    padding: 12px 10px;
+    padding: 8px 20px;
     border-radius: 4px;
   `,
 
@@ -35,13 +35,16 @@ const buttonVariants = {
 
   Time_Button: css`
     ${textVariants.Body1_SemiBold}
-    width: 140px;
-    padding: 8px 12px;
+    width: 120px;
+    height: 32px;
+    padding: 4px 8px;
     border-radius: 24px;
   `,
 
   AB_Button: css`
-    ${textVariants.H3_SemiBold}
+    ${textVariants.Body1_SemiBold}
+    width: 83px;
+    height: 40px;
     padding: 12px 20px;
   `,
 };
