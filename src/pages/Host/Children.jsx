@@ -117,12 +117,16 @@ const StyledStudentGrid = styled.div`
   align-items: center;
   grid-template-columns: repeat(5, 1fr);
   grid-template-rows: auto; 
-  grid-gap: 12px;
+  grid-gap: 16px;
   margin-top: 24px;
 
   @media ${({ theme }) => theme.device.mobile} {
     grid-template-columns: repeat(3, 1fr); // 가로로 2개씩
-    grid-template-rows: repeat(8, auto); // 세로로 8개씩
+    grid-template-rows: auto; 
+  }
+  @media ${({ theme }) => theme.device.desktop} {
+    grid-template-columns: repeat(7, 1fr); 
+    grid-template-rows: repeat(2, auto); 
   }
 `;
 
