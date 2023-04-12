@@ -8,12 +8,13 @@ import "react-datepicker/dist/react-datepicker.css";
 import Modal from "../../components/Modal";
 import useModal from "../../hooks/useModal";
 import { IoIosAdd } from "react-icons/io";
-import { AiFillAppstore } from "react-icons/ai";
+import { AiFillAppstore, AiOutlineSearch } from "react-icons/ai";
 import Buttons from "../../components/Buttons";
 import textVariants from "../../styles/variants/textVariants";
 import { GallerySlider } from "./ClassModal";
-import { useRecoilState } from "recoil";
+import { useRecoilValue, useRecoilState } from "recoil";
 import { modalAtom } from "../../atom/modalAtoms";
+import { userProfileAtom } from "../../atom/sideBarAtom";
 import CustomPagination from "../../components/CustomPagination";
 
 const Gallery = () => {
@@ -32,6 +33,7 @@ const Gallery = () => {
   const [title, setTitle] = useState("");
   const [modalState, setModalState] = useRecoilState(modalAtom);
   const [imageUrlList, setImageUrlList] = useState([]);
+  const userRole = useRecoilValue(userProfileAtom);
 
   const { data } = useQuery(
     [
@@ -502,10 +504,15 @@ const Gallery = () => {
           <Buttons.Filter colorTypes="primary" onClick={handleDateSearch}>
             적용하기
           </Buttons.Filter>
-          <SyledAddGalleryButton onClick={createGallery}>
-            사진 등록
-          </SyledAddGalleryButton>
-          <StyledGallerySearchInput onChange={handleSearch} />
+          {userRole.role === "PRINCIPAL" || userRole.role === "TEACHER" ? (
+            <SyledAddGalleryButton onClick={createGallery}>
+              사진 등록
+            </SyledAddGalleryButton>
+          ) : null}
+          <StyledSearchWrapper>
+            <StyledGallerySearchInput onChange={handleSearch} />
+            <StyledInputIcon />
+          </StyledSearchWrapper>{" "}
         </StyledGalleryHeader>
         <StyledGalleryContainer>
           {data?.data.data.imagePostResponseDtoList.map((item) => {
@@ -693,7 +700,14 @@ const StyledPreviewImage = styled.img`
 `;
 
 const StyledDatePicker = styled(DatePicker)`
+  border: 1px solid ${({ theme }) => theme.color.primary};
+  padding: 10px;
+  border-radius: 4px;
   margin-left: 7px;
+  width: 124px;
+  height: 32px;
+  color: ${({ theme }) => theme.color.primary};
+  text-align: center;
 `;
 
 const StyledDatePickerWrapper = styled.div`
@@ -711,7 +725,12 @@ const SyledAddGalleryButton = styled.button`
 `;
 
 const StyledGallerySearchInput = styled.input`
-  margin-left: 10px;
+  width: 200px;
+  height: 32px;
+  margin-left: 12px;
+  padding: 3px;
+  border: 1px solid ${({ theme }) => theme.color.grayScale[100]};
+  border-radius: 4px;
 `;
 
 const StyledGalleryModalHeader = styled.div`
@@ -754,4 +773,17 @@ const StyledButtonWrapper = styled.div`
   flex-direction: row;
   align-items: center;
   float: right;
+`;
+
+const StyledSearchWrapper = styled.div`
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 200px;
+  height: 32px;
+`;
+
+const StyledInputIcon = styled(AiOutlineSearch)`
+  position: absolute;
+  right: 15px;
 `;

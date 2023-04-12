@@ -2,10 +2,10 @@ import React from "react";
 import styled from "styled-components";
 import textVariants from "../styles/variants/textVariants";
 import { useRecoilValue } from "recoil";
-import { useProfileAtom } from "../atom/sideBarAtom";
+import { userProfileAtom } from "../atom/sideBarAtom";
 
 const UserProfileModal = () => {
-  const userProfile = useRecoilValue(useProfileAtom);
+  const userProfile = useRecoilValue(userProfileAtom);
   return (
     <StyledModalWrapper>
       {userProfile.role === "TEACHER" ? (

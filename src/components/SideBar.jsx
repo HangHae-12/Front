@@ -12,10 +12,10 @@ import UserProfileModal from "./UserProfileModal";
 import { useQuery } from "@tanstack/react-query";
 import { SideBarAPI } from "../api/SideBarAPI";
 import { useRecoilState } from "recoil";
-import { useProfileAtom } from "../atom/sideBarAtom";
+import { userProfileAtom } from "../atom/sideBarAtom";
 
 const SideBar = () => {
-  const [userProfile, setUserProfile] = useRecoilState(useProfileAtom);
+  const [userProfile, setUserProfile] = useRecoilState(userProfileAtom);
   const [showAttendanceMenu, setShowAttendanceMenu] = useState(false);
   const { openModal } = useModal();
 

@@ -9,6 +9,7 @@ export const memberAtom = atom({
     significant: "",
     gender:"",
     image: "",
+    preview: "",
   },
 });
 

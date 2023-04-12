@@ -12,6 +12,8 @@ import { useRecoilValue, useRecoilState } from "recoil";
 import { modalAtom } from "../../atom/modalAtoms";
 import { memberAtom, parentAtom } from "../../atom/memberAtom";
 import Buttons from "../../components/Buttons";
+import { userProfileAtom } from "../../atom/sideBarAtom";
+import { AiOutlineSearch } from "react-icons/ai";
 
 const ClassMember = () => {
   const queryClient = useQueryClient();
@@ -27,6 +29,7 @@ const ClassMember = () => {
   const [parentAdd, setParentAdd] = useRecoilState(parentAtom);
   const [isChildModify, setIsChildModify] = useState(false);
   const [isChildAdd, setIsChildAdd] = useState(false);
+  const userRole = useRecoilValue(userProfileAtom);
   const [modalOption, setmodalOption] = useState({
     padding: "",
     width: "",
@@ -101,7 +104,7 @@ const ClassMember = () => {
     }));
     setParentAdd((prev) => ({
       ...prev,
-      //   // parentId: response.data.data.parentProfileResponseDto,
+      parentId: response.data.data.parentProfileResponseDto.parentId,
       name: response.data.data.parentProfileResponseDto.name,
       phone: response.data.data.parentProfileResponseDto.phoneNumber,
       imgSrc: response.data.data.parentProfileResponseDto.profileImageUrl,
@@ -118,26 +121,41 @@ const ClassMember = () => {
     });
     return {
       title: <StyledModalHeader>인원정보</StyledModalHeader>,
-      contents: <ClassModal response={response} />,
-      // <ClassParentModal response={response} />,
+      contents: (
+        <>
+          {userRole.role === "PRINCIPAL" || userRole.role === "TEACHER" ? (
+            <ClassModal response={response} />
+          ) : (
+            <ClassParentModal response={response} />
+          )}
+        </>
+      ),
       footer: (
-        <StyledModalButton
-          onClick={() => handleClickModify(response.data.data)}
-        >
-          수정하기
-        </StyledModalButton>
+        <>
+          {userRole.role === "PRINCIPAL" || userRole.role === "TEACHER" ? (
+            <StyledModalButton
+              onClick={() => handleClickModify(response.data.data)}
+            >
+              수정하기
+            </StyledModalButton>
+          ) : null}
+        </>
       ),
       callback: () => alert("modal"),
+      onClose: () => {
+        setMemberAdd("");
+        setParentAdd("");
+      },
     };
   };
 
   //반별 아이들 인원 수정 모달
-  const handleClickModify = (response) => {
+  const handleClickModify = () => {
     setIsChildModify(true);
     setModalState((prevState) => ({
       ...prevState,
       title: <StyledModalHeader>인원수정</StyledModalHeader>,
-      contents: <MemberAddModal response={response} />,
+      contents: <MemberAddModal />,
       footer: (
         <>
           <Buttons.Filter
@@ -149,7 +167,11 @@ const ClassMember = () => {
         </>
       ),
       callback: () => alert("modal"),
-      onClose: () => setIsChildModify(false),
+      onClose: () => {
+        setIsChildModify(false);
+        setMemberAdd("");
+        setParentAdd("");
+      },
     }));
   };
 
@@ -160,7 +182,11 @@ const ClassMember = () => {
     formData.append("birth", memberinfor.birth);
     formData.append("significant", memberinfor.significant);
     formData.append("gender", memberinfor.gender);
-    formData.append("image", memberinfor.image);
+    {
+      memberinfor.image[0] === "h"
+        ? formData.append("image", "null")
+        : formData.append("image", memberinfor.image);
+    }
     formData.append("parentId", parentinfor.parentId);
     formData.append("dailyEnterTime", "07시~08시");
     formData.append("dailyExitTime", "16시~17시");
@@ -243,14 +269,19 @@ const ClassMember = () => {
           <StyledPersonnelFont>
             총원 {data?.data?.data?.childrenCount}명
           </StyledPersonnelFont>
-          <StyledAddMemberButton onClick={setChildInformation}>
-            인원 등록
-          </StyledAddMemberButton>
-          <StyledMemberSearchInput
-            type="text"
-            onChange={handleSearch}
-            value={searchMember}
-          ></StyledMemberSearchInput>
+          {userRole.role === "PRINCIPAL" || userRole.role === "TEACHER" ? (
+            <StyledAddMemberButton onClick={setChildInformation}>
+              인원 등록
+            </StyledAddMemberButton>
+          ) : null}
+          <StyledSearchWrapper>
+            <StyledMemberSearchInput
+              type="text"
+              onChange={handleSearch}
+              value={searchMember}
+            ></StyledMemberSearchInput>
+            <StyledInputIcon />
+          </StyledSearchWrapper>{" "}
         </StyledChildernHeader>
         <StyledChildrenContainer>
           {data?.data?.data?.childResponseDtoList?.map((item) => {
@@ -352,7 +383,12 @@ const StyledAddMemberButton = styled.button`
 `;
 
 const StyledMemberSearchInput = styled.input`
+  width: 200px;
+  height: 32px;
   margin-left: 10px;
+  padding: 3px;
+  border: 1px solid ${({ theme }) => theme.color.grayScale[100]};
+  border-radius: 4px;
 `;
 
 const StyledModalHeader = styled.div`
@@ -370,4 +406,17 @@ const StyledModalButton = styled.button`
   border-radius: 4px;
   background: ${({ theme }) => theme.color.grayScale[50]};
   border: 1px solid ${({ theme }) => theme.color.grayScale[300]}; ;
+`;
+
+const StyledSearchWrapper = styled.div`
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 200px;
+  height: 32px;
+`;
+
+const StyledInputIcon = styled(AiOutlineSearch)`
+  position: absolute;
+  right: 15px;
 `;

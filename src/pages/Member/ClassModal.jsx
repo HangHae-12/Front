@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import textVariants from "../../styles/variants/textVariants";
 import { memberAtom, parentAtom } from "../../atom/memberAtom";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { MemberAPI } from "../../api/MemberAPI";
 
@@ -45,6 +45,7 @@ export const ClassModal = ({ response }) => {
           <StyledLeftWrapper>
             <StyledProfileHeaderFont>학부모 프로필</StyledProfileHeaderFont>
             <StyledProfileImage
+              marginTop="40px"
               src={
                 response?.data?.data?.parentProfileResponseDto?.profileImageUrl
               }
@@ -116,7 +117,7 @@ export const ClassParentModal = ({ response }) => {
 };
 
 //반별 아이들 인원 등록 모달
-export const MemberAddModal = ({ response }) => {
+export const MemberAddModal = () => {
   const queryClient = useQueryClient();
   const [checkParent, setCheckedParent] = useState({});
   const [preview, setPreview] = useState("");
@@ -124,6 +125,8 @@ export const MemberAddModal = ({ response }) => {
   const [parentAdd, setParentAdd] = useRecoilState(parentAtom);
   const [isChecked, setIsChecked] = useState(false);
   const [searchParent, setSearchParent] = useState("");
+  const memberinfor = useRecoilValue(memberAtom);
+  const parentInfor = useRecoilValue(parentAtom);
 
   const { data } = useQuery(
     ["searchParent", searchParent],
@@ -152,10 +155,9 @@ export const MemberAddModal = ({ response }) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onloadend = () => {
-      setPreview(reader.result);
+      setMemberAdd({ ...memberAdd, preview: reader.result });
     };
     setMemberAdd({ ...memberAdd, image: file });
-    console.log(preview);
   };
 
   const handleCheckBoxChange = (e, item) => {
@@ -182,10 +184,10 @@ export const MemberAddModal = ({ response }) => {
       <StyledChildrenProfileWrapper>
         <StyledLeftWrapper>
           <StyledProfileHeaderFont>원생 프로필</StyledProfileHeaderFont>
-          {preview ? (
-            <StyledProfileImage src={preview} />
+          {memberAdd.preview ? (
+            <StyledProfileImage src={memberAdd.preview} />
           ) : (
-            <StyledProfileImg value={response?.profileImageUrl} />
+            <StyledProfileImg src={memberinfor.image} />
           )}
           <StyledAddInput
             type="file"
@@ -206,7 +208,7 @@ export const MemberAddModal = ({ response }) => {
             <StyledAnswerInputBox
               width="58px"
               height="32px"
-              value={response?.name}
+              value={memberinfor.name}
               onChange={(e) =>
                 setMemberAdd({ ...memberAdd, name: e.target.value })
               }
@@ -218,7 +220,7 @@ export const MemberAddModal = ({ response }) => {
               onChange={(e) =>
                 setMemberAdd({ ...memberAdd, gender: e.target.value })
               }
-              value={response?.gender}
+              value={memberinfor.gender}
             >
               <option value=""></option>
               <option value="MALE">남자</option>
@@ -230,7 +232,7 @@ export const MemberAddModal = ({ response }) => {
             <StyledAnswerInputBox
               width="109px"
               height="32px"
-              value={response?.birth}
+              value={memberinfor.birth}
               placeholder="2000-01-01"
               onChange={(e) =>
                 setMemberAdd({ ...memberAdd, birth: e.target.value })
@@ -251,7 +253,7 @@ export const MemberAddModal = ({ response }) => {
       <StyledInputBox
         width="560px"
         height="115px"
-        value={response?.significant}
+        value={memberinfor.significant}
         onChange={(e) =>
           setMemberAdd({ ...memberAdd, significant: e.target.value })
         }
@@ -262,27 +264,24 @@ export const MemberAddModal = ({ response }) => {
             학부모 등록
           </StyledProfileHeaderFont>
           <StyledInputWrapper marginTop="20px">
-            {isChecked ? (
+            {isChecked || parentAdd.parentId > 0 ? (
               <>
                 <StyledCheckInformationBox
                   marginLeft="12px"
                   key={parentAdd.parentId}
+                  value={parentInfor.parentId}
                 >
                   <StyledProfileImage
                     width="40px"
                     height="40px"
                     marginTop="0px"
                     src={parentAdd.imgSrc}
-                    value={response?.parentProfileResponseDto?.profileImageUrl}
+                    value={parentInfor.imgSrc}
                   />
-                  <StyledParentName
-                    value={response?.parentProfileResponseDto?.name}
-                  >
+                  <StyledParentName value={parentInfor.name}>
                     {parentAdd.name}
                   </StyledParentName>
-                  <StyledParentPhone
-                    value={response?.parentProfileResponseDto?.phoneNumber}
-                  >
+                  <StyledParentPhone value={parentInfor.phone}>
                     {parentAdd.phone}
                   </StyledParentPhone>
                 </StyledCheckInformationBox>
@@ -721,6 +720,8 @@ const StyledClassAddModalWrapper = styled.div`
 `;
 
 const StyleNoteBox = styled.div`
+  ${textVariants.Body1_Medium}
+  color: ${({ theme }) => theme.color.grayScale[600]};
   width: 560px;
   height: 115px;
   border: 0;
@@ -729,6 +730,7 @@ const StyleNoteBox = styled.div`
   background-color: ${({ theme }) => theme.color.grayScale[50]};
   margin-top: 10px;
   align-items: center;
+  justify-content: center;
   display: flex;
 `;
 

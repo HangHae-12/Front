@@ -10,7 +10,7 @@ export const kindergartenAtom = atom({
     },
 });
 
-export const useProfileAtom = atom({
+export const userProfileAtom = atom({
     key: "userProfile",
     default: {
         birthday: "",
