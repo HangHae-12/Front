@@ -36,7 +36,7 @@ const ClassButton = ({ hostParams }) => {
         setScheduleId("ENTER");
         setTime(0);
         setPage(1);
-        navigate(`/host/${id}/ENTER/0`, () => {
+        navigate(`/kindergrew/host/${id}/ENTER/0`, () => {
             queryClient.invalidateQueries(["getManageTimeSchedule", hostParams]);
         });
     };

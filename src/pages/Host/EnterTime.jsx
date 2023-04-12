@@ -17,7 +17,7 @@ const EnterTime = () => {
     const handleTimeButton = (timeId) => {
         setTime(timeId);
         setPage(1);
-        navigate(`/host/${classroomId}/${scheduleId}/${timeId}`)
+        navigate(`/kindergrew/host/${classroomId}/${scheduleId}/${timeId}`)
     };
     return (
         <StyledTimeButtonGroup>

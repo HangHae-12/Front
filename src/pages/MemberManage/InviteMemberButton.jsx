@@ -11,12 +11,10 @@ const InviteMemberButton = ({ onPageReset }) => {
     const [selectedButton, setSelectedButton] = useState("학부모");
     const navigate = useNavigate();
     const queryClient = useQueryClient();
-
-
     const handleButtonClick = async (selected, id) => {
         setSelectedButton(selected);
         onPageReset();
-        navigate(`/memberManage/${id}`);
+        navigate(`/kindergrew/memberManage/${id}`);
         queryClient.invalidateQueries(["getMemberManage"]);
     };
     return (
@@ -31,7 +29,6 @@ const InviteMemberButton = ({ onPageReset }) => {
                 selectedButton={selectedButton}
                 onClick={() => handleButtonClick("선생님", 2)}
             />
-
         </StyledButtonWrapper>
     );
 };

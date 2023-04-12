@@ -39,8 +39,8 @@ const ClassButton = () => {
 
   const modalOption = {
     padding: "20px",
-      width: "660px",
-      height: "837px",
+    width: "660px",
+    height: "837px",
   };
 
   const setClassModal = () => {
@@ -55,7 +55,7 @@ const ClassButton = () => {
 
   useEffect(() => {
     if (id === undefined || id === "") {
-      navigate("/classes/1");
+      navigate("/kindergrew/classes/1");
     }
   }, [id]);
 
@@ -99,7 +99,7 @@ const ClassButton = () => {
 
   const handleButtonClick = (selected, id) => {
     setSelectedButton(selected);
-    navigate(`/classes/${id}`);
+    navigate(`/kindergrew/classes/${id}`);
   };
 
   return (

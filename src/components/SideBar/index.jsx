@@ -1,50 +1,53 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { BsFillGearFill } from "react-icons/bs";
-import { DUMMY_PROFILE_IMG_SRC } from "../assets";
-import Buttons from "./Buttons";
-import textVariants from "../styles/variants/textVariants";
-import logo from "../assets/kindergrew_logo.png";
-import { Link } from "react-router-dom";
-import Modal from "./Modal";
-import useModal from "../hooks/useModal";
-import UserProfileModal from "./UserProfileModal";
+import textVariants from "../../styles/variants/textVariants";
+import logo from "../../assets/kindergrew_logo.png";
+import Modal from "../Modal";
+import useModal from "../../hooks/useModal";
+import UserProfileModal from "../UserProfileModal";
 import { useQuery } from "@tanstack/react-query";
-import { SideBarAPI } from "../api/SideBarAPI";
+import { SideBarAPI } from "../../api/SideBarAPI";
 import { useRecoilState } from "recoil";
-import { userProfileAtom } from "../atom/sideBarAtom";
+import { kindergartenAtom, userProfileAtom } from "../../atom/sideBarAtom";
+import TeacherSideBar from "./TeacherSideBar";
+import PrincipalSideBar from "./PrincipalSideBar";
+import ParentSidBar from "./ParentSideBar"
 
 const SideBar = () => {
-  const [userProfile, setUserProfile] = useRecoilState(userProfileAtom);
-  const [showAttendanceMenu, setShowAttendanceMenu] = useState(false);
-  const { openModal } = useModal();
 
+  const [userProfile, setUserProfile] = useRecoilState(userProfileAtom);
+  const [kindergarten, setKindergarten] = useRecoilState(kindergartenAtom);
+  const { openModal } = useModal();
   const { data } = useQuery(
-    ["SideBarInformation"],
-    () => SideBarAPI.getSideBar(),
+    ["getUserProfile"],
+    () => SideBarAPI.getUserProfile(),
     {
       onSuccess: (data) => {
+        const bindData = data.data.data;
         setUserProfile({
           ...userProfile,
-          birthday: data.data.data.userProfile.birthday,
-          email: data.data.data.userProfile.email,
-          name: data.data.data.userProfile.name,
-          phoneNumber: data.data.data.userProfile.phoneNumber,
-          profileImageUrl: data.data.data.userProfile.profileImageUrl,
-          resolution: data.data.data.userProfile.resolution,
-          role: data.data.data.userProfile.role,
+          birthday: bindData.userProfile.birthday,
+          email: bindData.userProfile.email,
+          name: bindData.userProfile.name,
+          phoneNumber: bindData.userProfile.phoneNumber,
+          profileImageUrl: bindData.userProfile.profileImageUrl,
+          resolution: bindData.userProfile.resolution,
+          role: bindData.userProfile.role,
         });
-        console.log(data);
+        setKindergarten({
+          ...kindergarten,
+          address: bindData.kindergarten.address,
+          id: bindData.kindergarten.id,
+          logoImageUrl: bindData.kindergarten.logoImageUrl,
+          name: bindData.kindergarten.name,
+        });
       },
       onError: () => {
         console.log("error");
       },
     }
   );
-
-  const toggleAttendanceMenu = () => {
-    setShowAttendanceMenu(!showAttendanceMenu);
-  };
 
   const modalOption = {
     width: "660px",
@@ -67,34 +70,31 @@ const SideBar = () => {
         <StyledLogo>
           <img src={logo} alt="로고 이미지" />
         </StyledLogo>
+        <StyledKinderLogo>
+          <img src={kindergarten.logoImageUrl} alt="유저 프로필 이미지" />
+          <p>{kindergarten.name}</p>
+        </StyledKinderLogo>
         <StyledUserProfileWrapper>
-          <img src={DUMMY_PROFILE_IMG_SRC} alt="유저 프로필 이미지" />
-          <p>학부모</p>
+          <img src={userProfile.profileImageUrl} alt="유저 프로필 이미지" />
+          <p>{
+            userProfile.role === "PRINCIPAL"
+              ? "원장선생님"
+              : userProfile.role === "TEACHER"
+                ? "선생님"
+                : "학부모"
+          }</p>
           <h3>
-            <span>박미자</span>
+            <span>{userProfile.name}</span>
             <StyledGearButton onClick={setProfileModal} />
           </h3>
         </StyledUserProfileWrapper>
-        <StyledSideBarBtnWrapper>
-          <Buttons.NB colorTypes="primary" width="160px">
-            <Link to="/classes">학급 관리</Link>
-          </Buttons.NB>
-          <Buttons.NB>
-            <Link to="/host">하원 관리</Link>
-          </Buttons.NB>
-          <div>
-            <Buttons.NB onClick={toggleAttendanceMenu}>출석부 관리</Buttons.NB>
-            {showAttendanceMenu && (
-              <StyledSubMenu>
-                <Link to="/monthAttendance">월별 출석부</Link>
-                <Link to="/dayAttendance">일별 출석부</Link>
-              </StyledSubMenu>
-            )}
-          </div>
-          <Buttons.NB>
-            <Link to="/membermanage">멤버 관리</Link>
-          </Buttons.NB>
-        </StyledSideBarBtnWrapper>
+        {
+          userProfile.role === "PRINCIPAL"
+            ? <PrincipalSideBar />
+            : userProfile.role === "TEACHER"
+              ? <TeacherSideBar />
+              : <ParentSidBar />
+        }
       </StyledSideBarContainer>
       <Modal modalOption={modalOption} />
     </>
@@ -125,7 +125,37 @@ const StyledLogo = styled.div`
   justify-content: center;
   width: 122px;
   height: 48px;
+  margin-bottom: 20px;
 `;
+
+const StyledKinderLogo = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px;
+  gap: 4px;
+  border: 1px solid ${({ theme }) => theme.color.grayScale[100]};
+  border-radius: 4px;
+  width: 130px;
+  height: 32px;
+
+  img {
+    width: 24px;
+    height: 24px;
+    border-radius: 3px;
+  }
+
+  p {
+    ${textVariants.Body2_SemiBold}
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    color: ${({ theme }) => theme.color.grayScale[500]};
+  }
+`;
+
+
 const StyledUserProfileWrapper = styled.div`
   display: flex;
   width: 100%;
@@ -160,36 +190,6 @@ const StyledUserProfileWrapper = styled.div`
 const StyledGearButton = styled(BsFillGearFill)`
   width: 16px;
   height: 16px;
-`;
-
-const StyledSideBarBtnWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  margin-top: 80px;
-  gap: 12px;
-`;
-const StyledSubMenu = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  margin-top: 12px;
-  gap: 14px;
-
-  a {
-    ${textVariants.Body1_SemiBold}
-    color: ${({ theme }) => theme.color.grayScale[400]};
-    padding: 8px 0px;
-    width: 100%;
-    text-align: center;
-    border-radius: 8px;
-
-    &:hover {
-      color: ${({ theme }) => theme.color.primary};
-    }
-  }
 `;
 
 const StyledModalHeader = styled.div`
