@@ -1,16 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
-import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import Buttons from "../../components/Buttons";
 import { useSetRecoilState, useRecoilValue } from "recoil";
-import { scheduledIdAtom, classIdAtom, timeAtom, paginationAtom } from "../../atom/hostButtonAtom";
-const Time = (hostParams) => {
+import { timeAtom, paginationAtom } from "../../atom/hostButtonAtom";
+const ExitTime = () => {
     const setTime = useSetRecoilState(timeAtom);
     const time = useRecoilValue(timeAtom);
     const setPage = useSetRecoilState(paginationAtom);
-    const queryClient = useQueryClient();
-    const { classroomId = 0, scheduleId = "ENTER", timeId } = useParams();
+    const { classroomId = 0, scheduleId = "ENTER" } = useParams();
     const navigate = useNavigate();
 
 
@@ -59,7 +57,7 @@ const Time = (hostParams) => {
     );
 };
 
-export default Time;
+export default ExitTime;
 
 const StyledTimeButtonGroup = styled.div`
   display: flex;

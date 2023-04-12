@@ -1,105 +1,96 @@
 import React, { useEffect, useState } from "react";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { ManageAPI } from "../../api/ManageAPI";
 import textVariants from "../../styles/variants/textVariants";
 import CustomPagination from "../../components/CustomPagination";
-import { AiOutlineSearch } from "react-icons/ai"
-import Button from "../../components/Button";
+import InviteList from "./InviteList"
+import DoneList from "./DoneList";
+import InviteMemberButton from "./InviteMemberButton"
+
 const List = () => {
-  const navigate = useNavigate();
-  const [selectedButton, setSelectedButton] = useState("학부모");
 
-  const handleButtonClick = async (selected, id) => {
-    setSelectedButton(selected);
-    navigate(`/memberManage/${id}`);
+  const queryClient = useQueryClient();
+  const [page, setPage] = useState(1);
+  const { id = "1" } = useParams();
+  const [searchText, setSearchText] = useState("");
+  const [debouncedSearchText, setDebouncedSearchText] = useState(searchText);
+  const [searchTimeout, setSearchTimeout] = useState(null);
+
+  //받아온 파람값-> api payload로 
+  const [userRole, setUserRole] = useState("PARENT");
+
+  useEffect(() => {
+    setUserRole(id === "1" ? "PARENT" : "TEACHER");
+  }, [id]);
+
+  const { isLoading, isError, data } = useQuery(
+    ["getMemberManage", page, userRole],
+    () =>
+      ManageAPI.getMemberManage({
+        kindergartenId: 1,
+        userRole: userRole,
+        page: page - 1,
+        size: 15,
+      })
+  );
+  // const { isLoading, isError, data } = useQuery(
+  //   ["getMemberManage", page, userRole, debouncedSearchText],
+  //   () =>
+  //     ManageAPI.getMemberManage({
+  //       kindergartenId: 1,
+  //       userRole: userRole,
+  //       page: page - 1,
+  //       size: 15,
+  //       searchText: debouncedSearchText,
+  //     })
+  // );
+
+  const handleMemberSearch = (e) => {
+    const searchText = e.target.value;
+    setSearchText(searchText);
+    clearTimeout(searchTimeout);
+    setSearchTimeout(setTimeout(() => setDebouncedSearchText(searchText), 500));
   };
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const handleMemberSearch = () => {
-
+  const handlePageChange = (page) => {
+    setPage(page);
   };
-  const childrenData = [
-    { name: "백주원", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "홍주원", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "우주원", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "이주원", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "김주원", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "김주원", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
+  const handlePageReset = () => {
+    setPage(1);
+  };
+  useEffect(() => {
+    queryClient.invalidateQueries(["getMemberManage", page]);
+  }, [debouncedSearchText]);
 
-  ];
 
-  const approvalData = [
-    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-    { name: "김효리", image: "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg" },
-  ];
 
+  const data2 = data?.data;
+
+  // useEffect(() => {
+  //   queryClient.invalidateQueries(["getMemberManage", page]);
+  // }, [queryClient, page]);
   return (
     <>
       <StyledMemberManageHeader>멤버 관리</StyledMemberManageHeader>
-      <StyledButtonWrapper>
-        <Button.ClassButton
-          selected={"학부모"}
-          selectedButton={selectedButton}
-          onClick={() => handleButtonClick("학부모", 1)}
-        />
-        <Button.ClassButton
-          selected={"선생님"}
-          selectedButton={selectedButton}
-          onClick={() => handleButtonClick("선생님", 2)}
-        />
-
-      </StyledButtonWrapper>
+      <InviteMemberButton onPageReset={handlePageReset} />
       <StyledManageContainer>
         <StyledMemberContainer>
           <StyledMemberHeader>
             <StyledTotalLabel>
-              총원 <StyledTotalCount>10</StyledTotalCount>명
+              총원 <StyledTotalCount>{data2?.memberCount}</StyledTotalCount>명
             </StyledTotalLabel>
             <StyledMemberSearchInputWrapper>
               <StyledMemberSearchInput type="text" onChange={handleMemberSearch} />
-              {/* <StyledSearchIcon>
-                <AiOutlineSearch />
-              </StyledSearchIcon> */}
             </StyledMemberSearchInputWrapper>
           </StyledMemberHeader>
-          <StyledMemberGrid>
-            {childrenData.map((child) => {
-              return (
-                <StyledMemberCard>
-                  <StyledMemberProfile src={child.image} />
-                  <StyledMemberProfileName>
-                    {child.name}
-                  </StyledMemberProfileName>
-                </StyledMemberCard>
-              );
-            })}
-          </StyledMemberGrid>
-          <></>
+          <DoneList data={data2} />
           <CustomPagination
-            current={currentPage}
-            pageSize="14"
-            total="10"
-            onChange={(page) => setCurrentPage(page)}
+            current={page}
+            pageSize="15"
+            total={data2?.memberCount}
+            onChange={handlePageChange}
           />
         </StyledMemberContainer>
         <StyledInviteContainer>
@@ -109,29 +100,9 @@ const List = () => {
             </StyledInviteLabel>
             <StyledMemberSearchInputWrapper>
               <StyledInviteSearchInput type="text" onChange={handleMemberSearch} />
-              {/* <StyledSearchIcon>
-      <AiOutlineSearch />
-    </StyledSearchIcon> */}
             </StyledMemberSearchInputWrapper>
           </StyledInviteHeader>
-          <StyledInviteList>
-            {approvalData.map((member) => {
-              return (
-                <StyledInviteRow>
-                  <StyledInviteProfileWrapper>
-                    <StyledInviteProfile src={member.image} />
-                    <StyledInviteProfileName>
-                      {member.name}
-                    </StyledInviteProfileName>
-                  </StyledInviteProfileWrapper>
-                  <StyledInviteButtonWrapper>
-                    <StyledApproveButton>승인</StyledApproveButton>
-                    <StyledRejectButton>거절</StyledRejectButton>
-                  </StyledInviteButtonWrapper>
-                </StyledInviteRow>
-              );
-            })}
-          </StyledInviteList>
+          <InviteList data={data2} page={page} userRole={userRole} />
         </StyledInviteContainer>
       </StyledManageContainer>
     </>
@@ -153,10 +124,6 @@ const StyledManageContainer = styled.div`
 const StyledMemberManageHeader = styled.h2`
   ${textVariants.H2_SemiBold}
   margin-bottom: 24px;
-`;
-
-const StyledButtonWrapper = styled.div`
-  padding-bottom: 24px;
 `;
 
 const StyledMemberContainer = styled.div`
@@ -183,7 +150,7 @@ const StyledMemberContainer = styled.div`
 const StyledInviteContainer = styled.div`
 
   background-color:${({ theme }) => theme.color.grayScale[50]};
-  box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.04);
+  box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.12);
   border-radius: 12px;
   padding: 40px;
   width: 40%;
@@ -198,37 +165,11 @@ const StyledInviteContainer = styled.div`
   }
   
 `;
-
-
 const StyledMemberHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 25px;
-`;
-
-const StyledMemberGrid = styled.div`
-  display: grid;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: auto; 
-  grid-gap: 6px;
-
-  @media ${({ theme }) => theme.device.desktop} {
-    grid-template-columns: repeat(5, 1fr);
-    grid-template-rows: auto; 
-    grid-gap: 12px;
-  }
-  @media ${({ theme }) => theme.device.laptop} {
-    grid-template-columns: repeat(4, 1fr);
-  }
-
-  @media ${({ theme }) => theme.device.mobile} {
-    grid-template-columns: repeat(2, 1fr); 
-    grid-template-rows: repeat(8, auto);
-  }
 `;
 
 
@@ -254,71 +195,6 @@ const StyledMemberSearchInput = styled.input`
   border: 1px solid ${({ theme }) => theme.color.grayScale[100]};
   border-radius: 4px;
 `;
-
-
-// const StyledSearchIcon = styled.div`
-//   position: absolute;
-//   right: 48px;
-// `;
-
-
-const StyledMemberCard = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background: ${({ theme }) => theme.color.white};
-  border: 1px solid ${({ theme }) => theme.color.grayScale[100]};
-  border-radius: 8px;
-  gap: 12px;
-  width: 110px;
-  height: 100px;
-
-  @media ${({ theme }) => theme.device.desktop} {
-    width: 180px;
-    height: 160px;
-  }
-  @media ${({ theme }) => theme.device.laptop} {
-    width: 140px;
-    height: 130px;
-  }
-
-  @media ${({ theme }) => theme.device.mobile} {
-    width: 80px;
-    height: 90px;
-  }
-`;
-
-
-const StyledMemberProfile = styled.img`
-  border-radius: 70%;
-  width: 50px;
-  height: 50px;
-
-  @media ${({ theme }) => theme.device.desktop} {
-    width: 80px;
-    height: 80px;
-  }
-
-  @media ${({ theme }) => theme.device.laptop} {
-    width: 70px;
-    height: 70px;
-  }
-
-  @media ${({ theme }) => theme.device.mobile} {
-    width: 30px;
-    height: 30px;
-  }
-`;
-
-const StyledMemberProfileName = styled.div`
-${textVariants.Body1_SemiBold}
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color:${({ theme }) => theme.color.grayScale[600]};
-
-`
 
 const StyledInviteHeader = styled.div`
   ${textVariants.Body1_Bold}
@@ -354,102 +230,6 @@ const StyledInviteSearchInput = styled.input`
     display: none;
   }
 `;
-
-const StyledInviteList = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  max-height: 360px;
-  overflow-y: auto;
-
-  &::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: ${({ theme }) => theme.color.grayScale[200]};
-    border-radius: 4px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background-color: ${({ theme }) => theme.color.grayScale[50]};
-  }
-  @media ${({ theme }) => theme.device.desktop} {
-    max-height: 570px;
-  }
-`;
-
-const StyledInviteRow = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 10px;
-  background-color: ${({ theme }) => theme.color.white};
-  border: 1px solid ${({ theme }) => theme.color.grayScale[100]};
-  border-radius: 4px;
-`;
-
-const StyledInviteProfileWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  gap:8px;
-`;
-
-const StyledInviteProfile = styled.img`
-  border-radius: 70%;
-  width: 40px;
-  height: 40px;
-
-  @media ${({ theme }) => theme.device.desktop} {
-    width: 40px;
-    height: 40px;
-  }
-
-  @media ${({ theme }) => theme.device.laptop} {
-    width: 70px;
-    height: 70px;
-  }
-
-  @media ${({ theme }) => theme.device.mobile} {
-    width: 30px;
-    height: 30px;
-  }
-`;
-const StyledInviteProfileName = styled.div`
-${textVariants.Body2_SemiBold}
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color:${({ theme }) => theme.color.grayScale[600]};
-
-`
-const StyledInviteButtonWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  gap:8px;
-`;
-
-const StyledApproveButton = styled.button`
-${textVariants.Body2_SemiBold}
-  background-color: ${({ theme }) => theme.color.blue_lighter};
-  color: ${({ theme }) => theme.color.blue};
-  border: none;
-  border-radius: 4px;
-  padding: 5px 10px;
-  cursor: pointer;
-`;
-
-const StyledRejectButton = styled.button`
-${textVariants.Body2_SemiBold}
-  background-color: ${({ theme }) => theme.color.red_lighter};
-  color: ${({ theme }) => theme.color.red};
-  border: none;
-  border-radius: 4px;
-  padding: 5px 10px;
-  cursor: pointer;
-`;
-
 
 
 

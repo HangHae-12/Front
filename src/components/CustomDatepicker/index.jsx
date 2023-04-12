@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import StyledCustomDatePicker from "./styled"
 import DatePicker, { registerLocale } from "react-datepicker";
 import ko from "date-fns/locale/ko";
-import { BsCalendarDate } from "react-icons/bs"
+import { SlCalender } from "react-icons/sl"
 registerLocale("ko", ko);
 
 const CustomDatepicker = ({ mode, selectedDate, onDateChange }) => {
@@ -31,5 +31,5 @@ const CustomDatepicker = ({ mode, selectedDate, onDateChange }) => {
 export default CustomDatepicker;
 
 const CustomInput = React.forwardRef(({ value, onClick }, ref) => (
-    <BsCalendarDate onClick={onClick} ref={ref} className="hidden" />
+    <SlCalender onClick={onClick} ref={ref} className="hidden" />
 ));

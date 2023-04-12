@@ -1,5 +1,4 @@
 import styled from "styled-components";
-
 import SideBar from "../../../components/SideBar";
 import Table from "./Table"
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
 import styled from "styled-components";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import "react-datepicker/dist/react-datepicker.css";
 import { GrPrevious, GrNext } from "react-icons/gr";
 import { GoOctoface } from "react-icons/go"
@@ -200,16 +200,16 @@ const Table = () => {
 
             <StyledTableTitle>월별 출석부</StyledTableTitle>
             <ClassButton />
+            <StyledHeader>
+                <StyledMonthYear>
+                    <GrPrevious style={{ marginRight: "8px" }} onClick={handleDecreaseMonth} size={16} />
+                    {selectedDate.getFullYear()}년 {selectedDate.getMonth() + 1}월
+                    <GrNext style={{ marginLeft: "8px" }} onClick={handleIncreaseMonth} size={16} />
+                    <CustomDatepicker mode="month" selectedDate={selectedDate} onDateChange={handleDateChange} />
+                </StyledMonthYear>
+                <MonthExcel data={data} selectedDate={selectedDate} />
+            </StyledHeader>
             <StyledTableContainer>
-                <StyledHeader>
-                    <StyledMonthYear>
-                        <GrPrevious style={{ marginRight: "8px" }} onClick={handleDecreaseMonth} size={24} />
-                        {selectedDate.getFullYear()}년 {selectedDate.getMonth() + 1}월
-                        <GrNext style={{ marginLeft: "8px" }} onClick={handleIncreaseMonth} size={24} />
-                        <CustomDatepicker mode="month" selectedDate={selectedDate} onDateChange={handleDateChange} />
-                    </StyledMonthYear>
-                    <MonthExcel data={data} selectedDate={selectedDate} />
-                </StyledHeader>
                 <StyledTableWrapper>
                     <StyledTable>
                         <thead>
@@ -262,7 +262,7 @@ const Table = () => {
                                 return (
                                     <>
                                         <tr key={student.id}>
-                                            <td rowSpan="3">{getRandomIcon()} {student.name}</td>
+                                            <StyledNameCell rowSpan="3">{getRandomIcon()} {student.name}</StyledNameCell>
                                             <td>출석상태</td>
                                             {visibleDays.map((day) => {
                                                 const attendance = student.monthAttendanceList.find(
@@ -287,8 +287,8 @@ const Table = () => {
                                                     </td>
                                                 );
                                             })}
-                                            <td rowSpan="3">{student.attendanceCount}</td>
-                                            <td rowSpan="3">{student.absentCount}</td>
+                                            <StyledNameCell rowSpan="3">{student.attendanceCount}</StyledNameCell>
+                                            <StyledNameCell rowSpan="3">{student.absentCount}</StyledNameCell>
                                         </tr>
                                         <tr>
                                             <td>등원시간</td>
@@ -334,15 +334,16 @@ const StyledTableTitle = styled.h2`
 
 const StyledHeader = styled.div`
   display: flex;
+  position: relative;
   justify-content: center;
   align-items: center;
-  margin: 20px;
-  position: relative;
+  margin-bottom: 14px;
 `;
+
 const StyledTopStickyHeader = styled.th`
   position: sticky;
   top: 0;
-  background-color: ${({ theme }) => theme.color.grayScale[100]};
+  background-color: ${({ theme }) => theme.color.grayScale[50]};
   color: ${({ isSaturday, isSunday, theme }) =>
         isSunday ? theme.color.red : isSaturday ? theme.color.blue : theme.color.grayScale[500]};
   z-index: 1;
@@ -351,18 +352,15 @@ const StyledTopStickyHeader = styled.th`
 const StyledStickyHeader = styled.th`
   position: sticky;
   top: 35px;
-  background-color: ${({ theme }) => theme.color.grayScale[100]};
+  background-color: ${({ theme }) => theme.color.grayScale[50]};
   color: ${({ isSaturday, isSunday, theme }) =>
         isSunday ? theme.color.red : isSaturday ? theme.color.blue : theme.color.grayScale[500]};
 `;
 
 
-
-
 const StyledMonthYear = styled.div`
-  ${textVariants.H2_SemiBold}
-  color: ${({ theme }) => theme.color.grayScale[600]};
-  margin-bottom: 30px;
+  ${textVariants.H3_SemiBold}
+  color: ${({ theme }) => theme.color.grayScale[500]};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -371,7 +369,7 @@ const StyledMonthYear = styled.div`
 `;
 
 const StyledTableWrapper = styled.div`
-  max-height: 500px;
+  max-height: 530px;
   overflow: auto;
 `;
 
@@ -379,10 +377,9 @@ const StyledTableWrapper = styled.div`
 
 const StyledTableContainer = styled.div`
   background-color: #edf5eecc;
-  box-shadow: 0px 2px 12px hsla(0, 0%, 0%, 0.04);
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.12);
   border-radius: 12px;
   padding: 40px;
-  margin-top: 30px;
 `;
 
 
@@ -391,11 +388,11 @@ const StyledTable = styled.table`
   border-spacing: 0;
   background-color: ${({ theme }) => theme.color.white};
   width: 100%;
-  margin-top: 20px;
   
 
   thead{
     padding: 10px;
+    
   }
 
   th,
@@ -403,6 +400,7 @@ const StyledTable = styled.table`
     border: 1px solid #ddd;
     padding: 10px;
     text-align: center;
+    
   }
 
   th {
@@ -430,9 +428,16 @@ const StyledTable = styled.table`
 
   tr {
     border: 1px solid ${({ theme }) => theme.color.grayScale[100]};
+    }
+
+    & > thead > tr > th {
+    background-color: ${({ theme }) => theme.color.grayScale[50]};
   }
 `;
 
+const StyledNameCell = styled.td`
+  vertical-align: middle;
+`;
 
 
 

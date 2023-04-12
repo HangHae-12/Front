@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import * as XLSX from "xlsx";
-import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
-import { useNavigate, useParams } from "react-router-dom";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
+import { useParams } from "react-router-dom";
 import { AttendanceAPI } from "../../../api/AttendanceAPI";
 import { GrPrevious, GrNext } from "react-icons/gr";
 import { BsSun } from "react-icons/bs"
@@ -85,16 +84,16 @@ const Table = () => {
 
       <StyledTableTitle>일별 출석부</StyledTableTitle>
       <ClassButton />
+      <StyledHeader>
+        <StyledMonthYear>
+          <GrPrevious onClick={decreaseDate} size={16} />
+          {selectedDate.getFullYear()}년 {selectedDate.getMonth() + 1}월 {selectedDate.getDate()}일 {dayOfWeek}
+          <GrNext onClick={increaseDate} size={16} />
+          <CustomDatepicker selectedDate={selectedDate} onDateChange={handleDateChange} />
+        </StyledMonthYear>
+        <DayExcel data={data} selectedDate={selectedDate} />
+      </StyledHeader>
       <StyledTableContainer>
-        <StyledHeader>
-          <StyledMonthYear>
-            <GrPrevious style={{ marginRight: "8px" }} onClick={decreaseDate} size={24} />
-            {selectedDate.getFullYear()}년 {selectedDate.getMonth() + 1}월 {selectedDate.getDate()}일 {dayOfWeek}
-            <GrNext style={{ marginLeft: "8px" }} onClick={increaseDate} size={24} />
-            <CustomDatepicker selectedDate={selectedDate} onDateChange={handleDateChange} />
-          </StyledMonthYear>
-          <DayExcel data={data} selectedDate={selectedDate} />
-        </StyledHeader>
         <StyledTableWrapper>
           <StyledTable>
             <thead>
@@ -163,17 +162,16 @@ const StyledTableTitle = styled.h2`
 
 const StyledHeader = styled.div`
   display: flex;
+  position: relative;
   justify-content: center;
   align-items: center;
-  margin: 20px;
-  position: relative;
+  margin-bottom: 14px;
+  
 `;
 
-
 const StyledMonthYear = styled.div`
-  ${textVariants.H2_SemiBold}
-  color: ${({ theme }) => theme.color.grayScale[600]};
-  margin-bottom: 30px;
+${textVariants.H3_SemiBold}
+  color: ${({ theme }) => theme.color.grayScale[500]};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -182,7 +180,7 @@ const StyledMonthYear = styled.div`
 `;
 
 const StyledTableWrapper = styled.div`
-  max-height: 500px;
+  max-height: 530px;
   overflow: auto;
 `;
 const StyledStickyHeader = styled.th`
@@ -194,7 +192,7 @@ const StyledStickyHeader = styled.th`
 
 const StyledTableContainer = styled.div`
     background-color:#EDF5EECC;
-    box-shadow: 0px 2px 12px hsla(0, 0%, 0%, 0.04);
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.12);
     border-radius: 12px;
     padding: 40px;
     margin-top: 30px;
@@ -205,7 +203,6 @@ const StyledTable = styled.table`
   border-spacing: 0;
   background-color: ${({ theme }) => theme.color.white};
   width: 100%;
-  margin-top: 20px;
 
 
   thead{
@@ -215,7 +212,7 @@ const StyledTable = styled.table`
 
   th,
   td {
-    /* border: 1px solid #ddd; */
+    border: 1px solid ${({ theme }) => theme.color.grayScale[200]};
     padding: 15px;
     text-align: center;
     
@@ -227,11 +224,11 @@ const StyledTable = styled.table`
     
   }
   tr{
-     border: 1px solid #ddd;
+     border: 1px solid ${({ theme }) => theme.color.grayScale[200]};
   }
-  tr:nth-child(even) {
+  /* tr:nth-child(even) {
     background-color: ${({ theme }) => theme.color.grayScale[50]};
-  }
+  } */
 
   tr:hover {
     background-color: ${({ theme }) => theme.color.perple_lighter};
@@ -239,6 +236,10 @@ const StyledTable = styled.table`
 
   .sunday{
     color: ${({ theme }) => theme.color.red};
+  }
+
+  & > thead > tr > th {
+    background-color: ${({ theme }) => theme.color.grayScale[50]};
   }
 `;
 

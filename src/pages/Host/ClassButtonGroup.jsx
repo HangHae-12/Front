@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { useNavigate, useParams } from "react-router-dom";
-import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
+import { useParams } from "react-router-dom";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { useRecoilState } from "recoil";
 import { HostAPI } from "../../api/HostAPI";
 import textVariants from "../../styles/variants/textVariants";
@@ -19,7 +19,6 @@ const ClassButtonGroup = () => {
 
   const queryClient = useQueryClient();
   const { classroomId = 0, scheduleId = "ENTER", timeId = "전체시간" } = useParams();
-  const navigate = useNavigate();
   const [page, setPage] = useRecoilState(paginationAtom);
   const [size, setSize] = useState(15);
 
@@ -53,8 +52,8 @@ const ClassButtonGroup = () => {
       <StyledAttendanceContainer>
         {
           scheduleId === "ENTER"
-            ? <EnterTime hostParams={hostParams} />
-            : <ExitTime hostParams={hostParams} />
+            ? <EnterTime />
+            : <ExitTime />
         }
 
         <Children bindData={data.data.content} />

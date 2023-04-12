@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import * as XLSX from "xlsx";
 import styled from "styled-components";
 import textVariants from '../../../styles/variants/textVariants';
@@ -95,10 +95,10 @@ const StyledExportButton = styled.button`
         background: ${({ theme }) => theme.color.white};
         color: ${({ theme }) => theme.color.primary};
         border: 1px solid ${({ theme }) => theme.color.primary};
-        padding: 8px 12px;
+        border-radius: 4px;
         right: 0;
         margin-left: auto;
-        border-radius: 4px;
+        padding: 4px 12px;
 
   @media ${({ theme }) => theme.device.laptop} {
     display:none;
