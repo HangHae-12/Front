@@ -12,6 +12,7 @@ const Signup = () => {
     name: "우주",
     profileImageUrl: DUMMY_URL.not_profile_img,
   };
+  // const user = session.get("user");
   const role = [
     { role: "parent", label: "학부모" },
     { role: "teacher", label: "선생님" },

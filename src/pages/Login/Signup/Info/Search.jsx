@@ -9,10 +9,11 @@ import SearchContent from "./SearchContent";
 import Buttons from "../../../../components/Buttons";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import session from "../../../../utils/session";
 
 const Search = () => {
-  // const { data, isLoading, handleSearch } = useSearch(SignAPI.search);
-  const { isLoading, handleSearch } = useSearch(SignAPI.search);
+  const { data, handleSearch } = useSearch(SignAPI.search);
+
   const [selectedKinder, setSelectedKinder] = useState(null);
   const navigate = useNavigate();
 
@@ -20,19 +21,16 @@ const Search = () => {
     flex: 1;
     align-self: flex-end;
   `;
-  const data = {
-    data: [
-      { id: 1, name: "빗살유치원", logoImageUrl: "ㅁㄹ", address: "서울특" },
-      { id: 2, name: "빗유치원", logoImageUrl: "ㅁㄹ", address: "서울특" },
-      { id: 3, name: "살유치원", logoImageUrl: "ㅁㄹ", address: "서울특" },
-      { id: 4, name: "유치원", logoImageUrl: "ㅁㄹ", address: "서울특" },
-    ],
-  };
 
   const { mutate } = useMutation(SignAPI.selectKinder, {
-    onSuccess: () => {},
+    onSuccess: ({ statusCode }) => {
+      if (statusCode === 200) {
+        const role = session.get("user").role;
+        navigate(`/signup/${role}`);
+      }
+    },
     onError: (error) => {
-      console.error(error);
+      console.log(error.response.status);
     },
   });
 
@@ -40,7 +38,9 @@ const Search = () => {
     setSelectedKinder(data);
   };
 
-  const handleSelectKinderSubmit = () => {};
+  const handleSelectKinderSubmit = () => {
+    selectedKinder && mutate(selectedKinder.id);
+  };
 
   return (
     <StyledSearch.Container>
@@ -57,17 +57,21 @@ const Search = () => {
           <SearchInput onSearch={handleSearch} inputBodyStyle={style} />
         </StyledSearch.SearchBarWrapper>
         <StyledSearch.SearchContentsWrapper>
-          {data.data.map((data) => (
+          {/* {data?.map((data) => (
             <SearchContent
               key={data.id}
               data={data}
               handleSelectKinder={handleSelectKinder}
             />
-          ))}
+          ))} */}
         </StyledSearch.SearchContentsWrapper>
       </StyledSearch.KinderListSearch>
       <StyledSearch.SubmitBtnBox>
-        <Buttons.Filter colorTypes="primary" onClick={handleSelectKinderSubmit}>
+        <Buttons.Filter
+          disabled={!selectedKinder}
+          colorTypes="primary"
+          onClick={handleSelectKinderSubmit}
+        >
           다음
         </Buttons.Filter>
       </StyledSearch.SubmitBtnBox>

@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { SignAPI } from "../../api/SignAPI";
 import tokenCookie from "../../utils/tokenCookie";
+import session from "../../utils/session";
 
 const KakaoLogin = () => {
   const location = useLocation();
@@ -22,9 +23,10 @@ const KakaoLogin = () => {
     request
       .then((res) => {
         tokenCookie.set(res.headers.authorization);
+        session.set("user", res.data.data);
         switch (res.data.statusCode) {
           case 200:
-            navigate("/signup", { state: res.data });
+            navigate("/signup");
             break;
           default:
             navigate("/host");

@@ -4,10 +4,18 @@ import StyledLogin from "./styled";
 import { ENV } from "../../helpers/envs";
 import ASSETS from "../../helpers/assets";
 import textVariants from "../../styles/variants/textVariants";
+import tokenCookie from "../../utils/tokenCookie";
+import session from "../../utils/session";
+import { useEffect } from "react";
 
 const Login = () => {
   const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${ENV.kakao_key}&redirect_uri=${ENV.kakao_redirect}&response_type=code`;
-  useRemoveToken();
+  
+  useEffect(() => {
+    tokenCookie.remove();
+    session.clear();
+  }, []);
+
   return (
     <StyledLogin.Background>
       <StyledLogin.Container>

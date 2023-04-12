@@ -18,6 +18,8 @@ const useSearch = (api) => {
   const handleSearch = useCallback(
     debounce((searchText) => {
       setSearchText(searchText);
+      console.log(searchText);
+      console.log(data);
     }, 500),
     []
   );
