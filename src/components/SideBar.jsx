@@ -47,8 +47,8 @@ const SideBar = () => {
   };
 
   const modalOption = {
-      width: "660px",
-      height: "837px",
+    width: "660px",
+    height: "837px",
   };
 
   const setProfileModal = () => {
@@ -77,9 +77,11 @@ const SideBar = () => {
         </StyledUserProfileWrapper>
         <StyledSideBarBtnWrapper>
           <Buttons.NB colorTypes="primary" width="160px">
-            학급 관리
+            <Link to="/classes">학급 관리</Link>
           </Buttons.NB>
-          <Buttons.NB>등/하원 관리</Buttons.NB>
+          <Buttons.NB>
+            <Link to="/host">하원 관리</Link>
+          </Buttons.NB>
           <div>
             <Buttons.NB onClick={toggleAttendanceMenu}>출석부 관리</Buttons.NB>
             {showAttendanceMenu && (
@@ -89,7 +91,9 @@ const SideBar = () => {
               </StyledSubMenu>
             )}
           </div>
-          <Buttons.NB>멤버 관리</Buttons.NB>
+          <Buttons.NB>
+            <Link to="/membermanage">멤버 관리</Link>
+          </Buttons.NB>
         </StyledSideBarBtnWrapper>
       </StyledSideBarContainer>
       <Modal modalOption={modalOption} />
