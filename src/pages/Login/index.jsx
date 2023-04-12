@@ -9,8 +9,8 @@ import session from "../../utils/session";
 import { useEffect } from "react";
 
 const Login = () => {
-  const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${ENV.kakao_key}&redirect_uri=${ENV.kakao_redirect}&response_type=code`;
-  
+  const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${ENV.kakao_key}&redirect_uri=${ENV.kakao_redirect}&response_type=code&scope=profile_nickname,profile_image,friends,talk_message`;
+
   useEffect(() => {
     tokenCookie.remove();
     session.clear();
