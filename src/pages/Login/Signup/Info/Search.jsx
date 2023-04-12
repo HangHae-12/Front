@@ -13,6 +13,7 @@ import session from "../../../../utils/session";
 
 const Search = () => {
   const { data, handleSearch } = useSearch(SignAPI.search);
+  const searchedData = data?.data?.data ?? [];
 
   const [selectedKinder, setSelectedKinder] = useState(null);
   const navigate = useNavigate();
@@ -57,13 +58,13 @@ const Search = () => {
           <SearchInput onSearch={handleSearch} inputBodyStyle={style} />
         </StyledSearch.SearchBarWrapper>
         <StyledSearch.SearchContentsWrapper>
-          {/* {data?.map((data) => (
+          {searchedData.map((data) => (
             <SearchContent
               key={data.id}
               data={data}
               handleSelectKinder={handleSelectKinder}
             />
-          ))} */}
+          ))}
         </StyledSearch.SearchContentsWrapper>
       </StyledSearch.KinderListSearch>
       <StyledSearch.SubmitBtnBox>
