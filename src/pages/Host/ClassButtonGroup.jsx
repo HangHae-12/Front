@@ -18,12 +18,13 @@ import { paginationAtom } from "../../atom/hostButtonAtom";
 const ClassButtonGroup = () => {
 
   const queryClient = useQueryClient();
-  const { classroomId = 0, scheduleId = "ENTER", timeId = "전체시간" } = useParams();
+  const { classroomId = 0, scheduleId = "ENTER", timeId = 0 } = useParams();
   const [page, setPage] = useRecoilState(paginationAtom);
-  const [size, setSize] = useState(15);
+  const [size, setSize] = useState(14);
 
+  const time = ["전체시간", "07시~08시", "08시~9시", "9시~10시", "16시~17시", "17시~18시", "18시~19시"][parseInt(timeId)];
   //등원,하원,timea,page param
-  const hostParams = { classroomId, state: scheduleId, time: timeId, page, size };
+  const hostParams = { classroomId, state: scheduleId, time: time, page, size };
 
   const { isLoading, isError, data } = useQuery(["getManageSchedule", hostParams], () =>
     HostAPI.getManageSchedule(hostParams)
@@ -81,6 +82,10 @@ const StyledAttendanceContainer = styled.div`
   background-color:#EDF5EECC;
   box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.12);
   border-radius: 12px;
-  padding: 40px;
+  padding: 24px 40px;
+  @media ${({ theme }) => theme.device.desktop} {
+    
+  }
+
 `;
 

@@ -19,9 +19,9 @@ const Schedule = ({ hostParams }) => {
     //도메인과 reponse값 매칭해서 리팩토링 필요
     const handleAttendanceButton = (id) => {
         setScheduleId(id);
-        setTime("전체시간");
+        setTime(0);
         setPage(1);
-        navigate(`/host/${classroomId}/${id}/전체시간`, () => {
+        navigate(`/host/${classroomId}/${id}/0`, () => {
             queryClient.invalidateQueries(["getManageTimeSchedule", hostParams]);
         });
     };
