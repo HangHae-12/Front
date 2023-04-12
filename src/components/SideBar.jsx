@@ -47,8 +47,8 @@ const SideBar = () => {
   };
 
   const modalOption = {
-    width: "640px",
-    height: "352px",
+      width: "660px",
+      height: "837px",
   };
 
   const setProfileModal = () => {
