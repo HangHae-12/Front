@@ -1,13 +1,13 @@
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { useLocation, useNavigate } from "react-router-dom";
-import StyledSignup from "./styled";
-import StyledLogin from "../styled";
-import { SignAPI } from "../../../api/SignAPI";
-import Buttons from "../../../components/Buttons";
-import ProfileImageUploader from "../../../components/ProfileImageUploader";
-import { useProfileImageUploader } from "../../../hooks/useProfileImageUploader";
-import { REGEXP } from "../../../helpers/regexp";
+import StyledInfo from "./styled";
+import StyledLogin from "../../styled";
+import { SignAPI } from "../../../../api/SignAPI";
+import Buttons from "../../../../components/Buttons";
+import ProfileImageUploader from "../../../../components/ProfileImageUploader";
+import { useProfileImageUploader } from "../../../../hooks/useProfileImageUploader";
+import { REGEXP } from "../../../../helpers/regexp";
 
 // 사용자가 정보를 다 입력하고 난 뒤에 도메인에 extrainfo 를 치면 이 화면이 보일 수 있으니까
 // 그걸 방지하기 위한 로직을 구현해야만 한다.
@@ -55,13 +55,13 @@ const Parent = () => {
   };
 
   return (
-    <StyledSignup.Container>
+    <StyledInfo.Container>
       <StyledLogin.Title>학부모님! 정보를 입력해주세요</StyledLogin.Title>
-      <StyledSignup.Form onSubmit={handleSubmit(onSubmit)}>
-        <StyledSignup.Wrapper>
+      <StyledInfo.Form onSubmit={handleSubmit(onSubmit)}>
+        <StyledInfo.Wrapper>
           <ProfileImageUploader prev={profileImageUrl} />
-          <StyledSignup.Box>
-            <StyledSignup.ContentsWrapper>
+          <StyledInfo.Box>
+            <StyledInfo.ContentsWrapper>
               <StyledLogin.Label htmlFor="name" isEssential>
                 이름
               </StyledLogin.Label>
@@ -81,12 +81,12 @@ const Parent = () => {
                 size={4}
               />
               {!isSubmitSuccessful && errors.name && (
-                <StyledSignup.ErrorMessage>
+                <StyledInfo.ErrorMessage>
                   {errors.name.message}
-                </StyledSignup.ErrorMessage>
+                </StyledInfo.ErrorMessage>
               )}
-            </StyledSignup.ContentsWrapper>
-            <StyledSignup.ContentsWrapper>
+            </StyledInfo.ContentsWrapper>
+            <StyledInfo.ContentsWrapper>
               <StyledLogin.Label htmlFor="phoneNumber" isEssential>
                 연락처
               </StyledLogin.Label>
@@ -105,12 +105,12 @@ const Parent = () => {
                 size={12}
               />
               {!isSubmitSuccessful && errors.phoneNumber && (
-                <StyledSignup.ErrorMessage>
+                <StyledInfo.ErrorMessage>
                   {errors.phoneNumber.message}
-                </StyledSignup.ErrorMessage>
+                </StyledInfo.ErrorMessage>
               )}
-            </StyledSignup.ContentsWrapper>
-            <StyledSignup.ContentsWrapper>
+            </StyledInfo.ContentsWrapper>
+            <StyledInfo.ContentsWrapper>
               <StyledLogin.Label htmlFor="emergencyPhoneNumber">
                 비상연락처
               </StyledLogin.Label>
@@ -128,21 +128,20 @@ const Parent = () => {
                 size={12}
               />
               {!isSubmitSuccessful && errors.emergencyPhoneNumber && (
-                <StyledSignup.ErrorMessage>
+                <StyledInfo.ErrorMessage>
                   {errors.emergencyPhoneNumber.message}
-                </StyledSignup.ErrorMessage>
+                </StyledInfo.ErrorMessage>
               )}
-            </StyledSignup.ContentsWrapper>
-          </StyledSignup.Box>
-        </StyledSignup.Wrapper>
-        <StyledSignup.SubmitBtnWrapper>
+            </StyledInfo.ContentsWrapper>
+          </StyledInfo.Box>
+        </StyledInfo.Wrapper>
+        <StyledInfo.SubmitBtnWrapper>
           <Buttons.Filter colorTypes="primary" type="submit">
             작성완료
           </Buttons.Filter>
-          
-        </StyledSignup.SubmitBtnWrapper>
-      </StyledSignup.Form>
-    </StyledSignup.Container>
+        </StyledInfo.SubmitBtnWrapper>
+      </StyledInfo.Form>
+    </StyledInfo.Container>
   );
 };
 

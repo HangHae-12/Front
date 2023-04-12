@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const StyledSignup = {
+const StyledInfo = {
   Container: styled.div`
     display: flex;
     flex-direction: column;
@@ -53,4 +53,4 @@ const StyledSignup = {
   `,
 };
 
-export default StyledSignup;
+export default StyledInfo;

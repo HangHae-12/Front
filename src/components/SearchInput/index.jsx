@@ -1,4 +1,3 @@
-import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { GoSearch } from "react-icons/go";
 
@@ -18,6 +17,8 @@ const SearchWrapper = styled.div`
     border-color: ${({ theme }) => theme.color.green_darker};
     box-shadow: 0 0 0 5px ${({ theme }) => theme.color.green_darker};
   }
+
+  ${({ inputBodyStyle }) => inputBodyStyle}
 `;
 
 const SearchIcon = styled(GoSearch)`
@@ -37,37 +38,14 @@ const Input = styled.input`
   }
 `;
 
-const SearchInput = ({ onSearch }) => {
-  // const [searchText, setSearchText] = useState("");
-  // const searchInputRef = useRef();
-
-  // useEffect(() => {
-  //   const handleSearch = async () => {
-  //     await onSearch(searchText);
-  //   };
-
-  //   const timer = setTimeout(() => {
-  //     if (searchInputRef.current.value === searchText) {
-  //       handleSearch();
-  //     }
-  //   }, 500);
-
-  //   return () => {
-  //     clearTimeout(timer);
-  //   };
-  // }, [searchText, onSearch]);
-
+const SearchInput = ({ onSearch, inputBodyStyle }) => {
   return (
-    <SearchWrapper>
+    <SearchWrapper inputBodyStyle={inputBodyStyle}>
       <SearchIcon />
       <Input
-        // ref={searchInputRef}
-        // type="search"
-        // value={searchText}
-        // onChange={(e) => setSearchText(e.target.value)}
-        // placeholder="검색어를 입력하세요"
         type="search"
         onChange={(e) => onSearch(e.target.value)}
+        placeholder="킨더그루 유치원"
       />
     </SearchWrapper>
   );

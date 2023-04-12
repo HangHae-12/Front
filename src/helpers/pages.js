@@ -8,13 +8,13 @@ import MemberManage from "../pages/MemberManage";
 import Member from "../pages/Member/Member";
 import SignupLayout from "../pages/Login/Signup/Layout";
 import Signup from "../pages/Login/Signup";
-import Teacher from "../pages/Login/Signup/Teacher";
-import Parent from "../pages/Login/Signup/Parent";
+import Teacher from "../pages/Login/Signup/Info/Teacher";
+import Parent from "../pages/Login/Signup/Info/Parent";
 
 import ChildManage from "../pages/ChildManage";
 import Layout from "../pages/Layout";
 import SignupSuccess from "../pages/Login/Signup/SignupSuccess";
-import Search from "../pages/Login/Signup/Search";
+import Search from "../pages/Login/Signup/Info/Search";
 
 export const PAGE = {
   layout: <Layout />,

@@ -1,13 +1,13 @@
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { useLocation, useNavigate } from "react-router-dom";
-import StyledSignup from "./styled";
-import StyledLogin from "../styled";
-import { SignAPI } from "../../../api/SignAPI";
-import Buttons from "../../../components/Buttons";
-import ProfileImageUploader from "../../../components/ProfileImageUploader";
-import { useProfileImageUploader } from "../../../hooks/useProfileImageUploader";
-import { REGEXP } from "../../../helpers/regexp";
+import StyledInfo from "./styled";
+import StyledLogin from "../../styled";
+import { SignAPI } from "../../../../api/SignAPI";
+import Buttons from "../../../../components/Buttons";
+import ProfileImageUploader from "../../../../components/ProfileImageUploader";
+import { useProfileImageUploader } from "../../../../hooks/useProfileImageUploader";
+import { REGEXP } from "../../../../helpers/regexp";
 
 const Teacher = () => {
   const location = useLocation();
@@ -54,13 +54,13 @@ const Teacher = () => {
   };
 
   return (
-    <StyledSignup.Container>
+    <StyledInfo.Container>
       <StyledLogin.Title>선생님! 정보를 입력해주세요</StyledLogin.Title>
-      <StyledSignup.Form onSubmit={handleSubmit(onSubmit)}>
-        <StyledSignup.Wrapper>
+      <StyledInfo.Form onSubmit={handleSubmit(onSubmit)}>
+        <StyledInfo.Wrapper>
           <ProfileImageUploader prev={profileImageUrl} />
-          <StyledSignup.Box>
-            <StyledSignup.ContentsWrapper>
+          <StyledInfo.Box>
+            <StyledInfo.ContentsWrapper>
               <StyledLogin.Label htmlFor="name" isEssential>
                 이름
               </StyledLogin.Label>
@@ -80,12 +80,12 @@ const Teacher = () => {
                 size={4}
               />
               {!isSubmitSuccessful && errors.name && (
-                <StyledSignup.ErrorMessage>
+                <StyledInfo.ErrorMessage>
                   {errors.name.message}
-                </StyledSignup.ErrorMessage>
+                </StyledInfo.ErrorMessage>
               )}
-            </StyledSignup.ContentsWrapper>
-            <StyledSignup.ContentsWrapper>
+            </StyledInfo.ContentsWrapper>
+            <StyledInfo.ContentsWrapper>
               <StyledLogin.Label htmlFor="phoneNumber" isEssential>
                 연락처
               </StyledLogin.Label>
@@ -104,12 +104,12 @@ const Teacher = () => {
                 size={12}
               />
               {!isSubmitSuccessful && errors.phoneNumber && (
-                <StyledSignup.ErrorMessage>
+                <StyledInfo.ErrorMessage>
                   {errors.phoneNumber.message}
-                </StyledSignup.ErrorMessage>
+                </StyledInfo.ErrorMessage>
               )}
-            </StyledSignup.ContentsWrapper>
-            <StyledSignup.ContentsWrapper>
+            </StyledInfo.ContentsWrapper>
+            <StyledInfo.ContentsWrapper>
               <StyledLogin.Label htmlFor="birthday" isEssential>
                 생년월일
               </StyledLogin.Label>
@@ -123,12 +123,12 @@ const Teacher = () => {
                 size={12}
               />
               {!isSubmitSuccessful && errors.birthday && (
-                <StyledSignup.ErrorMessage>
+                <StyledInfo.ErrorMessage>
                   {errors.birthday.message}
-                </StyledSignup.ErrorMessage>
+                </StyledInfo.ErrorMessage>
               )}
-            </StyledSignup.ContentsWrapper>
-            <StyledSignup.ContentsWrapper>
+            </StyledInfo.ContentsWrapper>
+            <StyledInfo.ContentsWrapper>
               <StyledLogin.Label htmlFor="email">메일주소</StyledLogin.Label>
               <StyledLogin.Input
                 placeholder="kindergrew@gmail.com"
@@ -144,12 +144,12 @@ const Teacher = () => {
                 size={20}
               />
               {!isSubmitSuccessful && errors.email && (
-                <StyledSignup.ErrorMessage>
+                <StyledInfo.ErrorMessage>
                   {errors.email.message}
-                </StyledSignup.ErrorMessage>
+                </StyledInfo.ErrorMessage>
               )}
-            </StyledSignup.ContentsWrapper>
-            <StyledSignup.ContentsWrapper>
+            </StyledInfo.ContentsWrapper>
+            <StyledInfo.ContentsWrapper>
               <StyledLogin.Label htmlFor="resolution">한마디</StyledLogin.Label>
               <StyledLogin.Input
                 type="text"
@@ -165,20 +165,20 @@ const Teacher = () => {
                 size={35}
               />
               {!isSubmitSuccessful && errors.resolution && (
-                <StyledSignup.ErrorMessage>
+                <StyledInfo.ErrorMessage>
                   {errors.resolution.message}
-                </StyledSignup.ErrorMessage>
+                </StyledInfo.ErrorMessage>
               )}
-            </StyledSignup.ContentsWrapper>
-          </StyledSignup.Box>
-        </StyledSignup.Wrapper>
-        <StyledSignup.SubmitBtnWrapper>
+            </StyledInfo.ContentsWrapper>
+          </StyledInfo.Box>
+        </StyledInfo.Wrapper>
+        <StyledInfo.SubmitBtnWrapper>
           <Buttons.Filter colorTypes="primary" type="submit">
             작성완료
           </Buttons.Filter>
-        </StyledSignup.SubmitBtnWrapper>
-      </StyledSignup.Form>
-    </StyledSignup.Container>
+        </StyledInfo.SubmitBtnWrapper>
+      </StyledInfo.Form>
+    </StyledInfo.Container>
   );
 };
 

@@ -24,6 +24,12 @@ const StyledLogin = {
 
   Title: styled.h3`
     ${textVariants.H3_Bold}
+    color: ${({ theme }) => theme.color.grayScale[600]};
+
+    strong {
+      ${textVariants.H2_SemiBold}
+      color:${({ theme }) => theme.color.primary};
+    }
   `,
 
   Label: styled.label`
