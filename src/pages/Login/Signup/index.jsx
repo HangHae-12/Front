@@ -1,24 +1,45 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Buttons from "../../../components/Buttons";
 import StyledLogin from "../styled";
 import { DUMMY_URL } from "../../../helpers/dummyUrl";
+import session from "../../../utils/session";
 
 const Signup = () => {
+  const navigate = useNavigate();
+
+  const user = {
+    name: "우주",
+    profileImageUrl: DUMMY_URL.not_profile_img,
+  };
   const role = [
-    { link: "search", label: "학부모" },
-    { link: "search", label: "선생님" },
-    { link: "principal", label: "원장선생님" },
+    { role: "parent", label: "학부모" },
+    { role: "teacher", label: "선생님" },
+    { role: "principal", label: "원장선생님" },
   ];
+
+  const handleLinkNextPage = (role) => {
+    session.set("user", { ...user, role });
+
+    if (role === "principal") {
+      console.log(1);
+      navigate(`./${role}`);
+    } else {
+      navigate("./search");
+    }
+  };
 
   return (
     <StyledSignup.Container>
       <StyledSignup.ProfileWrapper>
-        <img src={DUMMY_URL.not_profile_img} alt="프로필_이미지" />
+        <img
+          src={user.profileImageUrl ?? DUMMY_URL.not_profile_img}
+          alt="프로필_이미지"
+        />
         <StyledSignup.TitleWrapper>
           <StyledLogin.Title>안녕하세요</StyledLogin.Title>
           <StyledLogin.Title>
-            <strong>민훈</strong>님은
+            <strong>{user.name}</strong>님은
           </StyledLogin.Title>
           <StyledLogin.Title>어떤 분 이신가요?</StyledLogin.Title>
         </StyledSignup.TitleWrapper>
@@ -26,11 +47,14 @@ const Signup = () => {
       <StyledSignup.LinkWrapper>
         <StyledSignup.BtnBox>
           {role.map((role) => (
-            <Link key={`${role.label}`} to={role.link}>
-              <StyledSignup.Btn colorTypes="primary" outlined>
-                {role.label}
-              </StyledSignup.Btn>
-            </Link>
+            <StyledSignup.Btn
+              key={`${role.label}`}
+              onClick={() => handleLinkNextPage(role.role)}
+              colorTypes="primary"
+              outlined
+            >
+              {role.label}
+            </StyledSignup.Btn>
           ))}
         </StyledSignup.BtnBox>
         <StyledLogin.Title>입니다.</StyledLogin.Title>

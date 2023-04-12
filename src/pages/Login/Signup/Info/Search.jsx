@@ -5,11 +5,16 @@ import SearchInput from "../../../../components/SearchInput";
 import useSearch from "../../../../hooks/useSearch";
 import { SignAPI } from "../../../../api/SignAPI";
 import textVariants from "../../../../styles/variants/textVariants";
+import SearchContent from "./SearchContent";
+import Buttons from "../../../../components/Buttons";
+import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 
 const Search = () => {
   // const { data, isLoading, handleSearch } = useSearch(SignAPI.search);
   const { isLoading, handleSearch } = useSearch(SignAPI.search);
   const [selectedKinder, setSelectedKinder] = useState(null);
+  const navigate = useNavigate();
 
   const style = css`
     flex: 1;
@@ -24,9 +29,18 @@ const Search = () => {
     ],
   };
 
+  const { mutate } = useMutation(SignAPI.selectKinder, {
+    onSuccess: () => {},
+    onError: (error) => {
+      console.error(error);
+    },
+  });
+
   const handleSelectKinder = (data) => {
     setSelectedKinder(data);
   };
+
+  const handleSelectKinderSubmit = () => {};
 
   return (
     <StyledSearch.Container>
@@ -35,18 +49,7 @@ const Search = () => {
         <StyledSearch.SearchBarWrapper>
           <StyledSearch.SelectedKinderWrapper>
             {selectedKinder ? (
-              <>
-                <StyledSearch.SearchContents>
-                  <img
-                    src={selectedKinder?.logoImageUrl ?? ""}
-                    alt="로고_이미지"
-                  />
-                  <StyledSearch.SearchContentsInfoWrapper>
-                    <h3>{selectedKinder?.name}</h3>
-                    <p>{selectedKinder?.address}</p>
-                  </StyledSearch.SearchContentsInfoWrapper>
-                </StyledSearch.SearchContents>
-              </>
+              <SearchContent data={selectedKinder} />
             ) : (
               "유치원을 선택 해주세요"
             )}
@@ -55,32 +58,24 @@ const Search = () => {
         </StyledSearch.SearchBarWrapper>
         <StyledSearch.SearchContentsWrapper>
           {data.data.map((data) => (
-            <StyledSearch.SearchContents
+            <SearchContent
               key={data.id}
-              onClick={() => handleSelectKinder(data)}
-            >
-              <img src={data?.logoImageUrl ?? ""} alt="로고_이미지" />
-              <StyledSearch.SearchContentsInfoWrapper>
-                <h3>{data?.name}</h3>
-                <p>{data?.address}</p>
-              </StyledSearch.SearchContentsInfoWrapper>
-            </StyledSearch.SearchContents>
+              data={data}
+              handleSelectKinder={handleSelectKinder}
+            />
           ))}
         </StyledSearch.SearchContentsWrapper>
       </StyledSearch.KinderListSearch>
+      <StyledSearch.SubmitBtnBox>
+        <Buttons.Filter colorTypes="primary" onClick={handleSelectKinderSubmit}>
+          다음
+        </Buttons.Filter>
+      </StyledSearch.SubmitBtnBox>
     </StyledSearch.Container>
   );
 };
 
 export default Search;
-
-const KinderBoxStyle = css`
-  display: flex;
-  height: 74px;
-  justify-content: center;
-  align-items: center;
-  border-radius: 4px;
-`;
 
 const StyledSearch = {
   Container: styled.div`
@@ -112,7 +107,11 @@ const StyledSearch = {
 
   SelectedKinderWrapper: styled.div`
     ${textVariants.Body1_SemiBold}
-    ${KinderBoxStyle}
+    display: flex;
+    height: 74px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 4px;
     flex: 1;
     background: ${({ theme }) => theme.color.grayScale[200]};
     color: ${({ theme }) => theme.color.white};
@@ -127,43 +126,9 @@ const StyledSearch = {
     grid-gap: 4px 12px;
     overflow-y: scroll;
   `,
-
-  SearchContents: styled.div`
-    ${KinderBoxStyle}
-    display: flex;
+  SubmitBtnBox: styled.div`
     width: 100%;
-    padding: 12px;
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 29px;
-    background-color: ${({ theme }) => theme.color.white};
-    border: 1px solid ${({ theme }) => theme.color.grayScale[100]};
-    transition: 0.3s ease-in-out;
-    cursor: pointer;
-    img {
-      width: 50px;
-      height: 50px;
-      border: 1px solid black;
-    }
-    &:hover {
-      border-color: ${({ theme }) => theme.color.primary};
-    }
-  `,
-
-  SearchContentsInfoWrapper: styled.div`
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    align-items: center;
-    gap: 3px;
-    h3 {
-      ${textVariants.Body1_SemiBold}
-      color: ${({ theme }) => theme.color.grayScale[600]}
-    }
-    p {
-      ${textVariants.Body2_Bold}
-      color: ${({ theme }) => theme.color.grayScale[500]}
-    }
+    margin-top: 12px;
+    text-align: end;
   `,
 };
