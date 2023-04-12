@@ -29,7 +29,6 @@ const Gallery = () => {
   const [previewImages, setPreviewImages] = useState([]); // 프리뷰 보여줄 이미지 데이터
   const [severImages, setSeverImages] = useState([]); // 서버로 보낼 이미지 데이터
   const [render, setRender] = useState(true);
-  const [render2, setRender2] = useState(true);
   const [title, setTitle] = useState("");
   const [modalState, setModalState] = useRecoilState(modalAtom);
   const [imageUrlList, setImageUrlList] = useState([]);
@@ -112,8 +111,12 @@ const Gallery = () => {
 
   //날짜 검색 기능
   const handleDateSearch = () => {
-    setFormattedStartDate(dateToString(startDate));
-    setFormattedEndDate(dateToString(endDate));
+    if (startDate === "" || endDate === "") {
+      alert("기간을 선택해주세요");
+    } else {
+      setFormattedStartDate(dateToString(startDate));
+      setFormattedEndDate(dateToString(endDate));
+    }
   };
 
   //전체기간 조회
@@ -272,12 +275,12 @@ const Gallery = () => {
       ),
       footer: (
         <>
-          <Buttons.Filter
+          {/* <Buttons.Filter
             colorTypes="primary"
             onClick={() => handleClickModify(response)}
           >
             수정하기
-          </Buttons.Filter>
+          </Buttons.Filter> */}
         </>
       ),
       callback: () => alert("modal"),
@@ -296,6 +299,25 @@ const Gallery = () => {
     setModalState((prevState) => ({
       ...prevState,
       isOpen: true,
+      title: (
+        <>
+          <StyledGalleryModalHeader>갤러리</StyledGalleryModalHeader>
+          <StyledGalleryModalTitleBox>
+            <StyledModalTitle>{response?.data.data.title}</StyledModalTitle>
+            <StyledModalDate>{response?.data.data.createdAt}</StyledModalDate>
+            <StyledButtonWrapper>
+              <StyledSlideIcon
+                color="#3cc678"
+                onClick={() => handleClickSlide(response)}
+              />
+              <StyledSplitIcon
+                color="#d9d9d9"
+                onClick={() => handleClickSplit(response)}
+              />
+            </StyledButtonWrapper>
+          </StyledGalleryModalTitleBox>
+        </>
+      ),
       contents: (
         <GallerySlider images={response?.data?.data?.imageUrlList || []} />
       ),
@@ -306,6 +328,19 @@ const Gallery = () => {
     setModalState((prevState) => ({
       ...prevState,
       isOpen: true,
+      title: (
+        <>
+          <StyledGalleryModalHeader>갤러리</StyledGalleryModalHeader>
+          <StyledGalleryModalTitleBox>
+            <StyledModalTitle>{response?.data.data.title}</StyledModalTitle>
+            <StyledModalDate>{response?.data.data.createdAt}</StyledModalDate>
+            <StyledButtonWrapper>
+              <StyledSlideIcon onClick={() => handleClickSlide(response)} />
+              <StyledSplitIcon onClick={() => handleClickSplit(response)} />
+            </StyledButtonWrapper>
+          </StyledGalleryModalTitleBox>
+        </>
+      ),
       contents: (
         <StyledModalContent>
           {response?.data.data.imageUrlList.map((item) => {
@@ -321,10 +356,10 @@ const Gallery = () => {
   };
 
   // useEffect(() => {
-  //   if (!render2) {
+  //   if (!render) {
   //     handleClickModify();
   //   } else {
-  //     setRender2(false);
+  //     setRender(false);
   //   }
   // }, [imageUrlList]);
 
@@ -462,7 +497,6 @@ const Gallery = () => {
               selectsEnd
               startDate={startDate}
               endDate={endDate}
-              minDate={startDate}
             />
           </StyledDatePickerWrapper>
           <Buttons.Filter colorTypes="primary" onClick={handleDateSearch}>
@@ -609,13 +643,13 @@ const StyledAddIcon = styled(IoIosAdd)`
 const StyledSplitIcon = styled(AiFillAppstore)`
   width: 28px;
   height: 28px;
-  color: #d9d9d9;
+  color: ${({ color }) => color || "#3cc678"};
 `;
 
 const StyledSlideIcon = styled.div`
   width: 21px;
   height: 21px;
-  background: #d9d9d9;
+  background: ${({ color }) => color || "#d9d9d9"};
 `;
 
 const StyledModalContent = styled.div`

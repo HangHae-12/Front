@@ -39,27 +39,27 @@ export const ClassModal = ({ response }) => {
         </StyledRightWrapper>
       </StyledChildrenProfileWrapper>
       <StyledNote>특이사항</StyledNote>
-      <StyleNoteBox value={response?.data.data.significant} />
+      <StyleNoteBox>{response?.data.data.significant}</StyleNoteBox>
       <StyledParentProfileWrapper>
         <StyledParentBox>
           <StyledLeftWrapper>
             <StyledProfileHeaderFont>학부모 프로필</StyledProfileHeaderFont>
             <StyledProfileImage
               src={
-                "https://outlooksformen.com/sites/default/files/2020-09/testiminials-img-01.png"
+                response?.data?.data?.parentProfileResponseDto?.profileImageUrl
               }
             />
           </StyledLeftWrapper>
           <StyledRightWrapper>
             <StyledInputWrapper>
               <StyledQuestionFont>이름</StyledQuestionFont>
-              <StyledAnswerFont marginLeft="280px">
+              <StyledAnswerFont marginLeft="260px">
                 {response?.data?.data?.parentProfileResponseDto?.name}
               </StyledAnswerFont>
             </StyledInputWrapper>
             <StyledInputWrapper>
               <StyledQuestionFont>이메일</StyledQuestionFont>
-              <StyledAnswerFont marginLeft="220px">
+              <StyledAnswerFont marginLeft="200px">
                 {response?.data?.data?.parentProfileResponseDto?.email}
               </StyledAnswerFont>
             </StyledInputWrapper>
@@ -479,7 +479,7 @@ const StyledLeftWrapper = styled.div`
 `;
 
 const StyledRightWrapper = styled.div`
-  margin-left: 20px;
+  margin-left: 40px;
   margin-top: 20px;
 `;
 
@@ -728,6 +728,8 @@ const StyleNoteBox = styled.div`
   outline: none;
   background-color: ${({ theme }) => theme.color.grayScale[50]};
   margin-top: 10px;
+  align-items: center;
+  display: flex;
 `;
 
 const StyledClassMangeBox = styled.div`

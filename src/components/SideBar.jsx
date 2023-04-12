@@ -6,42 +6,94 @@ import Buttons from "./Buttons";
 import textVariants from "../styles/variants/textVariants";
 import logo from "../assets/kindergrew_logo.png";
 import { Link } from "react-router-dom";
+import Modal from "./Modal";
+import useModal from "../hooks/useModal";
+import UserProfileModal from "./UserProfileModal";
+import { useQuery } from "@tanstack/react-query";
+import { SideBarAPI } from "../api/SideBarAPI";
+import { useRecoilState } from "recoil";
+import { useProfileAtom } from "../atom/sideBarAtom";
 
 const SideBar = () => {
+  const [userProfile, setUserProfile] = useRecoilState(useProfileAtom);
   const [showAttendanceMenu, setShowAttendanceMenu] = useState(false);
+  const { openModal } = useModal();
+
+  const { data } = useQuery(
+    ["SideBarInformation"],
+    () => SideBarAPI.getSideBar(),
+    {
+      onSuccess: (data) => {
+        setUserProfile({
+          ...userProfile,
+          birthday: data.data.data.userProfile.birthday,
+          email: data.data.data.userProfile.email,
+          name: data.data.data.userProfile.name,
+          phoneNumber: data.data.data.userProfile.phoneNumber,
+          profileImageUrl: data.data.data.userProfile.profileImageUrl,
+          resolution: data.data.data.userProfile.resolution,
+          role: data.data.data.userProfile.role,
+        });
+        console.log(data);
+      },
+      onError: () => {
+        console.log("error");
+      },
+    }
+  );
 
   const toggleAttendanceMenu = () => {
     setShowAttendanceMenu(!showAttendanceMenu);
   };
 
+  const modalOption = {
+    width: "640px",
+    height: "352px",
+  };
+
+  const setProfileModal = () => {
+    const modalData = {
+      title: <StyledModalHeader>사용자 프로필</StyledModalHeader>,
+      contents: <UserProfileModal />,
+      footer: <></>,
+      callback: () => alert("modal"),
+    };
+    openModal(modalData);
+  };
+
   return (
-    <StyledSideBarContainer>
-      <StyledLogo>
-        <img src={logo} alt="로고 이미지" />
-      </StyledLogo>
-      <StyledUserProfileWrapper>
-        <img src={DUMMY_PROFILE_IMG_SRC} alt="유저 프로필 이미지" />
-        <p>학부모</p>
-        <h3>
-          <span>박미자</span>
-          <StyledGearButton />
-        </h3>
-      </StyledUserProfileWrapper>
-      <StyledSideBarBtnWrapper>
-        <Buttons.NB colorTypes="primary" width="160px">학급 관리</Buttons.NB>
-        <Buttons.NB>등/하원 관리</Buttons.NB>
-        <div>
-          <Buttons.NB onClick={toggleAttendanceMenu}>출석부 관리</Buttons.NB>
-          {showAttendanceMenu && (
-            <StyledSubMenu>
-              <Link to="/monthAttendance">월별 출석부</Link>
-              <Link to="/dayAttendance">일별 출석부</Link>
-            </StyledSubMenu>
-          )}
-        </div>
-        <Buttons.NB>멤버 관리</Buttons.NB>
-      </StyledSideBarBtnWrapper>
-    </StyledSideBarContainer>
+    <>
+      <StyledSideBarContainer>
+        <StyledLogo>
+          <img src={logo} alt="로고 이미지" />
+        </StyledLogo>
+        <StyledUserProfileWrapper>
+          <img src={DUMMY_PROFILE_IMG_SRC} alt="유저 프로필 이미지" />
+          <p>학부모</p>
+          <h3>
+            <span>박미자</span>
+            <StyledGearButton onClick={setProfileModal} />
+          </h3>
+        </StyledUserProfileWrapper>
+        <StyledSideBarBtnWrapper>
+          <Buttons.NB colorTypes="primary" width="160px">
+            학급 관리
+          </Buttons.NB>
+          <Buttons.NB>등/하원 관리</Buttons.NB>
+          <div>
+            <Buttons.NB onClick={toggleAttendanceMenu}>출석부 관리</Buttons.NB>
+            {showAttendanceMenu && (
+              <StyledSubMenu>
+                <Link to="/monthAttendance">월별 출석부</Link>
+                <Link to="/dayAttendance">일별 출석부</Link>
+              </StyledSubMenu>
+            )}
+          </div>
+          <Buttons.NB>멤버 관리</Buttons.NB>
+        </StyledSideBarBtnWrapper>
+      </StyledSideBarContainer>
+      <Modal modalOption={modalOption} />
+    </>
   );
 };
 
@@ -62,7 +114,6 @@ const StyledSideBarContainer = styled.aside`
   border-right: 2px solid ${({ theme }) => theme.color.grayScale[100]};
   background-color: ${({ theme }) => theme.color.white};
   box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.04);
-
 `;
 const StyledLogo = styled.div`
   display: flex;
@@ -70,8 +121,7 @@ const StyledLogo = styled.div`
   justify-content: center;
   width: 122px;
   height: 48px;
-
-`
+`;
 const StyledUserProfileWrapper = styled.div`
   display: flex;
   width: 100%;
@@ -136,4 +186,13 @@ const StyledSubMenu = styled.div`
       color: ${({ theme }) => theme.color.primary};
     }
   }
+`;
+
+const StyledModalHeader = styled.div`
+  ${textVariants.Body1_SemiBold}
+  color: ${({ theme }) => theme.color.grayScale[600]};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
 `;
