@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import Button from "../../components/Button";
-import { useSetRecoilState, useRecoilValue } from "recoil";
-import { scheduledIdAtom, classIdAtom, timeAtom, paginationAtom } from "../../atom/hostButtonAtom";
+import { useSetRecoilState } from "recoil";
+import { scheduledIdAtom, timeAtom, paginationAtom } from "../../atom/hostButtonAtom";
 
 const ClassButton = ({ hostParams }) => {
     const { classroomId = 0 } = useParams();
-    const setClassId = useSetRecoilState(classIdAtom);
     const setPage = useSetRecoilState(paginationAtom);
     const setScheduleId = useSetRecoilState(scheduledIdAtom);
     const setTime = useSetRecoilState(timeAtom);

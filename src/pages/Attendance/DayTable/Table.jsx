@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import * as XLSX from "xlsx";
-import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
-import { useNavigate, useParams } from "react-router-dom";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
+import { useParams } from "react-router-dom";
 import { AttendanceAPI } from "../../../api/AttendanceAPI";
 import { GrPrevious, GrNext } from "react-icons/gr";
 import { BsSun } from "react-icons/bs"

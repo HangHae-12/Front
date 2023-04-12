@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
 import styled from "styled-components";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import "react-datepicker/dist/react-datepicker.css";
 import { GrPrevious, GrNext } from "react-icons/gr";
 import { GoOctoface } from "react-icons/go"

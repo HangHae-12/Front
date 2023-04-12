@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
-import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import Buttons from "../../components/Buttons";
 import { useSetRecoilState, useRecoilValue } from "recoil";
-import { scheduledIdAtom, classIdAtom, timeAtom, paginationAtom } from "../../atom/hostButtonAtom";
+import { scheduledIdAtom, timeAtom, paginationAtom } from "../../atom/hostButtonAtom";
 
 const Schedule = ({ hostParams }) => {
     //param,전역상태 모두 사용하는 이유는 전체시간,반을 눌렀을때 defalt값을 설정하기 위해서

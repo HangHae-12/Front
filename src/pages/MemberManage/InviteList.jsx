@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import styled from "styled-components";
 import { ManageAPI } from "../../api/ManageAPI";
@@ -6,47 +6,47 @@ import textVariants from "../../styles/variants/textVariants";
 
 
 const InviteList = ({ data, page, userRole }) => {
-    const queryClient = useQueryClient();
-    const approveMutation = useMutation((id) => ManageAPI.updateApprove(id), {
-        onSuccess: () => {
-            queryClient.invalidateQueries(["getMemberManage", page, userRole]);
-        },
-    });
+  const queryClient = useQueryClient();
+  const approveMutation = useMutation((id) => ManageAPI.updateApprove(id), {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["getMemberManage", page, userRole]);
+    },
+  });
 
-    const rejectMutation = useMutation((id) => ManageAPI.updateReject(id), {
-        onSuccess: () => {
-            queryClient.invalidateQueries(["getMemberManage", page, userRole]);
-        },
-    });
+  const rejectMutation = useMutation((id) => ManageAPI.updateReject(id), {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["getMemberManage", page, userRole]);
+    },
+  });
 
-    const handleApprove = (id) => {
-        approveMutation.mutate(id);
-    };
+  const handleApprove = (id) => {
+    approveMutation.mutate(id);
+  };
 
-    const handleReject = (id) => {
-        rejectMutation.mutate(id);
-    };
+  const handleReject = (id) => {
+    rejectMutation.mutate(id);
+  };
 
-    return (
-        <StyledInviteList>
-            {data?.earlyMemberList?.map((member) => {
-                return (
-                    <StyledInviteRow key={member.id}>
-                        <StyledInviteProfileWrapper>
-                            <StyledInviteProfile src={member.profileImageUrl} />
-                            <StyledInviteProfileName>
-                                {member.name}
-                            </StyledInviteProfileName>
-                        </StyledInviteProfileWrapper>
-                        <StyledInviteButtonWrapper>
-                            <StyledApproveButton onClick={() => handleApprove(member.id)}>승인</StyledApproveButton>
-                            <StyledRejectButton onClick={() => handleReject(member.id)}>거절</StyledRejectButton>
-                        </StyledInviteButtonWrapper>
-                    </StyledInviteRow>
-                );
-            })}
-        </StyledInviteList>
-    );
+  return (
+    <StyledInviteList>
+      {data?.earlyMemberList?.map((member) => {
+        return (
+          <StyledInviteRow key={member.id}>
+            <StyledInviteProfileWrapper>
+              <StyledInviteProfile src={member.profileImageUrl} />
+              <StyledInviteProfileName>
+                {member.name}
+              </StyledInviteProfileName>
+            </StyledInviteProfileWrapper>
+            <StyledInviteButtonWrapper>
+              <StyledApproveButton onClick={() => handleApprove(member.id)}>승인</StyledApproveButton>
+              <StyledRejectButton onClick={() => handleReject(member.id)}>거절</StyledRejectButton>
+            </StyledInviteButtonWrapper>
+          </StyledInviteRow>
+        );
+      })}
+    </StyledInviteList>
+  );
 };
 
 export default InviteList;
