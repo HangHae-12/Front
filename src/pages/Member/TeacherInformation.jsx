@@ -178,12 +178,12 @@ const TeacherInformation = ({ data }) => {
             />
           </StyledLeftWrapper>
           <StyledMiddleWrapper>
-            <StyledInputWrapper>
+            <StyledHeaderInputWrapper>
               <StyledQuestionFont>한마디 </StyledQuestionFont>
               <StyledAnswerFont marginLeft="30px">
                 {data?.data?.data?.classroomTeacher?.resolution}
               </StyledAnswerFont>
-            </StyledInputWrapper>
+            </StyledHeaderInputWrapper>
             <StyledInputWrapper>
               <StyledQuestionFont>이름</StyledQuestionFont>
               <StyledAnswerFont marginLeft="190px">
@@ -241,7 +241,7 @@ const StyledMiddleWrapper = styled.div`
 
 const StyledInputWrapper = styled.div`
   display: flex;
-  align-items: center;
+  justify-content: space-between;
   margin-top: ${({ marginTop }) => marginTop || "30px"};
 `;
 
@@ -411,4 +411,9 @@ const StyledParentInformationBox = styled.div`
   border: 1px solid ${({ theme }) => theme.color.grayScale[200]};
   border-radius: 4px;
   margin-left: ${({ marginLeft }) => marginLeft};
+`;
+
+const StyledHeaderInputWrapper = styled.div`
+  display: flex;
+  margin-top: ${({ marginTop }) => marginTop || "30px"};
 `;

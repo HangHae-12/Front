@@ -184,7 +184,7 @@ const ClassMember = () => {
     formData.append("gender", memberinfor.gender);
     {
       memberinfor.image[0] === "h"
-        ? formData.append("image", "null")
+        ? formData.append("image", "")
         : formData.append("image", memberinfor.image);
     }
     formData.append("parentId", parentinfor.parentId);

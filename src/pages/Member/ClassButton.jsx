@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import TeacherInformation from "./TeacherInformation";
@@ -39,8 +39,8 @@ const ClassButton = () => {
 
   const modalOption = {
     padding: "20px",
-    width: "484px",
-    height: "512px",
+      width: "660px",
+      height: "837px",
   };
 
   const setClassModal = () => {
@@ -53,17 +53,51 @@ const ClassButton = () => {
     openModal(modalData);
   };
 
+  useEffect(() => {
+    if (id === undefined || id === "") {
+      navigate("/classes/1");
+    }
+  }, [id]);
+
+  useEffect(() => {
+    const storedSelectedTab = localStorage.getItem("selectedTab");
+    if (storedSelectedTab) {
+      setSelectedTab(storedSelectedTab);
+    } else {
+      setSelectedTab("member");
+    }
+  }, []);
+
+  useEffect(() => {
+    setSelectedButton(idToButtonName(id));
+  }, [id]);
+
+  const idToButtonName = (id) => {
+    switch (id) {
+      case "1":
+        return "세빛반";
+      case "2":
+        return "둥둥반";
+      case "3":
+        return "빛살반";
+      default:
+        return "세빛반";
+    }
+  };
+
   const handleMemberClick = () => {
     setSelectedTab("member");
+    localStorage.setItem("selectedTab", "member");
   };
 
   const handleGalleryClick = () => {
     setSelectedTab("gallery");
+    localStorage.setItem("selectedTab", "gallery");
   };
 
   const navigate = useNavigate();
 
-  const handleButtonClick = async (selected, id) => {
+  const handleButtonClick = (selected, id) => {
     setSelectedButton(selected);
     navigate(`/classes/${id}`);
   };
@@ -117,11 +151,11 @@ const ClassButton = () => {
       ) : selectedTab === "gallery" ? (
         <Gallery />
       ) : selectedTab === "" ? (
-        <StyledChildrenWrapper />
+        <ClassMember />
       ) : (
-        <StyledChildrenWrapper />
+        <ClassMember />
       )}
-      {/* <Modal modalOption={modalOption} /> */}
+      <Modal modalOption={modalOption} />
     </>
   );
 };
@@ -150,20 +184,6 @@ const StyledABButton = styled(Buttons.AB)`
   margin-top: 20px;
   margin-left: ${({ marginLeft }) => marginLeft};
   border-radius: 4px 4px 0px 0px;
-`;
-
-const StyledChildrenWrapper = styled.div`
-  padding: 0px 0px 20px;
-  gap: 40px;
-  width: calc(7 * (190px + 15px));
-  height: 484px;
-  background: rgba(237, 245, 238, 0.8);
-  border-radius: 12px;
-
-  @media (max-width: 1800px) {
-    width: calc(7 * (140px + 15px));
-    height: 360px;
-  }
 `;
 
 const StyledGearButton = styled(BsFillGearFill)`
