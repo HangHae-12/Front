@@ -13,19 +13,19 @@ const TeacherSideBar = () => {
     return (
         <StyledSideBarBtnWrapper>
             <Buttons.NB>
-                <Link to="/kindergrew/host">등/하원 관리</Link>
+                <Link to="/host">등/하원 관리</Link>
             </Buttons.NB>
             <div>
                 <Buttons.NB onClick={toggleAttendanceMenu}>출석부 관리</Buttons.NB>
                 {showAttendanceMenu && (
                     <StyledSubMenu>
-                        <Link to="/kindergrew/monthAttendance">월별 출석부</Link>
-                        <Link to="/kindergrew/dayAttendance">일별 출석부</Link>
+                        <Link to="/monthAttendance">월별 출석부</Link>
+                        <Link to="/dayAttendance">일별 출석부</Link>
                     </StyledSubMenu>
                 )}
             </div>
             <Buttons.NB colorTypes="primary" width="160px">
-                <Link to="/kindergrew/classes">학급 관리</Link>
+                <Link to="/classes">학급 관리</Link>
             </Buttons.NB>
         </StyledSideBarBtnWrapper>
 

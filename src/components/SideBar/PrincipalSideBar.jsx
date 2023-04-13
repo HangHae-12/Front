@@ -28,14 +28,14 @@ const PrincipalSideBar = () => {
                 buttonsTypes="NB_Button"
                 onClick={() => handleSideMenu(0)}
             >
-                <Link to="/kindergrew/membermanage">멤버 관리</Link>
+                <Link to="/membermanage">멤버 관리</Link>
             </CustomButton>
             <CustomButton
                 colorTypes={selectedIndex === 1 ? "primary" : undefined}
                 buttonsTypes="NB_Button"
                 onClick={() => handleSideMenu(1)}
             >
-                <Link to="/kindergrew/host">등/하원 관리</Link>
+                <Link to="/host">등/하원 관리</Link>
             </CustomButton>
             <StyledMenuWrapper showBorder={selectedIndex === 2}>
                 <CustomButton
@@ -49,14 +49,14 @@ const PrincipalSideBar = () => {
                 {showAttendanceMenu && (
                     <StyledSubMenu>
                         <Link
-                            to="/kindergrew/monthAttendance"
+                            to="/monthAttendance"
                             onClick={() => setSubMenuSelectedIndex(0)}
                             className={subMenuSelectedIndex === 0 ? "active" : ""}
                         >
                             월별 출석부
                         </Link>
                         <Link
-                            to="/kindergrew/dayAttendance"
+                            to="/dayAttendance"
                             onClick={() => setSubMenuSelectedIndex(1)}
                             className={subMenuSelectedIndex === 1 ? "active" : ""}
                         >
@@ -72,7 +72,7 @@ const PrincipalSideBar = () => {
                 buttonsTypes="NB_Button"
                 onClick={() => handleSideMenu(3)}
             >
-                <Link to="/kindergrew/classes">학급 관리</Link>
+                <Link to="/classes">학급 관리</Link>
             </CustomButton>
         </StyledSideBarBtnWrapper>
     );

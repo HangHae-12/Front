@@ -7,10 +7,10 @@ const ParentSideBar = () => {
     return (
         <StyledSideBarBtnWrapper>
             <Buttons.NB colorTypes="primary" width="160px">
-                <Link to="/kindergrew/classes">학급 관리</Link>
+                <Link to="/classes">학급 관리</Link>
             </Buttons.NB>
             <Buttons.NB colorTypes="primary" width="160px">
-                <Link to="/kindergrew/childmanage">아이 관리</Link>
+                <Link to="/childmanage">아이 관리</Link>
             </Buttons.NB>
         </StyledSideBarBtnWrapper>
 

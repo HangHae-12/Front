@@ -16,7 +16,7 @@ const ExitTime = () => {
     const handleTimeButton = (timeId) => {
         setTime(timeId);
         setPage(1);
-        navigate(`/kindergrew/host/${classroomId}/${scheduleId}/${timeId}`)
+        navigate(`/host/${classroomId}/${scheduleId}/${timeId}`)
     };
     return (
         <StyledTimeButtonGroup>

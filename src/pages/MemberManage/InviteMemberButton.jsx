@@ -14,7 +14,7 @@ const InviteMemberButton = ({ onPageReset }) => {
     const handleButtonClick = async (selected, id) => {
         setSelectedButton(selected);
         onPageReset();
-        navigate(`/kindergrew/memberManage/${id}`);
+        navigate(`/memberManage/${id}`);
         queryClient.invalidateQueries(["getMemberManage"]);
     };
     return (
