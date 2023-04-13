@@ -28,6 +28,9 @@ const KakaoLogin = () => {
           case 200:
             navigate("/signup");
             break;
+          case 202:
+            navigate("signup/success");
+            break;
           default:
             navigate("/host");
             break;

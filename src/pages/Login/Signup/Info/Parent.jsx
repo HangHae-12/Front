@@ -8,6 +8,7 @@ import Buttons from "../../../../components/Buttons";
 import ProfileImageUploader from "../../../../components/ProfileImageUploader";
 import { useProfileImageUploader } from "../../../../hooks/useProfileImageUploader";
 import { REGEXP } from "../../../../helpers/regexp";
+import session from "../../../../utils/session";
 
 // 사용자가 정보를 다 입력하고 난 뒤에 도메인에 extrainfo 를 치면 이 화면이 보일 수 있으니까
 // 그걸 방지하기 위한 로직을 구현해야만 한다.
@@ -28,7 +29,10 @@ const Parent = () => {
 
   const { mutate } = useMutation(SignAPI.signup, {
     onSuccess: (res) => {
-      console.log(res);
+      if (res.statusCode === 200) {
+        session.set("user", res.data.data.data);
+        navigate("/signup/success");
+      }
     },
     onError: (error) => {
       console.log(error);
@@ -48,10 +52,7 @@ const Parent = () => {
     }
     const role = location.pathname.split("/")[2];
 
-    // mutate({ role: role, info: formData });
-    navigate("/signup/success", {
-      state: { name: "이름", profileImageUrl: "프로필" },
-    });
+    mutate({ role: role, info: formData });
   };
 
   return (
