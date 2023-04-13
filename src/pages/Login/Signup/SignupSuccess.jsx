@@ -5,10 +5,18 @@ import StyledLogin from "../styled";
 
 import session from "../../../utils/session";
 import textVariants from "../../../styles/variants/textVariants";
+import { useEffect } from "react";
 
 const SignupSuccess = () => {
-  const { name, profileImageUrl, kindergartenName, logoImageUrl } =
+  const { name, profileImageUrl, kindergartenName, logoImageUrl, role } =
     session.get("user");
+
+  useEffect(() => {
+    return () => {
+      session.clear();
+    };
+  }, []);
+
   return (
     <StyledSignupSuccess.Container>
       <StyledSignupSuccess.MessageWrapper>
@@ -18,7 +26,7 @@ const SignupSuccess = () => {
         />
         <StyledSignupSuccess.MessageBox>
           <StyledLogin.Title>
-            🎉 축하합니다 <strong>{name ?? "사용자"}</strong> 님!
+            🎉 축하합니다 <strong>{name}</strong> 님!
           </StyledLogin.Title>
           <StyledLogin.Title>회원가입이 완료되었습니다.</StyledLogin.Title>
         </StyledSignupSuccess.MessageBox>
@@ -27,22 +35,13 @@ const SignupSuccess = () => {
         <StyledSignupSuccess.InfoContents>
           <h4>접수 유치원</h4>
           <StyledSignupSuccess.KindergartenInfo>
-            <img
-              src={logoImageUrl ?? DUMMY_URL.not_profile_img}
-              alt="유치원_로고"
-            />
-            <p>{kindergartenName ?? "평강 유치원"}</p>
+            <img src={logoImageUrl} alt="유치원_로고" />
+            <p>{kindergartenName}</p>
           </StyledSignupSuccess.KindergartenInfo>
         </StyledSignupSuccess.InfoContents>
         <StyledSignupSuccess.InfoContents>
-          <h4>요청 시간</h4>
-          <p>23.04.12. 11:00</p>
-          {/* 시간 ?? */}
-        </StyledSignupSuccess.InfoContents>
-        <StyledSignupSuccess.InfoContents>
           <h4>요청 권한</h4>
-          <p>선생님</p>
-          {/* 권한은 왜 안보내주지 ? */}
+          <p>{role === "EARLY_PARENT" ? "부모님" : "선생님"}</p>
         </StyledSignupSuccess.InfoContents>
       </StyledSignupSuccess.InfoWrapper>
       <StyledSignupSuccess.AlertWrapper>
@@ -91,7 +90,7 @@ const StyledSignupSuccess = {
   InfoWrapper: styled.div`
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: repeat(3, auto);
+    grid-template-rows: repeat(2, auto);
     gap: 8px;
     width: 365px;
     padding: 20px;

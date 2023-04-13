@@ -26,12 +26,15 @@ const KakaoLogin = () => {
         session.set("user", res.data.data);
         switch (res.data.statusCode) {
           case 200:
+            // 아직 추가정보를 입력하지 않은 상태
             navigate("/signup");
             break;
           case 202:
+            // 정보입력 후 미승인 상태
             navigate("/signup/success");
             break;
           default:
+            //  승인까지 완료
             navigate("/host");
             break;
         }
