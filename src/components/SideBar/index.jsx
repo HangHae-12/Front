@@ -5,7 +5,7 @@ import textVariants from "../../styles/variants/textVariants";
 import logo from "../../assets/kindergrew_logo.png";
 import Modal from "../Modal";
 import useModal from "../../hooks/useModal";
-import UserProfileModal from "../UserProfileModal";
+import ProfileModal from "./ProfileModal";
 import { useQuery } from "@tanstack/react-query";
 import { SideBarAPI } from "../../api/SideBarAPI";
 import { useRecoilState } from "recoil";
@@ -51,7 +51,7 @@ const SideBar = () => {
   const setProfileModal = () => {
     const modalData = {
       title: <StyledModalHeader>사용자 프로필</StyledModalHeader>,
-      contents: <UserProfileModal />,
+      contents: <ProfileModal />,
       footer: <></>,
       width: "640px",
       height: "392px",

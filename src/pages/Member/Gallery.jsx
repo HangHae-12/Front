@@ -82,12 +82,6 @@ const Gallery = () => {
     },
   });
 
-  const setGalleryModifyMutation = useMutation(MemberAPI.setGalleryModify, {
-    onSuccess: () => {
-      queryClient.invalidateQueries("classesGallery");
-    },
-  });
-
   const removeGalleryMutation = useMutation(MemberAPI.removeGallery, {
     onSuccess: () => {
       queryClient.invalidateQueries("classesGallery");
@@ -170,6 +164,18 @@ const Gallery = () => {
       reader.readAsDataURL(file);
     }
   };
+  //갤러리 추가 동적 높이 함수
+  const calculateModalHeight = (previewImagesLength) => {
+    const baseHeight = 598;
+    const addHeight = 598 + 320;
+
+    if (previewImagesLength > 1) {
+      return `${addHeight}px`;
+    }
+    else
+      return `${baseHeight}px`;
+  };
+
 
   const modalData = {
     title: (
@@ -185,7 +191,7 @@ const Gallery = () => {
       </>
     ),
     contents: (
-      <StyledModalContent>
+      <StyledGridModalContent itemCount={previewImages.length}>
         <StyledAddGallery>
           <StyledAddFont htmlFor="upload-img" id="upload-img-label">
             <StyledAddIcon />
@@ -209,7 +215,7 @@ const Gallery = () => {
             </StyledAddGallery>
           );
         })}
-      </StyledModalContent>
+      </StyledGridModalContent>
     ),
     footer: (
       <>
@@ -221,14 +227,11 @@ const Gallery = () => {
         </Buttons.Filter>
       </>
     ),
+    width: "900px",
+    height: calculateModalHeight(previewImages.length),
     callback: () => alert("modal"),
   };
 
-  const modalOption = {
-    padding: "10px",
-    width: "630px",
-    height: "720px",
-  };
 
   const createGallery = () => {
     openModal(modalData);
@@ -248,14 +251,14 @@ const Gallery = () => {
       title: (
         <>
           <StyledGalleryModalHeader>갤러리</StyledGalleryModalHeader>
-          <StyledGalleryModalTitleBox>
-            <StyledModalTitle>{response?.data.data.title}</StyledModalTitle>
+          <StyledModalTitle>{response?.data.data.title}</StyledModalTitle>
+          <StyledGalleryDualModalWrapper>
             <StyledModalDate>{response?.data.data.createdAt}</StyledModalDate>
             <StyledButtonWrapper>
               <StyledSlideIcon onClick={() => handleClickSlide(response)} />
               <StyledSplitIcon onClick={() => handleClickSplit(response)} />
             </StyledButtonWrapper>
-          </StyledGalleryModalTitleBox>
+          </StyledGalleryDualModalWrapper>
         </>
       ),
       contents: (
@@ -285,6 +288,8 @@ const Gallery = () => {
           </Buttons.Filter> */}
         </>
       ),
+      width: "900px",
+      height: calculateModalHeight(response?.data.data.imageUrlList.length),
       callback: () => alert("modal"),
     };
   };
@@ -304,8 +309,8 @@ const Gallery = () => {
       title: (
         <>
           <StyledGalleryModalHeader>갤러리</StyledGalleryModalHeader>
-          <StyledGalleryModalTitleBox>
-            <StyledModalTitle>{response?.data.data.title}</StyledModalTitle>
+          <StyledModalTitle>{response?.data.data.title}</StyledModalTitle>
+          <StyledGalleryDualModalWrapper>
             <StyledModalDate>{response?.data.data.createdAt}</StyledModalDate>
             <StyledButtonWrapper>
               <StyledSlideIcon
@@ -317,12 +322,14 @@ const Gallery = () => {
                 onClick={() => handleClickSplit(response)}
               />
             </StyledButtonWrapper>
-          </StyledGalleryModalTitleBox>
+          </StyledGalleryDualModalWrapper>
         </>
       ),
       contents: (
         <GallerySlider images={response?.data?.data?.imageUrlList || []} />
       ),
+      width: "900px",
+      height: "598px",
     }));
   };
 
@@ -333,14 +340,14 @@ const Gallery = () => {
       title: (
         <>
           <StyledGalleryModalHeader>갤러리</StyledGalleryModalHeader>
-          <StyledGalleryModalTitleBox>
-            <StyledModalTitle>{response?.data.data.title}</StyledModalTitle>
+          <StyledModalTitle>{response?.data.data.title}</StyledModalTitle>
+          <StyledGalleryDualModalWrapper>
             <StyledModalDate>{response?.data.data.createdAt}</StyledModalDate>
             <StyledButtonWrapper>
               <StyledSlideIcon onClick={() => handleClickSlide(response)} />
               <StyledSplitIcon onClick={() => handleClickSplit(response)} />
             </StyledButtonWrapper>
-          </StyledGalleryModalTitleBox>
+          </StyledGalleryDualModalWrapper>
         </>
       ),
       contents: (
@@ -354,97 +361,13 @@ const Gallery = () => {
           })}
         </StyledModalContent>
       ),
+      width: "900px",
+      height: calculateModalHeight(response?.data.data.imageUrlList.length),
     }));
   };
-
-  // useEffect(() => {
-  //   if (!render) {
-  //     handleClickModify();
-  //   } else {
-  //     setRender(false);
-  //   }
-  // }, [imageUrlList]);
-
-  //갤러리 수정 모달
-  const handleClickModify = (response) => {
-    // const initialImageUrlList = response?.data?.data?.imageUrlList || [];
-    // console.log(initialImageUrlList)
-    setImageUrlList(response?.data?.data?.imageUrlList);
-    console.log(imageUrlList);
-    // setImageUrlList([...imageUrlList, response?.data?.data?.imageUrlList ]);
-    setModalState((prevState) => ({
-      ...prevState,
-      title: (
-        <>
-          <StyledGalleryModalHeader>갤러리 수정</StyledGalleryModalHeader>
-          <StyledGalleryModalTitleBox>
-            <StyledModalInputBox
-              type="text"
-              placeholder={response?.data.data.title}
-              onChange={(e) => setTitle(e.target.value)}
-            ></StyledModalInputBox>
-          </StyledGalleryModalTitleBox>
-        </>
-      ),
-      contents: (
-        <StyledModalContent>
-          <StyledAddGallery>
-            <StyledAddFont htmlFor="upload-img" id="upload-img-label">
-              <StyledAddIcon />
-              <StyledAddInput
-                type="file"
-                name="upload-img"
-                id="upload-img"
-                accept="image/*"
-                aria-hidden="false"
-                tabIndex="0"
-                multiple
-                onChange={(e) => handleImageEdit(e.target.files)}
-              />
-              사진추가
-            </StyledAddFont>
-          </StyledAddGallery>
-          {imageUrlList.map((item, index) => {
-            return (
-              <StyledAddGallery key={index}>
-                <StyledPreviewImage src={item} />
-                <button onClick={() => handleImageDelete(index)}>삭제</button>
-              </StyledAddGallery>
-            );
-          })}
-        </StyledModalContent>
-      ),
-      footer: (
-        <>
-          <Buttons.Filter
-            colorTypes="primary"
-            onClick={() => handleGalleryChange(response.data.data.imagePostId)}
-          >
-            저장하기
-          </Buttons.Filter>
-          <Buttons.Filter
-            colorTypes="primary"
-            onClick={() => handleGalleryDelete(response.data.data.imagePostId)}
-          >
-            삭제하기
-          </Buttons.Filter>
-        </>
-      ),
-      callback: () => alert("modal"),
-    }));
-  };
-
   useEffect(() => {
     console.log(imageUrlList);
   }, [imageUrlList]);
-
-  //갤러리 수정 모달에서 이미지 삭제
-  const handleImageDelete = (index) => {
-    const updatedImages = imageUrlList.filter((_, idx) => idx !== index);
-    setImageUrlList(updatedImages);
-    setImageUrlList((prev) => [...prev]); // imageUrlList를 다시 설정하여 컴포넌트를 렌더링합니다.
-    console.log(imageUrlList);
-  };
 
   //갤러리 모달에서 이미지 추가
   const handleImageEdit = (newImages) => {
@@ -453,16 +376,6 @@ const Gallery = () => {
     );
     setImageUrlList((prevState) => [...prevState, ...updatedImages]);
   };
-
-  //갤러리 모달에서 수정완료 버튼
-  const handleGalleryChange = (imageId) => {
-    const payload = {
-      id: id,
-      imageId: imageId,
-    };
-    setGalleryModifyMutation.mutate(payload);
-  };
-
   //갤러리 삭제
   const handleGalleryDelete = (imageId) => {
     const payload = {
@@ -541,7 +454,7 @@ const Gallery = () => {
           ) : null}
         </StyledPaginationContainer>
       </StyledGalleryWrapper>
-      <Modal modalOption={modalOption} />
+      <Modal />
     </>
   );
 };
@@ -561,6 +474,19 @@ const StyledGalleryWrapper = styled.div`
     height: 650px;
   }
 `;
+const StyledGridModalContent = styled.div`
+  display: ${({ itemCount }) => (itemCount > 0 ? "grid" : "flex")};
+  justify-content: center;
+  align-items: center;
+  grid-template-columns: repeat(2, 1fr);
+  /* grid-auto-rows: minmax(100px, auto); */
+  grid-gap: 10px;
+  margin: 10px 84px;
+  overflow-y: auto; 
+  max-height: 640px;
+  
+`;
+
 
 const StyledGalleryHeader = styled.div`
   display: flex;
@@ -595,8 +521,8 @@ const StyledGalleryCard = styled.div`
 `;
 
 const StyledGalleryImage = styled.img`
-  width: 170px;
-  height: 150px;
+  width: 180px;
+  height: 180px;
   border-radius: 4px;
 
   @media (max-width: 1800px) {
@@ -665,19 +591,18 @@ const StyledModalContent = styled.div`
   align-items: center;
   flex-wrap: wrap;
   gap: 10px;
-  max-height: 520px;
   overflow-y: auto;
+  max-height: 640px;
 `;
 
 const StyledAddGallery = styled.div`
-  width: 240px;
-  height: 250px;
-  border-radius: 8px;
-  align-items: center;
-  justify-content: center;
   display: flex;
   flex-direction: column;
-  margin: 1px;
+  align-items: center;
+  justify-content: center;
+  width: 360px;
+  height: 320px;
+  border-radius: 8px;
 `;
 
 const StyledAddFont = styled.label`
@@ -694,9 +619,10 @@ const StyledAddInput = styled.input`
 `;
 
 const StyledPreviewImage = styled.img`
-  width: 240px;
-  height: 250px;
+  width: 360px;
+  height: 320px;
   border-radius: 8px;
+  margin-top: 30px;
 `;
 
 const StyledDatePicker = styled(DatePicker)`
@@ -743,14 +669,35 @@ const StyledGalleryModalHeader = styled.div`
 `;
 
 const StyledGalleryModalTitleBox = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+  gap: 8.8px;
+  border-bottom: 2px solid ${({ theme }) => theme.color.grayScale[200]};
+`;
+
+const StyledGalleryDualModalWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 30px;
   gap: 12px;
   border-bottom: 2px solid ${({ theme }) => theme.color.grayScale[200]};
 `;
 
+
+
 const StyledModalTitle = styled.div`
   ${textVariants.H3_SemiBold}
+  display: flex;
+  align-items: center;
+  margin:20px;
+  padding: 0px 12px;
+  width: 780px;
+  height: 30px;
   color: ${({ theme }) => theme.color.grayScale[600]};
+  background-color: ${({ theme }) => theme.color.grayScale[50]};
 `;
 
 const StyledModalDate = styled.div`

@@ -585,8 +585,8 @@ const StyledChoiceparentWrapper = styled.div`
   align-items: flex-start;
   padding: 18px 12px;
   gap: 9px;
-  width: 570px;
-  height: 160px;
+  width: 600px;
+  height: 288px;
   overflow-y: auto;
   background: ${({ theme }) => theme.color.grayScale[50]};
   border-radius: 8px;
@@ -658,6 +658,9 @@ const StyledSearchInput = styled.input`
 const StyledModalSlideContainer = styled.div`
   display: flex;
   align-items: center;
+  justify-content: center;
+  
+  
 `;
 
 const StyledModalSlideWrapper = styled.div`
@@ -666,24 +669,32 @@ const StyledModalSlideWrapper = styled.div`
 `;
 
 const StyledModalSlideImgContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
   width: 716px;
   height: 400px;
   border-radius: 8px;
   overflow: hidden;
+  
+  
 `;
 
 const StyledModalSlide = styled.div`
   width: 716px;
   height: 400px;
   display: flex;
+  
+  
 `;
 
 const StyledModalSlideImg = styled.img`
-  width: 500px;
-  height: 400px;
+  width: 360px;
+  height: 320px;
   border-radius: 8px;
   margin-left: 20px;
+  margin-bottom: 84px;
 `;
 
 const StlyedSlideButton = styled.button`

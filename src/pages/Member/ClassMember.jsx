@@ -109,16 +109,7 @@ const ClassMember = () => {
       phone: response.data.data.parentProfileResponseDto.phoneNumber,
       imgSrc: response.data.data.parentProfileResponseDto.profileImageUrl,
     }));
-    // setmodalOption ({
-    //   padding: "10px",
-    //   width: "620px",
-    //   height: "281px",
-    // });
-    setmodalOption({
-      padding: "10px",
-      width: "660px",
-      height: "837px",
-    });
+
     return {
       title: <StyledModalHeader>인원정보</StyledModalHeader>,
       contents: (
@@ -141,6 +132,8 @@ const ClassMember = () => {
           ) : null}
         </>
       ),
+      width: "660px",
+      height: "837px",
       callback: () => alert("modal"),
       onClose: () => {
         setMemberAdd("");
@@ -166,6 +159,8 @@ const ClassMember = () => {
           </Buttons.Filter>
         </>
       ),
+      width: "660px",
+      height: "993px",
       callback: () => alert("modal"),
       onClose: () => {
         setIsChildModify(false);
@@ -239,11 +234,6 @@ const ClassMember = () => {
   //반별 아이들 인원 등록 모달
   const setChildInformation = () => {
     setIsChildAdd(true);
-    setmodalOption({
-      padding: "10px",
-      width: "660px",
-      height: "837px",
-    });
     const modalData = {
       title: <StyledModalHeader>인원등록</StyledModalHeader>,
       contents: <MemberAddModal />,
@@ -256,6 +246,8 @@ const ClassMember = () => {
           저장하기
         </StyledModalButton>
       ),
+      width: "660px",
+      height: "993px",
       callback: () => alert("modal"),
       onClose: () => setIsChildAdd(false),
     };
