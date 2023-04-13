@@ -1,11 +1,23 @@
-import { Outlet } from "react-router-dom";
 import StyledLogin from "../styled";
+import SignupRouteGuard from "./SignupRouteGuard";
 
 const Layout = () => {
+  const requiredKeys = {
+    "/signup": ["name", "profileImageUrl"],
+    "/signup/search": ["name", "profileImageUrl", "role"],
+    "/signup/teacher": ["name", "profileImageUrl", "role"],
+    "/signup/parent": ["name", "profileImageUrl", "role"],
+    // "/signup/success": [
+    //   "name",
+    //   "profileImageUrl",
+    //   "kindergartenName",
+    //   "logoImageUrl",
+    // ],
+  };
   return (
     <StyledLogin.Background>
       <StyledLogin.Container>
-        <Outlet />
+        <SignupRouteGuard requiredKeys={requiredKeys} />
       </StyledLogin.Container>
     </StyledLogin.Background>
   );
