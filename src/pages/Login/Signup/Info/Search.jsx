@@ -22,20 +22,18 @@ const Search = () => {
     flex: 1;
     align-self: flex-end;
   `;
-  
+
   const { data, handleSearch } = useSearch(SignAPI.search);
   const searchedData = data?.data?.data ?? [];
 
   const { mutate } = useMutation(SignAPI.selectKinder, {
-    onSuccess: ({ statusCode }) => {
-      // 스테이터스 코드가 정상적으로 들어오는지 보기
-      if (statusCode === 200) {
+    onSuccess: (res) => {
+      if (res.data.statusCode === 200) {
         const role = session.get("user").role;
         navigate(`/signup/${role}`);
       }
     },
-    onError: (error) => {
-      // 에러의 스테이터스 코드 별 피드백
+    onError: () => {
       openModal(modalData);
     },
   });
@@ -45,8 +43,7 @@ const Search = () => {
   };
 
   const handleSelectKinderSubmit = () => {
-    // selectedKinder && mutate(selectedKinder.id);
-    mutate(selectedKinder);
+    selectedKinder && mutate(selectedKinder.id);
   };
 
   const modalData = {
@@ -88,7 +85,7 @@ const Search = () => {
         </StyledSearch.KinderListSearch>
         <StyledSearch.SubmitBtnBox>
           <Buttons.Filter
-            // disabled={!selectedKinder}
+            disabled={!selectedKinder}
             colorTypes="primary"
             onClick={handleSelectKinderSubmit}
           >
