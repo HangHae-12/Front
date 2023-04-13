@@ -72,7 +72,7 @@ const TeacherInformation = ({ data }) => {
 
   const handleTeacherSubmit = async (id) => {
     const payload = {
-      id: id,
+      id: id || "1",
       teacherId: selectedTeacher.id,
     };
     setTeacherMutation.mutate(payload);
@@ -236,7 +236,6 @@ const StyledMiddleWrapper = styled.div`
 
 const StyledInputWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
   margin-top: ${({ marginTop }) => marginTop || "30px"};
 `;
 
@@ -258,7 +257,7 @@ const StyledTeacherImage = styled.img`
   width: 120px;
   height: 120px;
   border-radius: 70%;
-  margin-top:12px;
+  margin-top: 12px;
 `;
 
 const StyledAnswerFont = styled.div`

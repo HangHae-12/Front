@@ -26,18 +26,25 @@ const KakaoLogin = () => {
         session.set("user", res.data.data);
         switch (res.data.statusCode) {
           case 200:
+            // 아직 추가정보를 입력하지 않은 상태
             navigate("/signup");
             break;
+          case 202:
+            // 정보입력 후 미승인 상태
+            navigate("/signup/success");
+            break;
           default:
+            //  승인까지 완료
             navigate("/host");
             break;
         }
       })
       .catch((error) => {
         if (axios.isCancel(error)) {
-          console.log("요청이 거절되었습니다", error.message);
+          alert("요청이 취소되었습니다. 확인 후 다시 로그인을 시도해주세요.");
+          navigate("/login");
         } else {
-          console.log("다른 에러로 인한 요청 거절", error.message);
+          navigate("/login");
         }
       });
 

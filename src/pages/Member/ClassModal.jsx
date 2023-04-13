@@ -5,6 +5,7 @@ import { memberAtom, parentAtom } from "../../atom/memberAtom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { MemberAPI } from "../../api/MemberAPI";
+import debounce from "../../utils/debounce";
 
 //반별 아이들 상세 조회 모달
 export const ClassModal = ({ response }) => {
@@ -60,7 +61,7 @@ export const ClassModal = ({ response }) => {
             </StyledInputWrapper>
             <StyledInputWrapper>
               <StyledQuestionFont>이메일</StyledQuestionFont>
-              <StyledAnswerFont marginLeft="200px">
+              <StyledAnswerFont>
                 {response?.data?.data?.parentProfileResponseDto?.email}
               </StyledAnswerFont>
             </StyledInputWrapper>
@@ -120,7 +121,7 @@ export const ClassParentModal = ({ response }) => {
 export const MemberAddModal = () => {
   const queryClient = useQueryClient();
   const [checkParent, setCheckedParent] = useState({});
-  const [preview, setPreview] = useState("");
+  const [debouncedSearchParent, setDebouncedSearchParent] = useState("");
   const [memberAdd, setMemberAdd] = useRecoilState(memberAtom);
   const [parentAdd, setParentAdd] = useRecoilState(parentAtom);
   const [isChecked, setIsChecked] = useState(false);
@@ -129,8 +130,8 @@ export const MemberAddModal = () => {
   const parentInfor = useRecoilValue(parentAtom);
 
   const { data } = useQuery(
-    ["searchParent", searchParent],
-    () => MemberAPI.getSearchParent(searchParent),
+    ["searchParent", debouncedSearchParent],
+    () => MemberAPI.getSearchParent(debouncedSearchParent),
     {
       onSuccess: (data) => {
         console.log(data.data);
@@ -138,16 +139,15 @@ export const MemberAddModal = () => {
       onError: () => {
         console.log("error");
       },
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
     }
   );
 
-  //검색기능
-  const handleSearch = (e) => {
-    e.preventDefault();
-    setSearchParent(e.target.value);
-    queryClient.invalidateQueries(["searchParent", searchParent]);
-    console.log(data);
-  };
+  useEffect(() => {
+    const debounced = debounce((value) => setDebouncedSearchParent(value), 500);
+    debounced(searchParent);
+  }, [searchParent]);
 
   const saveImgFile = (e) => {
     e.preventDefault();
@@ -155,9 +155,8 @@ export const MemberAddModal = () => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onloadend = () => {
-      setMemberAdd({ ...memberAdd, preview: reader.result });
+      setMemberAdd({ ...memberAdd, preview: reader.result, image: file });
     };
-    setMemberAdd({ ...memberAdd, image: file });
   };
 
   const handleCheckBoxChange = (e, item) => {
@@ -291,7 +290,7 @@ export const MemberAddModal = () => {
             )}
             <StyledSearchInput
               type="text"
-              onChange={handleSearch}
+              onChange={(e) => setSearchParent(e.target.value)}
               value={searchParent}
             />
           </StyledInputWrapper>

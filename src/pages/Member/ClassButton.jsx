@@ -55,7 +55,7 @@ const ClassButton = () => {
 
   useEffect(() => {
     if (id === undefined || id === "") {
-      navigate("/kindergrew/classes/1");
+      navigate("/classes/1");
     }
   }, [id]);
 
@@ -99,7 +99,7 @@ const ClassButton = () => {
 
   const handleButtonClick = (selected, id) => {
     setSelectedButton(selected);
-    navigate(`/kindergrew/classes/${id}`);
+    navigate(`/classes/${id}`);
   };
 
   return (

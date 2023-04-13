@@ -1,203 +1,71 @@
 import instance from "./instance";
 
 export const MemberAPI = {
-  getClassesPage: async (id) => {
-    try {
-      const response = await instance.get(`classroom/${id}`);
-      return response;
-    } catch (error) {
-      console.log(error);
-    }
-  },
-  getClassesMember: async (id, currentPage) => {
-    try {
-      const response = await instance.get(`classroom/${id}/children`, {
-        params: {
-          page: currentPage,
-        },
-      });
-      return response;
-    } catch (error) {
-      console.log(error);
-    }
-  },
+  getClassesPage: (id) => instance.get(`classroom/${id}`),
 
-  getClassesGallery: async (id, currentPage) => {
-    try {
-      const response = await instance.get(`classroom/${id}/gallery`, {
-        params: {
-          page: currentPage,
-        },
-      });
-      return response;
-    } catch (error) {
-      console.log(error);
-    }
-  },
-  getSearchGallery: async (searchGallery, id, currentPage) => {
-    try {
-      const response = await instance.get(`classroom/${id}/gallery`, {
-        params: {
-          keyword: searchGallery,
-          page: currentPage,
-        },
-      });
-      return response;
-    } catch (error) {
-      console.log(error);
-    }
-  },
-  getSearchDateGallery: async (id, startDate, endDate, currentPage) => {
-    try {
-      const response = await instance.get(`classroom/${id}/gallery`, {
-        params: {
-          start: startDate,
-          end: endDate,
-          page: currentPage,
-        },
-      });
-      return response;
-    } catch (error) {
-      console.log(error);
-    }
-  },
+  getClassesMember: (id, currentPage) =>
+    instance.get(`classroom/${id}/children?page=${currentPage}`),
 
-  getDetailGallery: async (payload) => {
-    try {
-      const response = await instance.get(
-        `classroom/${payload.id}/gallery/${payload.imageId}`
-      );
-      return response;
-    } catch (error) {
-      console.log(error);
-    }
-  },
+  getClassesGallery: (id, currentPage) =>
+    instance.get(`classroom/${id}/gallery?page=${currentPage}`),
 
-  getSearchMember: async (id, searchMember) => {
-    try {
-      const response = await instance.get(`classroom/${id}/children/search`, {
-        params: {
-          name: searchMember,
-        },
-      });
-      return response;
-    } catch (error) {
-      console.log(error);
-    }
-  },
+  getSearchGallery: (searchGallery, id, currentPage) =>
+    instance.get(
+      `classroom/${id}/gallery?keyword=${searchGallery}?page=${currentPage}`
+    ),
 
-  getDetailMember: async (payload) => {
-    try {
-      const response = await instance.get(
-        `classroom/${payload.id}/child/${payload.childid}`
-      );
-      return response;
-    } catch (error) {
-      console.log(error);
-    }
-  },
+  getSearchDateGallery: (id, startDate, endDate, currentPage) =>
+    instance.get(
+      `classroom/${id}/gallery?start=${startDate}?end=${endDate}?page=${currentPage}`
+    ),
 
-  getSearchParent: async (searchParent) => {
-    try {
-      const response = await instance.get("search/parent", {
-        params: {
-          name: searchParent,
-        },
-      });
-      return response;
-    } catch (error) {
-      console.log(error);
-    }
-  },
+  getDetailGallery: (payload) =>
+    instance.get(`classroom/${payload.id}/gallery/${payload.imageId}`),
 
-  getTeacherInformation: async () => {
-    try {
-      const response = await instance.get("/teacher");
-      return response;
-    } catch (error) {
-      console.log(error);
-    }
-  },
+  getSearchMember: (id, searchMember) =>
+    instance.get(`classroom/${id}/children/search?name=${searchMember}`),
 
-  setGallerySubmit: async (payload) => {
-    try {
-      const response = await instance.post(
-        `/classroom/${payload.id}/gallery`,
-        payload.formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
-      return response;
-    } catch (error) {
-      console.log(error);
-    }
-  },
+  getDetailMember: (payload) =>
+    instance.get(`classroom/${payload.id}/child/${payload.childid}`),
 
-  setGalleryModify: async (payload) => {
-    try {
-      const response = await instance.put(
-        `/classroom/${payload.id}/gallery/${payload.imageId}`,
-        payload.formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
-      return response;
-    } catch (error) {
-      console.log(error);
-    }
-  },
+  getSearchParent: (searchParent) =>
+    instance.get(`search/parent?name=${searchParent}`),
 
-  setMemberSubmit: async (payload) => {
-    try {
-      const response = await instance.post(
-        `/classroom/${payload.id}/child`,
-        payload.formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
-      return response;
-    } catch (error) {
-      console.log(error);
-    }
-  },
+  getTeacherInformation: () => instance.get("/teacher"),
 
-  setTeacher: async (payload) => {
-    try {
-      const response = await instance.put(
-        `/classroom/${payload.id}/classroom_teacher/${payload.teacherId}`
-      );
-      return response;
-    } catch (error) {
-      console.log(error);
-    }
-  },
+  setGallerySubmit: (payload) =>
+    instance.post(`/classroom/${payload.id}/gallery`, payload.formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    }),
 
-  setChildModify: async (payload) => {
-    try {
-      const response = await instance.put(
-        `/classroom/${payload.id}/child/${payload.childId}`,
-        payload.formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
-      return response;
-    } catch (error) {
-      console.log(error);
-    }
-  },
+  setGalleryModify: (payload) =>
+    instance.put(
+      `/classroom/${payload.id}/gallery/${payload.imageId}`,
+      payload.formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      }
+    ),
 
-  removeGallery: async (payload) => {
-    try {
-      const response = await instance.delete(
-        `/classroom/${payload.id}/gallery/${payload.imageId}`
-      );
-      return response;
-    } catch (error) {
-      console.log(error);
-    }
-  },
+  setMemberSubmit: (payload) =>
+    instance.post(`/classroom/${payload.id}/child`, payload.formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    }),
+
+  setTeacher: (payload) =>
+    instance.put(
+      `/classroom/${payload.id}/classroom_teacher/${payload.teacherId}`
+    ),
+
+  setChildModify: (payload) =>
+    instance.put(
+      `/classroom/${payload.id}/child/${payload.childId}`,
+      payload.formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      }
+    ),
+
+  removeGallery: (payload) =>
+    instance.delete(`/classroom/${payload.id}/gallery/${payload.imageId}`),
 };
