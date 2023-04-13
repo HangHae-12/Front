@@ -25,8 +25,8 @@ const ClassButton = () => {
   const userRole = useRecoilValue(userProfileAtom);
 
   const { data } = useQuery(
-    ["classesPage", id],
-    () => MemberAPI.getClassesPage(id),
+    ["classesPage", id || "1"],
+    () => MemberAPI.getClassesPage(id || "1"),
     {
       onSuccess: (data) => {
         console.log(data);
@@ -52,12 +52,6 @@ const ClassButton = () => {
     };
     openModal(modalData);
   };
-
-  useEffect(() => {
-    if (id === undefined || id === "") {
-      navigate("/classes/1");
-    }
-  }, [id]);
 
   useEffect(() => {
     const storedSelectedTab = localStorage.getItem("selectedTab");
@@ -99,7 +93,7 @@ const ClassButton = () => {
 
   const handleButtonClick = (selected, id) => {
     setSelectedButton(selected);
-    navigate(`/classes/${id}`);
+    navigate(`/kindergrew/classes/${id}`);
   };
 
   return (

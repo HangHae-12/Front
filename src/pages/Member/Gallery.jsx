@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import { MemberAPI } from "../../api/MemberAPI";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Modal from "../../components/Modal";
 import useModal from "../../hooks/useModal";
@@ -48,7 +47,11 @@ const Gallery = () => {
     ],
     () => {
       if (searchGallery) {
-        return MemberAPI.getSearchGallery(searchGallery, id || "1", currentPage);
+        return MemberAPI.getSearchGallery(
+          searchGallery,
+          id || "1",
+          currentPage
+        );
       } else if (formattedEndDate || formattedStartDate) {
         return MemberAPI.getSearchDateGallery(
           id || "1",
@@ -177,11 +180,8 @@ const Gallery = () => {
 
     if (previewImagesLength > 1) {
       return `${addHeight}px`;
-    }
-    else
-      return `${baseHeight}px`;
+    } else return `${baseHeight}px`;
   };
-
 
   const modalData = {
     title: (
@@ -237,15 +237,14 @@ const Gallery = () => {
     height: calculateModalHeight(previewImages.length),
     callback: () => alert("modal"),
     onClose: () => {
-      setIsGalleryAdd(false)
+      setIsGalleryAdd(false);
       setPreviewImages([]);
       setSeverImages([]);
     },
   };
 
-
   const createGallery = () => {
-    setIsGalleryAdd(true)
+    setIsGalleryAdd(true);
     openModal(modalData);
   };
 
@@ -489,11 +488,9 @@ const StyledGridModalContent = styled.div`
   /* grid-auto-rows: minmax(100px, auto); */
   grid-gap: 10px;
   margin: 10px 84px;
-  overflow-y: auto; 
+  overflow-y: auto;
   max-height: 640px;
-  
 `;
-
 
 const StyledGalleryHeader = styled.div`
   display: flex;
@@ -681,13 +678,11 @@ const StyledGalleryDualModalWrapper = styled.div`
   border-bottom: 2px solid ${({ theme }) => theme.color.grayScale[200]};
 `;
 
-
-
 const StyledModalTitle = styled.div`
   ${textVariants.H3_SemiBold}
   display: flex;
   align-items: center;
-  margin:20px;
+  margin: 20px;
   padding: 0px 12px;
   width: 780px;
   height: 30px;
