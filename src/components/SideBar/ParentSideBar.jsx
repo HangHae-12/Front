@@ -1,17 +1,34 @@
+import { useState } from "react";
 import styled from "styled-components";
-import Buttons from "../Buttons";
+import { CustomButton } from "../../components/Buttons";
 import { Link } from "react-router-dom";
 
 const ParentSideBar = () => {
 
+    const [selectedIndex, setSelectedIndex] = useState(0);
+
+    const handleSideMenu = (id) => {
+
+        setSelectedIndex(id);
+    }
+
+
     return (
         <StyledSideBarBtnWrapper>
-            <Buttons.NB colorTypes="primary" width="160px">
+            <CustomButton
+                colorTypes={selectedIndex === 0 ? "primary" : undefined}
+                buttonsTypes="NB_Button"
+                onClick={() => handleSideMenu(0)}
+            >
                 <Link to="/classes">학급 관리</Link>
-            </Buttons.NB>
-            <Buttons.NB colorTypes="primary" width="160px">
+            </CustomButton>
+            <CustomButton
+                colorTypes={selectedIndex === 1 ? "primary" : undefined}
+                buttonsTypes="NB_Button"
+                onClick={() => handleSideMenu(1)}
+            >
                 <Link to="/childmanage">아이 관리</Link>
-            </Buttons.NB>
+            </CustomButton>
         </StyledSideBarBtnWrapper>
 
     );

@@ -1,34 +1,74 @@
 import { useState } from "react";
 import styled from "styled-components";
-import Buttons from "../Buttons";
+import { CustomButton } from "../../components/Buttons";
 import { Link } from "react-router-dom";
 import textVariants from "../../styles/variants/textVariants";
 
 const TeacherSideBar = () => {
     const [showAttendanceMenu, setShowAttendanceMenu] = useState(false);
+    const [subMenuSelectedIndex, setSubMenuSelectedIndex] = useState(null);
+    const [selectedIndex, setSelectedIndex] = useState(1);
+    const handleSideMenu = (id) => {
+        if (id !== 2) {
+            setSelectedIndex(id);
+            setShowAttendanceMenu(false);
+            setSubMenuSelectedIndex(null);
+        }
+        else {
+            setSelectedIndex(id);
+            setShowAttendanceMenu(true);
+            setSubMenuSelectedIndex(null);
+        }
 
-    const toggleAttendanceMenu = () => {
-        setShowAttendanceMenu(!showAttendanceMenu);
-    };
+    }
+
     return (
         <StyledSideBarBtnWrapper>
-            <Buttons.NB>
+            <CustomButton
+                colorTypes={selectedIndex === 1 ? "primary" : undefined}
+                buttonsTypes="NB_Button"
+                onClick={() => handleSideMenu(1)}
+            >
                 <Link to="/host">등/하원 관리</Link>
-            </Buttons.NB>
-            <div>
-                <Buttons.NB onClick={toggleAttendanceMenu}>출석부 관리</Buttons.NB>
+            </CustomButton>
+            <StyledMenuWrapper showBorder={selectedIndex === 2}>
+                <CustomButton
+                    colorTypes={selectedIndex === 2 ? "primary" : undefined}
+                    buttonsTypes="NB_Button"
+                    onClick={() => handleSideMenu(2)}
+                >
+                    출석부 관리
+                </CustomButton>
+
                 {showAttendanceMenu && (
                     <StyledSubMenu>
-                        <Link to="/monthAttendance">월별 출석부</Link>
-                        <Link to="/dayAttendance">일별 출석부</Link>
+                        <Link
+                            to="/monthAttendance"
+                            onClick={() => setSubMenuSelectedIndex(0)}
+                            className={subMenuSelectedIndex === 0 ? "active" : ""}
+                        >
+                            월별 출석부
+                        </Link>
+                        <Link
+                            to="/dayAttendance"
+                            onClick={() => setSubMenuSelectedIndex(1)}
+                            className={subMenuSelectedIndex === 1 ? "active" : ""}
+                        >
+                            일별 출석부
+                        </Link>
                     </StyledSubMenu>
                 )}
-            </div>
-            <Buttons.NB colorTypes="primary" width="160px">
-                <Link to="/classes">학급 관리</Link>
-            </Buttons.NB>
-        </StyledSideBarBtnWrapper>
 
+
+            </StyledMenuWrapper>
+            <CustomButton
+                colorTypes={selectedIndex === 3 ? "primary" : undefined}
+                buttonsTypes="NB_Button"
+                onClick={() => handleSideMenu(3)}
+            >
+                <Link to="/classes">학급 관리</Link>
+            </CustomButton>
+        </StyledSideBarBtnWrapper>
     );
 };
 
@@ -43,12 +83,20 @@ const StyledSideBarBtnWrapper = styled.div`
   margin-top: 80px;
   gap: 12px;
 `;
+const StyledMenuWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: ${({ showBorder, theme }) => showBorder ? `1px solid ${theme.color.primary}` : 'none'};
+  border-radius: 4px;
+`
+
 const StyledSubMenu = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
-  margin-top: 12px;
+  margin: 12px auto;
   gap: 14px;
 
   a {
@@ -59,7 +107,8 @@ const StyledSubMenu = styled.div`
     text-align: center;
     border-radius: 8px;
 
-    &:hover {
+    &:hover,
+    &.active {
       color: ${({ theme }) => theme.color.primary};
     }
   }
