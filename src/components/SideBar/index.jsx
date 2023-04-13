@@ -48,17 +48,13 @@ const SideBar = () => {
       },
     }
   );
-
-  const modalOption = {
-    width: "660px",
-    height: "837px",
-  };
-
   const setProfileModal = () => {
     const modalData = {
       title: <StyledModalHeader>사용자 프로필</StyledModalHeader>,
       contents: <UserProfileModal />,
       footer: <></>,
+      width: "640px",
+      height: "392px",
       callback: () => alert("modal"),
     };
     openModal(modalData);
@@ -96,7 +92,7 @@ const SideBar = () => {
               : <ParentSidBar />
         }
       </StyledSideBarContainer>
-      <Modal modalOption={modalOption} />
+      <Modal />
     </>
   );
 };

@@ -346,7 +346,7 @@ const StyledTopStickyHeader = styled.th`
   background-color: ${({ theme }) => theme.color.grayScale[50]};
   color: ${({ isSaturday, isSunday, theme }) =>
         isSunday ? theme.color.red : isSaturday ? theme.color.blue : theme.color.grayScale[500]};
-  z-index: 1;
+  
 `;
 
 const StyledStickyHeader = styled.th`
