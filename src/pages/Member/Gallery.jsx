@@ -16,13 +16,14 @@ import { useRecoilValue, useRecoilState } from "recoil";
 import { modalAtom } from "../../atom/modalAtoms";
 import { userProfileAtom } from "../../atom/sideBarAtom";
 import CustomPagination from "../../components/CustomPagination";
+import CustomDatepicker from "../../components/CustomDatepicker";
 
 const Gallery = () => {
   const queryClient = useQueryClient();
   const { id } = useParams();
   const [searchGallery, setSearchGallery] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
   const [formattedStartDate, setFormattedStartDate] = useState("");
   const [formattedEndDate, setFormattedEndDate] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -31,6 +32,7 @@ const Gallery = () => {
   const [severImages, setSeverImages] = useState([]); // 서버로 보낼 이미지 데이터
   const [render, setRender] = useState(true);
   const [title, setTitle] = useState("");
+  const [isGalleryAdd, setIsGalleryAdd] = useState(false);
   const [modalState, setModalState] = useRecoilState(modalAtom);
   const [imageUrlList, setImageUrlList] = useState([]);
   const userRole = useRecoilValue(userProfileAtom);
@@ -40,22 +42,22 @@ const Gallery = () => {
       "classesGallery",
       searchGallery,
       currentPage,
-      id,
+      id || "1",
       formattedEndDate,
       formattedStartDate,
     ],
     () => {
       if (searchGallery) {
-        return MemberAPI.getSearchGallery(searchGallery, id, currentPage);
+        return MemberAPI.getSearchGallery(searchGallery, id || "1", currentPage);
       } else if (formattedEndDate || formattedStartDate) {
         return MemberAPI.getSearchDateGallery(
-          id,
+          id || "1",
           formattedStartDate,
           formattedEndDate,
           currentPage
         );
       } else {
-        return MemberAPI.getClassesGallery(id, currentPage);
+        return MemberAPI.getClassesGallery(id || "1", currentPage);
       }
     },
     {
@@ -125,27 +127,31 @@ const Gallery = () => {
   const handleEntireDate = () => {
     setFormattedStartDate("2000-01-01");
     setFormattedEndDate("3000-01-01");
-    setStartDate("");
-    setEndDate("");
+    setStartDate(new Date());
+    setEndDate(new Date());
   };
 
   //모달 갤러리 저장하기 기능
   const handleGallerySubmit = async (id) => {
-    const formData = new FormData();
-    severImages.forEach((image) => {
-      formData.append("imageList[]", image);
-    });
-    formData.append("title", title);
+    if (title && severImages) {
+      const formData = new FormData();
+      severImages.forEach((image) => {
+        formData.append("imageList[]", image);
+      });
+      formData.append("title", title);
 
-    const payload = {
-      id: id,
-      formData: formData,
-    };
-    setGallerySubmitMutation.mutate(payload);
-    setPreviewImages([]);
-    setSeverImages([]);
-    await setTitle("");
-    closeModal();
+      const payload = {
+        id: id || "1",
+        formData: formData,
+      };
+      setGallerySubmitMutation.mutate(payload);
+      setPreviewImages([]);
+      setSeverImages([]);
+      await setTitle("");
+      closeModal();
+    } else {
+      alert("제목과 사진을 다 입력해주세요");
+    }
   };
 
   // 사진 등록 모달 부분
@@ -222,6 +228,11 @@ const Gallery = () => {
       </>
     ),
     callback: () => alert("modal"),
+    onClose: () => {
+      setIsGalleryAdd(false)
+      setPreviewImages([]);
+      setSeverImages([]);
+    },
   };
 
   const modalOption = {
@@ -231,16 +242,17 @@ const Gallery = () => {
   };
 
   const createGallery = () => {
+    setIsGalleryAdd(true)
     openModal(modalData);
   };
 
   useEffect(() => {
-    if (!render) {
+    if (!render && isGalleryAdd) {
       createGallery();
     } else {
       setRender(false);
     }
-  }, [previewImages]);
+  }, [previewImages, isGalleryAdd]);
 
   //사진 상세조회 부분 및 프레임 전환
   const createGalleryModalData = (response) => {
@@ -291,7 +303,7 @@ const Gallery = () => {
 
   const getDetailGallery = (imageId) => {
     const payload = {
-      id: id,
+      id: id || "1",
       imageId: imageId,
     };
     detailGalleryMutation.mutate(payload);
@@ -466,7 +478,7 @@ const Gallery = () => {
   //갤러리 삭제
   const handleGalleryDelete = (imageId) => {
     const payload = {
-      id: id,
+      id: id || "1",
       imageId: imageId,
     };
     removeGalleryMutation.mutate(payload);
@@ -480,27 +492,22 @@ const Gallery = () => {
           <Buttons.Filter outlined onClick={handleEntireDate}>
             전체기간
           </Buttons.Filter>
-          <StyledDatePickerWrapper>
-            <StyledDatePicker
-              showIcon
-              selected={startDate}
-              onChange={(date) => setStartDate(date)}
-              selectsStart
-              startDate={startDate}
-              endDate={endDate}
+          <StyledDateBox marginLeft="14px" marginRight="4px">
+            <CustomDatepicker
+              selectedDate={startDate}
+              onDateChange={(date) => setStartDate(date)}
             />
-          </StyledDatePickerWrapper>
+            {startDate.getFullYear()}.{startDate.getMonth() + 1}.
+            {startDate.getDate()}
+          </StyledDateBox>
           ~
-          <StyledDatePickerWrapper>
-            <StyledDatePicker
-              showIcon
-              selected={endDate}
-              onChange={(date) => setEndDate(date)}
-              selectsEnd
-              startDate={startDate}
-              endDate={endDate}
+          <StyledDateBox marginLeft="4px" marginRight="8px">
+            <CustomDatepicker
+              selectedDate={endDate}
+              onDateChange={(date) => setEndDate(date)}
             />
-          </StyledDatePickerWrapper>
+            {endDate.getFullYear()}.{endDate.getMonth() + 1}.{endDate.getDate()}
+          </StyledDateBox>
           <Buttons.Filter colorTypes="primary" onClick={handleDateSearch}>
             적용하기
           </Buttons.Filter>
@@ -564,7 +571,6 @@ const StyledGalleryWrapper = styled.div`
 
 const StyledGalleryHeader = styled.div`
   display: flex;
-  justify-content: space-between;
   align-items: center;
   padding: 20px;
 `;
@@ -699,29 +705,18 @@ const StyledPreviewImage = styled.img`
   border-radius: 8px;
 `;
 
-const StyledDatePicker = styled(DatePicker)`
-  border: 1px solid ${({ theme }) => theme.color.primary};
-  padding: 10px;
-  border-radius: 4px;
-  margin-left: 7px;
-  width: 124px;
-  height: 32px;
-  color: ${({ theme }) => theme.color.primary};
-  text-align: center;
-`;
-
-const StyledDatePickerWrapper = styled.div`
-  margin-right: 7px;
-`;
-
 const SyledAddGalleryButton = styled.button`
-  margin-left: auto;
   border-radius: 4px;
   border: 1px solid ${({ theme }) => theme.color.primary};
   background: ${({ theme }) => theme.color.white};
   padding: 4px 10px;
   gap: 10px;
   color: ${({ theme }) => theme.color.primary};
+  margin-left: 695px;
+
+  @media (max-width: 1800px) {
+    margin-left: 318px;
+  }
 `;
 
 const StyledGallerySearchInput = styled.input`
@@ -781,9 +776,27 @@ const StyledSearchWrapper = styled.div`
   align-items: center;
   width: 200px;
   height: 32px;
+  margin-left: auto;
 `;
 
 const StyledInputIcon = styled(AiOutlineSearch)`
   position: absolute;
   right: 15px;
+`;
+
+const StyledDateBox = styled.div`
+  ${textVariants.Body1_SemiBold}
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  gap: 10px;
+  border: 1px solid ${({ theme }) => theme.color.primary};
+  border-radius: 4px;
+  width: 124px;
+  height: 32px;
+  background: ${({ theme }) => theme.color.white};
+  color: ${({ theme }) => theme.color.primary};
+  margin-right: ${({ marginRight }) => marginRight};
+  margin-left: ${({ marginLeft }) => marginLeft};
 `;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
@@ -14,6 +14,7 @@ import { memberAtom, parentAtom } from "../../atom/memberAtom";
 import Buttons from "../../components/Buttons";
 import { userProfileAtom } from "../../atom/sideBarAtom";
 import { AiOutlineSearch } from "react-icons/ai";
+import debounce from "../../utils/debounce";
 
 const ClassMember = () => {
   const queryClient = useQueryClient();
@@ -30,6 +31,7 @@ const ClassMember = () => {
   const [isChildModify, setIsChildModify] = useState(false);
   const [isChildAdd, setIsChildAdd] = useState(false);
   const userRole = useRecoilValue(userProfileAtom);
+  const [debouncedSearchMember, setDebouncedSearchMember] = useState("");
   const [modalOption, setmodalOption] = useState({
     padding: "",
     width: "",
@@ -37,12 +39,12 @@ const ClassMember = () => {
   });
 
   const { data } = useQuery(
-    ["classesMember", id, currentPage, searchMember],
+    ["classesMember", id || "1", currentPage, debouncedSearchMember],
     () => {
-      if (searchMember) {
-        return MemberAPI.getSearchMember(id, searchMember);
+      if (debouncedSearchMember) {
+        return MemberAPI.getSearchMember(id || "1", debouncedSearchMember);
       } else {
-        return MemberAPI.getClassesMember(id, currentPage);
+        return MemberAPI.getClassesMember(id || "1", currentPage);
       }
     },
     {
@@ -52,14 +54,21 @@ const ClassMember = () => {
       onError: () => {
         console.log("error");
       },
+      retry: 1,
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
     }
   );
+
+  useEffect(() => {
+    const debounced = debounce((value) => setDebouncedSearchMember(value), 700);
+    debounced(searchMember);
+  }, [searchMember]);
 
   const detailMemberMutation = useMutation(MemberAPI.getDetailMember, {
     onSuccess: (response) => {
       const MemberModalData = getChildInformation(response);
       openModal(MemberModalData);
-      console.log(response);
     },
   });
 
@@ -74,14 +83,6 @@ const ClassMember = () => {
       queryClient.invalidateQueries("classesMember");
     },
   });
-
-  //검색기능
-  const handleSearch = (e) => {
-    e.preventDefault();
-    setSearchMember(e.target.value);
-    queryClient.invalidateQueries(["classesMember", searchMember]);
-    console.log(data);
-  };
 
   useEffect(() => {
     if (!render && isChildModify) {
@@ -182,17 +183,16 @@ const ClassMember = () => {
     formData.append("birth", memberinfor.birth);
     formData.append("significant", memberinfor.significant);
     formData.append("gender", memberinfor.gender);
-    {
-      memberinfor.image[0] === "h"
-        ? formData.append("image", "")
-        : formData.append("image", memberinfor.image);
-    }
     formData.append("parentId", parentinfor.parentId);
     formData.append("dailyEnterTime", "07시~08시");
     formData.append("dailyExitTime", "16시~17시");
 
+    if (memberinfor.image[0] !== "h") {
+      formData.append("image", memberinfor.image);
+    }
+
     const payload = {
-      id: id,
+      id: id || "1",
       childId: memberinfor.childId,
       formData: formData,
     };
@@ -203,7 +203,7 @@ const ClassMember = () => {
 
   const getDetailMember = (childid) => {
     const payload = {
-      id: id,
+      id: id || "1",
       childid: childid,
     };
     detailMemberMutation.mutate(payload);
@@ -215,7 +215,7 @@ const ClassMember = () => {
     } else {
       setRender(false);
     }
-  }, [memberinfor, parentinfor]);
+  }, [memberinfor, parentinfor, isChildAdd]);
 
   //반별 아이들 인원 등록 버튼
   const handleMemberSubmit = (id) => {
@@ -224,11 +224,14 @@ const ClassMember = () => {
     formData.append("birth", memberinfor.birth);
     formData.append("significant", memberinfor.significant);
     formData.append("gender", memberinfor.gender);
-    formData.append("image", memberinfor.image);
     formData.append("parentId", parentinfor.parentId);
 
+    if (memberinfor.image) {
+      formData.append("image", memberinfor.image);
+    }
+
     const payload = {
-      id: id,
+      id: id || "1",
       formData: formData,
     };
     setMemberSubmitMutation.mutate(payload);
@@ -257,7 +260,11 @@ const ClassMember = () => {
         </StyledModalButton>
       ),
       callback: () => alert("modal"),
-      onClose: () => setIsChildAdd(false),
+      onClose: () => {
+        setIsChildAdd(false);
+        setMemberAdd("");
+        setParentAdd("");
+      },
     };
     openModal(modalData);
   };
@@ -276,8 +283,8 @@ const ClassMember = () => {
           ) : null}
           <StyledSearchWrapper>
             <StyledMemberSearchInput
-              type="text"
-              onChange={handleSearch}
+              type="search"
+              onChange={(e) => setSearchMember(e.target.value)}
               value={searchMember}
             ></StyledMemberSearchInput>
             <StyledInputIcon />
