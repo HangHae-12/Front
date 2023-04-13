@@ -1,21 +1,25 @@
 import { useState } from "react";
 import styled from "styled-components";
-import Buttons from "../Buttons";
 import { CustomButton } from "../../components/Buttons";
 import { Link } from "react-router-dom";
 import textVariants from "../../styles/variants/textVariants";
 
 const PrincipalSideBar = () => {
     const [showAttendanceMenu, setShowAttendanceMenu] = useState(false);
-
+    const [subMenuSelectedIndex, setSubMenuSelectedIndex] = useState(null);
     const [selectedIndex, setSelectedIndex] = useState(0);
     const handleSideMenu = (id) => {
         if (id !== 2) {
             setSelectedIndex(id);
             setShowAttendanceMenu(false);
+            setSubMenuSelectedIndex(null);
         }
-        else
+        else {
+            setSelectedIndex(id);
             setShowAttendanceMenu(true);
+            setSubMenuSelectedIndex(null);
+        }
+
     }
     return (
         <StyledSideBarBtnWrapper>
@@ -33,7 +37,7 @@ const PrincipalSideBar = () => {
             >
                 <Link to="/kindergrew/host">등/하원 관리</Link>
             </CustomButton>
-            <div>
+            <StyledMenuWrapper showBorder={selectedIndex === 2}>
                 <CustomButton
                     colorTypes={selectedIndex === 2 ? "primary" : undefined}
                     buttonsTypes="NB_Button"
@@ -41,13 +45,28 @@ const PrincipalSideBar = () => {
                 >
                     출석부 관리
                 </CustomButton>
+
                 {showAttendanceMenu && (
                     <StyledSubMenu>
-                        <Link to="/kindergrew/monthAttendance">월별 출석부</Link>
-                        <Link to="/kindergrew/dayAttendance">일별 출석부</Link>
+                        <Link
+                            to="/kindergrew/monthAttendance"
+                            onClick={() => setSubMenuSelectedIndex(0)}
+                            className={subMenuSelectedIndex === 0 ? "active" : ""}
+                        >
+                            월별 출석부
+                        </Link>
+                        <Link
+                            to="/kindergrew/dayAttendance"
+                            onClick={() => setSubMenuSelectedIndex(1)}
+                            className={subMenuSelectedIndex === 1 ? "active" : ""}
+                        >
+                            일별 출석부
+                        </Link>
                     </StyledSubMenu>
                 )}
-            </div>
+
+
+            </StyledMenuWrapper>
             <CustomButton
                 colorTypes={selectedIndex === 3 ? "primary" : undefined}
                 buttonsTypes="NB_Button"
@@ -71,12 +90,20 @@ const StyledSideBarBtnWrapper = styled.div`
   margin-top: 80px;
   gap: 12px;
 `;
+const StyledMenuWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: ${({ showBorder, theme }) => showBorder ? `1px solid ${theme.color.primary}` : 'none'};
+  border-radius: 4px;
+`
+
 const StyledSubMenu = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
-  margin-top: 12px;
+  margin: 12px auto;
   gap: 14px;
 
   a {
@@ -87,7 +114,8 @@ const StyledSubMenu = styled.div`
     text-align: center;
     border-radius: 8px;
 
-    &:hover {
+    &:hover,
+    &.active {
       color: ${({ theme }) => theme.color.primary};
     }
   }
