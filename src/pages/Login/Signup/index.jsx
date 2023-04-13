@@ -12,18 +12,18 @@ const Signup = () => {
     name: "우주",
     profileImageUrl: DUMMY_URL.not_profile_img,
   };
-  // const user = session.get("user");
+  
   const role = [
     { role: "parent", label: "학부모" },
     { role: "teacher", label: "선생님" },
-    { role: "principal", label: "원장선생님" },
+    // { role: "principal", label: "원장선생님" },
+    // 원장선생님 가입 로직은 차후 추가 예정
   ];
 
   const handleLinkNextPage = (role) => {
     session.set("user", { ...user, role });
 
     if (role === "principal") {
-      console.log(1);
       navigate(`./${role}`);
     } else {
       navigate("./search");

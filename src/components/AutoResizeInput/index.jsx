@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import StyledInputLabel from "./styled";
 
-const AutoResizeInput = ({ styleOption, defaultValue, readOnly }) => {
+const AutoResizeInput = ({ styleOption, defaultValue, readOnly, ...rest }) => {
   const inputLabelRef = useRef(null);
 
   const handleInput = (event) => {
@@ -22,6 +22,7 @@ const AutoResizeInput = ({ styleOption, defaultValue, readOnly }) => {
         size="1"
         defaultValue={defaultValue}
         readOnly={readOnly}
+        {...rest}
       />
     </StyledInputLabel>
   );

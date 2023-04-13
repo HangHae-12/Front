@@ -1,37 +1,40 @@
 import { useState } from "react";
 import styled, { css } from "styled-components";
+import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 import StyledLogin from "../../styled";
 import SearchInput from "../../../../components/SearchInput";
 import useSearch from "../../../../hooks/useSearch";
+import useModal from "../../../../hooks/useModal";
 import { SignAPI } from "../../../../api/SignAPI";
 import textVariants from "../../../../styles/variants/textVariants";
 import SearchContent from "./SearchContent";
 import Buttons from "../../../../components/Buttons";
-import { useMutation } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
 import session from "../../../../utils/session";
+import AlertModal from "../../../../components/Modals/AlertModal";
 
 const Search = () => {
-  const { data, handleSearch } = useSearch(SignAPI.search);
-  const searchedData = data?.data?.data ?? [];
-
   const [selectedKinder, setSelectedKinder] = useState(null);
+  const { openModal } = useModal();
   const navigate = useNavigate();
 
-  const style = css`
+  const inputStyle = css`
     flex: 1;
     align-self: flex-end;
   `;
 
+  const { data, handleSearch } = useSearch(SignAPI.search);
+  const searchedData = data?.data?.data ?? [];
+
   const { mutate } = useMutation(SignAPI.selectKinder, {
-    onSuccess: ({ statusCode }) => {
-      if (statusCode === 200) {
+    onSuccess: (res) => {
+      if (res.data.statusCode === 200) {
         const role = session.get("user").role;
         navigate(`/signup/${role}`);
       }
     },
     onError: (error) => {
-      console.log(error.response.status);
+      openModal({ contents: <AlertModal /> });
     },
   });
 
@@ -55,7 +58,7 @@ const Search = () => {
               "유치원을 선택 해주세요"
             )}
           </StyledSearch.SelectedKinderWrapper>
-          <SearchInput onSearch={handleSearch} inputBodyStyle={style} />
+          <SearchInput onSearch={handleSearch} inputBodyStyle={inputStyle} />
         </StyledSearch.SearchBarWrapper>
         <StyledSearch.SearchContentsWrapper>
           {searchedData.map((data) => (
