@@ -7,5 +7,7 @@ export const modalAtom = atom({
     title: "",
     contents: "",
     callback: null,
+    width: "",
+    height: "",
   },
 });

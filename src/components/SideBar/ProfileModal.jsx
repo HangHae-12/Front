@@ -1,19 +1,19 @@
 import React from "react";
 import styled from "styled-components";
-import textVariants from "../styles/variants/textVariants";
+import textVariants from "../../styles/variants/textVariants";
 import { useRecoilValue } from "recoil";
-import { userProfileAtom } from "../atom/sideBarAtom";
+import { userProfileAtom } from "../../atom/sideBarAtom";
 
-const UserProfileModal = () => {
+const ProfileModal = () => {
   const userProfile = useRecoilValue(userProfileAtom);
   return (
     <StyledModalWrapper>
       {userProfile.role === "TEACHER" ? (
-        <StyledComment marginTop="10px">
+        <StyledComment>
           <StyledQuestionFont>한마디 </StyledQuestionFont>
-          <StyledQuestionFont marginLeft="30px">
+          <StyledQuestionFontInput>
             {userProfile.resolution}
-          </StyledQuestionFont>
+          </StyledQuestionFontInput>
         </StyledComment>
       ) : null}
       <StyledChildrenProfileWrapper>
@@ -21,21 +21,21 @@ const UserProfileModal = () => {
           <StyledProfileImage src={userProfile.profileImageUrl} />
         </StyledLeftWrapper>
         <StyledRightWrapper>
-          <StyledInputWrapper marginTop="30px" marginLeft="40px">
+          <StyledInputWrapper>
             <StyledQuestionFont>이름 </StyledQuestionFont>
-            <StyledAnswerFont marginLeft="250px">
+            <StyledAnswerFont>
               {userProfile.name}
             </StyledAnswerFont>
           </StyledInputWrapper>
-          <StyledInputWrapper marginLeft="40px">
+          <StyledInputWrapper>
             <StyledQuestionFont>생년월일 </StyledQuestionFont>
             <StyledAnswerFont>{userProfile.birthday}</StyledAnswerFont>
           </StyledInputWrapper>
-          <StyledInputWrapper marginLeft="40px">
+          <StyledInputWrapper>
             <StyledQuestionFont>메일 </StyledQuestionFont>
             <StyledAnswerFont>{userProfile.email}</StyledAnswerFont>
           </StyledInputWrapper>
-          <StyledInputWrapper marginLeft="40px">
+          <StyledInputWrapper>
             <StyledQuestionFont>연락처 </StyledQuestionFont>
             <StyledAnswerFont>{userProfile.phoneNumber}</StyledAnswerFont>
           </StyledInputWrapper>
@@ -45,7 +45,7 @@ const UserProfileModal = () => {
   );
 };
 
-export default UserProfileModal;
+export default ProfileModal;
 
 const StyledModalWrapper = styled.div`
   display: flex;
@@ -63,41 +63,63 @@ const StyledChildrenProfileWrapper = styled.div`
 const StyledLeftWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  margin-left:70px;
+  margin-right:50px;
 `;
 
 const StyledProfileImage = styled.img`
   width: ${({ width }) => width || "120px"};
   height: ${({ height }) => height || "120px"};
-  border-radius: 70%;
+  border-radius: 50%;
   margin-top: 30px;
 `;
 
 const StyledRightWrapper = styled.div`
-  margin-left: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-right: 70px;
+  height: 100%;
 `;
+
 
 const StyledAnswerFont = styled.div`
   ${textVariants.Body1_SemiBold}
   color: ${({ theme }) => theme.color.grayScale[500]};
+  background-color: ${({ theme }) => theme.color.grayScale[50]};
+  padding: 4px 8px;
   margin-left: ${({ marginLeft }) => marginLeft};
 `;
-
 const StyledQuestionFont = styled.div`
   ${textVariants.Body3_SemiBold}
+  display: flex;
+  align-items:ceter;
+  justify-content:center;
   color: ${({ theme }) => theme.color.grayScale[500]};
-  margin-left: ${({ marginLeft }) => marginLeft};
+
+
+`;
+const StyledQuestionFontInput = styled.div`
+  ${textVariants.Body3_SemiBold}
+  display: flex;
+  color: ${({ theme }) => theme.color.grayScale[500]};
+  background-color: ${({ theme }) => theme.color.grayScale[50]};
+  margin-left: 30px;
+  width: 417px;
+  height: 26px;
+
 `;
 
 const StyledInputWrapper = styled.div`
   display: flex;
   align-items: center;
-  margin-top: ${({ marginTop }) => marginTop || "30px"};
+  margin-top: 30px;
   justify-content: space-between;
-  margin-left: ${({ marginLeft }) => marginLeft};
 `;
+
 
 const StyledComment = styled.div`
   display: flex;
-  margin-top: ${({ marginTop }) => marginTop || "30px"};
-  margin-right: 270px;
+  flex-direction: row;
+  align-items: center;
 `;

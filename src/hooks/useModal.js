@@ -5,20 +5,17 @@ import { modalAtom } from "../atom/modalAtoms";
 const useModal = () => {
   const [modalState, setModalState] = useRecoilState(modalAtom);
 
-  const closeModal = useCallback(
-    () => {
-      if (modalState.onClose) {
-        modalState.onClose();
-      }
-      setModalState((prev) => {
-        return { ...prev, isOpen: false };
-      });
-    },
-    [setModalState, modalState.onClose]
-  );
+  const closeModal = useCallback(() => {
+    if (modalState.onClose) {
+      modalState.onClose();
+    }
+    setModalState((prev) => {
+      return { ...prev, isOpen: false };
+    });
+  }, [setModalState, modalState.onClose]);
 
   const openModal = useCallback(
-    ({ title, contents, footer, callback, onClose }) => {
+    ({ title, contents, footer, callback, onClose, width, height }) => {
       setModalState({
         isOpen: true,
         title: title,
@@ -26,6 +23,8 @@ const useModal = () => {
         footer: footer,
         callback: callback,
         onClose: onClose,
+        width: width,
+        height: height,
       });
     },
     [setModalState]

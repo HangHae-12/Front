@@ -21,7 +21,7 @@ const Schedule = ({ hostParams }) => {
         setScheduleId(id);
         setTime(0);
         setPage(1);
-        navigate(`/host/${classroomId}/${id}/0`, () => {
+        navigate(`/kindergrew/host/${classroomId}/${id}/0`, () => {
             queryClient.invalidateQueries(["getManageTimeSchedule", hostParams]);
         });
     };
