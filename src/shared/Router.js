@@ -20,8 +20,8 @@ const Router = () => {
             <Route path="success" element={PAGE.signup.success} />
           </Route>
 
-          <Route path="/classes" element={PAGE.member} />
-          <Route path="/classes/:id" element={PAGE.member} />
+          <Route path="/kindergrew/classes" element={PAGE.member} />
+          <Route path="/kindergrew/classes/:id" element={PAGE.member} />
           {/* 관리페이지 */}
           <Route path="/host" element={PAGE.host} />
           <Route

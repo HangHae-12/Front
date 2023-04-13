@@ -145,7 +145,7 @@ export const MemberAddModal = () => {
   );
 
   useEffect(() => {
-    const debounced = debounce((value) => setDebouncedSearchParent(value), 500);
+    const debounced = debounce((value) => setDebouncedSearchParent(value), 700);
     debounced(searchParent);
   }, [searchParent]);
 
