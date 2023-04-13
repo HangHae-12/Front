@@ -1,7 +1,7 @@
 import instance from "./instance";
 
 const ChildManageAPI = {
-  getChildProfile: () => instance.get(`/parent/child`),
+  getChildProfile: (childId) => instance.get(`/parent/child/${childId}`),
   putChildProfule: ({ childId, data }) =>
     instance.put(`/parent/child/${childId}`, data),
 };

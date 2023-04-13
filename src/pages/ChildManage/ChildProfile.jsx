@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useReducer, useState } from "react";
 import styled from "styled-components";
 import Buttons from "../../components/Buttons";
 import StyledChildManage from "./styled";
@@ -9,15 +9,18 @@ import ProfileImageUploader from "../../components/ProfileImageUploader";
 import useModal from "../../hooks/useModal";
 import Modal from "../../components/Modal";
 import SuccessModal from "../../components/Modals/SuccessModal";
+import { useProfileImageUploader } from "../../hooks/useProfileImageUploader";
+import { useRecoilState } from "recoil";
 
 const ChildProfile = () => {
   const [isFixMode, setIsFixMode] = useState(false);
+  const childId = useRecoilState('')
   const queryClient = useQueryClient();
   const { openModal } = useModal();
 
   const { data } = useQuery(
     ["childProfile"],
-    () => ChildManageAPI.getChildProfile(),
+    (childId) => ChildManageAPI.getChildProfile(childId),
     {
       refetchOnWindowFocus: false,
     }
@@ -26,17 +29,49 @@ const ChildProfile = () => {
   const { mutate } = useMutation(ChildManageAPI.putChildProfule, {
     onSuccess: () => {
       // 모달 띄우기
+      // openModal({ contents: <SuccessModal /> });
       // queryClient.invalidateQueries(["childProfile"]);
     },
     onError: () => {
       // 에러 모달 띄우기
+      // openModal({contents: <AlertModal /> });
     },
+  });
+
+  const { selectedFile, isCancelled } = useProfileImageUploader(
+    data?.profilImageUrl
+  );
+
+  const reduceFormData = (state, action) => {
+    switch (action.type) {
+      case "SET_FORM_DATA":
+        return { ...state, [action.key]: action.value };
+      default:
+        return state;
+    }
+  };
+
+  const [formState, dispatch] = useReducer(reduceFormData, {
+    name: data?.name,
+    gender: data?.gender,
+    birth: data?.birth,
+    significant: data?.significant,
   });
 
   const handleFixChildProfile = () => {
     setIsFixMode((prev) => !prev);
     if (isFixMode) {
-      openModal({ contents: <SuccessModal /> });
+      const formData = new FormData();
+      Object.entries(formState).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
+      selectedFile && formData.append("profileImage", selectedFile);
+      formData.append("isCancelled", isCancelled);
+
+      for (const [key, value] of formData.entries()) {
+        console.log(`${key}: ${value}`);
+      }
+      // mutate();
     }
   };
 
@@ -45,21 +80,51 @@ const ChildProfile = () => {
       <StyledProfile.Wrapper>
         <StyledChildManage.Title>원생 프로필</StyledChildManage.Title>
         <StyledProfile.ProfileWrapper>
-          <ProfileImageUploader isFixMode={!isFixMode} />
+          <ProfileImageUploader
+            isFixMode={!isFixMode}
+            prev={data?.profileImageUrl}
+          />
           <StyledProfile.InfoWrapper>
             <li>
               <StyledChildManage.SubTitle>이름</StyledChildManage.SubTitle>
-              <AutoResizeInput defaultValue="김민재" readOnly={!isFixMode} />
+              <AutoResizeInput
+                defaultValue="김민재"
+                readOnly={!isFixMode}
+                onChange={(e) =>
+                  dispatch({
+                    type: "SET_FORM_DATA",
+                    key: "name",
+                    value: e.target.value,
+                  })
+                }
+              />
             </li>
             <li>
               <StyledChildManage.SubTitle>성별</StyledChildManage.SubTitle>
-              <AutoResizeInput defaultValue="남자" readOnly={!isFixMode} />
+              <AutoResizeInput
+                defaultValue="남자"
+                readOnly={!isFixMode}
+                onChange={(e) =>
+                  dispatch({
+                    type: "SET_FORM_DATA",
+                    key: "gender",
+                    value: e.target.value,
+                  })
+                }
+              />
             </li>
             <li>
               <StyledChildManage.SubTitle>생년월일</StyledChildManage.SubTitle>
               <AutoResizeInput
                 defaultValue="2015.12.07"
                 readOnly={!isFixMode}
+                onChange={(e) =>
+                  dispatch({
+                    type: "SET_FORM_DATA",
+                    key: "birth",
+                    value: e.target.value,
+                  })
+                }
               />
             </li>
           </StyledProfile.InfoWrapper>
@@ -68,6 +133,13 @@ const ChildProfile = () => {
         <StyledProfile.SignificantArea
           readOnly={!isFixMode}
           defaultValue="우리 아이는 너무 귀엽습니다."
+          onChange={(e) =>
+            dispatch({
+              type: "SET_FORM_DATA",
+              key: "significant",
+              value: e.target.value,
+            })
+          }
         />
         <StyledProfile.BtnWrapper>
           <Buttons.Filter
