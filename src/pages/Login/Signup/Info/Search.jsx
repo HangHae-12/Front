@@ -10,8 +10,8 @@ import { SignAPI } from "../../../../api/SignAPI";
 import textVariants from "../../../../styles/variants/textVariants";
 import SearchContent from "./SearchContent";
 import Buttons from "../../../../components/Buttons";
-import Modal from "../../../../components/Modal";
 import session from "../../../../utils/session";
+import AlertModal from "../../../../components/Modals/AlertModal";
 
 const Search = () => {
   const [selectedKinder, setSelectedKinder] = useState(null);
@@ -33,8 +33,8 @@ const Search = () => {
         navigate(`/signup/${role}`);
       }
     },
-    onError: () => {
-      openModal(modalData);
+    onError: (error) => {
+      openModal({ contents: <AlertModal /> });
     },
   });
 
@@ -46,55 +46,40 @@ const Search = () => {
     selectedKinder && mutate(selectedKinder.id);
   };
 
-  const modalData = {
-    title: "잘못된 접근입니다!",
-    contents: "유치원을 선택하지 않았습니다.",
-  };
-
-  const modalOption = {
-    width: "300px",
-    height: "200px",
-  };
-
   return (
-    <>
-      <StyledSearch.Container>
-        <StyledLogin.Title>
-          가입하시려는 유치원을 선택해주세요
-        </StyledLogin.Title>
-        <StyledSearch.KinderListSearch>
-          <StyledSearch.SearchBarWrapper>
-            <StyledSearch.SelectedKinderWrapper>
-              {selectedKinder ? (
-                <SearchContent data={selectedKinder} />
-              ) : (
-                "유치원을 선택 해주세요"
-              )}
-            </StyledSearch.SelectedKinderWrapper>
-            <SearchInput onSearch={handleSearch} inputBodyStyle={inputStyle} />
-          </StyledSearch.SearchBarWrapper>
-          <StyledSearch.SearchContentsWrapper>
-            {searchedData.map((data) => (
-              <SearchContent
-                key={data.id}
-                data={data}
-                handleSelectKinder={handleSelectKinder}
-              />
-            ))}
-          </StyledSearch.SearchContentsWrapper>
-        </StyledSearch.KinderListSearch>
-        <StyledSearch.SubmitBtnBox>
-          <Buttons.Filter
-            disabled={!selectedKinder}
-            colorTypes="primary"
-            onClick={handleSelectKinderSubmit}
-          >
-            다음
-          </Buttons.Filter>
-        </StyledSearch.SubmitBtnBox>
-      </StyledSearch.Container>
-      <Modal modalOption={modalOption} />
-    </>
+    <StyledSearch.Container>
+      <StyledLogin.Title>가입하시려는 유치원을 선택해주세요</StyledLogin.Title>
+      <StyledSearch.KinderListSearch>
+        <StyledSearch.SearchBarWrapper>
+          <StyledSearch.SelectedKinderWrapper>
+            {selectedKinder ? (
+              <SearchContent data={selectedKinder} />
+            ) : (
+              "유치원을 선택 해주세요"
+            )}
+          </StyledSearch.SelectedKinderWrapper>
+          <SearchInput onSearch={handleSearch} inputBodyStyle={inputStyle} />
+        </StyledSearch.SearchBarWrapper>
+        <StyledSearch.SearchContentsWrapper>
+          {searchedData.map((data) => (
+            <SearchContent
+              key={data.id}
+              data={data}
+              handleSelectKinder={handleSelectKinder}
+            />
+          ))}
+        </StyledSearch.SearchContentsWrapper>
+      </StyledSearch.KinderListSearch>
+      <StyledSearch.SubmitBtnBox>
+        <Buttons.Filter
+          disabled={!selectedKinder}
+          colorTypes="primary"
+          onClick={handleSelectKinderSubmit}
+        >
+          다음
+        </Buttons.Filter>
+      </StyledSearch.SubmitBtnBox>
+    </StyledSearch.Container>
   );
 };
 

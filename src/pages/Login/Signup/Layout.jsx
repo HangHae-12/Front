@@ -1,5 +1,6 @@
 import StyledLogin from "../styled";
 import SignupRouteGuard from "./SignupRouteGuard";
+import Modal from "../../../components/Modal";
 
 const Layout = () => {
   const requiredKeys = {
@@ -7,19 +8,30 @@ const Layout = () => {
     "/signup/search": ["name", "profileImageUrl", "role"],
     "/signup/teacher": ["name", "profileImageUrl", "role"],
     "/signup/parent": ["name", "profileImageUrl", "role"],
-    // "/signup/success": [
-    //   "name",
-    //   "profileImageUrl",
-    //   "kindergartenName",
-    //   "logoImageUrl",
-    // ],
+    "/signup/success": [
+      "name",
+      "profileImageUrl",
+      "kindergartenName",
+      "logoImageUrl",
+      "role",
+    ],
   };
+
+  const modalOption = {
+    isCloseButton: false,
+    width: "500px",
+    height: "300px",
+  };
+
   return (
-    <StyledLogin.Background>
-      <StyledLogin.Container>
-        <SignupRouteGuard requiredKeys={requiredKeys} />
-      </StyledLogin.Container>
-    </StyledLogin.Background>
+    <>
+      <StyledLogin.Background>
+        <StyledLogin.Container>
+          <SignupRouteGuard requiredKeys={requiredKeys} />
+        </StyledLogin.Container>
+      </StyledLogin.Background>
+      <Modal modalOption={modalOption} />
+    </>
   );
 };
 
