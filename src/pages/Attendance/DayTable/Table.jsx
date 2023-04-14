@@ -14,6 +14,7 @@ import Buttons from "../../../components/Buttons";
 import ClassButton from './DayClassButton';
 import CustomDatepicker from '../../../components/CustomDatepicker'
 import DayExcel from './DayExcel'
+import AnimatedTableRow from '../AnimatedTableRow';
 
 const Table = () => {
   const queryClient = useQueryClient();
@@ -108,16 +109,16 @@ const Table = () => {
             </thead>
             <tbody>
               {isSunday ? (
-                <tr>
+                <AnimatedTableRow delay={1 * 0.1}>
                   <td className="sunday" colSpan="6"><BsSun /> 일요일은 쉬는날</td>
-                </tr>
+                </AnimatedTableRow>
               ) : (
                 data?.data?.length > 0 &&
                 data.data
                   .filter((row) => row !== null) // null 값을 걸러내기 위한 추가 작업
-                  .map((row, rowIndex) => (
-                    <tr key={row.id}>
-                      <td>{rowIndex + 1}</td>
+                  .map((row, index) => (
+                    <AnimatedTableRow key={row.id} delay={index * 0.1} >
+                      <td>{index + 1}</td>
                       <td>{getRandomIcon()} {row.name}</td>
                       <td>
                         {(() => {
@@ -136,7 +137,7 @@ const Table = () => {
                       <td>{row.enterTime || "미등록"}</td>
                       <td>{row.exitTime || "미등록"}</td>
                       <td>{row.absentReason || "미등록"}</td>
-                    </tr>
+                    </AnimatedTableRow>
                   )))}
             </tbody>
           </StyledTable>
