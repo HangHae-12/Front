@@ -26,8 +26,14 @@ const ClassButtonGroup = () => {
   //등원,하원,timea,page param
   const hostParams = { classroomId, state: scheduleId, time: time, page, size };
 
-  const { isLoading, isError, data } = useQuery(["getManageSchedule", hostParams], () =>
-    HostAPI.getManageSchedule(hostParams)
+  const { isLoading, isError, error, data } = useQuery(
+    ["getManageSchedule", hostParams],
+    () => HostAPI.getManageSchedule(hostParams),
+    {
+      onError: (error) => {
+        console.log("getManageSchedule error:", error);
+      },
+    }
   );
 
   useEffect(() => {
@@ -62,7 +68,7 @@ const ClassButtonGroup = () => {
         <ClassButton hostParams={hostParams} />
       </motion.div>
       <motion.div variants={fadeInUp} initial="hidden" animate="visible" custom={0.2}>
-        <Attendee classData={data.data.info} />
+        <Attendee classData={data?.data?.data?.info} />
       </motion.div>
       <motion.div variants={fadeInUp} initial="hidden" animate="visible" custom={0.4}>
         <Schedule hostParams={hostParams} />
@@ -75,11 +81,11 @@ const ClassButtonGroup = () => {
             : <ExitTime />
         }
 
-        <Children bindData={data.data.content} />
+        <Children bindData={data.data.data.content} />
         <Pagination
-          current={data.data.pageable.pageNumber + 1}
-          pageSize={data.data.pageable.pageSize}
-          total={data.data.totalElements}
+          current={data.data.data.pageable.pageNumber + 1}
+          pageSize={data.data.data.pageable.pageSize}
+          total={data.data.data.totalElements}
           onChange={handlePageChange}
         />
 

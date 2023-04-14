@@ -18,13 +18,21 @@ const Children = ({ bindData }) => {
       queryClient.invalidateQueries(["getManageSchedule"]);
       // queryClient.setQueryData(["getManageSchedule"]);
     },
+    onError: (error) => {
+      console.log("updateEnter error:", error);
+    },
   });
+
   const updateExitMutation = useMutation(HostAPI.updateExit, {
     onSuccess: () => {
       queryClient.invalidateQueries(["getManageSchedule"]);
       // queryClient.setQueryData(["getManageSchedule"]);
     },
+    onError: (error) => {
+      console.log("updateExit error:", error);
+    },
   });
+
   const [alert, setAlert] = useState({
     show: false,
     message: "",

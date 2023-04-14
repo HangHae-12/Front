@@ -38,8 +38,13 @@ const Table = () => {
     () => AttendanceAPI.getDayAttendance({ classroomId: id, date: formatDate(selectedDate) }),
     {
       enabled: !isSunday, // 일요일이 아닐 때만 API 요청을 수행
+      onError: (error) => {
+        console.log("getDayAttendance error:", error);
+      },
     }
   );
+
+
 
 
 
@@ -79,7 +84,6 @@ const Table = () => {
     return <SelectedIcon />;
   };
 
-  console.log(data)
   return (
     <div>
 
@@ -92,7 +96,7 @@ const Table = () => {
           <GrNext onClick={increaseDate} size={16} />
           <CustomDatepicker selectedDate={selectedDate} onDateChange={handleDateChange} />
         </StyledMonthYear>
-        <DayExcel data={data} selectedDate={selectedDate} />
+        <DayExcel data={data?.data} selectedDate={selectedDate} />
       </StyledHeader>
       <StyledTableContainer>
         <StyledTableWrapper>
@@ -113,8 +117,8 @@ const Table = () => {
                   <td className="sunday" colSpan="6"><BsSun /> 일요일은 쉬는날</td>
                 </AnimatedTableRow>
               ) : (
-                data?.data?.length > 0 &&
-                data.data
+                data?.data?.data?.length > 0 &&
+                data.data.data
                   .filter((row) => row !== null) // null 값을 걸러내기 위한 추가 작업
                   .map((row, index) => (
                     <AnimatedTableRow key={row.id} delay={index * 0.1} >

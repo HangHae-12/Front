@@ -28,7 +28,12 @@ const Table = () => {
                 classroomId: sid,
                 year: selectedDate.getFullYear(),
                 month: selectedDate.getMonth() + 1,
-            })
+            }),
+        {
+            onError: (error) => {
+                console.log("getMonthAttendance error:", error);
+            },
+        }
     );
 
 
@@ -209,7 +214,7 @@ const Table = () => {
                     <GrNext style={{ marginLeft: "8px" }} onClick={handleIncreaseMonth} size={16} />
                     <CustomDatepicker mode="month" selectedDate={selectedDate} onDateChange={handleDateChange} />
                 </StyledMonthYear>
-                <MonthExcel data={data} selectedDate={selectedDate} />
+                <MonthExcel data={data?.data} selectedDate={selectedDate} />
             </StyledHeader>
             <StyledTableContainer>
                 <StyledTableWrapper>
@@ -260,7 +265,7 @@ const Table = () => {
                         </thead>
 
                         <tbody>
-                            {data?.data?.map((student, index) => {
+                            {data?.data?.data?.map((student, index) => {
                                 return (
                                     <>
                                         <AnimatedTableRow key={student.id} delay={index * 0.1}>

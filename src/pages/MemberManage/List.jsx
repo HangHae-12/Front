@@ -25,7 +25,7 @@ const List = () => {
     setUserRole(id === "1" ? "PARENT" : "TEACHER");
   }, [id]);
 
-  const { isLoading, isError, data } = useQuery(
+  const { isLoading, isError, error, data } = useQuery(
     ["getMemberManage", page, userRole],
     () =>
       ManageAPI.getMemberManage({
@@ -33,7 +33,12 @@ const List = () => {
         userRole: userRole,
         page: page - 1,
         size: 15,
-      })
+      }),
+    {
+      onError: (error) => {
+        console.error("Error fetching member manage data:", error);
+      },
+    }
   );
   // const { isLoading, isError, data } = useQuery(
   //   ["getMemberManage", page, userRole, debouncedSearchText],
@@ -66,7 +71,7 @@ const List = () => {
 
 
 
-  const data2 = data?.data;
+  const data2 = data?.data?.data;
 
   // useEffect(() => {
   //   queryClient.invalidateQueries(["getMemberManage", page]);
