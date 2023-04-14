@@ -7,6 +7,7 @@ const Dropdown = ({
   children,
   buttonStyle,
   menuStyle,
+  containerStyle,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef(null);
@@ -25,7 +26,7 @@ const Dropdown = ({
 
   const closeDropdown = () => {
     setIsOpen(false);
-  }; 
+  };
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
@@ -35,23 +36,26 @@ const Dropdown = ({
   }, []);
 
   return (
-<StyledDropdown.Container ref={containerRef}>
-    <StyledDropdown.Button
-      onClick={toggleDropdown}
-      isReadOnly={isReadOnly}
-      buttonStyle={buttonStyle}
+    <StyledDropdown.Container
+      ref={containerRef}
+      containerStyle={containerStyle}
     >
-      {buttonLabel}
-      {!isReadOnly ? <StyledDropdown.Icon /> : null}
-    </StyledDropdown.Button>
-    <StyledDropdown.Menu
-      isOpen={isOpen}
-      menuStyle={menuStyle}
-      onClick={closeDropdown}
-    >
-      {children}
-    </StyledDropdown.Menu>
-  </StyledDropdown.Container>
+      <StyledDropdown.Button
+        onClick={toggleDropdown}
+        isReadOnly={isReadOnly}
+        buttonStyle={buttonStyle}
+      >
+        {buttonLabel}
+        {!isReadOnly ? <StyledDropdown.Icon /> : null}
+      </StyledDropdown.Button>
+      <StyledDropdown.Menu
+        isOpen={isOpen}
+        menuStyle={menuStyle}
+        onClick={closeDropdown}
+      >
+        {children}
+      </StyledDropdown.Menu>
+    </StyledDropdown.Container>
   );
 };
 
