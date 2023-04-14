@@ -11,18 +11,21 @@ import Modal from "../../components/Modal";
 import SuccessModal from "../../components/Modals/SuccessModal";
 import { useProfileImageUploader } from "../../hooks/useProfileImageUploader";
 import { useRecoilState } from "recoil";
+import { childListAtom } from "../../atom/sideBarAtom";
 
 const ChildProfile = () => {
   const [isFixMode, setIsFixMode] = useState(false);
-  const childId = useRecoilState('')
+  // const childId = useRecoilState(childListAtom)[0].id;
+  const childId = 1;
   const queryClient = useQueryClient();
   const { openModal } = useModal();
 
   const { data } = useQuery(
     ["childProfile"],
-    (childId) => ChildManageAPI.getChildProfile(childId),
+    () => ChildManageAPI.getChildProfile(childId),
     {
       refetchOnWindowFocus: false,
+      retry: 1,
     }
   );
 
@@ -88,7 +91,7 @@ const ChildProfile = () => {
             <li>
               <StyledChildManage.SubTitle>이름</StyledChildManage.SubTitle>
               <AutoResizeInput
-                defaultValue="김민재"
+                defaultValue={data?.name}
                 readOnly={!isFixMode}
                 onChange={(e) =>
                   dispatch({
@@ -102,7 +105,7 @@ const ChildProfile = () => {
             <li>
               <StyledChildManage.SubTitle>성별</StyledChildManage.SubTitle>
               <AutoResizeInput
-                defaultValue="남자"
+                defaultValue={data?.gender}
                 readOnly={!isFixMode}
                 onChange={(e) =>
                   dispatch({
@@ -116,7 +119,7 @@ const ChildProfile = () => {
             <li>
               <StyledChildManage.SubTitle>생년월일</StyledChildManage.SubTitle>
               <AutoResizeInput
-                defaultValue="2015.12.07"
+                defaultValue={data?.birth}
                 readOnly={!isFixMode}
                 onChange={(e) =>
                   dispatch({
@@ -132,7 +135,7 @@ const ChildProfile = () => {
         <StyledChildManage.SubTitle>특이사항</StyledChildManage.SubTitle>
         <StyledProfile.SignificantArea
           readOnly={!isFixMode}
-          defaultValue="우리 아이는 너무 귀엽습니다."
+          defaultValue={data?.significant}
           onChange={(e) =>
             dispatch({
               type: "SET_FORM_DATA",
@@ -159,7 +162,9 @@ const ChildProfile = () => {
 export default ChildProfile;
 
 const StyledProfile = {
-  Wrapper: styled(StyledChildManage.Card)``,
+  Wrapper: styled(StyledChildManage.Card)`
+    flex: 2;
+  `,
 
   ProfileWrapper: styled.div`
     width: 100%;

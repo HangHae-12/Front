@@ -32,7 +32,7 @@ const StyledDropdown = {
     border-radius: 12px;
     padding: 8px 0;
     min-width: 160px;
-    z-index: 1;
+    z-index: 10;
     ${({ menuStyle }) => menuStyle}
   `,
 
@@ -40,7 +40,7 @@ const StyledDropdown = {
     display: block;
     color: ${({ theme }) => theme.color.grayScale[500]};
     padding: 8px 16px;
-    
+
     cursor: pointer;
 
     &:hover {
