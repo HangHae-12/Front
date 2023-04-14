@@ -1,17 +1,20 @@
 import { createPortal } from "react-dom";
 import styled from "styled-components";
 import useModal from "../hooks/useModal";
+import { motion, AnimatePresence } from "framer-motion";
 
-const Modal = ({ modalOption = {} }) => {
+const Modal = ({ id }) => {
   const { modalState, closeModal } = useModal();
+
+  if (modalState.modalId !== id) {
+    return null;
+  }
 
   const {
     canCloseOnOverlayClick = true,
     isCloseButton = true,
     padding,
-    width,
-    height,
-  } = modalOption;
+  } = modalState;
 
   const handleOverlayClick = (e) => {
     if (canCloseOnOverlayClick) {
@@ -21,49 +24,68 @@ const Modal = ({ modalOption = {} }) => {
       }
     }
   };
+  const backdropVariants = {
+    visible: { opacity: 1 },
+    hidden: { opacity: 0 },
+  };
+
+  const modalVariants = {
+    visible: { opacity: 1, y: 0 },
+    hidden: { opacity: 0, y: "100%", transition: { duration: 0.2 } },
+    exit: { opacity: 0, y: "100%", transition: { duration: 0.2 } },
+  };
 
   return modalState.isOpen
     ? createPortal(
-        <>
-          <StyledModal.Overlay
-            onClick={handleOverlayClick}
-            canCloseOnOverlayClick={canCloseOnOverlayClick}
+      <AnimatePresence>
+        <StyledModal.Overlay
+          onClick={handleOverlayClick}
+          canCloseOnOverlayClick={canCloseOnOverlayClick}
+          variants={backdropVariants}
+          initial="hidden"
+          animate="visible"
+          exit="hidden"
+        >
+          <StyledModal.Container
+            onClick={(e) => e.stopPropagation()}
+            padding={padding}
+            width={modalState.width}
+            height={modalState.height}
+            variants={modalVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
           >
-            <StyledModal.Container
-              onClick={(e) => e.stopPropagation()}
-              padding={padding}
-              width={width}
-              height={height}
-            >
-              {isCloseButton && (
-                <StyledModal.CloseButton
-                  onClick={() => {
-                    closeModal();
-                    if (modalState.onClose) {
-                      modalState.onClose();
-                    }
-                  }}
-                >
-                  &times;
-                </StyledModal.CloseButton>
-              )}
-              <StyledModal.Title>{modalState.title}</StyledModal.Title>
-              <StyledModal.Contents>{modalState.contents}</StyledModal.Contents>
-              {modalState.callback && (
-                <StyledModal.Footer>{modalState.footer}</StyledModal.Footer>
-              )}
-            </StyledModal.Container>
-          </StyledModal.Overlay>
-        </>,
-        document.getElementById("modal-root")
-      )
+            {isCloseButton && (
+              <StyledModal.CloseButton
+                onClick={() => {
+                  closeModal();
+                  if (modalState.onClose) {
+                    modalState.onClose();
+                  }
+                }}
+              >
+                &times;
+              </StyledModal.CloseButton>
+            )}
+            <StyledModal.Title>{modalState.title}</StyledModal.Title>
+            <StyledModal.Contents>{modalState.contents}</StyledModal.Contents>
+            {modalState.callback && (
+              <StyledModal.Footer>{modalState.footer}</StyledModal.Footer>
+            )}
+          </StyledModal.Container>
+        </StyledModal.Overlay>
+      </AnimatePresence>,
+      document.getElementById("modal-root")
+    )
+
     : null;
 };
 
 export default Modal;
 
 const StyledModal = {
-  Overlay: styled.div`
+  Overlay: styled(motion.div)`
     position: fixed;
     top: 0;
     left: 0;
@@ -76,7 +98,7 @@ const StyledModal = {
     z-index: 999;
   `,
 
-  Container: styled.div`
+  Container: styled(motion.div)`
     background-color: ${({ color, theme }) => color ?? theme.color.white};
     border-radius: 12px;
     border: 1px solid ${({ theme }) => theme.color.grayScale[200]};
@@ -87,7 +109,7 @@ const StyledModal = {
     z-index: 1000;
   `,
 
-  Header: styled.div`
+  Header: styled(motion.div)`
     display: flex;
     height: 15px;
     padding-right: 25px;
@@ -100,14 +122,14 @@ const StyledModal = {
     margin: 0;
   `,
 
-  Contents: styled.div`
+  Contents: styled(motion.div)`
     /* margin-top: 10px; */
     padding-top: 30px;
     width: 100%;
     height: 100%;
   `,
 
-  Footer: styled.div`
+  Footer: styled(motion.div)`
     position: absolute;
     right: 30px;
     display: flex;

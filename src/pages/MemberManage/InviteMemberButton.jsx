@@ -7,12 +7,9 @@ import Button from "../../components/Button";
 
 const InviteMemberButton = ({ onPageReset }) => {
 
-
     const [selectedButton, setSelectedButton] = useState("학부모");
     const navigate = useNavigate();
     const queryClient = useQueryClient();
-
-
     const handleButtonClick = async (selected, id) => {
         setSelectedButton(selected);
         onPageReset();
@@ -31,7 +28,6 @@ const InviteMemberButton = ({ onPageReset }) => {
                 selectedButton={selectedButton}
                 onClick={() => handleButtonClick("선생님", 2)}
             />
-
         </StyledButtonWrapper>
     );
 };

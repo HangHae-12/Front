@@ -38,7 +38,6 @@ const StyledSearchContent = {
     img {
       width: 50px;
       height: 50px;
-      border: 1px solid black;
     }
     &:hover {
       border-color: ${({ theme }) => theme.color.primary};

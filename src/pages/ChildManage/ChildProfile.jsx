@@ -1,61 +1,199 @@
-import { useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import styled from "styled-components";
-import { DUMMY_PROFILE_IMG_SRC } from "../../assets";
+import Buttons from "../../components/Buttons";
 import StyledChildManage from "./styled";
 import AutoResizeInput from "../../components/AutoResizeInput";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import ChildManageAPI from "../../api/ChildManageAPI";
+import ProfileImageUploader from "../../components/ProfileImageUploader";
+import useModal from "../../hooks/useModal";
+import Modal from "../../components/Modal";
+import SuccessModal from "../../components/Modals/SuccessModal";
+import AlertModal from "../../components/Modals/AlertModal";
+import { useProfileImageUploader } from "../../hooks/useProfileImageUploader";
+import { useRecoilState } from "recoil";
+import { childListAtom } from "../../atom/sideBarAtom";
 
 const ChildProfile = () => {
-  const [isFixMode, setIsFixMode] = useState(true);
+  const queryClient = useQueryClient();
+  const [isFixMode, setIsFixMode] = useState(false);
+  const childId = useRecoilState(childListAtom)[0][0]?.childId;
+  const { openModal } = useModal();
+
+  const { data } = useQuery(
+    ["childProfile"],
+    () => ChildManageAPI.getChildProfile(childId),
+    {
+      refetchOnWindowFocus: false,
+      enabled: !!childId,
+    }
+  );
+
+  const { mutate } = useMutation(ChildManageAPI.putChildProfile, {
+    onSuccess: () => {
+      openModal({ id: "childProfileModal", contents: <SuccessModal /> });
+      queryClient.invalidateQueries(["childProfile"]);
+    },
+    onError: () => {
+      openModal({ id: "childProfileModal", contents: <AlertModal /> });
+    },
+  });
+
+  const { selectedFile, isCancelled } = useProfileImageUploader(
+    data?.data?.data?.profilImageUrl
+  );
+
+  const reduceFormData = (state, action) => {
+    switch (action.type) {
+      case "SET_FORM_DATA":
+        return { ...state, [action.key]: action.value };
+      default:
+        return state;
+    }
+  };
+
+  const [formState, dispatch] = useReducer(reduceFormData, {});
+
+  useEffect(() => {
+    if (data) {
+      dispatch({
+        type: "SET_FORM_DATA",
+        key: "name",
+        value: data.data.data.name,
+      });
+      dispatch({
+        type: "SET_FORM_DATA",
+        key: "gender",
+        value: data.data.data.gender,
+      });
+      dispatch({
+        type: "SET_FORM_DATA",
+        key: "birth",
+        value: data.data.data.birth,
+      });
+      dispatch({
+        type: "SET_FORM_DATA",
+        key: "significant",
+        value: data.data.data.significant,
+      });
+    }
+  }, [data]);
+
+  const handleFixChildProfile = () => {
+    setIsFixMode((prev) => !prev);
+    if (isFixMode) {
+      const formData = new FormData();
+      Object.entries(formState).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
+      selectedFile && formData.append("profileImage", selectedFile);
+      formData.append("isCancelled", isCancelled);
+
+      for (const [key, value] of formData.entries()) {
+        console.log(`${key}: ${value}`);
+      }
+      mutate({ childId: childId, data: formData });
+    }
+  };
 
   return (
-    <StyledProfile.Wrapper>
-      <StyledChildManage.Title>원생 프로필</StyledChildManage.Title>
-      <StyledProfile.ProfileBox>
-        <img
-          src={DUMMY_PROFILE_IMG_SRC}
-          alt="profile"
-          style={{ width: "120px" }}
+    <>
+      <StyledProfile.Wrapper>
+        <StyledChildManage.Title>원생 프로필</StyledChildManage.Title>
+        <StyledProfile.ProfileWrapper>
+          <ProfileImageUploader
+            isFixMode={!isFixMode}
+            prev={data?.data?.data?.profileImageUrl}
+          />
+          <StyledProfile.InfoWrapper>
+            <li>
+              <StyledChildManage.SubTitle>이름</StyledChildManage.SubTitle>
+              <AutoResizeInput
+                defaultValue={data?.data?.data?.name}
+                readOnly={!isFixMode}
+                onChange={(e) =>
+                  dispatch({
+                    type: "SET_FORM_DATA",
+                    key: "name",
+                    value: e.target.value,
+                  })
+                }
+              />
+            </li>
+            <li>
+              <StyledChildManage.SubTitle>성별</StyledChildManage.SubTitle>
+              <AutoResizeInput
+                defaultValue={data?.data?.data?.gender}
+                readOnly={!isFixMode}
+                onChange={(e) =>
+                  dispatch({
+                    type: "SET_FORM_DATA",
+                    key: "gender",
+                    value: e.target.value,
+                  })
+                }
+              />
+            </li>
+            <li>
+              <StyledChildManage.SubTitle>생년월일</StyledChildManage.SubTitle>
+              <AutoResizeInput
+                defaultValue={data?.data?.data?.birth}
+                readOnly={!isFixMode}
+                onChange={(e) =>
+                  dispatch({
+                    type: "SET_FORM_DATA",
+                    key: "birth",
+                    value: e.target.value,
+                  })
+                }
+              />
+            </li>
+          </StyledProfile.InfoWrapper>
+        </StyledProfile.ProfileWrapper>
+        <StyledChildManage.SubTitle>특이사항</StyledChildManage.SubTitle>
+        <StyledProfile.SignificantArea
+          readOnly={!isFixMode}
+          defaultValue={data?.data?.data?.significant}
+          onChange={(e) =>
+            dispatch({
+              type: "SET_FORM_DATA",
+              key: "significant",
+              value: e.target.value,
+            })
+          }
         />
-        <StyledProfile.InfoBox>
-          <li>
-            <StyledChildManage.SubTitle>이름</StyledChildManage.SubTitle>
-            <AutoResizeInput defaultValue="김민재" readOnly={isFixMode} />
-          </li>
-          <li>
-            <StyledChildManage.SubTitle>성별</StyledChildManage.SubTitle>
-            <AutoResizeInput defaultValue="남자" readOnly={isFixMode} />
-          </li>
-          <li>
-            <StyledChildManage.SubTitle>생년월일</StyledChildManage.SubTitle>
-            <AutoResizeInput defaultValue="2015.12.07" readOnly={isFixMode} />
-          </li>
-        </StyledProfile.InfoBox>
-      </StyledProfile.ProfileBox>
-      <StyledChildManage.SubTitle>특이사항</StyledChildManage.SubTitle>
-      <StyledProfile.SignificantArea
-        readOnly={isFixMode}
-        defaultValue="우리 아이는 너무 귀엽습니다."
-      />
-    </StyledProfile.Wrapper>
+        <StyledProfile.BtnWrapper>
+          <Buttons.Filter
+            colorTypes={!isFixMode ? "" : "primary"}
+            outlined={!isFixMode}
+            onClick={handleFixChildProfile}
+          >
+            {!isFixMode ? "수정하기" : "수정완료"}
+          </Buttons.Filter>
+        </StyledProfile.BtnWrapper>
+      </StyledProfile.Wrapper>
+      <Modal id="childProfileModal" />
+    </>
   );
 };
 
 export default ChildProfile;
 
 const StyledProfile = {
-  Wrapper: styled(StyledChildManage.Card)``,
+  Wrapper: styled(StyledChildManage.Card)`
+    flex: 2;
+  `,
 
-  ProfileBox: styled.div`
+  ProfileWrapper: styled.div`
     width: 100%;
     height: 120px;
-    /* height: min-content; */
-    margin: 24px 0px;
+    margin: 24px 0px 60px;
     display: flex;
     flex-direction: row;
     gap: 90px;
   `,
 
-  InfoBox: styled.ul`
+  InfoWrapper: styled.ul`
     display: flex;
     width: 100%;
     flex-direction: column;
@@ -82,5 +220,11 @@ const StyledProfile = {
     resize: none;
     outline: none;
     padding: 10px;
+  `,
+
+  BtnWrapper: styled.div`
+    width: 100%;
+    text-align: end;
+    margin-top: 22px;
   `,
 };

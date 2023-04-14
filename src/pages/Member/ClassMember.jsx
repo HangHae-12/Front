@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
@@ -14,6 +14,9 @@ import { memberAtom, parentAtom } from "../../atom/memberAtom";
 import Buttons from "../../components/Buttons";
 import { userProfileAtom } from "../../atom/sideBarAtom";
 import { AiOutlineSearch } from "react-icons/ai";
+import debounce from "../../utils/debounce";
+import ProfileImageUploader from "../../components/ProfileImageUploader";
+import { profileImageState } from "../../atom/profileImageUploaderAtom";
 
 const ClassMember = () => {
   const queryClient = useQueryClient();
@@ -29,7 +32,10 @@ const ClassMember = () => {
   const [parentAdd, setParentAdd] = useRecoilState(parentAtom);
   const [isChildModify, setIsChildModify] = useState(false);
   const [isChildAdd, setIsChildAdd] = useState(false);
+  const [image, setImage] = useRecoilState(profileImageState)
   const userRole = useRecoilValue(userProfileAtom);
+  const preview = useRecoilValue(profileImageState);
+  const [debouncedSearchMember, setDebouncedSearchMember] = useState("");
   const [modalOption, setmodalOption] = useState({
     padding: "",
     width: "",
@@ -37,12 +43,12 @@ const ClassMember = () => {
   });
 
   const { data } = useQuery(
-    ["classesMember", id, currentPage, searchMember],
+    ["classesMember", id || "1", currentPage, debouncedSearchMember],
     () => {
-      if (searchMember) {
-        return MemberAPI.getSearchMember(id, searchMember);
+      if (debouncedSearchMember) {
+        return MemberAPI.getSearchMember(id || "1", debouncedSearchMember);
       } else {
-        return MemberAPI.getClassesMember(id, currentPage);
+        return MemberAPI.getClassesMember(id || "1", currentPage);
       }
     },
     {
@@ -52,14 +58,21 @@ const ClassMember = () => {
       onError: () => {
         console.log("error");
       },
+      retry: 1,
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
     }
   );
+
+  useEffect(() => {
+    const debounced = debounce((value) => setDebouncedSearchMember(value), 700);
+    debounced(searchMember);
+  }, [searchMember]);
 
   const detailMemberMutation = useMutation(MemberAPI.getDetailMember, {
     onSuccess: (response) => {
       const MemberModalData = getChildInformation(response);
       openModal(MemberModalData);
-      console.log(response);
     },
   });
 
@@ -75,21 +88,13 @@ const ClassMember = () => {
     },
   });
 
-  //검색기능
-  const handleSearch = (e) => {
-    e.preventDefault();
-    setSearchMember(e.target.value);
-    queryClient.invalidateQueries(["classesMember", searchMember]);
-    console.log(data);
-  };
-
   useEffect(() => {
     if (!render && isChildModify) {
       handleClickModify();
     } else {
       setRender(false);
     }
-  }, [memberinfor, isChildModify, parentinfor]);
+  }, [memberinfor, isChildModify, parentinfor,preview]);
 
   //아이 상세 조회 모달
   const getChildInformation = (response) => {
@@ -109,16 +114,7 @@ const ClassMember = () => {
       phone: response.data.data.parentProfileResponseDto.phoneNumber,
       imgSrc: response.data.data.parentProfileResponseDto.profileImageUrl,
     }));
-    // setmodalOption ({
-    //   padding: "10px",
-    //   width: "620px",
-    //   height: "281px",
-    // });
-    setmodalOption({
-      padding: "10px",
-      width: "660px",
-      height: "837px",
-    });
+
     return {
       title: <StyledModalHeader>인원정보</StyledModalHeader>,
       contents: (
@@ -141,10 +137,13 @@ const ClassMember = () => {
           ) : null}
         </>
       ),
+      width: "660px",
+      height: "837px",
       callback: () => alert("modal"),
       onClose: () => {
         setMemberAdd("");
         setParentAdd("");
+        setImage("")
       },
     };
   };
@@ -166,11 +165,14 @@ const ClassMember = () => {
           </Buttons.Filter>
         </>
       ),
+      width: "660px",
+      height: "993px",
       callback: () => alert("modal"),
       onClose: () => {
         setIsChildModify(false);
         setMemberAdd("");
         setParentAdd("");
+        setImage("")
       },
     }));
   };
@@ -182,17 +184,17 @@ const ClassMember = () => {
     formData.append("birth", memberinfor.birth);
     formData.append("significant", memberinfor.significant);
     formData.append("gender", memberinfor.gender);
-    {
-      memberinfor.image[0] === "h"
-        ? formData.append("image", "")
-        : formData.append("image", memberinfor.image);
-    }
     formData.append("parentId", parentinfor.parentId);
     formData.append("dailyEnterTime", "07시~08시");
     formData.append("dailyExitTime", "16시~17시");
+    formData.append("isCancelled", false);
+
+    if (preview.selectedFile) {
+      formData.append("profileImage", preview.selectedFile);
+    }
 
     const payload = {
-      id: id,
+      id: id || "1",
       childId: memberinfor.childId,
       formData: formData,
     };
@@ -203,7 +205,7 @@ const ClassMember = () => {
 
   const getDetailMember = (childid) => {
     const payload = {
-      id: id,
+      id: id || "1",
       childid: childid,
     };
     detailMemberMutation.mutate(payload);
@@ -215,7 +217,7 @@ const ClassMember = () => {
     } else {
       setRender(false);
     }
-  }, [memberinfor, parentinfor]);
+  }, [memberinfor, parentinfor, isChildAdd, preview]);
 
   //반별 아이들 인원 등록 버튼
   const handleMemberSubmit = (id) => {
@@ -224,11 +226,14 @@ const ClassMember = () => {
     formData.append("birth", memberinfor.birth);
     formData.append("significant", memberinfor.significant);
     formData.append("gender", memberinfor.gender);
-    formData.append("image", memberinfor.image);
     formData.append("parentId", parentinfor.parentId);
 
+    if (preview.selectedFile) {
+      formData.append("image", preview.selectedFile);
+    }
+
     const payload = {
-      id: id,
+      id: id || "1",
       formData: formData,
     };
     setMemberSubmitMutation.mutate(payload);
@@ -239,11 +244,6 @@ const ClassMember = () => {
   //반별 아이들 인원 등록 모달
   const setChildInformation = () => {
     setIsChildAdd(true);
-    setmodalOption({
-      padding: "10px",
-      width: "660px",
-      height: "837px",
-    });
     const modalData = {
       title: <StyledModalHeader>인원등록</StyledModalHeader>,
       contents: <MemberAddModal />,
@@ -256,8 +256,15 @@ const ClassMember = () => {
           저장하기
         </StyledModalButton>
       ),
+      width: "660px",
+      height: "993px",
       callback: () => alert("modal"),
-      onClose: () => setIsChildAdd(false),
+      onClose: () => {
+        setIsChildAdd(false);
+        setMemberAdd("");
+        setParentAdd("");
+        setImage("");
+      },
     };
     openModal(modalData);
   };
@@ -276,8 +283,8 @@ const ClassMember = () => {
           ) : null}
           <StyledSearchWrapper>
             <StyledMemberSearchInput
-              type="text"
-              onChange={handleSearch}
+              type="search"
+              onChange={(e) => setSearchMember(e.target.value)}
               value={searchMember}
             ></StyledMemberSearchInput>
             <StyledInputIcon />

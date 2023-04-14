@@ -21,6 +21,7 @@ const StyledChildManage = {
     width: 100%;
     height: 580px;
     gap: 24px;
+    margin-bottom: 40px;
   `,
 
   Title: styled.h3`

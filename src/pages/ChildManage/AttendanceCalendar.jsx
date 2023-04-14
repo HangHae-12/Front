@@ -1,188 +1,198 @@
-import React, { useState } from "react";
+import "react-big-calendar/lib/css/react-big-calendar.css";
+import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
-import styled from "styled-components";
+import "moment/locale/ko";
+import "./AttendanceCalendar.css";
+import styled, { css } from "styled-components";
+import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
+import { useRecoilValue } from "recoil";
+import { contentSelector, infoSelector } from "../../atom/attendanceManageAtom";
 import textVariants from "../../styles/variants/textVariants";
-import DUMMY from "./DUMMY";
+import StyledChildmanage from "./styled";
+
+const views = {
+  month: true,
+};
 
 const AttendanceCalendar = () => {
-  const [currentMonth, setCurrentMonth] = useState(moment());
+  moment.locale("ko");
+  const localizer = momentLocalizer(moment);
+  const content = useRecoilValue(contentSelector);
+  const info = useRecoilValue(infoSelector);
+  console.log(content, info);
 
-  const goToPrevMonth = () => {
-    setCurrentMonth(currentMonth.clone().subtract(1, "month"));
+  const myEventsList = content.map(({ date, enterTime, exitTime, status }) => {
+    return {
+      start: new Date(moment().year(), moment().month(), date),
+      end: new Date(moment().year(), moment().month(), date),
+      enterTime,
+      exitTime,
+      status,
+    };
+  });
+
+  const HeaderComponent = ({ label, onNavigate }) => (
+    <HeaderContainer>
+      <StyledChildmanage.Title>출결관리</StyledChildmanage.Title>
+      <NavigationContainer>
+        <PrevButton onClick={() => onNavigate("PREV")} />
+        <NavigationTitle>{label}</NavigationTitle>
+        <NextButton onClick={() => onNavigate("NEXT")} />
+      </NavigationContainer>
+      <AttendanceContainer>
+        <AttendanceCalendarInfoBox boxColor="primary">
+          <h3>출석</h3>
+          <span>{info?.absentCount}</span>
+        </AttendanceCalendarInfoBox>
+        <AttendanceCalendarInfoBox boxColor="perple">
+          <h3>결석</h3>
+          <span>{info.attendanceCount}</span>
+        </AttendanceCalendarInfoBox>
+      </AttendanceContainer>
+    </HeaderContainer>
+  );
+
+  const MyMonthHeader = ({ label }) => {
+    const headerDate = label;
+    return <MonthHeaderWrapper>{headerDate}</MonthHeaderWrapper>;
   };
 
-  const goToNextMonth = () => {
-    setCurrentMonth(currentMonth.clone().add(1, "month"));
+  const MyMonthDateHeader = ({ date }) => {
+    const headerDate = moment(date).format("D");
+    return (
+      <StyledMyMonthDateHeader>
+        <div>{headerDate}</div>
+      </StyledMyMonthDateHeader>
+    );
   };
 
-  const renderDays = () => {
-    const days = [];
-    const startOfMonth = currentMonth.clone().startOf("month");
-    const endOfMonth = currentMonth.clone().endOf("month");
-    const today = moment();
-    let currentDay = startOfMonth.clone().startOf("isoWeek");
+  const MyMonthEvent = ({ event }) => {
+    const { enterTime, exitTime, status } = event;
 
-    while (currentDay.isSameOrBefore(endOfMonth)) {
-      if (currentDay.isoWeekday() <= 5) {
-        days.push(
-          <Day key={currentDay.format("YYYY-MM-DD")}>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: "37px",
-              }}
-            >
-              {currentDay.month() === currentMonth.month() ? (
-                <Date>{currentDay.date()}</Date>
-              ) : null}
-              {currentDay.isSameOrBefore(today, "day") &&
-              currentDay.month() === currentMonth.month() ? (
-                <AttendanceLabel isAttendance={true} />
-              ) : null}
-            </div>
-            {currentDay.isSameOrBefore(today, "day") &&
-            currentDay.month() === currentMonth.month() ? (
-              <div>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <div>등원</div>
-                  <div>07:30분</div>
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <div>하원</div>
-                  <div>16:30분</div>
-                </div>
-              </div>
-            ) : currentDay.month() === currentMonth.month() &&
-              currentDay.isAfter(today, "day") ? (
-              <div>아직이요</div>
-            ) : null}
-          </Day>
-        );
-      }
-      currentDay = currentDay.add(1, "day");
-    }
-
-    return days;
+    return (
+      <EventWrapper>
+        <div>Enter: {enterTime}</div>
+        <div>Exit: {exitTime}</div>
+        <AttendanceLabel isAttendance={status === "출석"} />
+      </EventWrapper>
+    );
   };
 
   return (
-    <>
-      <CalendarWrapper>
-        <CalendarHeader>
-          <div>
-            <h2>출석 기록</h2>
-            <div className="toolbar-controls">
-              <button onClick={goToPrevMonth}>&lt;</button>
-              <span>
-                {currentMonth.format("YYYY")}년 {currentMonth.format("M")}월
-              </span>
-              <button onClick={goToNextMonth}>&gt;</button>
-            </div>
-          </div>
-          <div>
-            <span>출석 {0}</span>
-            <span>결석 {0}</span>
-          </div>
-        </CalendarHeader>
-        <WeekdayWrapper>
-          {["월", "화", "수", "목", "금"].map((weekday) => (
-            <Weekday key={weekday}>{weekday}</Weekday>
-          ))}
-        </WeekdayWrapper>
-        <CalendarBody>{renderDays()}</CalendarBody>
-      </CalendarWrapper>
-    </>
+    <Calendar
+      views={views}
+      events={myEventsList}
+      localizer={localizer}
+      style={{ width: 1000, height: 800 }}
+      components={{
+        toolbar: HeaderComponent,
+        month: {
+          header: MyMonthHeader,
+          dateHeader: MyMonthDateHeader,
+        },
+        event: MyMonthEvent,
+      }}
+    />
   );
 };
 
 export default AttendanceCalendar;
 
-const CalendarWrapper = styled.div`
+const AttendanceCalendarInfoBox = styled.div`
   display: flex;
-  flex-direction: column;
+  width: 115px;
+  height: 44px;
+  padding: 0px 8px;
   align-items: center;
+  justify-content: space-between;
+  border-radius: 4px;
+  ${({ boxColor, theme }) => {
+    const colors = {
+      primary: {
+        background: theme.color.green_darker,
+        h3Color: theme.color.primary,
+      },
+      perple: {
+        background: theme.color.perple_lighter,
+        h3Color: theme.color.perple,
+      },
+    };
 
-  .toolbar-controls {
-    display: flex;
-    align-items: center;
-
-    button {
-      background-color: transparent;
-      border: none;
-      cursor: pointer;
-      font-size: 1.5rem;
-      padding: 0 0.5rem;
-    }
+    return css`
+      background-color: ${colors[boxColor].background};
+      h3 {
+        color: ${colors[boxColor].h3Color};
+      }
+    `;
+  }}
+  span {
+    ${textVariants.H3_SemiBold}
   }
 `;
 
-const CalendarBody = styled.div`
-  display: grid;
-  width: 100%;
-  max-width: 1000px;
-  grid-template-columns: repeat(5, 1fr);
-`;
-
-const Day = styled.span`
-  position: relative;
-  width: 200px;
-  height: 160px;
-  padding: 17px 17px;
-  border: 1px solid ${({ theme }) => theme.color.grayScale[200]};
-`;
-
-const Date = styled.div`
-  position: relative;
-  ${textVariants.H3_SemiBold}
-  color: ${({ theme }) => theme.color.grayScale[500]};
-`;
-
-const CalendarHeader = styled.div`
+const HeaderContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
-
-  padding: 1rem;
-`;
-
-const WeekdayWrapper = styled.div`
-  ${textVariants.Body1_Bold}
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  width: 100%;
-  max-width: 1000px;
+  padding-left: 50px;
+  margin-bottom: 20px;
   color: ${({ theme }) => theme.color.grayScale[500]};
-  background: ${({ theme }) => theme.color.grayScale[50]};
 `;
 
-const Weekday = styled.div`
+const NavigationContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 22px;
+`;
+
+const PrevButton = styled(AiOutlineLeft)`
+  font-size: 20px;
+`;
+const NextButton = styled(AiOutlineRight)`
+  font-size: 20px;
+`;
+
+const NavigationTitle = styled.div`
+  ${textVariants.H3_SemiBold}
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 200px;
-  height: 40px;
-  border: 1px solid ${({ theme }) => theme.color.grayScale[200]};
-  border-bottom: none;
+  color: ${({ theme }) => theme.color.grayScale[500]};
+`;
+
+const AttendanceContainer = styled.div`
+  display: flex;
+  gap: 10px;
+`;
+
+const MonthHeaderWrapper = styled.div`
+  ${textVariants.Body1_Bold}
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  color: ${({ theme }) => theme.color.grayScale[500]};
+`;
+
+const StyledMyMonthDateHeader = styled.div`
+  display: flex;
+  width: 120px;
+
+  & > div {
+    padding: 14px 0 0 14px;
+    /* font-weight: bold; */
+  }
+`;
+
+const EventWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 142px;
+  height: 142px;
 `;
 
 const AttendanceLabel = styled.div`
   position: relative;
-
   width: 42px;
   height: 42px;
   border-radius: 50%;
