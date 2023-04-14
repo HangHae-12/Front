@@ -7,7 +7,6 @@ import Button from "../../components/Button";
 
 const InviteMemberButton = ({ onPageReset }) => {
 
-
     const [selectedButton, setSelectedButton] = useState("학부모");
     const navigate = useNavigate();
     const queryClient = useQueryClient();

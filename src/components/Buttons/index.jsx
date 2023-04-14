@@ -39,7 +39,10 @@ const Buttons = {
   NB: (props) => <StyledButton buttonsTypes="NB_Button" {...props} />,
   Filter: (props) => <StyledButton buttonsTypes="Filter_All" {...props} />,
   Time: (props) => (
-    <StyledButton buttonsTypes="Time_Button" {...props} />
+    <StyledButton
+      whileHover={{ scale: 1.1 }}
+      transition={{ duration: 0.2 }}
+      buttonsTypes="Time_Button" {...props} />
   ),
   AB: (props) => <StyledButton buttonsTypes="AB_Button" {...props} />,
 };

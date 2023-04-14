@@ -14,7 +14,7 @@ import Children from "./Children";
 import Pagination from "../../components/CustomPagination";
 import { paginationAtom } from "../../atom/hostButtonAtom";
 import { motion } from 'framer-motion';
-import LoadingModal from "../../components/Modals/LoadingModal"
+
 const ClassButtonGroup = () => {
 
   const queryClient = useQueryClient();
@@ -34,8 +34,6 @@ const ClassButtonGroup = () => {
     queryClient.invalidateQueries(["getManageSchedule", 0]);
   }, [queryClient]);
 
-  if (isLoading) return <LoadingModal />;
-  if (isError) return <LoadingModal />;
   if (!data) return null; // 데이터가 로드되지 않은 경우
 
   //페이지네이션 페이지 지정
