@@ -29,7 +29,7 @@ const Teacher = () => {
 
   const { mutate } = useMutation(SignAPI.signup, {
     onSuccess: (res) => {
-      if (res.data.StatusCode === 200) {
+      if (res.data.statusCode === 200) {
         session.set("user", res.data.data);
         navigate("/signup/success");
       }
