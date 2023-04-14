@@ -14,19 +14,26 @@ import ClassButton from './MonthClassButton';
 import CustomDatepicker from '../../../components/CustomDatepicker'
 import { AttendanceAPI } from "../../../api/AttendanceAPI";
 import MonthExcel from './MonthExcel';
+import AnimatedTableRow from '../AnimatedTableRow';
+
 const Table = () => {
     const queryClient = useQueryClient();
     const { sid = 1 } = useParams();
     const [selectedDate, setSelectedDate] = useState(new Date());
 
-    const { isLoading, isError, data } = useQuery(
+    const { data } = useQuery(
         ["getMonthAttendance", selectedDate, sid],
         () =>
             AttendanceAPI.getMonthAttendance({
                 classroomId: sid,
                 year: selectedDate.getFullYear(),
                 month: selectedDate.getMonth() + 1,
-            })
+            }),
+        {
+            onError: (error) => {
+                console.log("getMonthAttendance error:", error);
+            },
+        }
     );
 
 
@@ -207,7 +214,7 @@ const Table = () => {
                     <GrNext style={{ marginLeft: "8px" }} onClick={handleIncreaseMonth} size={16} />
                     <CustomDatepicker mode="month" selectedDate={selectedDate} onDateChange={handleDateChange} />
                 </StyledMonthYear>
-                <MonthExcel data={data} selectedDate={selectedDate} />
+                <MonthExcel data={data?.data} selectedDate={selectedDate} />
             </StyledHeader>
             <StyledTableContainer>
                 <StyledTableWrapper>
@@ -258,10 +265,10 @@ const Table = () => {
                         </thead>
 
                         <tbody>
-                            {data?.data?.map((student) => {
+                            {data?.data?.data?.map((student, index) => {
                                 return (
                                     <>
-                                        <tr key={student.id}>
+                                        <AnimatedTableRow key={student.id} delay={index * 0.1}>
                                             <StyledNameCell rowSpan="3">{getRandomIcon()} {student.name}</StyledNameCell>
                                             <td>출석상태</td>
                                             {visibleDays.map((day) => {
@@ -289,8 +296,8 @@ const Table = () => {
                                             })}
                                             <StyledNameCell rowSpan="3">{student.attendanceCount}</StyledNameCell>
                                             <StyledNameCell rowSpan="3">{student.absentCount}</StyledNameCell>
-                                        </tr>
-                                        <tr>
+                                        </AnimatedTableRow>
+                                        <AnimatedTableRow delay={index * 0.1}>
                                             <td>등원시간</td>
                                             {visibleDays.map((day) => {
                                                 const attendance = student.monthAttendanceList.find(
@@ -299,8 +306,8 @@ const Table = () => {
 
                                                 return <td key={day}>{attendance ? attendance.enterTime : <></>}</td>;
                                             })}
-                                        </tr>
-                                        <tr>
+                                        </AnimatedTableRow>
+                                        <AnimatedTableRow delay={index * 0.1}>
                                             <td>하원시간</td>
                                             {visibleDays.map((day) => {
                                                 const attendance = student.monthAttendanceList.find(
@@ -309,7 +316,7 @@ const Table = () => {
 
                                                 return <td key={day}>{attendance ? attendance.exitTime : <></>}</td>;
                                             })}
-                                        </tr>
+                                        </AnimatedTableRow>
                                     </>
                                 );
                             })}

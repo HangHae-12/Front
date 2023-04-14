@@ -15,6 +15,8 @@ import Buttons from "../../components/Buttons";
 import { userProfileAtom } from "../../atom/sideBarAtom";
 import { AiOutlineSearch } from "react-icons/ai";
 import debounce from "../../utils/debounce";
+import ProfileImageUploader from "../../components/ProfileImageUploader";
+import { profileImageState } from "../../atom/profileImageUploaderAtom";
 
 const ClassMember = () => {
   const queryClient = useQueryClient();
@@ -30,7 +32,9 @@ const ClassMember = () => {
   const [parentAdd, setParentAdd] = useRecoilState(parentAtom);
   const [isChildModify, setIsChildModify] = useState(false);
   const [isChildAdd, setIsChildAdd] = useState(false);
+  const [image, setImage] = useRecoilState(profileImageState)
   const userRole = useRecoilValue(userProfileAtom);
+  const preview = useRecoilValue(profileImageState);
   const [debouncedSearchMember, setDebouncedSearchMember] = useState("");
   const [modalOption, setmodalOption] = useState({
     padding: "",
@@ -90,7 +94,7 @@ const ClassMember = () => {
     } else {
       setRender(false);
     }
-  }, [memberinfor, isChildModify, parentinfor]);
+  }, [memberinfor, isChildModify, parentinfor,preview]);
 
   //아이 상세 조회 모달
   const getChildInformation = (response) => {
@@ -139,6 +143,7 @@ const ClassMember = () => {
       onClose: () => {
         setMemberAdd("");
         setParentAdd("");
+        setImage("")
       },
     };
   };
@@ -167,6 +172,7 @@ const ClassMember = () => {
         setIsChildModify(false);
         setMemberAdd("");
         setParentAdd("");
+        setImage("")
       },
     }));
   };
@@ -181,9 +187,10 @@ const ClassMember = () => {
     formData.append("parentId", parentinfor.parentId);
     formData.append("dailyEnterTime", "07시~08시");
     formData.append("dailyExitTime", "16시~17시");
+    formData.append("isCancelled", false);
 
-    if (memberinfor.image[0] !== "h") {
-      formData.append("image", memberinfor.image);
+    if (preview.selectedFile) {
+      formData.append("profileImage", preview.selectedFile);
     }
 
     const payload = {
@@ -210,7 +217,7 @@ const ClassMember = () => {
     } else {
       setRender(false);
     }
-  }, [memberinfor, parentinfor, isChildAdd]);
+  }, [memberinfor, parentinfor, isChildAdd, preview]);
 
   //반별 아이들 인원 등록 버튼
   const handleMemberSubmit = (id) => {
@@ -221,8 +228,8 @@ const ClassMember = () => {
     formData.append("gender", memberinfor.gender);
     formData.append("parentId", parentinfor.parentId);
 
-    if (memberinfor.image) {
-      formData.append("image", memberinfor.image);
+    if (preview.selectedFile) {
+      formData.append("image", preview.selectedFile);
     }
 
     const payload = {
@@ -256,6 +263,7 @@ const ClassMember = () => {
         setIsChildAdd(false);
         setMemberAdd("");
         setParentAdd("");
+        setImage("");
       },
     };
     openModal(modalData);

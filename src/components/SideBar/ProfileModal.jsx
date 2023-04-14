@@ -39,6 +39,12 @@ const ProfileModal = () => {
             <StyledQuestionFont>연락처 </StyledQuestionFont>
             <StyledAnswerFont>{userProfile.phoneNumber}</StyledAnswerFont>
           </StyledInputWrapper>
+          {userProfile.role === "PARENT" ? (
+            <StyledInputWrapper>
+              <StyledQuestionFont>긴급연락처 </StyledQuestionFont>
+              <StyledAnswerFont>{userProfile.emergencyPhoneNumber}</StyledAnswerFont>
+            </StyledInputWrapper>
+          ) : null}
         </StyledRightWrapper>
       </StyledChildrenProfileWrapper>
     </StyledModalWrapper>
