@@ -3,54 +3,51 @@ import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "moment/locale/ko";
 import "./AttendanceCalendar.css";
-import styled from "styled-components";
-
-const myEventsList = [
-  {
-    start: new Date(2023, 3, 14),
-    end: new Date(2023, 3, 14),
-    enteredTime: "07:30",
-  },
-  {
-    start: new Date(2023, 3, 14),
-    end: new Date(2023, 3, 14),
-    leaveTime: "07:30",
-  },
-];
+import styled, { css } from "styled-components";
+import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
+import { useRecoilValue } from "recoil";
+import { contentSelector, infoSelector } from "../../atom/attendanceManageAtom";
+import textVariants from "../../styles/variants/textVariants";
+import StyledChildmanage from "./styled";
 
 const views = {
   month: true,
 };
 
-const AttendanceCalendar = (props) => {
-  moment.locale("ko"); // moment 라이브러리를 한국어로 설정
+const AttendanceCalendar = () => {
+  moment.locale("ko");
   const localizer = momentLocalizer(moment);
+  const content = useRecoilValue(contentSelector);
+  const info = useRecoilValue(infoSelector);
+  console.log(content, info);
+
+  const myEventsList = content.map(({ date, enterTime, exitTime, status }) => {
+    return {
+      start: new Date(moment().year(), moment().month(), date),
+      end: new Date(moment().year(), moment().month(), date),
+      enterTime,
+      exitTime,
+      status,
+    };
+  });
 
   const HeaderComponent = ({ label, onNavigate }) => (
     <HeaderContainer>
-      <Title>출결관리</Title>
+      <StyledChildmanage.Title>출결관리</StyledChildmanage.Title>
       <NavigationContainer>
-        <NavigationButton onClick={() => onNavigate("PREV")}>
-          &lt;
-        </NavigationButton>
+        <PrevButton onClick={() => onNavigate("PREV")} />
         <NavigationTitle>{label}</NavigationTitle>
-        <NavigationButton onClick={() => onNavigate("NEXT")}>
-          &gt;
-        </NavigationButton>
+        <NextButton onClick={() => onNavigate("NEXT")} />
       </NavigationContainer>
       <AttendanceContainer>
-        <AttendanceItem
-          backgroundColor="rgb(192, 255, 192)"
-          color="rgb(30, 138, 30)"
-        >
-          출석 16
-        </AttendanceItem>
-        <AttendanceItem
-          backgroundColor="rgb(228, 205, 255)"
-          color="rgb(109, 52, 255)"
-        >
-          결석 3
-        </AttendanceItem>
+        <AttendanceCalendarInfoBox boxColor="primary">
+          <h3>출석</h3>
+          <span>{info?.absentCount}</span>
+        </AttendanceCalendarInfoBox>
+        <AttendanceCalendarInfoBox boxColor="perple">
+          <h3>결석</h3>
+          <span>{info.attendanceCount}</span>
+        </AttendanceCalendarInfoBox>
       </AttendanceContainer>
     </HeaderContainer>
   );
@@ -69,12 +66,14 @@ const AttendanceCalendar = (props) => {
     );
   };
 
-  const MyMonthEvent = ({ date }) => {
+  const MyMonthEvent = ({ event }) => {
+    const { enterTime, exitTime, status } = event;
+
     return (
       <EventWrapper>
-        {myEventsList.map((event) => {
-          return <div> {event.leaveTime} </div>;
-        })}
+        <div>Enter: {enterTime}</div>
+        <div>Exit: {exitTime}</div>
+        <AttendanceLabel isAttendance={status === "출석"} />
       </EventWrapper>
     );
   };
@@ -90,8 +89,8 @@ const AttendanceCalendar = (props) => {
         month: {
           header: MyMonthHeader,
           dateHeader: MyMonthDateHeader,
-          event: MyMonthEvent,
         },
+        event: MyMonthEvent,
       }}
     />
   );
@@ -99,64 +98,80 @@ const AttendanceCalendar = (props) => {
 
 export default AttendanceCalendar;
 
-const HeaderContainer = styled.div`
+const AttendanceCalendarInfoBox = styled.div`
   display: flex;
-  justify-content: space-around;
+  width: 115px;
+  height: 44px;
+  padding: 0px 8px;
   align-items: center;
-  padding: 10px 0;
+  justify-content: space-between;
+  border-radius: 4px;
+  ${({ boxColor, theme }) => {
+    const colors = {
+      primary: {
+        background: theme.color.green_darker,
+        h3Color: theme.color.primary,
+      },
+      perple: {
+        background: theme.color.perple_lighter,
+        h3Color: theme.color.perple,
+      },
+    };
+
+    return css`
+      background-color: ${colors[boxColor].background};
+      h3 {
+        color: ${colors[boxColor].h3Color};
+      }
+    `;
+  }}
+  span {
+    ${textVariants.H3_SemiBold}
+  }
 `;
 
-const Title = styled.div`
+const HeaderContainer = styled.div`
   display: flex;
-  justify-content: flex-start;
-  width: 30%;
-  font-size: 16px;
-  font-weight: bold;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 50px;
+  margin-bottom: 20px;
+  color: ${({ theme }) => theme.color.grayScale[500]};
 `;
 
 const NavigationContainer = styled.div`
   display: flex;
   justify-content: center;
-  gap: 16px;
-  font-size: 20px;
+  gap: 22px;
 `;
 
-const NavigationButton = styled.button`
-  background-color: transparent;
+const PrevButton = styled(AiOutlineLeft)`
+  font-size: 20px;
+`;
+const NextButton = styled(AiOutlineRight)`
+  font-size: 20px;
 `;
 
 const NavigationTitle = styled.div`
+  ${textVariants.H3_SemiBold}
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 70%;
-  font-size: 20px;
-  font-weight: bold;
+  color: ${({ theme }) => theme.color.grayScale[500]};
 `;
 
 const AttendanceContainer = styled.div`
   display: flex;
-  justify-content: flex-end;
-  width: 30%;
-  font-size: 16px;
-  font-weight: bold;
   gap: 10px;
 `;
 
-const AttendanceItem = styled.div`
-  width: 90px;
-  padding: 5px 10px;
-  border-radius: 6px;
-  background-color: ${({ backgroundColor }) => backgroundColor};
-  color: ${({ color }) => color};
-`;
-
 const MonthHeaderWrapper = styled.div`
+  ${textVariants.Body1_Bold}
   display: flex;
+  width: 100%;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  font-weight: bold;
+  color: ${({ theme }) => theme.color.grayScale[500]};
 `;
 
 const StyledMyMonthDateHeader = styled.div`
@@ -165,12 +180,37 @@ const StyledMyMonthDateHeader = styled.div`
 
   & > div {
     padding: 14px 0 0 14px;
-    font-weight: bold;
+    /* font-weight: bold; */
   }
 `;
 
 const EventWrapper = styled.div`
   display: flex;
-  width: 120px;
-  font-weight: bold;
+  flex-direction: column;
+  width: 142px;
+  height: 142px;
+`;
+
+const AttendanceLabel = styled.div`
+  position: relative;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  transform: rotate(-30deg);
+  border: 2px solid
+    ${({ theme, isAttendance }) =>
+      isAttendance ? theme.color.primary : theme.color.perple};
+
+  &::before {
+    ${textVariants.Body2_SemiBold}
+    content: ${({ isAttendance }) => (isAttendance ? `"출석"` : `"결석"`)};
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: ${({ theme, isAttendance }) =>
+      isAttendance ? theme.color.primary : theme.color.perple};
+    white-space: nowrap;
+  }
 `;

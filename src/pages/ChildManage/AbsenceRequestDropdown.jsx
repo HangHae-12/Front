@@ -1,6 +1,5 @@
 import { css } from "styled-components";
 import Dropdown from "../../components/Dropdown";
-import { useState } from "react";
 
 const absentReasonList = [
   "질병, 부상",
