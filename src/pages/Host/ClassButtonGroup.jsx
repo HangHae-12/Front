@@ -26,7 +26,7 @@ const ClassButtonGroup = () => {
   //등원,하원,timea,page param
   const hostParams = { classroomId, state: scheduleId, time: time, page, size };
 
-  const { isLoading, isError, error, data } = useQuery(
+  const { data } = useQuery(
     ["getManageSchedule", hostParams],
     () => HostAPI.getManageSchedule(hostParams),
     {

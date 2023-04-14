@@ -21,7 +21,7 @@ const Table = () => {
     const { sid = 1 } = useParams();
     const [selectedDate, setSelectedDate] = useState(new Date());
 
-    const { isLoading, isError, data } = useQuery(
+    const { data } = useQuery(
         ["getMonthAttendance", selectedDate, sid],
         () =>
             AttendanceAPI.getMonthAttendance({

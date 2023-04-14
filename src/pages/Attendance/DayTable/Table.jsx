@@ -33,7 +33,7 @@ const Table = () => {
   const isSunday = selectedDate.getDay() === 0;
 
   //로딩,에러일때 처리 바꿔야함
-  const { isLoading, isError, error, data } = useQuery(
+  const { data } = useQuery(
     ["getDayAttendance", selectedDate, id],
     () => AttendanceAPI.getDayAttendance({ classroomId: id, date: formatDate(selectedDate) }),
     {

@@ -25,7 +25,7 @@ const List = () => {
     setUserRole(id === "1" ? "PARENT" : "TEACHER");
   }, [id]);
 
-  const { isLoading, isError, error, data } = useQuery(
+  const { data } = useQuery(
     ["getMemberManage", page, userRole],
     () =>
       ManageAPI.getMemberManage({
