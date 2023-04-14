@@ -39,6 +39,7 @@ const buttonVariants = {
     height: 32px;
     padding: 4px 8px;
     border-radius: 24px;
+    border: 1px solid #dadada;
   `,
 
   AB_Button: css`
