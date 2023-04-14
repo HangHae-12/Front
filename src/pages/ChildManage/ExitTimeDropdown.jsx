@@ -1,9 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Dropdown from "../../components/Dropdown";
 
 const ExitTimeDropdown = ({ defaultTime, isFixMode, onChangeTime }) => {
   const exitTime = ["16시~17시", "17시~18시", "18시~19시"];
-  const [selectedTime, setSelectedTime] = useState(defaultTime ?? exitTime[0]);
+  const [selectedTime, setSelectedTime] = useState(exitTime[0]);
+
+  useEffect(() => {
+    setSelectedTime(defaultTime);
+  }, [defaultTime]);
 
   const handleTimeChange = (time) => {
     setSelectedTime(time);

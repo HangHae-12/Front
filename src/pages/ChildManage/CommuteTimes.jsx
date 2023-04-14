@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import StyledChildManage from "./styled";
-import { useReducer, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import ChildManageAPI from "../../api/ChildManageAPI";
 import { useRecoilState } from "recoil";
@@ -8,30 +8,34 @@ import EnterTimeDropdown from "./EnterTimeDropdown";
 import ExitTimeDropdown from "./ExitTimeDropdown";
 import Buttons from "../../components/Buttons";
 import textVariants from "../../styles/variants/textVariants";
+import { childListAtom } from "../../atom/sideBarAtom";
+import SuccessModal from "../../components/Modals/SuccessModal";
+import AlertModal from "../../components/Modals/AlertModal";
+import useModal from "../../hooks/useModal";
 
 const CommuteTimes = () => {
   const queryClient = useQueryClient();
   const [isFixMode, setIsFixMode] = useState(false);
-  // const childId = useRecoilState(childListAtom)[0].id;
-  const childId = 1;
+  const childId = useRecoilState(childListAtom)[0][0]?.childId;
+  const { openModal } = useModal();
 
   const { data } = useQuery(
     ["childSchedule"],
     () => ChildManageAPI.getChildSchedule(childId),
     {
       refetchOnWindowFocus: false,
+      enabled: !!childId,
     }
   );
 
   const { mutate } = useMutation(ChildManageAPI.putChildSchedule, {
-    onSuccess: () => {
-      // 모달 띄우기
-      // openModal({ contents: <SuccessModal /> });
-      // queryClient.invalidateQueries(["childSchedule"]);
+    onSuccess: (res) => {
+      console.log(res);
+      openModal({ contents: <SuccessModal /> });
+      queryClient.invalidateQueries(["childSchedule"]);
     },
     onError: () => {
-      // 에러 모달 띄우기
-      // openModal({contents: <AlertModal /> });
+      openModal({ contents: <AlertModal /> });
     },
   });
 
@@ -46,10 +50,20 @@ const CommuteTimes = () => {
     }
   };
 
-  const [scheduleState, dispatch] = useReducer(reduceSchedule, {
-    dailyEnterTime: data?.dailyEnterTime,
-    dailyExitTime: data?.dailyExitTime,
-  });
+  const [scheduleState, dispatch] = useReducer(reduceSchedule, {});
+
+  useEffect(() => {
+    if (data) {
+      dispatch({
+        type: "SET_ENTER_TIME",
+        payload: data?.data?.data.dailyEnterTime,
+      });
+      dispatch({
+        type: "SET_EXIT_TIME",
+        payload: data?.data?.data.dailyExitTime,
+      });
+    }
+  }, [data]);
 
   const handleEnterTime = (time) => {
     dispatch({ type: "SET_ENTER_TIME", payload: time });
@@ -61,8 +75,8 @@ const CommuteTimes = () => {
 
   const isChangeSchedule = () => {
     return (
-      data?.dailyEnterTime !== scheduleState.dailyEnterTime ||
-      data?.dailyExitTime !== scheduleState.dailyExitTime
+      data?.data?.data.dailyEnterTime !== scheduleState.dailyEnterTime ||
+      data?.data?.data.dailyExitTime !== scheduleState.dailyExitTime
     );
   };
 
@@ -80,7 +94,7 @@ const CommuteTimes = () => {
           <StyledCommuteTimes.DropdownBox>
             <h2>등원 시간</h2>
             <EnterTimeDropdown
-              defaultTime={data?.dailyEnterTime}
+              defaultTime={data?.data?.data?.dailyEnterTime}
               isFixMode={isFixMode}
               onChangeTime={handleEnterTime}
             />
@@ -88,7 +102,7 @@ const CommuteTimes = () => {
           <StyledCommuteTimes.DropdownBox>
             <h2>하원 시간</h2>
             <ExitTimeDropdown
-              defaultTime={data?.dailyExitTime}
+              defaultTime={data?.data?.data?.dailyExitTime}
               isFixMode={isFixMode}
               onChangeTime={handleExitTime}
             />

@@ -29,7 +29,7 @@ const SideBar = () => {
     {
       onSuccess: (data) => {
         const bindData = data.data.data;
-        console.log(data);
+
         setUserProfile({
           ...userProfile,
           birthday: bindData.userProfile.birthday,
