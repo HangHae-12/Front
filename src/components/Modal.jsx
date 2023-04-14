@@ -2,8 +2,12 @@ import { createPortal } from "react-dom";
 import styled from "styled-components";
 import useModal from "../hooks/useModal";
 
-const Modal = () => {
+const Modal = ({ id }) => {
   const { modalState, closeModal } = useModal();
+
+  if (modalState.modalId !== id) {
+    return null;
+  }
 
   const {
     canCloseOnOverlayClick = true,
@@ -22,39 +26,39 @@ const Modal = () => {
 
   return modalState.isOpen
     ? createPortal(
-      <>
-        <StyledModal.Overlay
-          onClick={handleOverlayClick}
-          canCloseOnOverlayClick={canCloseOnOverlayClick}
-        >
-          <StyledModal.Container
-            onClick={(e) => e.stopPropagation()}
-            padding={padding}
-            width={modalState.width}
-            height={modalState.height}
+        <>
+          <StyledModal.Overlay
+            onClick={handleOverlayClick}
+            canCloseOnOverlayClick={canCloseOnOverlayClick}
           >
-            {isCloseButton && (
-              <StyledModal.CloseButton
-                onClick={() => {
-                  closeModal();
-                  if (modalState.onClose) {
-                    modalState.onClose();
-                  }
-                }}
-              >
-                &times;
-              </StyledModal.CloseButton>
-            )}
-            <StyledModal.Title>{modalState.title}</StyledModal.Title>
-            <StyledModal.Contents>{modalState.contents}</StyledModal.Contents>
-            {modalState.callback && (
-              <StyledModal.Footer>{modalState.footer}</StyledModal.Footer>
-            )}
-          </StyledModal.Container>
-        </StyledModal.Overlay>
-      </>,
-      document.getElementById("modal-root")
-    )
+            <StyledModal.Container
+              onClick={(e) => e.stopPropagation()}
+              padding={padding}
+              width={modalState.width}
+              height={modalState.height}
+            >
+              {isCloseButton && (
+                <StyledModal.CloseButton
+                  onClick={() => {
+                    closeModal();
+                    if (modalState.onClose) {
+                      modalState.onClose();
+                    }
+                  }}
+                >
+                  &times;
+                </StyledModal.CloseButton>
+              )}
+              <StyledModal.Title>{modalState.title}</StyledModal.Title>
+              <StyledModal.Contents>{modalState.contents}</StyledModal.Contents>
+              {modalState.callback && (
+                <StyledModal.Footer>{modalState.footer}</StyledModal.Footer>
+              )}
+            </StyledModal.Container>
+          </StyledModal.Overlay>
+        </>,
+        document.getElementById("modal-root")
+      )
     : null;
 };
 

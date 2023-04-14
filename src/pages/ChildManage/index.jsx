@@ -16,6 +16,7 @@ const ChildManage = () => {
         <AbsenceManage />
       </StyledChildManage.Section>
     </StyledChildManage.Container>
+    
   );
 };
 

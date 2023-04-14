@@ -2,6 +2,7 @@ import styled from "styled-components";
 import StyledChildManage from "./styled";
 import Buttons from "../../components/Buttons";
 import AbsenceBox from "./AbsenceBox";
+import Modal from "../../components/Modal";
 
 const AbsenceRequestForm = ({ absentData }) => {
   absentData = [
@@ -61,19 +62,22 @@ const AbsenceRequestForm = ({ absentData }) => {
     },
   ];
   return (
-    <StyledAbsenceRequestForm.Container>
-      <StyledAbsenceRequestForm.TitleWrapper>
-        <StyledAbsenceRequestForm.Title>
-          결석 신청 리스트
-        </StyledAbsenceRequestForm.Title>
-        <Buttons.Filter outlined>결석 신청</Buttons.Filter>
-      </StyledAbsenceRequestForm.TitleWrapper>
-      <StyledAbsenceRequestForm.AbsentListWrapper>
-        {absentData.map((item) => (
-          <AbsenceBox key={item.id} absenceData={item} />
-        ))}
-      </StyledAbsenceRequestForm.AbsentListWrapper>
-    </StyledAbsenceRequestForm.Container>
+    <>
+      <StyledAbsenceRequestForm.Container>
+        <StyledAbsenceRequestForm.TitleWrapper>
+          <StyledAbsenceRequestForm.Title>
+            결석 신청 리스트
+          </StyledAbsenceRequestForm.Title>
+          <Buttons.Filter outlined>결석 신청</Buttons.Filter>
+        </StyledAbsenceRequestForm.TitleWrapper>
+        <StyledAbsenceRequestForm.AbsentListWrapper>
+          {absentData.map((item) => (
+            <AbsenceBox key={item.id} absenceData={item} />
+          ))}
+        </StyledAbsenceRequestForm.AbsentListWrapper>
+      </StyledAbsenceRequestForm.Container>
+      <Modal id="absenceModal" />
+    </>
   );
 };
 

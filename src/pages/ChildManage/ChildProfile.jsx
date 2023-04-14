@@ -31,11 +31,11 @@ const ChildProfile = () => {
 
   const { mutate } = useMutation(ChildManageAPI.putChildProfule, {
     onSuccess: () => {
-      openModal({ contents: <SuccessModal /> });
+      openModal({ id: "childProfileModal", contents: <SuccessModal /> });
       queryClient.invalidateQueries(["childProfile"]);
     },
     onError: () => {
-      openModal({ contents: <AlertModal /> });
+      openModal({ id: "childProfileModal", contents: <AlertModal /> });
     },
   });
 
@@ -172,7 +172,7 @@ const ChildProfile = () => {
           </Buttons.Filter>
         </StyledProfile.BtnWrapper>
       </StyledProfile.Wrapper>
-      <Modal modalOption={{ width: "500px", height: "300px" }} />
+      <Modal id="childProfileModal" />
     </>
   );
 };

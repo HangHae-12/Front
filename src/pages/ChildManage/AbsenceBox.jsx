@@ -2,14 +2,22 @@ import React from "react";
 import styled from "styled-components";
 import { FiCalendar } from "react-icons/fi";
 import textVariants from "../../styles/variants/textVariants";
+import useModal from "../../hooks/useModal";
+import Modal from "../../components/Modal";
 
 const AbsenceBox = ({ absenceData }) => {
   const formattedDate = (date) => date.replaceAll("-", ".");
-  console.log(absenceData);
+  const { openModal } = useModal();
   const { id, startDate, endDate, reason } = absenceData;
+  const modalOption = {
+    id: `absenceModal`,
+    contents: <>dd</>,
+    width: "300px",
+    height: "320px",
+  };
 
   return (
-    <StyledAbsenceContainer>
+    <StyledAbsenceContainer onClick={() => openModal(modalOption)}>
       <h3>{reason}</h3>
       <AbsenceDateWrapper>
         <StyledDateBox>

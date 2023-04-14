@@ -12,6 +12,7 @@ import { childListAtom } from "../../atom/sideBarAtom";
 import SuccessModal from "../../components/Modals/SuccessModal";
 import AlertModal from "../../components/Modals/AlertModal";
 import useModal from "../../hooks/useModal";
+import Modal from "../../components/Modal";
 
 const CommuteTimes = () => {
   const queryClient = useQueryClient();
@@ -31,11 +32,11 @@ const CommuteTimes = () => {
   const { mutate } = useMutation(ChildManageAPI.putChildSchedule, {
     onSuccess: (res) => {
       console.log(res);
-      openModal({ contents: <SuccessModal /> });
+      openModal({ id: "commuteTimeModal", contents: <SuccessModal /> });
       queryClient.invalidateQueries(["childSchedule"]);
     },
     onError: () => {
-      openModal({ contents: <AlertModal /> });
+      openModal({ id: "commuteTimeModal", contents: <AlertModal /> });
     },
   });
 
@@ -87,38 +88,41 @@ const CommuteTimes = () => {
     }
   };
   return (
-    <StyledCommuteTimes.Wrapper>
-      <div>
-        <StyledChildManage.Title>등/하원 시간</StyledChildManage.Title>
-        <StyledCommuteTimes.DropdownWrapper>
-          <StyledCommuteTimes.DropdownBox>
-            <h2>등원 시간</h2>
-            <EnterTimeDropdown
-              defaultTime={data?.data?.data?.dailyEnterTime}
-              isFixMode={isFixMode}
-              onChangeTime={handleEnterTime}
-            />
-          </StyledCommuteTimes.DropdownBox>
-          <StyledCommuteTimes.DropdownBox>
-            <h2>하원 시간</h2>
-            <ExitTimeDropdown
-              defaultTime={data?.data?.data?.dailyExitTime}
-              isFixMode={isFixMode}
-              onChangeTime={handleExitTime}
-            />
-          </StyledCommuteTimes.DropdownBox>
-        </StyledCommuteTimes.DropdownWrapper>
-      </div>
-      <StyledCommuteTimes.BtnWrapper>
-        <Buttons.Filter
-          colorTypes={!isFixMode ? "" : "primary"}
-          outlined={!isFixMode}
-          onClick={handleFixChildSchedule}
-        >
-          {!isFixMode ? "수정하기" : "수정완료"}
-        </Buttons.Filter>
-      </StyledCommuteTimes.BtnWrapper>
-    </StyledCommuteTimes.Wrapper>
+    <>
+      <StyledCommuteTimes.Wrapper>
+        <div>
+          <StyledChildManage.Title>등/하원 시간</StyledChildManage.Title>
+          <StyledCommuteTimes.DropdownWrapper>
+            <StyledCommuteTimes.DropdownBox>
+              <h2>등원 시간</h2>
+              <EnterTimeDropdown
+                defaultTime={data?.data?.data?.dailyEnterTime}
+                isFixMode={isFixMode}
+                onChangeTime={handleEnterTime}
+              />
+            </StyledCommuteTimes.DropdownBox>
+            <StyledCommuteTimes.DropdownBox>
+              <h2>하원 시간</h2>
+              <ExitTimeDropdown
+                defaultTime={data?.data?.data?.dailyExitTime}
+                isFixMode={isFixMode}
+                onChangeTime={handleExitTime}
+              />
+            </StyledCommuteTimes.DropdownBox>
+          </StyledCommuteTimes.DropdownWrapper>
+        </div>
+        <StyledCommuteTimes.BtnWrapper>
+          <Buttons.Filter
+            colorTypes={!isFixMode ? "" : "primary"}
+            outlined={!isFixMode}
+            onClick={handleFixChildSchedule}
+          >
+            {!isFixMode ? "수정하기" : "수정완료"}
+          </Buttons.Filter>
+        </StyledCommuteTimes.BtnWrapper>
+      </StyledCommuteTimes.Wrapper>
+      <Modal id="commuteTimeModal" />
+    </>
   );
 };
 
