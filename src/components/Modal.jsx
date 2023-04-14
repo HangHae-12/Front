@@ -33,7 +33,7 @@ const Modal = () => {
 
   return modalState.isOpen
     ? createPortal(
-      <>
+      <AnimatePresence>
         <StyledModal.Overlay
           onClick={handleOverlayClick}
           canCloseOnOverlayClick={canCloseOnOverlayClick}
@@ -71,7 +71,7 @@ const Modal = () => {
             )}
           </StyledModal.Container>
         </StyledModal.Overlay>
-      </>,
+      </AnimatePresence>,
       document.getElementById("modal-root")
     )
     : null;

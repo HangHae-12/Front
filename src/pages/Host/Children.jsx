@@ -5,6 +5,8 @@ import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { HostAPI } from "../../api/HostAPI";
 import Buttons from "../../components/Buttons";
 import textVariants from "../../styles/variants/textVariants";
+import { motion } from "framer-motion";
+
 
 const Children = ({ bindData }) => {
   const queryClient = useQueryClient();
@@ -60,7 +62,11 @@ const Children = ({ bindData }) => {
         //서버 연결되면  id값 변경 및 데이터 바인딩,옵셔널 체이닝
         Array.isArray(bindData) && bindData?.map((item) => {
           return (
-            <StyledStudentCard key={item.id}>
+            <StyledStudentCard
+              key={item.id}
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.2 }}
+            >
               <StyledProfileRow>
                 <StyledStudentProfile imageUrl={item.profileImageUrl} />
                 <StyledProfileGroup>
@@ -131,7 +137,7 @@ const StyledStudentGrid = styled.div`
 `;
 
 
-const StyledStudentCard = styled.div`
+const StyledStudentCard = styled(motion.div)`
   display: flex;
   flex-direction: column;
   align-items: center;

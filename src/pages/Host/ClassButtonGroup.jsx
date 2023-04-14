@@ -13,7 +13,7 @@ import EnterTime from "./EnterTime";
 import Children from "./Children";
 import Pagination from "../../components/CustomPagination";
 import { paginationAtom } from "../../atom/hostButtonAtom";
-
+import { motion } from 'framer-motion';
 
 const ClassButtonGroup = () => {
 
@@ -29,7 +29,6 @@ const ClassButtonGroup = () => {
   const { isLoading, isError, data } = useQuery(["getManageSchedule", hostParams], () =>
     HostAPI.getManageSchedule(hostParams)
   );
-  console.log(classroomId);
 
   useEffect(() => {
     queryClient.invalidateQueries(["getManageSchedule", 0]);
@@ -44,13 +43,34 @@ const ClassButtonGroup = () => {
     setPage(page);
   };
 
+  const fadeInUp = {
+    hidden: {
+      opacity: 0,
+      y: 50,
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.5,
+      },
+    },
+  };
+
   return (
     <>
       <StyledAttendanceHeader>출결 관리</StyledAttendanceHeader>
-      <ClassButton hostParams={hostParams} />
-      <Attendee classData={data.data.info} />
-      <Schedule hostParams={hostParams} />
-      <StyledAttendanceContainer>
+      <motion.div variants={fadeInUp} initial="hidden" animate="visible">
+        <ClassButton hostParams={hostParams} />
+      </motion.div>
+      <motion.div variants={fadeInUp} initial="hidden" animate="visible" custom={0.2}>
+        <Attendee classData={data.data.info} />
+      </motion.div>
+      <motion.div variants={fadeInUp} initial="hidden" animate="visible" custom={0.4}>
+        <Schedule hostParams={hostParams} />
+      </motion.div>
+
+      <StyledAttendanceContainer variants={fadeInUp} initial="hidden" animate="visible" custom={0.6}>
         {
           scheduleId === "ENTER"
             ? <EnterTime />
@@ -59,13 +79,13 @@ const ClassButtonGroup = () => {
 
         <Children bindData={data.data.content} />
         <Pagination
-          current={data.data.pageable.pageNumber + 1} // 백엔드로직 리팩토링 필요
+          current={data.data.pageable.pageNumber + 1}
           pageSize={data.data.pageable.pageSize}
           total={data.data.totalElements}
           onChange={handlePageChange}
         />
-      </StyledAttendanceContainer>
 
+      </StyledAttendanceContainer>
     </>
   );
 };
@@ -77,7 +97,7 @@ const StyledAttendanceHeader = styled.h2`
   margin-bottom: 20px;
 `;
 
-const StyledAttendanceContainer = styled.div`
+const StyledAttendanceContainer = styled(motion.div)`
   /* background-color: ${({ theme }) => theme.color.green_darker}; */
   background-color:#EDF5EECC;
   box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.12);
