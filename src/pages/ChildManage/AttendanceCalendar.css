@@ -1,0 +1,36 @@
+/* MyCalendar.css */
+.rbc-month-view {
+  border-radius: 12px;
+}
+.rbc-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60px;
+}
+
+.rbc-month-header {
+  border-radius: 12px;
+  background-color: rgb(250, 250, 250);
+}
+
+.rbc-month-header :first-child {
+  border-radius: 12px 0 0 0;
+}
+
+.rbc-month-header :last-child {
+  border-radius: 0 12px 0 0;
+}
+
+.rbc-event {
+  background-color: transparent;
+  color: black;
+}
+
+.rbc-event-content {
+  padding: 2px;
+}
+
+.rbc-row-segment {
+  pointer-events: none;
+}
