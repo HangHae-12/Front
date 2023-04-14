@@ -3,8 +3,12 @@ import styled from "styled-components";
 import useModal from "../hooks/useModal";
 import { motion, AnimatePresence } from "framer-motion";
 
-const Modal = () => {
+const Modal = ({ id }) => {
   const { modalState, closeModal } = useModal();
+
+  if (modalState.modalId !== id) {
+    return null;
+  }
 
   const {
     canCloseOnOverlayClick = true,
@@ -74,6 +78,7 @@ const Modal = () => {
       </AnimatePresence>,
       document.getElementById("modal-root")
     )
+
     : null;
 };
 

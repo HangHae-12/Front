@@ -1,4 +1,4 @@
-import { useReducer, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import styled from "styled-components";
 import Buttons from "../../components/Buttons";
 import StyledChildManage from "./styled";
@@ -9,37 +9,38 @@ import ProfileImageUploader from "../../components/ProfileImageUploader";
 import useModal from "../../hooks/useModal";
 import Modal from "../../components/Modal";
 import SuccessModal from "../../components/Modals/SuccessModal";
+import AlertModal from "../../components/Modals/AlertModal";
 import { useProfileImageUploader } from "../../hooks/useProfileImageUploader";
 import { useRecoilState } from "recoil";
+import { childListAtom } from "../../atom/sideBarAtom";
 
 const ChildProfile = () => {
-  const [isFixMode, setIsFixMode] = useState(false);
-  const childId = useRecoilState('')
   const queryClient = useQueryClient();
+  const [isFixMode, setIsFixMode] = useState(false);
+  const childId = useRecoilState(childListAtom)[0][0]?.childId;
   const { openModal } = useModal();
 
   const { data } = useQuery(
     ["childProfile"],
-    (childId) => ChildManageAPI.getChildProfile(childId),
+    () => ChildManageAPI.getChildProfile(childId),
     {
       refetchOnWindowFocus: false,
+      enabled: !!childId,
     }
   );
 
-  const { mutate } = useMutation(ChildManageAPI.putChildProfule, {
+  const { mutate } = useMutation(ChildManageAPI.putChildProfile, {
     onSuccess: () => {
-      // 모달 띄우기
-      // openModal({ contents: <SuccessModal /> });
-      // queryClient.invalidateQueries(["childProfile"]);
+      openModal({ id: "childProfileModal", contents: <SuccessModal /> });
+      queryClient.invalidateQueries(["childProfile"]);
     },
     onError: () => {
-      // 에러 모달 띄우기
-      // openModal({contents: <AlertModal /> });
+      openModal({ id: "childProfileModal", contents: <AlertModal /> });
     },
   });
 
   const { selectedFile, isCancelled } = useProfileImageUploader(
-    data?.profilImageUrl
+    data?.data?.data?.profilImageUrl
   );
 
   const reduceFormData = (state, action) => {
@@ -51,12 +52,32 @@ const ChildProfile = () => {
     }
   };
 
-  const [formState, dispatch] = useReducer(reduceFormData, {
-    name: data?.name,
-    gender: data?.gender,
-    birth: data?.birth,
-    significant: data?.significant,
-  });
+  const [formState, dispatch] = useReducer(reduceFormData, {});
+
+  useEffect(() => {
+    if (data) {
+      dispatch({
+        type: "SET_FORM_DATA",
+        key: "name",
+        value: data.data.data.name,
+      });
+      dispatch({
+        type: "SET_FORM_DATA",
+        key: "gender",
+        value: data.data.data.gender,
+      });
+      dispatch({
+        type: "SET_FORM_DATA",
+        key: "birth",
+        value: data.data.data.birth,
+      });
+      dispatch({
+        type: "SET_FORM_DATA",
+        key: "significant",
+        value: data.data.data.significant,
+      });
+    }
+  }, [data]);
 
   const handleFixChildProfile = () => {
     setIsFixMode((prev) => !prev);
@@ -71,7 +92,7 @@ const ChildProfile = () => {
       for (const [key, value] of formData.entries()) {
         console.log(`${key}: ${value}`);
       }
-      // mutate();
+      mutate({ childId: childId, data: formData });
     }
   };
 
@@ -82,13 +103,13 @@ const ChildProfile = () => {
         <StyledProfile.ProfileWrapper>
           <ProfileImageUploader
             isFixMode={!isFixMode}
-            prev={data?.profileImageUrl}
+            prev={data?.data?.data?.profileImageUrl}
           />
           <StyledProfile.InfoWrapper>
             <li>
               <StyledChildManage.SubTitle>이름</StyledChildManage.SubTitle>
               <AutoResizeInput
-                defaultValue="김민재"
+                defaultValue={data?.data?.data?.name}
                 readOnly={!isFixMode}
                 onChange={(e) =>
                   dispatch({
@@ -102,7 +123,7 @@ const ChildProfile = () => {
             <li>
               <StyledChildManage.SubTitle>성별</StyledChildManage.SubTitle>
               <AutoResizeInput
-                defaultValue="남자"
+                defaultValue={data?.data?.data?.gender}
                 readOnly={!isFixMode}
                 onChange={(e) =>
                   dispatch({
@@ -116,7 +137,7 @@ const ChildProfile = () => {
             <li>
               <StyledChildManage.SubTitle>생년월일</StyledChildManage.SubTitle>
               <AutoResizeInput
-                defaultValue="2015.12.07"
+                defaultValue={data?.data?.data?.birth}
                 readOnly={!isFixMode}
                 onChange={(e) =>
                   dispatch({
@@ -132,7 +153,7 @@ const ChildProfile = () => {
         <StyledChildManage.SubTitle>특이사항</StyledChildManage.SubTitle>
         <StyledProfile.SignificantArea
           readOnly={!isFixMode}
-          defaultValue="우리 아이는 너무 귀엽습니다."
+          defaultValue={data?.data?.data?.significant}
           onChange={(e) =>
             dispatch({
               type: "SET_FORM_DATA",
@@ -151,7 +172,7 @@ const ChildProfile = () => {
           </Buttons.Filter>
         </StyledProfile.BtnWrapper>
       </StyledProfile.Wrapper>
-      <Modal modalOption={{ width: "500px", height: "300px" }} />
+      <Modal id="childProfileModal" />
     </>
   );
 };
@@ -159,12 +180,13 @@ const ChildProfile = () => {
 export default ChildProfile;
 
 const StyledProfile = {
-  Wrapper: styled(StyledChildManage.Card)``,
+  Wrapper: styled(StyledChildManage.Card)`
+    flex: 2;
+  `,
 
   ProfileWrapper: styled.div`
     width: 100%;
     height: 120px;
-    /* height: min-content; */
     margin: 24px 0px 60px;
     display: flex;
     flex-direction: row;

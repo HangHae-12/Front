@@ -8,16 +8,20 @@ import useModal from "../../hooks/useModal";
 import ProfileModal from "./ProfileModal";
 import { useQuery } from "@tanstack/react-query";
 import { SideBarAPI } from "../../api/SideBarAPI";
-import { useRecoilState } from "recoil";
-import { kindergartenAtom, userProfileAtom } from "../../atom/sideBarAtom";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import {
+  childListAtom,
+  kindergartenAtom,
+  userProfileAtom,
+} from "../../atom/sideBarAtom";
 import TeacherSideBar from "./TeacherSideBar";
 import PrincipalSideBar from "./PrincipalSideBar";
-import ParentSidBar from "./ParentSideBar"
+import ParentSidBar from "./ParentSideBar";
 
 const SideBar = () => {
-
   const [userProfile, setUserProfile] = useRecoilState(userProfileAtom);
   const [kindergarten, setKindergarten] = useRecoilState(kindergartenAtom);
+  const setChildList = useSetRecoilState(childListAtom);
   const { openModal } = useModal();
   const { data } = useQuery(
     ["getUserProfile"],
@@ -25,6 +29,7 @@ const SideBar = () => {
     {
       onSuccess: (data) => {
         const bindData = data.data.data;
+
         setUserProfile({
           ...userProfile,
           birthday: bindData.userProfile.birthday,
@@ -42,6 +47,7 @@ const SideBar = () => {
           logoImageUrl: bindData.kindergarten.logoImageUrl,
           name: bindData.kindergarten.name,
         });
+        setChildList(bindData.childList);
       },
       onError: () => {
         console.log("error");
@@ -72,25 +78,25 @@ const SideBar = () => {
         </StyledKinderLogo>
         <StyledUserProfileWrapper>
           <img src={userProfile.profileImageUrl} alt="유저 프로필 이미지" />
-          <p>{
-            userProfile.role === "PRINCIPAL"
+          <p>
+            {userProfile.role === "PRINCIPAL"
               ? "원장선생님"
               : userProfile.role === "TEACHER"
-                ? "선생님"
-                : "학부모"
-          }</p>
+              ? "선생님"
+              : "학부모"}
+          </p>
           <h3>
             <span>{userProfile.name}</span>
             <StyledGearButton onClick={setProfileModal} />
           </h3>
         </StyledUserProfileWrapper>
-        {
-          userProfile.role === "PRINCIPAL"
-            ? <PrincipalSideBar />
-            : userProfile.role === "TEACHER"
-              ? <TeacherSideBar />
-              : <ParentSidBar />
-        }
+        {userProfile.role === "PRINCIPAL" ? (
+          <PrincipalSideBar />
+        ) : userProfile.role === "TEACHER" ? (
+          <TeacherSideBar />
+        ) : (
+          <ParentSidBar />
+        )}
       </StyledSideBarContainer>
       <Modal />
     </>
@@ -150,7 +156,6 @@ const StyledKinderLogo = styled.div`
     color: ${({ theme }) => theme.color.grayScale[500]};
   }
 `;
-
 
 const StyledUserProfileWrapper = styled.div`
   display: flex;

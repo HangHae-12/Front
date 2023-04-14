@@ -17,6 +17,11 @@ import instance from "./api/instance";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
+      retry: 0,
+    },
+  },
+});
+
       queryFn: async ({ queryKey }) => {
         const { data } = await instance.get(queryKey[0]);
         return data;
@@ -33,6 +38,7 @@ const GlobalLoader = () => {
 
   return isFetching ? <LoadingModal /> : null;
 };
+
 
 function App() {
   return (

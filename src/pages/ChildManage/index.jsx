@@ -1,7 +1,7 @@
 import StyledChildManage from "./styled";
-
 import ChildProfile from "./ChildProfile";
 import CommuteTimes from "./CommuteTimes";
+import AbsenceManage from "./AttendanceManage";
 
 const ChildManage = () => {
   return (
@@ -11,7 +11,11 @@ const ChildManage = () => {
         <ChildProfile />
         <CommuteTimes />
       </StyledChildManage.Section>
+      <StyledChildManage.Section>
+        <AbsenceManage />
+      </StyledChildManage.Section>
     </StyledChildManage.Container>
+    
   );
 };
 

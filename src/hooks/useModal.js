@@ -15,8 +15,9 @@ const useModal = () => {
   }, [setModalState, modalState.onClose]);
 
   const openModal = useCallback(
-    ({ title, contents, footer, callback, onClose, width, height }) => {
+    ({ id, title, contents, footer, callback, onClose, width, height }) => {
       setModalState({
+        modalId: id,
         isOpen: true,
         title: title,
         contents: contents,
