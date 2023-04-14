@@ -5,7 +5,13 @@ import GlobalStyle from "./styles/globalstyle";
 import Router from "./shared/Router";
 import theme from "./styles/theme";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 0,
+    },
+  },
+});
 
 function App() {
   return (
