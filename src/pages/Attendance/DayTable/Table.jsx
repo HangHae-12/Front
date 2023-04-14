@@ -14,6 +14,7 @@ import Buttons from "../../../components/Buttons";
 import ClassButton from './DayClassButton';
 import CustomDatepicker from '../../../components/CustomDatepicker'
 import DayExcel from './DayExcel'
+import AnimatedTableRow from '../AnimatedTableRow';
 
 const Table = () => {
   const queryClient = useQueryClient();
@@ -32,13 +33,18 @@ const Table = () => {
   const isSunday = selectedDate.getDay() === 0;
 
   //로딩,에러일때 처리 바꿔야함
-  const { isLoading, isError, error, data } = useQuery(
+  const { data } = useQuery(
     ["getDayAttendance", selectedDate, id],
     () => AttendanceAPI.getDayAttendance({ classroomId: id, date: formatDate(selectedDate) }),
     {
       enabled: !isSunday, // 일요일이 아닐 때만 API 요청을 수행
+      onError: (error) => {
+        console.log("getDayAttendance error:", error);
+      },
     }
   );
+
+
 
 
 
@@ -78,7 +84,6 @@ const Table = () => {
     return <SelectedIcon />;
   };
 
-  console.log(data)
   return (
     <div>
 
@@ -91,7 +96,7 @@ const Table = () => {
           <GrNext onClick={increaseDate} size={16} />
           <CustomDatepicker selectedDate={selectedDate} onDateChange={handleDateChange} />
         </StyledMonthYear>
-        <DayExcel data={data} selectedDate={selectedDate} />
+        <DayExcel data={data?.data} selectedDate={selectedDate} />
       </StyledHeader>
       <StyledTableContainer>
         <StyledTableWrapper>
@@ -108,20 +113,16 @@ const Table = () => {
             </thead>
             <tbody>
               {isSunday ? (
-                <tr>
+                <AnimatedTableRow delay={1 * 0.1}>
                   <td className="sunday" colSpan="6"><BsSun /> 일요일은 쉬는날</td>
-                </tr>
-              ) : isLoading ? (
-                <div>Loading...</div>
-              ) : isError ? (
-                <div>Error: error</div>
+                </AnimatedTableRow>
               ) : (
-                data?.data?.length > 0 &&
-                data.data
+                data?.data?.data?.length > 0 &&
+                data.data.data
                   .filter((row) => row !== null) // null 값을 걸러내기 위한 추가 작업
-                  .map((row, rowIndex) => (
-                    <tr key={row.id}>
-                      <td>{rowIndex + 1}</td>
+                  .map((row, index) => (
+                    <AnimatedTableRow key={row.id} delay={index * 0.1} >
+                      <td>{index + 1}</td>
                       <td>{getRandomIcon()} {row.name}</td>
                       <td>
                         {(() => {
@@ -140,7 +141,7 @@ const Table = () => {
                       <td>{row.enterTime || "미등록"}</td>
                       <td>{row.exitTime || "미등록"}</td>
                       <td>{row.absentReason || "미등록"}</td>
-                    </tr>
+                    </AnimatedTableRow>
                   )))}
             </tbody>
           </StyledTable>

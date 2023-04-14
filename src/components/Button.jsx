@@ -29,14 +29,18 @@ const StyledClassButton = styled.button`
   margin-left: auto;
   width: fit-content;
   position: relative;
+  
 
   &:hover {
     color: ${({ theme }) => theme.color.primary};
+    cursor:pointer;
     &::after {
       background-color: ${({ theme }) => theme.color.primary};
     }
   }
-
+  &:active {
+    cursor: grabbing;
+  }
   &:last-child {
     margin-right: 0;
   }

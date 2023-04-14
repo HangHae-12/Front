@@ -9,8 +9,6 @@ const Attendee = ({ classData }) => {
   const day = today.getDate();
   const todayString = `${year}.${month}.${day}`;
   const dayOfWeek = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'][today.getDay()];
-
-
   return (
     <StyledInfoContainer>
       <StyledInfoColomn>
@@ -36,6 +34,9 @@ const Attendee = ({ classData }) => {
         <StyledInfoLabel>하원</StyledInfoLabel>
         <StyledInfoValue>{classData?.exited}</StyledInfoValue>
         <StyleddateLabel>명</StyleddateLabel>
+        {/* <StyledInfoLabel>결석</StyledInfoLabel>
+        <StyledInfoValue>{classData?.absented}</StyledInfoValue>
+        <StyleddateLabel>명</StyleddateLabel> */}
       </StyledInfoRow>
     </StyledInfoContainer>
   );
