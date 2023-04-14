@@ -16,6 +16,7 @@ import { modalAtom } from "../../atom/modalAtoms";
 import { userProfileAtom } from "../../atom/sideBarAtom";
 import CustomPagination from "../../components/CustomPagination";
 import CustomDatepicker from "../../components/CustomDatepicker";
+import { GalleryDetail } from "./GalleryModal";
 
 const Gallery = () => {
   const queryClient = useQueryClient();
@@ -33,7 +34,6 @@ const Gallery = () => {
   const [title, setTitle] = useState("");
   const [isGalleryAdd, setIsGalleryAdd] = useState(false);
   const [modalState, setModalState] = useRecoilState(modalAtom);
-  const [imageUrlList, setImageUrlList] = useState([]);
   const userRole = useRecoilValue(userProfileAtom);
 
   const { data } = useQuery(
@@ -130,7 +130,7 @@ const Gallery = () => {
 
   //모달 갤러리 저장하기 기능
   const handleGallerySubmit = async (id) => {
-    if (title && severImages) {
+    if (title && severImages.length > 0) {
       const formData = new FormData();
       severImages.forEach((image) => {
         formData.append("imageList[]", image);
@@ -254,7 +254,7 @@ const Gallery = () => {
     } else {
       setRender(false);
     }
-  }, [previewImages, isGalleryAdd]);
+  }, [previewImages, isGalleryAdd, title]);
 
   //사진 상세조회 부분 및 프레임 전환
   const createGalleryModalData = (response) => {
@@ -272,31 +272,17 @@ const Gallery = () => {
           </StyledGalleryDualModalWrapper>
         </>
       ),
-      contents: (
-        <>
-          {!modalState.isOpen ? (
-            <StyledModalContent>
-              {response?.data.data.imageUrlList.map((item) => {
-                return (
-                  <StyledAddGallery key={item}>
-                    <StyledPreviewImage src={item} />
-                  </StyledAddGallery>
-                );
-              })}
-            </StyledModalContent>
-          ) : (
-            modalState.contents
-          )}
-        </>
-      ),
+      contents: <GalleryDetail response={response} />,
       footer: (
         <>
-          {/* <Buttons.Filter
-            colorTypes="primary"
-            onClick={() => handleClickModify(response)}
-          >
-            수정하기
-          </Buttons.Filter> */}
+          {userRole.role === "PRINCIPAL" || userRole.role === "TEACHER" ? (
+            <Buttons.Filter
+              colorTypes="primary"
+              onClick={() => handleGalleryDelete(response)}
+            >
+              삭제하기
+            </Buttons.Filter>
+          ) : null}
         </>
       ),
       width: "900px",
@@ -361,37 +347,17 @@ const Gallery = () => {
           </StyledGalleryDualModalWrapper>
         </>
       ),
-      contents: (
-        <StyledModalContent>
-          {response?.data.data.imageUrlList.map((item) => {
-            return (
-              <StyledAddGallery key={item}>
-                <StyledPreviewImage src={item} />
-              </StyledAddGallery>
-            );
-          })}
-        </StyledModalContent>
-      ),
+      contents: <GalleryDetail response={response} />,
       width: "900px",
       height: calculateModalHeight(response?.data.data.imageUrlList.length),
     }));
   };
-  useEffect(() => {
-    console.log(imageUrlList);
-  }, [imageUrlList]);
 
-  //갤러리 모달에서 이미지 추가
-  const handleImageEdit = (newImages) => {
-    const updatedImages = Array.from(newImages).map((image) =>
-      URL.createObjectURL(image)
-    );
-    setImageUrlList((prevState) => [...prevState, ...updatedImages]);
-  };
   //갤러리 삭제
-  const handleGalleryDelete = (imageId) => {
+  const handleGalleryDelete = (respone) => {
     const payload = {
       id: id || "1",
-      imageId: imageId,
+      imageId: respone.data.data.imagePostId,
     };
     removeGalleryMutation.mutate(payload);
     closeModal();
@@ -586,16 +552,6 @@ const StyledSlideIcon = styled.div`
   width: 21px;
   height: 21px;
   background: ${({ color }) => color || "#d9d9d9"};
-`;
-
-const StyledModalContent = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
-  overflow-y: auto;
-  max-height: 640px;
 `;
 
 const StyledAddGallery = styled.div`

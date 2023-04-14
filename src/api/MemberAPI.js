@@ -11,12 +11,12 @@ export const MemberAPI = {
 
   getSearchGallery: (searchGallery, id, currentPage) =>
     instance.get(
-      `classroom/${id}/gallery?keyword=${searchGallery}?page=${currentPage}`
+      `classroom/${id}/gallery?keyword=${searchGallery}&page=${currentPage}`
     ),
 
   getSearchDateGallery: (id, startDate, endDate, currentPage) =>
     instance.get(
-      `classroom/${id}/gallery?start=${startDate}?end=${endDate}?page=${currentPage}`
+      `classroom/${id}/gallery?start=${startDate}&end=${endDate}&page=${currentPage}`
     ),
 
   getDetailGallery: (payload) =>

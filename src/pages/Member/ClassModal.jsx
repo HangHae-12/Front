@@ -6,9 +6,14 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { MemberAPI } from "../../api/MemberAPI";
 import debounce from "../../utils/debounce";
+import ProfileImageUploader from "../../components/ProfileImageUploader";
+import { profileImageState } from "../../atom/profileImageUploaderAtom";
+
 
 //반별 아이들 상세 조회 모달
 export const ClassModal = ({ response }) => {
+  const genderText = response?.data.data.gender === 'MALE' ? '남자' : (response?.data.data.gender === 'FEMALE' ? '여자' : '');
+
   return (
     <StyledModalWrapper>
       <StyledChildrenProfileWrapper>
@@ -23,7 +28,7 @@ export const ClassModal = ({ response }) => {
           </StyledInputWrapper>
           <StyledInputWrapper>
             <StyledQuestionFont>성별 </StyledQuestionFont>
-            <StyledAnswerFont>남자</StyledAnswerFont>
+            <StyledAnswerFont>{genderText}</StyledAnswerFont>
           </StyledInputWrapper>
           <StyledInputWrapper>
             <StyledQuestionFont>생년월일 </StyledQuestionFont>
@@ -89,6 +94,8 @@ export const ClassModal = ({ response }) => {
 
 // 학부모 아이 상세 조회 모달
 export const ClassParentModal = ({ response }) => {
+  const genderText = response?.data.data.gender === 'MALE' ? '남자' : (response?.data.data.gender === 'FEMALE' ? '여자' : '');
+
   return (
     <StyledModalWrapper>
       <StyledChildrenProfileWrapper>
@@ -105,7 +112,7 @@ export const ClassParentModal = ({ response }) => {
           </StyledInputWrapper>
           <StyledInputWrapper marginLeft="40px">
             <StyledQuestionFont>성별 </StyledQuestionFont>
-            <StyledAnswerFont>남자</StyledAnswerFont>
+            <StyledAnswerFont>{genderText}</StyledAnswerFont>
           </StyledInputWrapper>
           <StyledInputWrapper marginLeft="40px">
             <StyledQuestionFont>생년월일 </StyledQuestionFont>
@@ -128,6 +135,7 @@ export const MemberAddModal = () => {
   const [searchParent, setSearchParent] = useState("");
   const memberinfor = useRecoilValue(memberAtom);
   const parentInfor = useRecoilValue(parentAtom);
+  const preview = useRecoilValue(profileImageState);
 
   const { data } = useQuery(
     ["searchParent", debouncedSearchParent],
@@ -183,23 +191,11 @@ export const MemberAddModal = () => {
       <StyledChildrenProfileWrapper>
         <StyledLeftWrapper>
           <StyledProfileHeaderFont>원생 프로필</StyledProfileHeaderFont>
-          {memberAdd.preview ? (
-            <StyledProfileImage src={memberAdd.preview} />
+          {memberinfor.image ? (
+          <ProfileImageUploader prev={memberinfor.image} />
           ) : (
-            <StyledProfileImg src={memberinfor.image} />
-          )}
-          <StyledAddInput
-            type="file"
-            name="upload-img"
-            id="upload-img"
-            accept="image/*"
-            aria-hidden="false"
-            tabIndex="0"
-            onChange={saveImgFile}
-          />
-          <StyledProfileButton htmlFor="upload-img" id="upload-img-label">
-            이미지 추가
-          </StyledProfileButton>
+            <ProfileImageUploader prev={preview.previewImage} />
+            )}
         </StyledLeftWrapper>
         <StyledRightWrapper>
           <StyledInputWrapper marginTop="20px">
