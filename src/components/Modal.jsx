@@ -1,6 +1,7 @@
 import { createPortal } from "react-dom";
 import styled from "styled-components";
 import useModal from "../hooks/useModal";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Modal = () => {
   const { modalState, closeModal } = useModal();
@@ -19,6 +20,16 @@ const Modal = () => {
       }
     }
   };
+  const backdropVariants = {
+    visible: { opacity: 1 },
+    hidden: { opacity: 0 },
+  };
+
+  const modalVariants = {
+    visible: { opacity: 1, y: 0 },
+    hidden: { opacity: 0, y: "100%", transition: { duration: 0.2 } },
+    exit: { opacity: 0, y: "100%", transition: { duration: 0.2 } },
+  };
 
   return modalState.isOpen
     ? createPortal(
@@ -26,12 +37,20 @@ const Modal = () => {
         <StyledModal.Overlay
           onClick={handleOverlayClick}
           canCloseOnOverlayClick={canCloseOnOverlayClick}
+          variants={backdropVariants}
+          initial="hidden"
+          animate="visible"
+          exit="hidden"
         >
           <StyledModal.Container
             onClick={(e) => e.stopPropagation()}
             padding={padding}
             width={modalState.width}
             height={modalState.height}
+            variants={modalVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
           >
             {isCloseButton && (
               <StyledModal.CloseButton
@@ -61,7 +80,7 @@ const Modal = () => {
 export default Modal;
 
 const StyledModal = {
-  Overlay: styled.div`
+  Overlay: styled(motion.div)`
     position: fixed;
     top: 0;
     left: 0;
@@ -74,7 +93,7 @@ const StyledModal = {
     z-index: 999;
   `,
 
-  Container: styled.div`
+  Container: styled(motion.div)`
     background-color: ${({ color, theme }) => color ?? theme.color.white};
     border-radius: 12px;
     border: 1px solid ${({ theme }) => theme.color.grayScale[200]};
@@ -85,7 +104,7 @@ const StyledModal = {
     z-index: 1000;
   `,
 
-  Header: styled.div`
+  Header: styled(motion.div)`
     display: flex;
     height: 15px;
     padding-right: 25px;
@@ -98,14 +117,14 @@ const StyledModal = {
     margin: 0;
   `,
 
-  Contents: styled.div`
+  Contents: styled(motion.div)`
     /* margin-top: 10px; */
     padding-top: 30px;
     width: 100%;
     height: 100%;
   `,
 
-  Footer: styled.div`
+  Footer: styled(motion.div)`
     position: absolute;
     right: 30px;
     display: flex;

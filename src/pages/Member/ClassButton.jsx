@@ -93,7 +93,7 @@ const ClassButton = () => {
 
   const handleButtonClick = (selected, id) => {
     setSelectedButton(selected);
-    navigate(`/kindergrew/classes/${id}`);
+    navigate(`/classes/${id}`);
   };
 
   return (
