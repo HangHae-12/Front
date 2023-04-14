@@ -38,8 +38,9 @@ const StyledDropdown = {
 
   Item: styled.a`
     display: block;
-    color: ${({ theme }) => theme.color.grayScale[500]};
     padding: 8px 16px;
+    background: ${({ theme }) => theme.color.white};
+    color: ${({ theme }) => theme.color.grayScale[500]};
 
     cursor: pointer;
 

@@ -23,6 +23,10 @@ const Dropdown = ({
     }
   };
 
+  const closeDropdown = () => {
+    setIsOpen(false);
+  }; 
+
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
@@ -31,19 +35,23 @@ const Dropdown = ({
   }, []);
 
   return (
-    <StyledDropdown.Container ref={containerRef}>
-      <StyledDropdown.Button
-        onClick={toggleDropdown}
-        isReadOnly={isReadOnly}
-        buttonStyle={buttonStyle}
-      >
-        {buttonLabel}
-        {!isReadOnly ? <StyledDropdown.Icon /> : null}
-      </StyledDropdown.Button>
-      <StyledDropdown.Menu isOpen={isOpen} menuStyle={menuStyle}>
-        {children}
-      </StyledDropdown.Menu>
-    </StyledDropdown.Container>
+<StyledDropdown.Container ref={containerRef}>
+    <StyledDropdown.Button
+      onClick={toggleDropdown}
+      isReadOnly={isReadOnly}
+      buttonStyle={buttonStyle}
+    >
+      {buttonLabel}
+      {!isReadOnly ? <StyledDropdown.Icon /> : null}
+    </StyledDropdown.Button>
+    <StyledDropdown.Menu
+      isOpen={isOpen}
+      menuStyle={menuStyle}
+      onClick={closeDropdown}
+    >
+      {children}
+    </StyledDropdown.Menu>
+  </StyledDropdown.Container>
   );
 };
 
