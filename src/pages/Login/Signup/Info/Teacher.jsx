@@ -8,11 +8,15 @@ import Buttons from "../../../../components/Buttons";
 import ProfileImageUploader from "../../../../components/ProfileImageUploader";
 import { useProfileImageUploader } from "../../../../hooks/useProfileImageUploader";
 import { REGEXP } from "../../../../helpers/regexp";
+import session from "../../../../utils/session";
+import AlertModal from "../../../../components/Modals/AlertModal";
+import useModal from "../../../../hooks/useModal";
 
 const Teacher = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { name, profileImageUrl } = location.state?.data ?? {};
+  const { openModal } = useModal();
+  const { name, profileImageUrl } = session.get("user");
 
   const { selectedFile, isCancelled } =
     useProfileImageUploader(profileImageUrl);
@@ -25,10 +29,13 @@ const Teacher = () => {
 
   const { mutate } = useMutation(SignAPI.signup, {
     onSuccess: (res) => {
-      console.log(res);
+      if (res.data.StatusCode === 200) {
+        session.set("user", res.data.data);
+        navigate("/signup/success");
+      }
     },
     onError: (error) => {
-      console.log(error);
+      openModal({ contents: <AlertModal /> });
     },
   });
 
@@ -46,11 +53,7 @@ const Teacher = () => {
       console.log(`${key}: ${value}`);
     }
     const role = location.pathname.split("/")[2];
-
-    // mutate({ role: role, info: formData });
-    navigate("/signup/success", {
-      state: { name: "이름", profileImageUrl: "프로필" },
-    });
+    mutate({ role: role, info: formData });
   };
 
   return (

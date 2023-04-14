@@ -5,9 +5,15 @@ import { memberAtom, parentAtom } from "../../atom/memberAtom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { MemberAPI } from "../../api/MemberAPI";
+import debounce from "../../utils/debounce";
+import ProfileImageUploader from "../../components/ProfileImageUploader";
+import { profileImageState } from "../../atom/profileImageUploaderAtom";
+
 
 //반별 아이들 상세 조회 모달
 export const ClassModal = ({ response }) => {
+  const genderText = response?.data.data.gender === 'MALE' ? '남자' : (response?.data.data.gender === 'FEMALE' ? '여자' : '');
+
   return (
     <StyledModalWrapper>
       <StyledChildrenProfileWrapper>
@@ -22,7 +28,7 @@ export const ClassModal = ({ response }) => {
           </StyledInputWrapper>
           <StyledInputWrapper>
             <StyledQuestionFont>성별 </StyledQuestionFont>
-            <StyledAnswerFont>남자</StyledAnswerFont>
+            <StyledAnswerFont>{genderText}</StyledAnswerFont>
           </StyledInputWrapper>
           <StyledInputWrapper>
             <StyledQuestionFont>생년월일 </StyledQuestionFont>
@@ -60,7 +66,7 @@ export const ClassModal = ({ response }) => {
             </StyledInputWrapper>
             <StyledInputWrapper>
               <StyledQuestionFont>이메일</StyledQuestionFont>
-              <StyledAnswerFont marginLeft="200px">
+              <StyledAnswerFont>
                 {response?.data?.data?.parentProfileResponseDto?.email}
               </StyledAnswerFont>
             </StyledInputWrapper>
@@ -88,6 +94,8 @@ export const ClassModal = ({ response }) => {
 
 // 학부모 아이 상세 조회 모달
 export const ClassParentModal = ({ response }) => {
+  const genderText = response?.data.data.gender === 'MALE' ? '남자' : (response?.data.data.gender === 'FEMALE' ? '여자' : '');
+
   return (
     <StyledModalWrapper>
       <StyledChildrenProfileWrapper>
@@ -104,7 +112,7 @@ export const ClassParentModal = ({ response }) => {
           </StyledInputWrapper>
           <StyledInputWrapper marginLeft="40px">
             <StyledQuestionFont>성별 </StyledQuestionFont>
-            <StyledAnswerFont>남자</StyledAnswerFont>
+            <StyledAnswerFont>{genderText}</StyledAnswerFont>
           </StyledInputWrapper>
           <StyledInputWrapper marginLeft="40px">
             <StyledQuestionFont>생년월일 </StyledQuestionFont>
@@ -120,17 +128,18 @@ export const ClassParentModal = ({ response }) => {
 export const MemberAddModal = () => {
   const queryClient = useQueryClient();
   const [checkParent, setCheckedParent] = useState({});
-  const [preview, setPreview] = useState("");
+  const [debouncedSearchParent, setDebouncedSearchParent] = useState("");
   const [memberAdd, setMemberAdd] = useRecoilState(memberAtom);
   const [parentAdd, setParentAdd] = useRecoilState(parentAtom);
   const [isChecked, setIsChecked] = useState(false);
   const [searchParent, setSearchParent] = useState("");
   const memberinfor = useRecoilValue(memberAtom);
   const parentInfor = useRecoilValue(parentAtom);
+  const preview = useRecoilValue(profileImageState);
 
   const { data } = useQuery(
-    ["searchParent", searchParent],
-    () => MemberAPI.getSearchParent(searchParent),
+    ["searchParent", debouncedSearchParent],
+    () => MemberAPI.getSearchParent(debouncedSearchParent),
     {
       onSuccess: (data) => {
         console.log(data.data);
@@ -138,16 +147,15 @@ export const MemberAddModal = () => {
       onError: () => {
         console.log("error");
       },
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
     }
   );
 
-  //검색기능
-  const handleSearch = (e) => {
-    e.preventDefault();
-    setSearchParent(e.target.value);
-    queryClient.invalidateQueries(["searchParent", searchParent]);
-    console.log(data);
-  };
+  useEffect(() => {
+    const debounced = debounce((value) => setDebouncedSearchParent(value), 700);
+    debounced(searchParent);
+  }, [searchParent]);
 
   const saveImgFile = (e) => {
     e.preventDefault();
@@ -155,9 +163,8 @@ export const MemberAddModal = () => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onloadend = () => {
-      setMemberAdd({ ...memberAdd, preview: reader.result });
+      setMemberAdd({ ...memberAdd, preview: reader.result, image: file });
     };
-    setMemberAdd({ ...memberAdd, image: file });
   };
 
   const handleCheckBoxChange = (e, item) => {
@@ -184,23 +191,11 @@ export const MemberAddModal = () => {
       <StyledChildrenProfileWrapper>
         <StyledLeftWrapper>
           <StyledProfileHeaderFont>원생 프로필</StyledProfileHeaderFont>
-          {memberAdd.preview ? (
-            <StyledProfileImage src={memberAdd.preview} />
+          {memberinfor.image ? (
+          <ProfileImageUploader prev={memberinfor.image} />
           ) : (
-            <StyledProfileImg src={memberinfor.image} />
-          )}
-          <StyledAddInput
-            type="file"
-            name="upload-img"
-            id="upload-img"
-            accept="image/*"
-            aria-hidden="false"
-            tabIndex="0"
-            onChange={saveImgFile}
-          />
-          <StyledProfileButton htmlFor="upload-img" id="upload-img-label">
-            이미지 추가
-          </StyledProfileButton>
+            <ProfileImageUploader prev={preview.previewImage} />
+            )}
         </StyledLeftWrapper>
         <StyledRightWrapper>
           <StyledInputWrapper marginTop="20px">
@@ -291,7 +286,7 @@ export const MemberAddModal = () => {
             )}
             <StyledSearchInput
               type="text"
-              onChange={handleSearch}
+              onChange={(e) => setSearchParent(e.target.value)}
               value={searchParent}
             />
           </StyledInputWrapper>
@@ -585,8 +580,8 @@ const StyledChoiceparentWrapper = styled.div`
   align-items: flex-start;
   padding: 18px 12px;
   gap: 9px;
-  width: 570px;
-  height: 160px;
+  width: 600px;
+  height: 288px;
   overflow-y: auto;
   background: ${({ theme }) => theme.color.grayScale[50]};
   border-radius: 8px;
@@ -658,6 +653,9 @@ const StyledSearchInput = styled.input`
 const StyledModalSlideContainer = styled.div`
   display: flex;
   align-items: center;
+  justify-content: center;
+  
+  
 `;
 
 const StyledModalSlideWrapper = styled.div`
@@ -666,24 +664,32 @@ const StyledModalSlideWrapper = styled.div`
 `;
 
 const StyledModalSlideImgContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
   width: 716px;
   height: 400px;
   border-radius: 8px;
   overflow: hidden;
+  
+  
 `;
 
 const StyledModalSlide = styled.div`
   width: 716px;
   height: 400px;
   display: flex;
+  
+  
 `;
 
 const StyledModalSlideImg = styled.img`
-  width: 500px;
-  height: 400px;
+  width: 360px;
+  height: 320px;
   border-radius: 8px;
   margin-left: 20px;
+  margin-bottom: 84px;
 `;
 
 const StlyedSlideButton = styled.button`

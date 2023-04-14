@@ -11,9 +11,6 @@ const EnterTime = () => {
     const setPage = useSetRecoilState(paginationAtom);
     const { classroomId = 0, scheduleId = "ENTER" } = useParams();
     const navigate = useNavigate();
-
-
-
     const handleTimeButton = (timeId) => {
         setTime(timeId);
         setPage(1);

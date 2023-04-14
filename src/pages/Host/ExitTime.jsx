@@ -62,4 +62,5 @@ export default ExitTime;
 const StyledTimeButtonGroup = styled.div`
   display: flex;
   flex-direction: row;
+  gap:12px;
 `;

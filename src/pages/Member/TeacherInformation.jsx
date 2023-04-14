@@ -72,7 +72,7 @@ const TeacherInformation = ({ data }) => {
 
   const handleTeacherSubmit = async (id) => {
     const payload = {
-      id: id,
+      id: id || "1",
       teacherId: selectedTeacher.id,
     };
     setTeacherMutation.mutate(payload);
@@ -81,14 +81,7 @@ const TeacherInformation = ({ data }) => {
     closeModal();
   };
 
-  const modalOption = {
-    padding: "20px",
-    width: "660px",
-    height: "532px",
-  };
-
   const setTeacherAppoint = () => {
-    console.log(TeacherData.data.data);
     const modalData = {
       title: <StyledModalHeader>담임선생님 지정</StyledModalHeader>,
       contents: (
@@ -152,6 +145,8 @@ const TeacherInformation = ({ data }) => {
           저장하기
         </StyledModalButton>
       ),
+      width: "660px",
+      height: "504px",
       callback: () => alert("modal"),
     };
     openModal(modalData);
@@ -241,7 +236,6 @@ const StyledMiddleWrapper = styled.div`
 
 const StyledInputWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
   margin-top: ${({ marginTop }) => marginTop || "30px"};
 `;
 
@@ -263,7 +257,7 @@ const StyledTeacherImage = styled.img`
   width: 120px;
   height: 120px;
   border-radius: 70%;
-  margin-top:12px;
+  margin-top: 12px;
 `;
 
 const StyledAnswerFont = styled.div`
@@ -390,10 +384,11 @@ const StyledChoiceparentWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
-  padding: 18px 12px;
+  justify-content: center;
+  padding: 20px 12px;
   gap: 9px;
-  width: 570px;
-  height: 160px;
+  width: 600px;
+  height: 288px;
   overflow-y: auto;
   background: ${({ theme }) => theme.color.grayScale[50]};
   border-radius: 8px;

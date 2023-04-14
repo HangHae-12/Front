@@ -7,6 +7,8 @@ const StyledDropdown = {
   Container: styled.div`
     position: relative;
     display: inline-block;
+    width: min-content;
+    ${({ containerStyle }) => containerStyle}
   `,
 
   Button: styled.button`
@@ -29,18 +31,20 @@ const StyledDropdown = {
     display: ${({ isOpen }) => (isOpen ? "block" : "none")};
     position: absolute;
     border: 1px solid ${({ theme }) => theme.color.grayScale[200]};
+    background: ${({ theme }) => theme.color.white};
     border-radius: 12px;
     padding: 8px 0;
     min-width: 160px;
-    z-index: 1;
+    z-index: 10;
     ${({ menuStyle }) => menuStyle}
   `,
 
   Item: styled.a`
     display: block;
-    color: ${({ theme }) => theme.color.grayScale[500]};
     padding: 8px 16px;
-    
+    background: ${({ theme }) => theme.color.white};
+    color: ${({ theme }) => theme.color.grayScale[500]};
+
     cursor: pointer;
 
     &:hover {

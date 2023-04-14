@@ -5,7 +5,7 @@ import Buttons from "../components/Buttons";
 import { DUMMY_URL } from "../helpers/dummyUrl";
 import textVariants from "../styles/variants/textVariants";
 
-const ProfileImageUploader = ({ prev }) => {
+const ProfileImageUploader = ({ prev, isFixMode }) => {
   const {
     inputRef,
     previewImage,
@@ -44,13 +44,15 @@ const ProfileImageUploader = ({ prev }) => {
           onClick={handleProfileImageCancel}
         />
       </StyledProfileImageUploader.ThumbnailWrapper>
-      <StyledProfileImageUploader.ChangeButton
-        type="button"
-        onClick={handleThumbnailImage}
-        outlined
-      >
-        이미지 변경
-      </StyledProfileImageUploader.ChangeButton>
+      {!isFixMode ? (
+        <StyledProfileImageUploader.ChangeButton
+          type="button"
+          onClick={handleThumbnailImage}
+          outlined
+        >
+          이미지 변경
+        </StyledProfileImageUploader.ChangeButton>
+      ) : null}
     </StyledProfileImageUploader.Container>
   );
 };

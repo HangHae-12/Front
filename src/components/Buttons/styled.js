@@ -1,20 +1,26 @@
 import styled, { css } from "styled-components";
 import { lighten } from "polished";
 import buttonVariants from "../../styles/variants/buttonVariants";
+import { motion } from "framer-motion";
 
 const getBackgroundColor = ({ colorTypes, bgColor, theme, outlined }) => {
   if (outlined) return bgColor || theme.color.white;
-  return colorTypes ? theme.color[colorTypes] : bgColor || theme.color.grayScale[50];
+  return colorTypes
+    ? theme.color[colorTypes]
+    : bgColor || theme.color.grayScale[50];
 };
 
 const getBorderColor = ({ outlined, bgColor, theme, colorTypes }) => {
   if (!outlined) return null;
-  return colorTypes ? theme.color[colorTypes] : bgColor || theme.color.grayScale[400];
+  return colorTypes
+    ? theme.color[colorTypes]
+    : bgColor || theme.color.grayScale[400];
 };
 
 const getTextColor = ({ outlined, theme, colorTypes, color }) => {
   if (color) return color;
-  if (outlined) return colorTypes ? theme.color[colorTypes] : theme.color.grayScale[400];
+  if (outlined)
+    return colorTypes ? theme.color[colorTypes] : theme.color.grayScale[400];
   return colorTypes ? theme.color.white : theme.color.grayScale[200];
 };
 
@@ -27,7 +33,7 @@ const getHoverBackgroundColor = ({ colorTypes, bgColor, theme, outlined }) => {
     : lighten(0.2, theme.color.grayScale[50]);
 };
 
-export const StyledButton = styled.button`
+export const StyledButton = styled(motion.button)`
   display: inline-flex;
   width: max-content;
   height: max-content;
