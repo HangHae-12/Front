@@ -111,10 +111,6 @@ const Table = () => {
                 <tr>
                   <td className="sunday" colSpan="6"><BsSun /> 일요일은 쉬는날</td>
                 </tr>
-              ) : isLoading ? (
-                <div>Loading...</div>
-              ) : isError ? (
-                <div>Error: error</div>
               ) : (
                 data?.data?.length > 0 &&
                 data.data
