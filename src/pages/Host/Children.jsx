@@ -42,8 +42,18 @@ const Children = ({ bindData }) => {
 
     const updatedChildData = {
       ...childData,
-      enterTime: type === "enter" && !childData.enterTime ? currentTime : childData.enterTime,
-      exitTime: type === "exit" && !childData.exitTime ? currentTime : childData.exitTime,
+      enterTime:
+        type === "enter"
+          ? !childData.enterTime
+            ? currentTime
+            : null
+          : childData.enterTime,
+      exitTime:
+        type === "exit"
+          ? !childData.exitTime
+            ? currentTime
+            : null
+          : childData.exitTime,
     };
 
     const updatedData = bindData.map((item) => {
@@ -64,7 +74,14 @@ const Children = ({ bindData }) => {
 
     setAlert({
       show: true,
-      message: type === "enter" ? "등원 처리 되었습니다." : "하원 처리 되었습니다.",
+      message:
+        type === "enter"
+          ? !childData.enterTime
+            ? "등원 처리 되었습니다."
+            : "등원 취소 되었습니다."
+          : !childData.exitTime
+            ? "하원 처리 되었습니다."
+            : "하원 취소 되었습니다.",
     });
   };
 
