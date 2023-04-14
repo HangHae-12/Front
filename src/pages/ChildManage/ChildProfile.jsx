@@ -29,7 +29,7 @@ const ChildProfile = () => {
     }
   );
 
-  const { mutate } = useMutation(ChildManageAPI.putChildProfule, {
+  const { mutate } = useMutation(ChildManageAPI.putChildProfile, {
     onSuccess: () => {
       openModal({ id: "childProfileModal", contents: <SuccessModal /> });
       queryClient.invalidateQueries(["childProfile"]);

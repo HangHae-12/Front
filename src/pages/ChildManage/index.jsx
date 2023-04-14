@@ -1,5 +1,4 @@
 import StyledChildManage from "./styled";
-
 import ChildProfile from "./ChildProfile";
 import CommuteTimes from "./CommuteTimes";
 import AbsenceManage from "./AttendanceManage";

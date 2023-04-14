@@ -1,55 +1,34 @@
 import React from "react";
 import styled from "styled-components";
-import { FiCalendar } from "react-icons/fi";
+
 import textVariants from "../../styles/variants/textVariants";
 import useModal from "../../hooks/useModal";
-import Modal from "../../components/Modal";
+import AbsenceInfoModal from "./AbsenceInfoModal";
+import AbsenceRequestModalTitle from "./AbsenceRequestModalTitle";
+import DateBox from "./DateBox";
 
-const AbsenceBox = ({ absenceData }) => {
-  const formattedDate = (date) => date.replaceAll("-", ".");
+const AbsenceBox = ({ absent }) => {
   const { openModal } = useModal();
-  const { id, startDate, endDate, reason } = absenceData;
+  const { startDate, endDate, reason } = absent;
+
   const modalOption = {
     id: `absenceModal`,
-    contents: <>dd</>,
-    width: "300px",
+    title: <AbsenceRequestModalTitle>결석 정보</AbsenceRequestModalTitle>,
+    contents: <AbsenceInfoModal absent={absent} />,
+    width: "320px",
     height: "320px",
   };
 
   return (
     <StyledAbsenceContainer onClick={() => openModal(modalOption)}>
       <h3>{reason}</h3>
-      <AbsenceDateWrapper>
-        <StyledDateBox>
-          <FiCalendar />
-          <span>{formattedDate(startDate)}</span>
-        </StyledDateBox>
-        ~
-        <StyledDateBox>
-          <FiCalendar />
-          <span>{formattedDate(endDate)}</span>
-        </StyledDateBox>
-      </AbsenceDateWrapper>
+
+      <DateBox startDate={startDate} endDate={endDate} />
     </StyledAbsenceContainer>
   );
 };
 
 export default AbsenceBox;
-
-const StyledDateBox = styled.div`
-  ${textVariants.Body1_SemiBold}
-  display: flex;
-  width: min-content;
-  height: 32px;
-  align-items: center;
-  justify-content: center;
-  padding: 10px;
-  gap: 10px;
-  border: 1px solid ${({ theme }) => theme.color.grayScale[300]};
-  border-radius: 4px;
-  background-color: ${({ theme }) => theme.color.white};
-  color: ${({ theme }) => theme.color.grayScale[500]};
-`;
 
 const StyledAbsenceContainer = styled.div`
   display: flex;
@@ -59,6 +38,7 @@ const StyledAbsenceContainer = styled.div`
   width: 100%;
   min-height: 86px;
   border: 1px solid ${({ theme }) => theme.color.grayScale[300]};
+  background: ${({ theme }) => theme.color.grayScale[25]};
   border-radius: 4px;
   gap: 10px;
 
@@ -69,10 +49,4 @@ const StyledAbsenceContainer = styled.div`
     padding: 0px 45px;
     color: ${({ theme }) => theme.color.grayScale[600]};
   }
-`;
-
-const AbsenceDateWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 4px;
 `;

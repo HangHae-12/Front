@@ -3,64 +3,28 @@ import StyledChildManage from "./styled";
 import Buttons from "../../components/Buttons";
 import AbsenceBox from "./AbsenceBox";
 import Modal from "../../components/Modal";
+import { useRecoilValue } from "recoil";
+import { absentSelector } from "../../atom/attendanceManageAtom";
+import useModal from "../../hooks/useModal";
+import AbsenceRequestModalTitle from "./AbsenceRequestModalTitle";
+import AbsenceRequestModal from "./AbsenceRequestModal";
 
-const AbsenceRequestForm = ({ absentData }) => {
-  absentData = [
-    {
-      id: "1",
-      startDate: "2023-04-15",
-      endDate: "2023-04-17",
-      reason: "질병1",
-    },
-    {
-      id: "2",
-      startDate: "2023-04-16",
-      endDate: "2023-04-17",
-      reason: "질병2",
-    },
-    {
-      id: "3",
-      startDate: "2023-04-17",
-      endDate: "2023-04-17",
-      reason: "질병3",
-    },
-    {
-      id: "4",
-      startDate: "2023-04-18",
-      endDate: "2023-04-17",
-      reason: "질병4",
-    },
-    {
-      id: "5",
-      startDate: "2023-04-19",
-      endDate: "2023-04-17",
-      reason: "질병5",
-    },
-    {
-      id: "6",
-      startDate: "2023-04-20",
-      endDate: "2023-04-17",
-      reason: "질병6",
-    },
-    {
-      id: "7",
-      startDate: "2023-04-21",
-      endDate: "2023-04-17",
-      reason: "질병7",
-    },
-    {
-      id: "8",
-      startDate: "2023-04-22",
-      endDate: "2023-04-17",
-      reason: "질병8",
-    },
-    {
-      id: "9",
-      startDate: "2023-04-23",
-      endDate: "2023-04-17",
-      reason: "질병9",
-    },
-  ];
+const AbsenceRequestForm = () => {
+  const absentData = useRecoilValue(absentSelector);
+
+  const { openModal } = useModal();
+  const modalOption = {
+    id: "absenceModal",
+    title: <AbsenceRequestModalTitle>결석 신청</AbsenceRequestModalTitle>,
+    contents: <AbsenceRequestModal />,
+    width: "320px",
+    height: "320px",
+  };
+
+  const handleRequestAbsence = () => {
+    openModal(modalOption);
+  };
+
   return (
     <>
       <StyledAbsenceRequestForm.Container>
@@ -68,11 +32,13 @@ const AbsenceRequestForm = ({ absentData }) => {
           <StyledAbsenceRequestForm.Title>
             결석 신청 리스트
           </StyledAbsenceRequestForm.Title>
-          <Buttons.Filter outlined>결석 신청</Buttons.Filter>
+          <Buttons.Filter onClick={handleRequestAbsence} outlined>
+            결석 신청
+          </Buttons.Filter>
         </StyledAbsenceRequestForm.TitleWrapper>
         <StyledAbsenceRequestForm.AbsentListWrapper>
           {absentData.map((item) => (
-            <AbsenceBox key={item.id} absenceData={item} />
+            <AbsenceBox key={item.id} absent={item} />
           ))}
         </StyledAbsenceRequestForm.AbsentListWrapper>
       </StyledAbsenceRequestForm.Container>
