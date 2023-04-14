@@ -129,7 +129,9 @@ const StyledCommuteTimes = {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    flex: 1;
+    /* flex: 1;
+    min-width: 400px; */
+    width: 400px;
     height: 100%;
   `,
   DropdownWrapper: styled.div`

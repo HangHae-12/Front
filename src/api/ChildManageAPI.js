@@ -6,10 +6,14 @@ const ChildManageAPI = {
     instance.put(`/parent/child/${childId}`, data),
   getChildSchedule: (childId) =>
     instance.get(`/parent/child/${childId}/schedule`),
-  putChildSchedule: ({ childId, data }) => {
-    console.log(childId, data);
-    instance.put(`/parent/child/${childId}/schedule`, data);
-  },
+  putChildSchedule: ({ childId, data }) =>
+    instance.put(`/parent/child/${childId}/schedule`, data),
+  getChildAttendance: ({ childId, date }) =>
+    instance
+      .get(
+        `/parent/child/${childId}/attendance/month?year=${date.year}&month=${date.month}`
+      )
+      .then((res) => res.data.data),
 };
 
 export default ChildManageAPI;
