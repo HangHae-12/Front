@@ -26,7 +26,7 @@ const color = {
   yellow: "#ffd600",
   green: "#86e49b",
   // green_darker: "#fefffe",
-  green_darker: "#edf5ee",
+  green_darker: "#F1F7F1",
   perple: "#9747ff",
   perple_lighter: "#f5edff",
   grayScale: grayScale,
