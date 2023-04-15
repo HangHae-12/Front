@@ -31,5 +31,5 @@ const StyledRightContainer = styled.div`
   width: calc(100% - 200px);
   height: 100%;
   min-height: 100vh;
-  /* margin: 60px 150px 94px 150px; */
+  margin: 60px 150px 94px 150px;
 `;
