@@ -209,9 +209,9 @@ const Table = () => {
             <ClassButton />
             <StyledHeader>
                 <StyledMonthYear>
-                    <GrPrevious style={{ marginRight: "8px" }} onClick={handleDecreaseMonth} size={16} />
+                    <StyledGrPrevious style={{ marginRight: "8px" }} onClick={handleDecreaseMonth} size={16} />
                     {selectedDate.getFullYear()}년 {selectedDate.getMonth() + 1}월
-                    <GrNext style={{ marginLeft: "8px" }} onClick={handleIncreaseMonth} size={16} />
+                    <StyledGrNext style={{ marginLeft: "8px" }} onClick={handleIncreaseMonth} size={16} />
                     <CustomDatepicker mode="month" selectedDate={selectedDate} onDateChange={handleDateChange} />
                 </StyledMonthYear>
                 <MonthExcel data={data?.data} selectedDate={selectedDate} />
@@ -364,7 +364,13 @@ const StyledStickyHeader = styled.th`
         isSunday ? theme.color.red : isSaturday ? theme.color.blue : theme.color.grayScale[500]};
 `;
 
+const StyledGrPrevious = styled(GrPrevious)`
+  cursor: pointer;
+`;
 
+const StyledGrNext = styled(GrNext)`
+  cursor: pointer;
+`;
 const StyledMonthYear = styled.div`
   ${textVariants.H3_SemiBold}
   color: ${({ theme }) => theme.color.grayScale[500]};

@@ -91,9 +91,11 @@ const Table = () => {
       <ClassButton />
       <StyledHeader>
         <StyledMonthYear>
-          <GrPrevious onClick={decreaseDate} size={16} />
+          <StyledGrPrevious onClick={decreaseDate} size={16} />
           {selectedDate.getFullYear()}년 {selectedDate.getMonth() + 1}월 {selectedDate.getDate()}일 {dayOfWeek}
-          <GrNext onClick={increaseDate} size={16} />
+          <StyledGrNext onClick={increaseDate} size={16} />
+
+
           <CustomDatepicker selectedDate={selectedDate} onDateChange={handleDateChange} />
         </StyledMonthYear>
         <DayExcel data={data?.data} selectedDate={selectedDate} />
@@ -169,7 +171,13 @@ const StyledHeader = styled.div`
   margin-bottom: 14px;
   
 `;
+const StyledGrPrevious = styled(GrPrevious)`
+  cursor: pointer;
+`;
 
+const StyledGrNext = styled(GrNext)`
+  cursor: pointer;
+`;
 const StyledMonthYear = styled.div`
 ${textVariants.H3_SemiBold}
   color: ${({ theme }) => theme.color.grayScale[500]};
