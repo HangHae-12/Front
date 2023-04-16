@@ -49,9 +49,9 @@ const fontWeight = {
   regular: 400,
 };
 const device = {
-  mobile: "(max-width: 768px)",
-  laptop: "(min-width: 769px) and (max-width: 1390px)",
-  desktop: "(min-width: 1920px)",
+  mobile: "(max-width: 600px)",
+  laptop: "(min-width: 992px) and (max-width: 1390px)",
+  desktop: "(min-width: 1800px)",
 };
 const defaultTheme = {
   color,

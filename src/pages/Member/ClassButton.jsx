@@ -122,6 +122,8 @@ const ClassButton = () => {
         />
       </StyledButtonWrapper>
       <TeacherInformation data={data} />
+
+
       {selectedTab === "member" ? (
         <StyledABBtn marginLeft="30px" onClick={handleMemberClick}>
           학급인원

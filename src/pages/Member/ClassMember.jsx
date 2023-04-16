@@ -94,7 +94,7 @@ const ClassMember = () => {
     } else {
       setRender(false);
     }
-  }, [memberinfor, isChildModify, parentinfor,preview]);
+  }, [memberinfor, isChildModify, parentinfor, preview]);
 
   //아이 상세 조회 모달
   const getChildInformation = (response) => {
@@ -320,17 +320,10 @@ const ClassMember = () => {
 export default ClassMember;
 
 const StyledChildrenWrapper = styled.div`
-  padding: 0px 0px 20px;
+  padding: 0px 20px 20px;
   gap: 40px;
-  width: calc(7 * (190px + 15px));
-  height: 484px;
   background: rgba(237, 245, 238, 0.8);
   border-radius: 12px;
-
-  @media (max-width: 1800px) {
-    width: calc(7 * (140px + 15px));
-    height: 360px;
-  }
 `;
 
 const StyledChildernHeader = styled.div`

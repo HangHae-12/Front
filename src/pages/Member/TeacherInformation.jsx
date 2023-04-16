@@ -214,13 +214,7 @@ const StyledInfomation = styled.div`
   border-radius: 12px;
   border: 1px solid ${({ theme }) => theme.color.grayScale[200]};
   box-sizing: border-box;
-  width: 1428px;
-  height: 216px;
   margin-top: 10px;
-
-  @media (max-width: 1800px) {
-    width: 1080px;
-  }
 `;
 
 const StyledContentWrapper = styled.div`

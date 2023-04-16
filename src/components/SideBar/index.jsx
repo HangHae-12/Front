@@ -91,7 +91,7 @@ const SideBar = () => {
           </h3>
         </StyledUserProfileWrapper>
         {userProfile.role === "PRINCIPAL" ? (
-          <TeacherSideBar />
+          <PrincipalSideBar />
         ) : userProfile.role === "TEACHER" ? (
           <TeacherSideBar />
         ) : (

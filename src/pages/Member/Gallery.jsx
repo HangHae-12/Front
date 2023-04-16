@@ -367,38 +367,43 @@ const Gallery = () => {
     <>
       <StyledGalleryWrapper>
         <StyledGalleryHeader>
-          <Buttons.Filter outlined onClick={handleEntireDate}>
-            전체기간
-          </Buttons.Filter>
-          <StyledDateBox marginLeft="14px" marginRight="4px">
-            <CustomDatepicker
-              selectedDate={startDate}
-              onDateChange={(date) => setStartDate(date)}
-            />
-            {startDate.getFullYear()}.{startDate.getMonth() + 1}.
-            {startDate.getDate()}
-          </StyledDateBox>
-          ~
-          <StyledDateBox marginLeft="4px" marginRight="8px">
-            <CustomDatepicker
-              selectedDate={endDate}
-              onDateChange={(date) => setEndDate(date)}
-            />
-            {endDate.getFullYear()}.{endDate.getMonth() + 1}.{endDate.getDate()}
-          </StyledDateBox>
-          <Buttons.Filter colorTypes="primary" onClick={handleDateSearch}>
-            적용하기
-          </Buttons.Filter>
-          {userRole.role === "PRINCIPAL" || userRole.role === "TEACHER" ? (
-            <SyledAddGalleryButton onClick={createGallery}>
-              사진 등록
-            </SyledAddGalleryButton>
-          ) : null}
-          <StyledSearchWrapper>
-            <StyledGallerySearchInput onChange={handleSearch} />
-            <StyledInputIcon />
-          </StyledSearchWrapper>{" "}
+          <StyledHeaderLeftWrapper>
+            <Buttons.Filter outlined onClick={handleEntireDate}>
+              전체기간
+            </Buttons.Filter>
+            <StyledDateBox marginLeft="14px" marginRight="4px">
+              <CustomDatepicker
+                selectedDate={startDate}
+                onDateChange={(date) => setStartDate(date)}
+              />
+              {startDate.getFullYear()}.{startDate.getMonth() + 1}.
+              {startDate.getDate()}
+            </StyledDateBox>
+            ~
+            <StyledDateBox marginLeft="4px" marginRight="8px">
+              <CustomDatepicker
+                selectedDate={endDate}
+                onDateChange={(date) => setEndDate(date)}
+              />
+              {endDate.getFullYear()}.{endDate.getMonth() + 1}.{endDate.getDate()}
+            </StyledDateBox>
+            <Buttons.Filter colorTypes="primary" onClick={handleDateSearch}>
+              적용하기
+            </Buttons.Filter>
+          </StyledHeaderLeftWrapper>
+          <StyledHeaderRightWrapper>
+            {userRole.role === "PRINCIPAL" || userRole.role === "TEACHER" ? (
+              <SyledAddGalleryButton onClick={createGallery}>
+                사진 등록
+              </SyledAddGalleryButton>
+            ) : null}
+            <StyledSearchWrapper>
+              <StyledGallerySearchInput onChange={handleSearch} />
+              <StyledInputIcon />
+            </StyledSearchWrapper>{" "}
+          </StyledHeaderRightWrapper>
         </StyledGalleryHeader>
+
         <StyledGalleryContainer>
           {data?.data.data.imagePostResponseDtoList.map((item) => {
             return (
@@ -415,16 +420,14 @@ const Gallery = () => {
             );
           })}
         </StyledGalleryContainer>
-        <StyledPaginationContainer>
-          {data?.data.data.imagePostCount !== 0 ? (
-            <CustomPagination
-              current={currentPage}
-              pageSize="12"
-              total={data?.data.data.imagePostCount}
-              onChange={(page) => setCurrentPage(page)}
-            />
-          ) : null}
-        </StyledPaginationContainer>
+        {data?.data.data.imagePostCount !== 0 ? (
+          <CustomPagination
+            current={currentPage}
+            pageSize="12"
+            total={data?.data.data.imagePostCount}
+            onChange={(page) => setCurrentPage(page)}
+          />
+        ) : null}
       </StyledGalleryWrapper>
       <Modal />
     </>
@@ -434,17 +437,9 @@ const Gallery = () => {
 export default Gallery;
 
 const StyledGalleryWrapper = styled.div`
-  padding: 0px 0px 20px;
-  gap: 40px;
-  width: calc(6 * (225px + 18px));
-  height: 748px;
+  padding: 20px;
   background: rgba(237, 245, 238, 0.8);
   border-radius: 12px;
-
-  @media (max-width: 1800px) {
-    width: calc(6 * (170px + 10px));
-    height: 650px;
-  }
 `;
 const StyledGridModalContent = styled.div`
   display: ${({ itemCount }) => (itemCount > 0 ? "grid" : "flex")};
@@ -461,12 +456,39 @@ const StyledGridModalContent = styled.div`
 const StyledGalleryHeader = styled.div`
   display: flex;
   align-items: center;
-  padding: 20px;
+  justify-content: space-between;
+  margin: 0px 10px;
 `;
+const StyledHeaderLeftWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content:center;
+`
+const StyledHeaderRightWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content:center;
+`
+
+const SyledAddGalleryButton = styled.button`
+  width: 79px;
+  height: 32px;
+  border-radius: 4px;
+  border: 1px solid ${({ theme }) => theme.color.primary};
+  background: ${({ theme }) => theme.color.white};
+  padding: 4px 10px;
+  color: ${({ theme }) => theme.color.primary};
+`;
+
 const StyledGalleryContainer = styled.div`
-  margin-left: 10px;
   display: flex;
   flex-wrap: wrap;
+  width: fit-content;
+  margin-left: 24px;
+  margin-right: auto;
+  margin-top: 24px;
+  gap:8.8px;
+  
 `;
 
 const StyledGalleryCard = styled.div`
@@ -475,28 +497,36 @@ const StyledGalleryCard = styled.div`
   justify-content: center;
   padding: 20px;
   gap: 20px;
-  width: 216px;
-  height: 286px;
+  width: 185px;
+  height: 250px;
   background: ${({ theme }) => theme.color.white};
   border: 1px solid ${({ theme }) => theme.color.grayScale[100]};
   border-radius: 8px;
-  margin-left: 20px;
-  margin-top: 10px;
 
-  @media (max-width: 1800px) {
+  @media ${({ theme }) => theme.device.laptop} {
     width: 185px;
     height: 250px;
+    padding: 20px;
   }
+  @media ${({ theme }) => theme.device.desktop} {
+    width: 216px;
+    height: 286px;
+  }
+
 `;
 
 const StyledGalleryImage = styled.img`
-  width: 180px;
-  height: 180px;
+  width: 145px;
+  height: 130px;
   border-radius: 4px;
 
-  @media (max-width: 1800px) {
+  @media ${({ theme }) => theme.device.laptop} {
     width: 145px;
     height: 130px;
+  }
+  @media ${({ theme }) => theme.device.desktop} {
+    width: 180px;
+    height: 180px;
   }
 `;
 
@@ -527,12 +557,6 @@ const StyledFont = styled.div`
   justify-content: space-between;
 `;
 
-const StyledPaginationContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 16px;
-`;
 
 const StyledAddIcon = styled(IoIosAdd)`
   width: 66px;
@@ -584,19 +608,7 @@ const StyledPreviewImage = styled.img`
   margin-top: 30px;
 `;
 
-const SyledAddGalleryButton = styled.button`
-  border-radius: 4px;
-  border: 1px solid ${({ theme }) => theme.color.primary};
-  background: ${({ theme }) => theme.color.white};
-  padding: 4px 10px;
-  gap: 10px;
-  color: ${({ theme }) => theme.color.primary};
-  margin-left: 695px;
 
-  @media (max-width: 1800px) {
-    margin-left: 318px;
-  }
-`;
 
 const StyledGallerySearchInput = styled.input`
   width: 200px;
