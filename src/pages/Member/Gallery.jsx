@@ -482,6 +482,17 @@ const SyledAddGalleryButton = styled.button`
   background: ${({ theme }) => theme.color.white};
   padding: 4px 10px;
   color: ${({ theme }) => theme.color.primary};
+  cursor: pointer;
+   
+  @media ${({ theme }) => theme.device.laptop} {
+    display:none;
+  }
+  &:hover {
+    background-color: ${({ theme }) => theme.color.grayScale[50]};
+  }
+  &:active {
+        cursor: grabbing;
+  }
 `;
 
 const StyledGalleryContainer = styled.div`

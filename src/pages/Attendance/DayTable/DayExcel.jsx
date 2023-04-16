@@ -67,6 +67,7 @@ const StyledExportButton = styled.button`
   }
   &:hover {
     background-color: ${({ theme }) => theme.color.green_darker};
+  }
   &:active {
         cursor: grabbing;
 }
