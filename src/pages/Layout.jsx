@@ -1,17 +1,21 @@
 import { Outlet } from "react-router-dom";
 import styled from "styled-components";
 import SideBar from "../components/SideBar";
+import ReloadRoute from "../shared/ReloadRoute";
 
 const Layout = () => {
   return (
-    <StyledContainer>
-      <StyledLeftContainer>
-        <SideBar />
-      </StyledLeftContainer>
-      <StyledRightContainer>
-        <Outlet />
-      </StyledRightContainer>
-    </StyledContainer>
+    <>
+      <ReloadRoute />
+      <StyledContainer>
+        <StyledLeftContainer>
+          <SideBar />
+        </StyledLeftContainer>
+        <StyledRightContainer>
+          <Outlet />
+        </StyledRightContainer>
+      </StyledContainer>
+    </>
   );
 };
 
