@@ -7,7 +7,7 @@ import textVariants from "../../styles/variants/textVariants";
 const TeacherSideBar = () => {
     const [showAttendanceMenu, setShowAttendanceMenu] = useState(false);
     const [subMenuSelectedIndex, setSubMenuSelectedIndex] = useState(null);
-    const [selectedIndex, setSelectedIndex] = useState(1);
+    const [selectedIndex, setSelectedIndex] = useState(0);
     const handleSideMenu = (id) => {
         if (id !== 2) {
             setSelectedIndex(id);
@@ -24,6 +24,15 @@ const TeacherSideBar = () => {
 
     return (
         <StyledSideBarBtnWrapper>
+            <Link to="/classes">
+                <CustomButton
+                    colorTypes={selectedIndex === 0 ? "primary" : undefined}
+                    buttonsTypes="NB_Button"
+                    onClick={() => handleSideMenu(0)}
+                >
+                    학급 관리
+                </CustomButton>
+            </Link>
             <Link to="/host">
                 <CustomButton
                     colorTypes={selectedIndex === 1 ? "primary" : undefined}
@@ -60,15 +69,6 @@ const TeacherSideBar = () => {
                     </StyledSubMenu>
                 )}
             </StyledMenuWrapper>
-            <Link to="/classes">
-                <CustomButton
-                    colorTypes={selectedIndex === 3 ? "primary" : undefined}
-                    buttonsTypes="NB_Button"
-                    onClick={() => handleSideMenu(3)}
-                >
-                    학급 관리
-                </CustomButton>
-            </Link>
         </StyledSideBarBtnWrapper>
     );
 };

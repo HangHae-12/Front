@@ -82,8 +82,8 @@ const SideBar = () => {
             {userProfile.role === "PRINCIPAL"
               ? "원장선생님"
               : userProfile.role === "TEACHER"
-              ? "선생님"
-              : "학부모"}
+                ? "선생님"
+                : "학부모"}
           </p>
           <h3>
             <span>{userProfile.name}</span>
@@ -91,7 +91,7 @@ const SideBar = () => {
           </h3>
         </StyledUserProfileWrapper>
         {userProfile.role === "PRINCIPAL" ? (
-          <PrincipalSideBar />
+          <TeacherSideBar />
         ) : userProfile.role === "TEACHER" ? (
           <TeacherSideBar />
         ) : (
