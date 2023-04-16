@@ -5,10 +5,11 @@ import "moment/locale/ko";
 import "./AttendanceCalendar.css";
 import styled, { css } from "styled-components";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { contentSelector, infoSelector } from "../../atom/attendanceManageAtom";
 import textVariants from "../../styles/variants/textVariants";
 import StyledChildmanage from "./styled";
+import { dateAtom } from "../../atom/dateAtom";
 
 const views = {
   month: true,
@@ -20,6 +21,7 @@ const AttendanceCalendar = () => {
   const content = useRecoilValue(contentSelector);
   const info = useRecoilValue(infoSelector);
   console.log(content, info);
+  const [date, setDate] = useRecoilState(dateAtom);
 
   const myEventsList = content.map(({ date, enterTime, exitTime, status }) => {
     return {
@@ -31,13 +33,31 @@ const AttendanceCalendar = () => {
     };
   });
 
+  const handlePrevMonth = (onNavigate) => {
+    onNavigate("PREV");
+    const prevMonth = date.month - 1;
+    const year = prevMonth === 0 ? date.year - 1 : date.year;
+    const month = prevMonth === 0 ? 12 : prevMonth;
+    setDate({ year, month });
+    console.log(date);
+  };
+  
+  const handleNextMonth = (onNavigate) => {
+    onNavigate("NEXT");
+    const nextMonth = date.month + 1;
+    const year = nextMonth === 13 ? date.year + 1 : date.year;
+    const month = nextMonth === 13 ? 1 : nextMonth;
+    setDate({ year, month });
+    console.log(date);
+  };
+
   const HeaderComponent = ({ label, onNavigate }) => (
     <HeaderContainer>
       <StyledChildmanage.Title>출결관리</StyledChildmanage.Title>
       <NavigationContainer>
-        <PrevButton onClick={() => onNavigate("PREV")} />
+        <PrevButton onClick={() => handlePrevMonth(onNavigate)} />
         <NavigationTitle>{label}</NavigationTitle>
-        <NextButton onClick={() => onNavigate("NEXT")} />
+        <NextButton onClick={() => handleNextMonth(onNavigate)} />
       </NavigationContainer>
       <AttendanceContainer>
         <AttendanceCalendarInfoBox boxColor="primary">

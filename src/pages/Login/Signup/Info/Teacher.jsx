@@ -49,9 +49,6 @@ const Teacher = () => {
     formData.append("email", data.email ?? null);
     formData.append("resolution", data.resolution ?? null);
 
-    for (const [key, value] of formData.entries()) {
-      console.log(`${key}: ${value}`);
-    }
     const role = location.pathname.split("/")[2];
     mutate({ role: role, info: formData });
   };

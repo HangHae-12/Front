@@ -48,9 +48,6 @@ const Parent = () => {
     selectedFile && formData.append("profileImage", selectedFile);
     formData.append("emergencyPhoneNumber", data.emergencyPhoneNumber);
 
-    for (const [key, value] of formData.entries()) {
-      console.log(`${key}: ${value}`);
-    }
     const role = location.pathname.split("/")[2];
 
     mutate({ role: role, info: formData });
