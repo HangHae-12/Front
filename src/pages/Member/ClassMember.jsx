@@ -17,6 +17,7 @@ import { AiOutlineSearch } from "react-icons/ai";
 import debounce from "../../utils/debounce";
 import ProfileImageUploader from "../../components/ProfileImageUploader";
 import { profileImageState } from "../../atom/profileImageUploaderAtom";
+import { motion } from "framer-motion";
 
 const ClassMember = () => {
   const queryClient = useQueryClient();
@@ -296,6 +297,8 @@ const ClassMember = () => {
               <StyledChildrenCard
                 key={item.childId}
                 onClick={(e) => getDetailMember(item.childId)}
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.2 }}
               >
                 <StyledChildrenImage src={item.profileImageUrl} />
                 {item.name}
@@ -339,7 +342,7 @@ const StyledChildrenContainer = styled.div`
   flex-wrap: wrap;
 `;
 
-const StyledChildrenCard = styled.div`
+const StyledChildrenCard = styled(motion.div)`
   background: ${({ theme }) => theme.color.white};
   border-radius: 8px;
   width: 180px;
