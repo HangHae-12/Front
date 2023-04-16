@@ -25,6 +25,13 @@ const StyledContainer = styled.div`
 const StyledLeftContainer = styled.div`
   width: 200px;
   height: 100vh;
+  margin:0px;
+  @media ${({ theme }) => theme.device.laptop} {
+    display: none;
+  }
+  @media ${({ theme }) => theme.device.mobile} {
+    display: none;
+  }
 `;
 
 const StyledRightContainer = styled.div`
@@ -32,4 +39,13 @@ const StyledRightContainer = styled.div`
   height: 100%;
   min-height: 100vh;
   margin: 60px 150px 94px 150px;
+
+  @media ${({ theme }) => theme.device.laptop} {
+    width: 100%;
+  }
+  @media ${({ theme }) => theme.device.mobile} {
+    width: 100%;
+    
+  }
+
 `;
