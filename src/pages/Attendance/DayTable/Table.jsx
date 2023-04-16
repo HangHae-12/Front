@@ -115,7 +115,7 @@ const Table = () => {
             </thead>
             <tbody>
               {isSunday ? (
-                <AnimatedTableRow delay={1 * 0.1}>
+                <AnimatedTableRow delay={1 * 0.05}>
                   <td className="sunday" colSpan="6"><BsSun /> 일요일은 쉬는날</td>
                 </AnimatedTableRow>
               ) : (
