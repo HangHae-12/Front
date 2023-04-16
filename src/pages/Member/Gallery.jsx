@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
+import { motion } from "framer-motion";
 import { MemberAPI } from "../../api/MemberAPI";
 import "react-datepicker/dist/react-datepicker.css";
 import Modal from "../../components/Modal";
@@ -408,8 +409,11 @@ const Gallery = () => {
           {data?.data.data.imagePostResponseDtoList.map((item) => {
             return (
               <StyledGalleryCard
+
                 key={item.imagePostId}
                 onClick={() => getDetailGallery(item.imagePostId)}
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.2 }}
               >
                 <StyledGalleryImage src={item.imageUrlList} />
                 <StyledTitleFont>{item.title}</StyledTitleFont>
@@ -491,7 +495,7 @@ const StyledGalleryContainer = styled.div`
   
 `;
 
-const StyledGalleryCard = styled.div`
+const StyledGalleryCard = styled(motion.div)`
   display: flex;
   flex-direction: column;
   justify-content: center;
