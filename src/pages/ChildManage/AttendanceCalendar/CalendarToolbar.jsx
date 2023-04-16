@@ -81,9 +81,11 @@ const StyledCalendarToolbar = {
 
   PrevButton: styled(AiOutlineLeft)`
     font-size: 20px;
+    cursor: pointer;
   `,
   NextButton: styled(AiOutlineRight)`
     font-size: 20px;
+    cursor: pointer;
   `,
   AttendanceInfoWrapper: styled.div`
     display: flex;
