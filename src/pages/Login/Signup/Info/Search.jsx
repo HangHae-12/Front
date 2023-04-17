@@ -34,7 +34,14 @@ const Search = () => {
       }
     },
     onError: (error) => {
-      openModal({ contents: <AlertModal /> });
+      openModal({
+        contents: (
+          <AlertModal
+            title="비정상적인 접근입니다!"
+            message="유치원을 선택하지 않았거나 존재하지 않는 유치원입니다."
+          />
+        ),
+      });
     },
   });
 
