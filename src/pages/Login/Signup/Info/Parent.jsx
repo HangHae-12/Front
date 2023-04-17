@@ -48,9 +48,6 @@ const Parent = () => {
     selectedFile && formData.append("profileImage", selectedFile);
     formData.append("emergencyPhoneNumber", data.emergencyPhoneNumber);
 
-    for (const [key, value] of formData.entries()) {
-      console.log(`${key}: ${value}`);
-    }
     const role = location.pathname.split("/")[2];
 
     mutate({ role: role, info: formData });
@@ -62,7 +59,7 @@ const Parent = () => {
         <StyledLogin.Title>학부모님! 정보를 입력해주세요</StyledLogin.Title>
         <StyledInfo.Form onSubmit={handleSubmit(onSubmit)}>
           <StyledInfo.Wrapper>
-            <ProfileImageUploader prev={profileImageUrl} />
+            <ProfileImageUploader id="Parent" prev={profileImageUrl} />
             <StyledInfo.Box>
               <StyledInfo.ContentsWrapper>
                 <StyledLogin.Label htmlFor="name" isEssential>

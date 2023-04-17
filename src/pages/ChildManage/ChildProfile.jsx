@@ -102,6 +102,7 @@ const ChildProfile = () => {
         <StyledChildManage.Title>원생 프로필</StyledChildManage.Title>
         <StyledProfile.ProfileWrapper>
           <ProfileImageUploader
+          id="ChildProfile"
             isFixMode={!isFixMode}
             prev={data?.data?.data?.profileImageUrl}
           />
