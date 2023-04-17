@@ -14,6 +14,7 @@ import Children from "./Children";
 import Pagination from "../../components/CustomPagination";
 import { paginationAtom } from "../../atom/hostButtonAtom";
 import { motion } from 'framer-motion';
+import getDate from '../../utils/getDate';
 
 const ClassButtonGroup = () => {
 
@@ -21,6 +22,8 @@ const ClassButtonGroup = () => {
   const { classroomId = 0, scheduleId = "ENTER", timeId = 0 } = useParams();
   const [page, setPage] = useRecoilState(paginationAtom);
   const [size, setSize] = useState(14);
+  const date = new Date();
+  const isSunday = getDate.isSunday(date);
 
   const time = ["전체시간", "07시~08시", "08시~09시", "09시~10시", "16시~17시", "17시~18시", "18시~19시"][parseInt(timeId)];
   //등원,하원,timea,page param
@@ -30,6 +33,7 @@ const ClassButtonGroup = () => {
     ["getManageSchedule", hostParams],
     () => HostAPI.getManageSchedule(hostParams),
     {
+      enabled: !isSunday,
       onError: (error) => {
         console.log("getManageSchedule error:", error);
       },
