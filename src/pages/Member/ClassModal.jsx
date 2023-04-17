@@ -192,9 +192,9 @@ export const MemberAddModal = () => {
         <StyledLeftWrapper>
           <StyledProfileHeaderFont>원생 프로필</StyledProfileHeaderFont>
           {memberinfor.image ? (
-          <ProfileImageUploader prev={memberinfor.image} />
+          <ProfileImageUploader id="classModal" prev={memberinfor.image} />
           ) : (
-            <ProfileImageUploader prev={preview.previewImage} />
+            <ProfileImageUploader id="classModal" prev={preview.previewImage} />
             )}
         </StyledLeftWrapper>
         <StyledRightWrapper>

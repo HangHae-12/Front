@@ -58,7 +58,7 @@ const Teacher = () => {
       <StyledLogin.Title>선생님! 정보를 입력해주세요</StyledLogin.Title>
       <StyledInfo.Form onSubmit={handleSubmit(onSubmit)}>
         <StyledInfo.Wrapper>
-          <ProfileImageUploader prev={profileImageUrl} />
+          <ProfileImageUploader id="Teacher" prev={profileImageUrl} />
           <StyledInfo.Box>
             <StyledInfo.ContentsWrapper>
               <StyledLogin.Label htmlFor="name" isEssential>
