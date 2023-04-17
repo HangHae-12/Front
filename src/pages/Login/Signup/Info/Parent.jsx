@@ -11,6 +11,7 @@ import { REGEXP } from "../../../../helpers/regexp";
 import session from "../../../../utils/session";
 import useModal from "../../../../hooks/useModal";
 import AlertModal from "../../../../components/Modals/AlertModal";
+import formatPhoneNumber from "../../../../utils/formatPhoneNumber";
 
 const Parent = () => {
   const location = useLocation();
@@ -72,7 +73,8 @@ const Parent = () => {
                     required: "이름을 입력해주세요.",
                     pattern: {
                       value: REGEXP.name,
-                      message: "유효하지 않은 이름입니다.",
+                      message:
+                        "이름을 정확하게 입력해주세요. 한글 또는 영문 2~15자 이내만 가능합니다.",
                     },
                   })}
                   id="name"
@@ -97,10 +99,12 @@ const Parent = () => {
                     required: "연락처를 입력해주세요",
                     pattern: {
                       value: REGEXP.phone,
-                      message: "전화번호를 정확하게 입력해 주세요.",
+                      message:
+                        "전화번호를 정확하게 입력해 주세요. (ex: 010-000-0000 or 02-000-0000)",
                     },
                   })}
                   id="phoneNumber"
+                  onInput={(e) => formatPhoneNumber(e)}
                   valid={errors.phoneNumber}
                   size={12}
                 />
@@ -120,10 +124,12 @@ const Parent = () => {
                   {...register("emergencyPhoneNumber", {
                     pattern: {
                       value: REGEXP.phone,
-                      message: "전화번호를 정확하게 입력해 주세요.",
+                      message:
+                        "전화번호를 정확하게 입력해 주세요. (ex: 010-000-0000 or 02-000-0000)",
                     },
                   })}
                   id="emergencyPhoneNumber"
+                  onInput={(e) => formatPhoneNumber(e)}
                   valid={errors.emergencyPhoneNumber}
                   size={12}
                 />
