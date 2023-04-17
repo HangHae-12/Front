@@ -54,7 +54,7 @@ const StyledInfoContainer = styled.div`
   border: 1px solid ${({ theme }) => theme.color.grayScale[100]};
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   border-radius: 12px;
-  padding: 40px 14px 40px 15px;
+  padding: 40px 0px 40px 0px;
 `;
 const StyledInfoRow = styled.div`
   display: flex;
@@ -63,6 +63,7 @@ const StyledInfoRow = styled.div`
   justify-content: center;
   border-radius: 8px;
   gap: 20px;
+  
 `;
 const StyledInfoColomn = styled.div`
   display: flex;

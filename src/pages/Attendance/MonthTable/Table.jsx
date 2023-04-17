@@ -206,7 +206,7 @@ const Table = () => {
                             {data?.data?.data?.map((student, index) => {
                                 return (
                                     <>
-                                        <AnimatedTableRow key={student.id} delay={index * 0.1}>
+                                        <AnimatedTableRow key={student.id} delay={index * 0.05}>
                                             <StyledNameCell rowSpan="3">{getRandomIcon()} {student.name}</StyledNameCell>
                                             <td>출석상태</td>
                                             {visibleDays.map((day) => {
@@ -234,7 +234,7 @@ const Table = () => {
                                             <StyledNameCell rowSpan="3">{student.attendanceCount}</StyledNameCell>
                                             <StyledNameCell rowSpan="3">{student.absentCount}</StyledNameCell>
                                         </AnimatedTableRow>
-                                        <AnimatedTableRow delay={index * 0.1}>
+                                        <AnimatedTableRow delay={index * 0.05}>
                                             <td>등원시간</td>
                                             {visibleDays.map((day) => {
                                                 const attendance = student.monthAttendanceList.find(
@@ -244,7 +244,7 @@ const Table = () => {
                                                 return <td key={day}>{attendance ? attendance.enterTime : <></>}</td>;
                                             })}
                                         </AnimatedTableRow>
-                                        <AnimatedTableRow delay={index * 0.1}>
+                                        <AnimatedTableRow delay={index * 0.05}>
                                             <td>하원시간</td>
                                             {visibleDays.map((day) => {
                                                 const attendance = student.monthAttendanceList.find(

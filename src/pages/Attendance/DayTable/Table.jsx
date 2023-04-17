@@ -85,7 +85,7 @@ const Table = () => {
             </thead>
             <tbody>
               {isSunday ? (
-                <AnimatedTableRow delay={1 * 0.05}>
+                <AnimatedTableRow delay={1 * 0.5}>
                   <td className="sunday" colSpan="6"><BsSun /> 일요일은 쉬는날</td>
                 </AnimatedTableRow>
               ) : (
@@ -93,7 +93,7 @@ const Table = () => {
                 data.data.data
                   .filter((row) => row !== null) // null 값을 걸러내기 위한 추가 작업
                   .map((row, index) => (
-                    <AnimatedTableRow key={row.id} delay={index * 0.1} >
+                    <AnimatedTableRow key={row.id} delay={index * 0.05} >
                       <td>{index + 1}</td>
                       <td>{getRandomIcon()} {row.name}</td>
                       <td>
