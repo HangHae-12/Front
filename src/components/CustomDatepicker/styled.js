@@ -59,5 +59,21 @@ const StyledCustomDatePicker = styled.div`
   .react-datepicker__navigation--next {
     margin-left: 10px;
   }
+  hidden {
+    display: none;
+  }
+
+  .react-datepicker__input-container {
+    display: flex;
+    align-items: center;
+  }
+
+  .react-datepicker__close-icon::after {
+    display: none;
+  }
+
+  .slCalender {
+    cursor: pointer;
+  }
 `;
 export default StyledCustomDatePicker;

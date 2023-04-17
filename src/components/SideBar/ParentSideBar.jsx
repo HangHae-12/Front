@@ -15,20 +15,24 @@ const ParentSideBar = () => {
 
     return (
         <StyledSideBarBtnWrapper>
-            <CustomButton
-                colorTypes={selectedIndex === 0 ? "primary" : undefined}
-                buttonsTypes="NB_Button"
-                onClick={() => handleSideMenu(0)}
-            >
-                <Link to="/classes">학급 관리</Link>
-            </CustomButton>
-            <CustomButton
-                colorTypes={selectedIndex === 1 ? "primary" : undefined}
-                buttonsTypes="NB_Button"
-                onClick={() => handleSideMenu(1)}
-            >
-                <Link to="/childmanage">아이 관리</Link>
-            </CustomButton>
+            <Link to="/classes">
+                <CustomButton
+                    colorTypes={selectedIndex === 0 ? "primary" : undefined}
+                    buttonsTypes="NB_Button"
+                    onClick={() => handleSideMenu(0)}
+                >
+                    학급 관리
+                </CustomButton>
+            </Link>
+            <Link to="/childmanage">
+                <CustomButton
+                    colorTypes={selectedIndex === 1 ? "primary" : undefined}
+                    buttonsTypes="NB_Button"
+                    onClick={() => handleSideMenu(1)}
+                >
+                    아이 관리
+                </CustomButton>
+            </Link>
         </StyledSideBarBtnWrapper>
 
     );

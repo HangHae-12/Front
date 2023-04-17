@@ -35,7 +35,7 @@ const GlobalLoader = () => {
   return isFetching ? <LoadingModal /> : null;
 };
 
-function App() {
+const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <QueryErrorResetBoundary>
@@ -58,6 +58,6 @@ function App() {
       </QueryErrorResetBoundary>
     </QueryClientProvider>
   );
-}
+};
 
 export default App;

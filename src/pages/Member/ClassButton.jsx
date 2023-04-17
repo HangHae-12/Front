@@ -16,21 +16,28 @@ import useModal from "../../hooks/useModal";
 import Modal from "../../components/Modal";
 import { useRecoilValue } from "recoil";
 import { userProfileAtom } from "../../atom/sideBarAtom";
+import { motion } from "framer-motion";
+import { kindergartenAtom, userProfileAtom } from "../../atom/sideBarAtom";
+
 
 const ClassButton = () => {
   const [selectedButton, setSelectedButton] = useState("");
   const [selectedTab, setSelectedTab] = useState("");
+  const [classInfo, setClassInfo] = useState([]);
   const { openModal, closeModal } = useModal();
   const { id } = useParams();
   const userRole = useRecoilValue(userProfileAtom);
+  const kindergertenId = useRecoilValue(kindergartenAtom)
 
   const { data } = useQuery(
     ["classesPage", id || "1"],
     () => MemberAPI.getClassesPage(id || "1"),
     {
       onSuccess: (data) => {
-        console.log(data);
-      },
+        console.log(data)
+      }
+    },
+    {
       onError: () => {
         console.log("error");
       },
@@ -79,6 +86,19 @@ const ClassButton = () => {
     }
   };
 
+  // useEffect(() => {
+  //   if (data && data.data && data.data.everyClass) {
+  //     setClassInfo(
+  //       data.data.everyClass.map((item) => ({ id: item.id, name: item.name }))
+  //     );
+  //   }
+  // }, [data]);
+
+  // const idToButtonName = (id) => {
+  //   const foundClass = classInfo.find((classItem) => classItem.id === id);
+  //   return foundClass ? foundClass.name : "";
+  // };
+
   const handleMemberClick = () => {
     setSelectedTab("member");
     localStorage.setItem("selectedTab", "member");
@@ -96,6 +116,21 @@ const ClassButton = () => {
     navigate(`/classes/${id}`);
   };
 
+  const fadeInUp = {
+    hidden: {
+      opacity: 0,
+      y: 50,
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.5,
+      },
+    },
+  };
+
+
   return (
     <>
       <StyledInputWrapper>
@@ -105,6 +140,15 @@ const ClassButton = () => {
         ) : null}
       </StyledInputWrapper>
       <StyledButtonWrapper>
+        {/* {data.data.everyClass.map((item) => {
+          return (
+            <Button.ClassButton
+            selected={item.name}
+            selectedButton={selectedButton}
+            onClick={() => handleButtonClick(item.name, item.id)}
+          />
+          )
+        })} */}
         <Button.ClassButton
           selected={"세빛반"}
           selectedButton={selectedButton}
@@ -121,35 +165,41 @@ const ClassButton = () => {
           onClick={() => handleButtonClick("빛살반", 3)}
         />
       </StyledButtonWrapper>
-      <TeacherInformation data={data} />
-      {selectedTab === "member" ? (
-        <StyledABBtn marginLeft="30px" onClick={handleMemberClick}>
-          학급인원
-        </StyledABBtn>
-      ) : (
-        <StyledABButton marginLeft="30px" onClick={handleMemberClick}>
-          학급인원
-        </StyledABButton>
-      )}
-      {selectedTab === "gallery" ? (
-        <StyledABBtn marginLeft="10px" onClick={handleGalleryClick}>
-          갤러리
-        </StyledABBtn>
-      ) : (
-        <StyledABButton marginLeft="10px" onClick={handleGalleryClick}>
-          갤러리
-        </StyledABButton>
-      )}
-      {selectedTab === "member" ? (
-        <ClassMember />
-      ) : selectedTab === "gallery" ? (
-        <Gallery />
-      ) : selectedTab === "" ? (
-        <ClassMember />
-      ) : (
-        <ClassMember />
-      )}
-      <Modal modalOption={modalOption} />
+      <motion.div variants={fadeInUp} initial="hidden" animate="visible" custom={0.4}>
+        <TeacherInformation data={data} />
+      </motion.div>
+      <motion.div variants={fadeInUp} initial="hidden" animate="visible" custom={0.6}>
+        {selectedTab === "member" ? (
+          <StyledABBtn marginLeft="30px" onClick={handleMemberClick}>
+            학급인원
+          </StyledABBtn>
+        ) : (
+          <StyledABButton marginLeft="30px" onClick={handleMemberClick}>
+            학급인원
+          </StyledABButton>
+        )}
+        {selectedTab === "gallery" ? (
+          <StyledABBtn marginLeft="10px" onClick={handleGalleryClick}>
+            갤러리
+          </StyledABBtn>
+        ) : (
+          <StyledABButton marginLeft="10px" onClick={handleGalleryClick}>
+            갤러리
+          </StyledABButton>
+        )}
+        {
+          selectedTab === "member" ? (
+            <ClassMember />
+          ) : selectedTab === "gallery" ? (
+            <Gallery />
+          ) : selectedTab === "" ? (
+            <ClassMember />
+          ) : (
+            <ClassMember />
+          )
+        }
+        <Modal modalOption={modalOption} />
+      </motion.div>
     </>
   );
 };
