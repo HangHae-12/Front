@@ -24,9 +24,6 @@ const TeacherInformation = ({ data }) => {
     ["TeacherInformation"],
     () => MemberAPI.getTeacherInformation(),
     {
-      onSuccess: (data) => {
-        console.log(data.data);
-      },
       onError: () => {
         console.log("error");
       },
