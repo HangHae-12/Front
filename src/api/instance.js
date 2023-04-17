@@ -6,6 +6,8 @@ const instance = axios.create({
   baseURL: `${ENV.main_server}`,
 });
 
+let isAlertDisplayed = false;
+
 instance.interceptors.request.use(
   function (config) {
     const token = tokenCookie.get();
@@ -25,9 +27,18 @@ instance.interceptors.response.use(
   },
 
   function (error) {
-    if (error.response && error.response.status === 401) {
+    if (
+      error.response &&
+      error.response.data.message === "인가되지 않은 사용자입니다."
+    ) {
       tokenCookie.remove();
-      alert("인증이 만료되었습니다. 다시 로그인 해주세요.");
+      if (!isAlertDisplayed) {
+        isAlertDisplayed = true;
+        alert(
+          "로그인이 만료되었거나 인가되지 않은 사용자 입니다. 다시 로그인 해주세요."
+        );
+        window.location.reload();
+      }
     }
 
     return Promise.reject(error);
