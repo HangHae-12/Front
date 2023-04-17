@@ -503,6 +503,12 @@ const SyledAddGalleryButton = styled.button`
   &:active {
         cursor: grabbing;
   }
+  @media ${({ theme }) => theme.device.mobile} {
+    display:none;
+  }
+  @media ${({ theme }) => theme.device.laptop} {
+    display:none;
+  }
 `;
 
 const StyledGalleryContainer = styled.div`

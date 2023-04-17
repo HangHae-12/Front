@@ -2,7 +2,7 @@ import styled from "styled-components";
 import textVariants from "../../styles/variants/textVariants";
 import { motion } from "framer-motion";
 
-const DustInfo = ({ todayDust, tomorrowDust }) => {
+const DustInfo = ({ data }) => {
     const DustEmoji = ({ dust }) => {
         let emoji;
         if (dust <= 30) {
@@ -17,23 +17,23 @@ const DustInfo = ({ todayDust, tomorrowDust }) => {
 
     return (
         <StyledWrapper>
-            <StyledHeader>미세먼지 정보</StyledHeader>
+            <StyledHeader>오늘의 미세먼지 정보</StyledHeader>
             <StyledContent>
                 <StyledBox
                     whileHover={{ scale: 1.05 }}
                     transition={{ duration: 0.2 }}>
                     <StyledMLabel>미세먼지</StyledMLabel>
                     <StyledLine />
-                    <DustEmoji dust={todayDust} />
-                    <StyledDustLevel>보통</StyledDustLevel>
+                    <DustEmoji dust={data} />
+                    <StyledDustLevel>보통 <span>20㎍/㎥</span></StyledDustLevel>
                 </StyledBox>
                 <StyledBox
                     whileHover={{ scale: 1.05 }}
                     transition={{ duration: 0.2 }}>
                     <StyledSLabel>초미세먼지</StyledSLabel>
                     <StyledLine />
-                    <DustEmoji dust={tomorrowDust} />
-                    <StyledDustLevel>보통</StyledDustLevel>
+                    <DustEmoji dust={data} />
+                    <StyledDustLevel>보통 <span>20㎍/㎥</span></StyledDustLevel>
                 </StyledBox>
             </StyledContent>
             <StyledDescription>
@@ -57,7 +57,6 @@ const StyledWrapper = styled.div`
 
 const StyledHeader = styled.div`
   ${textVariants.Body1_Bold}
-  font-weight: bold;
   color: ${({ theme }) => theme.color.grayScale[700]};
   margin-bottom: 18px;
 `;
@@ -114,6 +113,10 @@ const StyledDustLevel = styled.div`
   ${textVariants.Body1_SemiBold}
   font-weight: bold;
   color: ${({ theme }) => theme.color.grayScale[600]};
+
+  span{
+    ${textVariants.Body3_SemiBold}
+  }
 `;
 
 const StyledDescription = styled.div`

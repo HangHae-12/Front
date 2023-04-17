@@ -7,7 +7,6 @@ import { userProfileAtom } from "../../atom/sideBarAtom";
 
 const TeacherProfile = ({ data, setTeacherAppoint }) => {
     const userRole = useRecoilValue(userProfileAtom);
-
     return (
         <StyledWrapper>
             <StyledProfileWrapper>
@@ -16,11 +15,12 @@ const TeacherProfile = ({ data, setTeacherAppoint }) => {
                     {userRole.role === "PRINCIPAL" ? (
                         <StyledGearButton
                             marginLeft="8px"
-                        // onClick={() => setTeacherAppoint()}
+                            onClick={() => setTeacherAppoint()}
+
                         />
                     ) : null}
                 </StyledChangeTeacher>
-                <StyledProfileImage src={DUMMY_IMG_SRC} />
+                <StyledProfileImage src={data?.classroomTeacher?.profileImageUrl} />
             </StyledProfileWrapper>
             <StyledInfo>
                 <StyledOneWord>
@@ -50,9 +50,11 @@ const StyledWrapper = styled.div`
   gap: 80px;
   @media ${({ theme }) => theme.device.mobile} {
     flex-direction: column;
+    gap: 40px;
   }
   @media ${({ theme }) => theme.device.laptop} {
     flex-direction: column;
+    gap: 60px;
   }
 `;
 
@@ -89,6 +91,12 @@ const StyledChangeText = styled.div`
   ${textVariants.Body2_SemiBold}
   color: ${({ theme }) => theme.color.grayScale[500]};
   margin-right: 8px;
+  @media ${({ theme }) => theme.device.mobile} {
+    margin-top: 20px;
+  }
+  @media ${({ theme }) => theme.device.laptop} {
+    margin-top: 20px;
+  }
 `;
 
 const StyledGearButton = styled(BsFillGearFill)`

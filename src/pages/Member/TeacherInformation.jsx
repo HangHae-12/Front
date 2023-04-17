@@ -153,17 +153,14 @@ const TeacherInformation = ({ data }) => {
 
   return (
     <>
-
       <StyledContentWrapper>
         <StyledLeftWrapper>
-          <TeacherProfile />
+          <TeacherProfile data={data?.data?.data} setTeacherAppoint={setTeacherAppoint} />
         </StyledLeftWrapper>
         <StyledRightWrapper>
-          <DustInfo data={data?.data?.data} setTeacherAppoint={setTeacherAppoint} />
+          <DustInfo data={data?.data?.data} />
         </StyledRightWrapper>
-
       </StyledContentWrapper>
-
     </>
   );
 };
@@ -178,6 +175,7 @@ const StyledContentWrapper = styled.div`
   flex-direction: row;
   padding: 30px;
   gap: 32px;
+
 `;
 
 const StyledLeftWrapper = styled.div`
@@ -188,6 +186,9 @@ const StyledLeftWrapper = styled.div`
   border-radius: 12px;
   border: 1px solid ${({ theme }) => theme.color.grayScale[100]};
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  @media ${({ theme }) => theme.device.mobile} {
+    width: 100%; 
+  }
 `;
 
 const StyledRightWrapper = styled.div`
@@ -199,6 +200,9 @@ const StyledRightWrapper = styled.div`
   border-radius: 12px;
   border: 1px solid ${({ theme }) => theme.color.grayScale[100]};
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  @media ${({ theme }) => theme.device.mobile} {
+    display:none;
+  }
 `;
 
 

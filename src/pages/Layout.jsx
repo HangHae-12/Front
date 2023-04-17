@@ -31,6 +31,7 @@ const StyledLeftContainer = styled.div`
   width: 200px;
   height: 100vh;
   margin:0px;
+  
   @media ${({ theme }) => theme.device.laptop} {
     display: none;
   }
