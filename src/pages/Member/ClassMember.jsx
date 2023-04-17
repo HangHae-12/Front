@@ -17,6 +17,7 @@ import { AiOutlineSearch } from "react-icons/ai";
 import debounce from "../../utils/debounce";
 import ProfileImageUploader from "../../components/ProfileImageUploader";
 import { profileImageState } from "../../atom/profileImageUploaderAtom";
+import { motion } from "framer-motion";
 
 const ClassMember = () => {
   const queryClient = useQueryClient();
@@ -32,7 +33,7 @@ const ClassMember = () => {
   const [parentAdd, setParentAdd] = useRecoilState(parentAtom);
   const [isChildModify, setIsChildModify] = useState(false);
   const [isChildAdd, setIsChildAdd] = useState(false);
-  const [image, setImage] = useRecoilState(profileImageState)
+  const [image, setImage] = useRecoilState(profileImageState);
   const userRole = useRecoilValue(userProfileAtom);
   const preview = useRecoilValue(profileImageState);
   const [debouncedSearchMember, setDebouncedSearchMember] = useState("");
@@ -94,7 +95,7 @@ const ClassMember = () => {
     } else {
       setRender(false);
     }
-  }, [memberinfor, isChildModify, parentinfor,preview]);
+  }, [memberinfor, isChildModify, parentinfor, preview]);
 
   //아이 상세 조회 모달
   const getChildInformation = (response) => {
@@ -143,7 +144,7 @@ const ClassMember = () => {
       onClose: () => {
         setMemberAdd("");
         setParentAdd("");
-        setImage("")
+        setImage("");
       },
     };
   };
@@ -172,7 +173,7 @@ const ClassMember = () => {
         setIsChildModify(false);
         setMemberAdd("");
         setParentAdd("");
-        setImage("")
+        setImage("");
       },
     }));
   };
@@ -219,8 +220,24 @@ const ClassMember = () => {
     }
   }, [memberinfor, parentinfor, isChildAdd, preview]);
 
+  const validateForm = (memberInfo, parentInfo) => {
+    const requiredFields = ["name", "birth", "gender", "parentId"];
+
+    for (const field of requiredFields) {
+      if (!memberInfo[field] && !parentInfo[field]) {
+        return false;
+      }
+    }
+    return true;
+  };
+
   //반별 아이들 인원 등록 버튼
   const handleMemberSubmit = (id) => {
+    if (!validateForm(memberinfor, parentinfor)) {
+      alert("모두 입력해 주세요.");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("name", memberinfor.name);
     formData.append("birth", memberinfor.birth);
@@ -296,6 +313,8 @@ const ClassMember = () => {
               <StyledChildrenCard
                 key={item.childId}
                 onClick={(e) => getDetailMember(item.childId)}
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.2 }}
               >
                 <StyledChildrenImage src={item.profileImageUrl} />
                 {item.name}
@@ -320,17 +339,10 @@ const ClassMember = () => {
 export default ClassMember;
 
 const StyledChildrenWrapper = styled.div`
-  padding: 0px 0px 20px;
+  padding: 0px 20px 20px;
   gap: 40px;
-  width: calc(7 * (190px + 15px));
-  height: 484px;
   background: rgba(237, 245, 238, 0.8);
   border-radius: 12px;
-
-  @media (max-width: 1800px) {
-    width: calc(7 * (140px + 15px));
-    height: 360px;
-  }
 `;
 
 const StyledChildernHeader = styled.div`
@@ -346,7 +358,7 @@ const StyledChildrenContainer = styled.div`
   flex-wrap: wrap;
 `;
 
-const StyledChildrenCard = styled.div`
+const StyledChildrenCard = styled(motion.div)`
   background: ${({ theme }) => theme.color.white};
   border-radius: 8px;
   width: 180px;
@@ -362,7 +374,7 @@ const StyledChildrenCard = styled.div`
   margin-left: 10px;
   margin-top: 10px;
 
-  @media (max-width: 1800px) {
+  @media ${({ theme }) => theme.device.laptop} {
     width: 135px;
     height: 130px;
   }

@@ -31,5 +31,6 @@ const CustomDatepicker = ({ mode, selectedDate, onDateChange }) => {
 export default CustomDatepicker;
 
 const CustomInput = React.forwardRef(({ value, onClick }, ref) => (
-    <SlCalender onClick={onClick} ref={ref} className="hidden" />
+    <SlCalender onClick={onClick} ref={ref} className="hidden slCalender" />
 ));
+

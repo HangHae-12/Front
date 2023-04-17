@@ -1,6 +1,7 @@
 import StyledLogin from "../styled";
 import SignupRouteGuard from "./SignupRouteGuard";
 import Modal from "../../../components/Modal";
+import { Outlet } from "react-router-dom";
 
 const Layout = () => {
   const requiredKeys = {
