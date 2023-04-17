@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { useQueryClient, useQuery } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-import { AttendanceAPI } from "../../../api/AttendanceAPI";
+import useGetQuery from '../../../hooks/useGetQuery';
 import { GrPrevious, GrNext } from "react-icons/gr";
 import { BsSun } from "react-icons/bs"
 import { GoOctoface } from "react-icons/go"
@@ -18,40 +18,16 @@ import AnimatedTableRow from '../AnimatedTableRow';
 
 const Table = () => {
   const queryClient = useQueryClient();
-  const [selectedDate, setSelectedDate] = useState(new Date());
 
   const { id = 1 } = useParams();
-
-  function formatDate(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-
-    return `${year}-${month}-${day}`;
-  }
+  const { selectedDate, setSelectedDate, handleDateChange, data } = useGetQuery("day");
 
   const isSunday = selectedDate.getDay() === 0;
-
-  //로딩,에러일때 처리 바꿔야함
-  const { data } = useQuery(
-    ["getDayAttendance", selectedDate, id],
-    () => AttendanceAPI.getDayAttendance({ classroomId: id, date: formatDate(selectedDate) }),
-    {
-      enabled: !isSunday, // 일요일이 아닐 때만 API 요청을 수행
-      onError: (error) => {
-        console.log("getDayAttendance error:", error);
-      },
-    }
-  );
 
   useEffect(() => {
     queryClient.invalidateQueries(["getDayAttendance"]);
   }, [selectedDate, id]);
 
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-    queryClient.invalidateQueries(["getDayAttendance"]);
-  };
 
   const dayOfWeek = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'][selectedDate.getDay()];
 

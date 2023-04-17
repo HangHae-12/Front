@@ -8,6 +8,7 @@ import { GoOctoface } from "react-icons/go"
 import { TbDog } from "react-icons/tb"
 import { RiBearSmileLine } from "react-icons/ri"
 import { AiOutlineSmile, AiOutlineDoubleLeft, AiOutlineDoubleRight, AiOutlineLeft, AiOutlineRight } from "react-icons/ai"
+import useGetQuery from '../../../hooks/useGetQuery';
 import textVariants from '../../../styles/variants/textVariants';
 import Buttons from '../../../components/Buttons';
 import ClassButton from './MonthClassButton';
@@ -19,29 +20,8 @@ import AnimatedTableRow from '../AnimatedTableRow';
 const Table = () => {
     const queryClient = useQueryClient();
     const { sid = 1 } = useParams();
-    const [selectedDate, setSelectedDate] = useState(new Date());
+    const { selectedDate, setSelectedDate, handleDateChange, data } = useGetQuery('month');
 
-    const { data } = useQuery(
-        ["getMonthAttendance", selectedDate, sid],
-        () =>
-            AttendanceAPI.getMonthAttendance({
-                classroomId: sid,
-                year: selectedDate.getFullYear(),
-                month: selectedDate.getMonth() + 1,
-            }),
-        {
-            onError: (error) => {
-                console.log("getMonthAttendance error:", error);
-            },
-        }
-    );
-
-
-    const handleDateChange = (date) => {
-        setSelectedDate(date);
-        console.log(selectedDate);
-        queryClient.invalidateQueries(["getMonthAttendance"]);
-    };
     useEffect(() => {
         queryClient.invalidateQueries(["getMonthAttendance"]);
     }, [selectedDate, sid]);

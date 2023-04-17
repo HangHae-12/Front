@@ -34,10 +34,7 @@ const Router = () => {
             <Route path="/dayAttendance" element={PAGE.dayAttendance} />
             <Route path="/dayAttendance/:id" element={PAGE.dayAttendance} />
             <Route path="/monthAttendance" element={PAGE.monthAttendance} />
-            <Route
-              path="/monthAttendance/:sid"
-              element={PAGE.monthAttendance}
-            />
+            <Route path="/monthAttendance/:id" element={PAGE.monthAttendance} />
             {/* 멤버관리페이지 */}
             <Route path="/memberManage/" element={PAGE.memberManage} />
             <Route path="/memberManage/:id" element={PAGE.memberManage} />
