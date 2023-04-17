@@ -1,39 +1,42 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import textVariants from "../../styles/variants/textVariants";
 import { motion } from "framer-motion";
+import { BsCheckCircle, BsEmojiSunglasses, BsEmojiSmile, BsEmojiExpressionless, BsEmojiFrown } from "react-icons/bs"
 
 const DustInfo = ({ data }) => {
+
     const DustEmoji = ({ dust }) => {
-        let emoji;
-        if (dust <= 30) {
-            emoji = "😃";
-        } else if (dust <= 80) {
-            emoji = "😐";
+        if (dust <= 15) {
+            return { emoji: <BsEmojiSunglasses />, level: "좋음", color: "green" };
+        } else if (dust <= 35) {
+            return { emoji: <BsEmojiSmile />, level: "보통", color: "blue" };
+        } else if (dust <= 75) {
+            return { emoji: <BsEmojiExpressionless />, level: "나쁨", color: "orange" };
         } else {
-            emoji = "😷";
+            return { emoji: <BsEmojiFrown />, level: "매우 나쁨", color: "red" };
         }
-        return <StyledEmoji>{emoji}</StyledEmoji>;
     };
+    const dustInfo = DustEmoji({ dust: data });
 
     return (
         <StyledWrapper>
-            <StyledHeader>오늘의 미세먼지 정보</StyledHeader>
+            <StyledHeader><BsCheckCircle /> 오늘의 미세먼지 정보</StyledHeader>
             <StyledContent>
                 <StyledBox
                     whileHover={{ scale: 1.05 }}
                     transition={{ duration: 0.2 }}>
                     <StyledMLabel>미세먼지</StyledMLabel>
                     <StyledLine />
-                    <DustEmoji dust={data} />
-                    <StyledDustLevel>보통 <span>20㎍/㎥</span></StyledDustLevel>
+                    <StyledEmoji color={dustInfo.color}>{dustInfo.emoji}</StyledEmoji>
+                    <StyledDustLevel color={dustInfo.color}>{dustInfo.level} <span>20㎍/㎥</span></StyledDustLevel>
                 </StyledBox>
                 <StyledBox
                     whileHover={{ scale: 1.05 }}
                     transition={{ duration: 0.2 }}>
                     <StyledSLabel>초미세먼지</StyledSLabel>
                     <StyledLine />
-                    <DustEmoji dust={data} />
-                    <StyledDustLevel>보통 <span>20㎍/㎥</span></StyledDustLevel>
+                    <StyledEmoji color={dustInfo.color}>{dustInfo.emoji}</StyledEmoji>
+                    <StyledDustLevel color={dustInfo.color}>{dustInfo.level} <span>20㎍/㎥</span></StyledDustLevel>
                 </StyledBox>
             </StyledContent>
             <StyledDescription>
@@ -76,7 +79,7 @@ const StyledBox = styled(motion.div)`
   border: 1px solid ${({ theme }) => theme.color.grayScale[100]};
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.12);
-  padding: 8px;
+  padding: 8px 15px;
   flex: 2;
 `;
 
@@ -111,12 +114,12 @@ const StyledEmoji = styled.div`
 
 const StyledDustLevel = styled.div`
   ${textVariants.Body1_SemiBold}
-  font-weight: bold;
-  color: ${({ theme }) => theme.color.grayScale[600]};
-
+  ${({ color }) => css` color: ${color};`}
   span{
     ${textVariants.Body3_SemiBold}
+    color: ${({ theme }) => theme.color.grayScale[500]};
   }
+ 
 `;
 
 const StyledDescription = styled.div`
