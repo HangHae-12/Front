@@ -28,9 +28,7 @@ const Layout = () => {
     <>
       <StyledLogin.Background>
         <StyledLogin.Container>
-          {/* <SignupRouteGuard requiredKeys={requiredKeys} /> */}
-          {/* //////////////////////////////////////////////////////////////////////////////// 반드시 수정하기 */}
-          <Outlet/>
+          <SignupRouteGuard requiredKeys={requiredKeys} />
         </StyledLogin.Container>
       </StyledLogin.Background>
       <Modal modalOption={modalOption} />
