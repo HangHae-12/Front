@@ -16,6 +16,7 @@ const Router = () => {
             <Route index element={PAGE.signup.signup} />
             <Route path="search" element={PAGE.signup.search} />
             <Route path="teacher" element={PAGE.signup.teacher} />
+            <Route path="principal" element={PAGE.signup.principal} />
             <Route path="parent" element={PAGE.signup.parent} />
             <Route path="success" element={PAGE.signup.success} />
           </Route>

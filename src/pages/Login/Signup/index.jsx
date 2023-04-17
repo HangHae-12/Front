@@ -12,8 +12,8 @@ const Signup = () => {
   const role = [
     { role: "parent", label: "학부모" },
     { role: "teacher", label: "선생님" },
-    // { role: "principal", label: "원장선생님" },
-    // 원장선생님 가입 로직은 차후 추가 예정
+    { role: "principal", label: "원장선생님" },
+
   ];
 
   const handleLinkNextPage = (role) => {

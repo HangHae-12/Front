@@ -15,6 +15,7 @@ import ChildManage from "../pages/ChildManage";
 import Layout from "../pages/Layout";
 import SignupSuccess from "../pages/Login/Signup/SignupSuccess";
 import Search from "../pages/Login/Signup/Info/Search";
+import Principal from "../pages/Login/Signup/Info/Principal";
 
 export const PAGE = {
   layout: <Layout />,
@@ -26,6 +27,7 @@ export const PAGE = {
     search: <Search />,
     teacher: <Teacher />,
     parent: <Parent />,
+    principal: <Principal />,
     success: <SignupSuccess />,
   },
 
