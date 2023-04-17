@@ -28,9 +28,6 @@ const ClassButton = () => {
     ["classesPage", id || "1"],
     () => MemberAPI.getClassesPage(id || "1"),
     {
-      onSuccess: (data) => {
-        console.log(data);
-      },
       onError: () => {
         console.log("error");
       },

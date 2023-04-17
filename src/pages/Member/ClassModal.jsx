@@ -3,16 +3,20 @@ import styled from "styled-components";
 import textVariants from "../../styles/variants/textVariants";
 import { memberAtom, parentAtom } from "../../atom/memberAtom";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { MemberAPI } from "../../api/MemberAPI";
 import debounce from "../../utils/debounce";
 import ProfileImageUploader from "../../components/ProfileImageUploader";
 import { profileImageState } from "../../atom/profileImageUploaderAtom";
 
-
 //반별 아이들 상세 조회 모달
 export const ClassModal = ({ response }) => {
-  const genderText = response?.data.data.gender === 'MALE' ? '남자' : (response?.data.data.gender === 'FEMALE' ? '여자' : '');
+  const genderText =
+    response?.data.data.gender === "MALE"
+      ? "남자"
+      : response?.data.data.gender === "FEMALE"
+      ? "여자"
+      : "";
 
   return (
     <StyledModalWrapper>
@@ -94,7 +98,12 @@ export const ClassModal = ({ response }) => {
 
 // 학부모 아이 상세 조회 모달
 export const ClassParentModal = ({ response }) => {
-  const genderText = response?.data.data.gender === 'MALE' ? '남자' : (response?.data.data.gender === 'FEMALE' ? '여자' : '');
+  const genderText =
+    response?.data.data.gender === "MALE"
+      ? "남자"
+      : response?.data.data.gender === "FEMALE"
+      ? "여자"
+      : "";
 
   return (
     <StyledModalWrapper>
@@ -126,7 +135,6 @@ export const ClassParentModal = ({ response }) => {
 
 //반별 아이들 인원 등록 모달
 export const MemberAddModal = () => {
-  const queryClient = useQueryClient();
   const [checkParent, setCheckedParent] = useState({});
   const [debouncedSearchParent, setDebouncedSearchParent] = useState("");
   const [memberAdd, setMemberAdd] = useRecoilState(memberAtom);
@@ -157,23 +165,18 @@ export const MemberAddModal = () => {
     debounced(searchParent);
   }, [searchParent]);
 
-  const saveImgFile = (e) => {
-    e.preventDefault();
-    const file = e.target.files[0];
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onloadend = () => {
-      setMemberAdd({ ...memberAdd, preview: reader.result, image: file });
-    };
-  };
-
   const handleCheckBoxChange = (e, item) => {
-    setIsChecked(e.target.checked);
+    const newIsChecked = !checkParent[item.parentId];
+    setIsChecked(newIsChecked);
+
     setCheckedParent({
-      ...checkParent,
-      [item.parentId]: e.target.checked,
+      ...Object.fromEntries(
+        Object.entries(checkParent).map(([key, value]) => [key, false])
+      ),
+      [item.parentId]: newIsChecked,
     });
-    if (e.target.checked) {
+
+    if (newIsChecked) {
       setParentAdd({
         ...parentAdd,
         parentId: item.parentId,
@@ -182,8 +185,22 @@ export const MemberAddModal = () => {
         imgSrc: item.profileImageUrl,
       });
     } else {
-      setParentAdd(null);
+      setParentAdd({});
     }
+  };
+
+  //생년월일 자동 하이픈 생성
+  const handleBirthInput = (e) => {
+    let input = e.target.value.replace(/[^\d]/g, "").substring(0, 8);
+
+    if (input.length > 4) {
+      input = input.replace(/(\d{4})(\d{1,2})/, "$1-$2");
+    }
+    if (input.length > 7) {
+      input = input.replace(/(\d{4}-\d{2})(\d{1,2})/, "$1-$2");
+    }
+
+    setMemberAdd({ ...memberAdd, birth: input });
   };
 
   return (
@@ -192,10 +209,10 @@ export const MemberAddModal = () => {
         <StyledLeftWrapper>
           <StyledProfileHeaderFont>원생 프로필</StyledProfileHeaderFont>
           {memberinfor.image ? (
-          <ProfileImageUploader prev={memberinfor.image} />
+            <ProfileImageUploader prev={memberinfor.image} />
           ) : (
             <ProfileImageUploader prev={preview.previewImage} />
-            )}
+          )}
         </StyledLeftWrapper>
         <StyledRightWrapper>
           <StyledInputWrapper marginTop="20px">
@@ -204,6 +221,7 @@ export const MemberAddModal = () => {
               width="58px"
               height="32px"
               value={memberinfor.name}
+              maxLength={10}
               onChange={(e) =>
                 setMemberAdd({ ...memberAdd, name: e.target.value })
               }
@@ -229,9 +247,7 @@ export const MemberAddModal = () => {
               height="32px"
               value={memberinfor.birth}
               placeholder="2000-01-01"
-              onChange={(e) =>
-                setMemberAdd({ ...memberAdd, birth: e.target.value })
-              }
+              onChange={handleBirthInput}
             />
           </StyledInputWrapper>
           <StyledInputWrapper marginTop="25px">
@@ -240,18 +256,24 @@ export const MemberAddModal = () => {
               09시~10시
             </StyledTime>
             <StyledQuestionFont>하원시간 </StyledQuestionFont>
-            <StyledTime marginLeft="50px">09시~10시</StyledTime>
+            <StyledTime marginLeft="50px">16시~17시</StyledTime>
           </StyledInputWrapper>
         </StyledRightWrapper>
       </StyledChildrenProfileWrapper>
-      <StyledNote>특이사항</StyledNote>
+      <StyledInputWrapper marginTop="0px">
+        <StyledNote>특이사항</StyledNote>
+        <StyledInputLength>
+          {memberinfor?.significant?.length}/500
+        </StyledInputLength>
+      </StyledInputWrapper>
       <StyledInputBox
         width="560px"
         height="115px"
         value={memberinfor.significant}
-        onChange={(e) =>
-          setMemberAdd({ ...memberAdd, significant: e.target.value })
-        }
+        maxLength={500}
+        onChange={(e) => {
+          setMemberAdd({ ...memberAdd, significant: e.target.value });
+        }}
       />
       <StyledParentProfileWrapper>
         <StyledParentBox flexDirection="column" padding="0px">
@@ -506,7 +528,7 @@ const StyledTime = styled.div`
 const StyledNote = styled.div`
   ${textVariants.Body3_SemiBold}
   color: ${({ theme }) => theme.color.grayScale[500]};
-  margin-right: 500px;
+  margin-right: 485px;
 `;
 
 const StyledInputBox = styled.input`
@@ -654,8 +676,6 @@ const StyledModalSlideContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  
-  
 `;
 
 const StyledModalSlideWrapper = styled.div`
@@ -672,16 +692,12 @@ const StyledModalSlideImgContainer = styled.div`
   height: 400px;
   border-radius: 8px;
   overflow: hidden;
-  
-  
 `;
 
 const StyledModalSlide = styled.div`
   width: 716px;
   height: 400px;
   display: flex;
-  
-  
 `;
 
 const StyledModalSlideImg = styled.img`
@@ -796,4 +812,10 @@ const StyledClassMangeDiv = styled.div`
   color: ${({ theme }) => theme.color.grayScale[600]};
   display: flex;
   align-items: center;
+`;
+
+const StyledInputLength = styled.div`
+  font-size: 12px;
+  margin-top: 5px;
+  color: ${({ theme }) => theme.color.grayScale[500]};
 `;
