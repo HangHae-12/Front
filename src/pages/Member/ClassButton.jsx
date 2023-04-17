@@ -15,7 +15,6 @@ import { ClassMangeModal } from "./ClassModal";
 import useModal from "../../hooks/useModal";
 import Modal from "../../components/Modal";
 import { useRecoilValue } from "recoil";
-import { userProfileAtom } from "../../atom/sideBarAtom";
 import { motion } from "framer-motion";
 import { kindergartenAtom, userProfileAtom } from "../../atom/sideBarAtom";
 
