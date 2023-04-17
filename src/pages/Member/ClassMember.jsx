@@ -358,7 +358,7 @@ const StyledChildrenCard = styled(motion.div)`
   margin-left: 10px;
   margin-top: 10px;
 
-  @media (max-width: 1800px) {
+  @media ${({ theme }) => theme.device.laptop} {
     width: 135px;
     height: 130px;
   }
