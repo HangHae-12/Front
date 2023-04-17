@@ -2,10 +2,11 @@ import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { PAGE } from "../helpers/pages";
 import PrivateRoute from "./PrivateRoute";
-
+import ScrollToTop from "./ScrollToTop";
 const Router = () => {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         {/* 로그인 페이지는 private route 를 적용하지  */}
 
