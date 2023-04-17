@@ -31,11 +31,12 @@ const ProfileImageUploader = ({ id, prev, isFixMode }) => {
         onChange={handleImageChange}
         ref={inputRef}
       />
-      <StyledProfileImageUploader.ThumbnailWrapper>
+      <StyledProfileImageUploader.ThumbnailWrapper isFixMode={!isFixMode}>
         <StyledProfileImageUploader.Thumbnail
           src={previewImage ?? prev ?? DUMMY_URL.not_profile_img}
           alt="Profile thumbnail"
         />
+
         <StyledProfileImageUploader.CancelButton
           className="cancelIcon"
           onClick={handleProfileImageCancel}
