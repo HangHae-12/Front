@@ -1,6 +1,7 @@
 import StyledLogin from "../styled";
 import SignupRouteGuard from "./SignupRouteGuard";
 import Modal from "../../../components/Modal";
+import { Outlet } from "react-router-dom";
 
 const Layout = () => {
   const requiredKeys = {
@@ -27,7 +28,9 @@ const Layout = () => {
     <>
       <StyledLogin.Background>
         <StyledLogin.Container>
-          <SignupRouteGuard requiredKeys={requiredKeys} />
+          {/* <SignupRouteGuard requiredKeys={requiredKeys} /> */}
+          {/* //////////////////////////////////////////////////////////////////////////////// 반드시 수정하기 */}
+          <Outlet/>
         </StyledLogin.Container>
       </StyledLogin.Background>
       <Modal modalOption={modalOption} />

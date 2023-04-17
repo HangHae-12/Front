@@ -11,7 +11,7 @@ const Router = () => {
 
         <Route path="/login" element={PAGE.login} />
         <Route path="/oauth/kakao/callback" element={PAGE.kakaoLogin} />
-        <Route element={<PrivateRoute />}>
+        {/* <Route element={<PrivateRoute />}> */}
           <Route path="/signup" element={PAGE.signup.layout}>
             <Route index element={PAGE.signup.signup} />
             <Route path="search" element={PAGE.signup.search} />
@@ -44,7 +44,7 @@ const Router = () => {
             <Route path="/childmanage" element={PAGE.childmanage} />
             <Route path="/preview" element={PAGE.preview} />
           </Route>
-        </Route>
+        {/* </Route> */}
       </Routes>
     </BrowserRouter>
   );
