@@ -17,6 +17,7 @@ import { AiOutlineSearch } from "react-icons/ai";
 import debounce from "../../utils/debounce";
 import ProfileImageUploader from "../../components/ProfileImageUploader";
 import { profileImageState } from "../../atom/profileImageUploaderAtom";
+import { motion } from "framer-motion";
 
 const ClassMember = () => {
   const queryClient = useQueryClient();
@@ -312,6 +313,8 @@ const ClassMember = () => {
               <StyledChildrenCard
                 key={item.childId}
                 onClick={(e) => getDetailMember(item.childId)}
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.2 }}
               >
                 <StyledChildrenImage src={item.profileImageUrl} />
                 {item.name}
@@ -336,17 +339,10 @@ const ClassMember = () => {
 export default ClassMember;
 
 const StyledChildrenWrapper = styled.div`
-  padding: 0px 0px 20px;
+  padding: 0px 20px 20px;
   gap: 40px;
-  width: calc(7 * (190px + 15px));
-  height: 484px;
   background: rgba(237, 245, 238, 0.8);
   border-radius: 12px;
-
-  @media (max-width: 1800px) {
-    width: calc(7 * (140px + 15px));
-    height: 360px;
-  }
 `;
 
 const StyledChildernHeader = styled.div`
@@ -362,7 +358,7 @@ const StyledChildrenContainer = styled.div`
   flex-wrap: wrap;
 `;
 
-const StyledChildrenCard = styled.div`
+const StyledChildrenCard = styled(motion.div)`
   background: ${({ theme }) => theme.color.white};
   border-radius: 8px;
   width: 180px;
@@ -378,7 +374,7 @@ const StyledChildrenCard = styled.div`
   margin-left: 10px;
   margin-top: 10px;
 
-  @media (max-width: 1800px) {
+  @media ${({ theme }) => theme.device.laptop} {
     width: 135px;
     height: 130px;
   }
