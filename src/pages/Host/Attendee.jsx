@@ -49,8 +49,8 @@ const StyledInfoContainer = styled.div`
   grid-template-columns: repeat(5, 1fr);
   align-items: center;
   margin: 24px auto;
-  border: 2px solid ${({ theme }) => theme.color.grayScale[200]};
-  box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.04);
+  border: 1px solid ${({ theme }) => theme.color.grayScale[100]};
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   border-radius: 12px;
   padding: 40px 64px 40px 25px;
 `;

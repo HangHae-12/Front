@@ -342,6 +342,7 @@ const StyledChildrenWrapper = styled.div`
   padding: 0px 20px 20px;
   gap: 40px;
   background: rgba(237, 245, 238, 0.8);
+  box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.12);
   border-radius: 12px;
 `;
 
@@ -399,6 +400,17 @@ const StyledAddMemberButton = styled.button`
   padding: 4px 10px;
   gap: 10px;
   color: ${({ theme }) => theme.color.primary};
+  cursor: pointer;
+   
+  @media ${({ theme }) => theme.device.laptop} {
+    display:none;
+  }
+  &:hover {
+    background-color: ${({ theme }) => theme.color.grayScale[50]};
+  }
+  &:active {
+        cursor: grabbing;
+  }
 `;
 
 const StyledMemberSearchInput = styled.input`
