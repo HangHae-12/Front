@@ -7,12 +7,13 @@ import { SignAPI } from "../../../../api/SignAPI";
 import Buttons from "../../../../components/Buttons";
 import ProfileImageUploader from "../../../../components/ProfileImageUploader";
 import { useProfileImageUploader } from "../../../../hooks/useProfileImageUploader";
-import { REGEXP } from "../../../../helpers/regexp";
 import session from "../../../../utils/session";
 import useModal from "../../../../hooks/useModal";
 import AlertModal from "../../../../components/Modals/AlertModal";
 import formatPhoneNumber from "../../../../utils/formatPhoneNumber";
-import InputField from "./InputField";
+import EmergencyPhoneNumberInputField from "./EmergencyPhoneNumberInputField";
+import PhoneNumberInputField from "./PhoneNumberInputField";
+import NameInputField from "./NameInputField";
 
 const Parent = () => {
   const location = useLocation();
@@ -59,7 +60,6 @@ const Parent = () => {
     formData.append("emergencyPhoneNumber", data.emergencyPhoneNumber);
 
     const role = location.pathname.split("/")[2];
-
     mutate({ role: role, info: formData });
   };
 
@@ -71,69 +71,23 @@ const Parent = () => {
           <StyledInfo.Wrapper>
             <ProfileImageUploader id="Parent" prev={profileImageUrl} />
             <StyledInfo.Box>
-              <InputField
-                label="이름"
-                id="name"
-                isEssential
-                placeholder="홍길동"
-                type="text"
-                registerOptions={{
-                  ...register("name", {
-                    required: "이름을 입력해주세요.",
-                    pattern: {
-                      value: REGEXP.name,
-                      message:
-                        "이름을 정확하게 입력해주세요. 한글 또는 영문 2~15자 이내만 가능합니다.",
-                    },
-                  }),
-                }}
-                defaultValue={name ?? ""}
-                valid={errors.name}
-                size={4}
-                errors={errors.name}
+              <NameInputField
+                register={register}
+                errors={errors}
+                defaultValue={name}
                 isSubmitSuccessful={isSubmitSuccessful}
               />
 
-              <InputField
-                label="연락처"
-                id="phoneNumber"
-                isEssential
-                placeholder="010-0000-0000"
-                type="text"
-                registerOptions={{
-                  ...register("phoneNumber", {
-                    required: "연락처를 입력해주세요.",
-                    pattern: {
-                      value: REGEXP.phone,
-                      message:
-                        "전화번호를 정확하게 입력해 주세요. (ex: 010-000-0000 or 02-000-0000)",
-                    },
-                  }),
-                }}
-                valid={errors.phoneNumber}
-                size={12}
+              <PhoneNumberInputField
+                register={register}
+                errors={errors}
                 onInput={(e) => formatPhoneNumber(e)}
-                errors={errors.phoneNumber}
                 isSubmitSuccessful={isSubmitSuccessful}
               />
-              <InputField
-                label="비상연락처"
-                id="emergencyPhoneNumber"
-                placeholder="010-0000-0000"
-                type="text"
-                registerOptions={{
-                  ...register("emergencyPhoneNumber", {
-                    pattern: {
-                      value: REGEXP.phone,
-                      message:
-                        "전화번호를 정확하게 입력해 주세요. (ex: 010-000-0000 or 02-000-0000)",
-                    },
-                  }),
-                }}
-                valid={errors.emergencyPhoneNumber}
-                size={12}
+              <EmergencyPhoneNumberInputField
+                register={register}
+                errors={errors}
                 onInput={(e) => formatPhoneNumber(e)}
-                errors={errors.emergencyPhoneNumber}
                 isSubmitSuccessful={isSubmitSuccessful}
               />
             </StyledInfo.Box>
