@@ -45,7 +45,13 @@ const Table = () => {
     useEffect(() => {
         queryClient.invalidateQueries(["getMonthAttendance"]);
     }, [selectedDate, sid]);
-
+    //스크롤 막기
+    useEffect(() => {
+        document.body.style.overflow = "hidden";
+        return () => {
+            document.body.style.overflow = "auto";
+        };
+    }, []);
 
     // console.log(filteredAttendanceData);
     const getDaysInMonth = (month, year) => {

@@ -44,14 +44,16 @@ const Table = () => {
     }
   );
 
-
-
-
-
   useEffect(() => {
     queryClient.invalidateQueries(["getDayAttendance"]);
   }, [selectedDate, id]);
-
+  //스크롤 막기
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, []);
   const handleDateChange = (date) => {
     setSelectedDate(date);
     queryClient.invalidateQueries(["getDayAttendance"]);
@@ -94,8 +96,6 @@ const Table = () => {
           <StyledGrPrevious onClick={decreaseDate} size={16} />
           {selectedDate.getFullYear()}년 {selectedDate.getMonth() + 1}월 {selectedDate.getDate()}일 {dayOfWeek}
           <StyledGrNext onClick={increaseDate} size={16} />
-
-
           <CustomDatepicker selectedDate={selectedDate} onDateChange={handleDateChange} />
         </StyledMonthYear>
         <DayExcel data={data?.data} selectedDate={selectedDate} />
@@ -148,7 +148,6 @@ const Table = () => {
             </tbody>
           </StyledTable>
         </StyledTableWrapper>
-
       </StyledTableContainer>
 
     </div>

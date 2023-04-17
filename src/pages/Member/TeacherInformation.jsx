@@ -212,6 +212,9 @@ const StyledInfomation = styled.div`
   border: 1px solid ${({ theme }) => theme.color.grayScale[200]};
   box-sizing: border-box;
   margin-top: 10px;
+  @media ${({ theme }) => theme.device.laptop} {
+    padding: 15px;
+  }
 `;
 
 const StyledContentWrapper = styled.div`
