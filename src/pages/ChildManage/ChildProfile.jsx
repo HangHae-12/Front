@@ -40,7 +40,7 @@ const ChildProfile = () => {
   });
 
   const { selectedFile, isCancelled } = useProfileImageUploader(
-    data?.data?.data?.profilImageUrl
+    "ChildProfile",data?.data?.data?.profilImageUrl
   );
 
   const reduceFormData = (state, action) => {

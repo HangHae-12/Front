@@ -11,7 +11,6 @@ import { REGEXP } from "../../../../helpers/regexp";
 import session from "../../../../utils/session";
 import AlertModal from "../../../../components/Modals/AlertModal";
 import useModal from "../../../../hooks/useModal";
-import AbsenceDatePicker from "../../../ChildManage/AbsenceDatePicker";
 import formatPhoneNumber from "../../../../utils/formatPhoneNumber";
 
 const Teacher = () => {
@@ -21,7 +20,7 @@ const Teacher = () => {
   const { name, profileImageUrl } = session.get("user");
 
   const { selectedFile, isCancelled } =
-    useProfileImageUploader(profileImageUrl);
+    useProfileImageUploader("Teacher",profileImageUrl);
 
   const {
     register,

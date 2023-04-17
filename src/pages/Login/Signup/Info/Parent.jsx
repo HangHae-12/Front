@@ -12,14 +12,13 @@ import session from "../../../../utils/session";
 import useModal from "../../../../hooks/useModal";
 import AlertModal from "../../../../components/Modals/AlertModal";
 import formatPhoneNumber from "../../../../utils/formatPhoneNumber";
+import InputField from "./InputField";
 
 const Parent = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { name, profileImageUrl } = session.get("user");
-
-  const { selectedFile, isCancelled } =
-    useProfileImageUploader(profileImageUrl);
+  const { openModal } = useModal();
 
   const {
     register,
@@ -27,7 +26,10 @@ const Parent = () => {
     formState: { errors, isSubmitSuccessful },
   } = useForm();
 
-  const { openModal } = useModal();
+  const { selectedFile, isCancelled } = useProfileImageUploader(
+    "Parent",
+    profileImageUrl
+  );
 
   const { mutate } = useMutation(SignAPI.signup, {
     onSuccess: (res) => {
@@ -37,7 +39,14 @@ const Parent = () => {
       }
     },
     onError: (error) => {
-      openModal({ contents: <AlertModal /> });
+      openModal({
+        contents: (
+          <AlertModal
+            title="회원가입에 실패하였습니다."
+            message="연락처가 중복이거나 잘못된 요청입니다. 확인하고 다시 요청해주세요. "
+          />
+        ),
+      });
     },
   });
 
@@ -62,83 +71,71 @@ const Parent = () => {
           <StyledInfo.Wrapper>
             <ProfileImageUploader id="Parent" prev={profileImageUrl} />
             <StyledInfo.Box>
-              <StyledInfo.ContentsWrapper>
-                <StyledLogin.Label htmlFor="name" isEssential>
-                  이름
-                </StyledLogin.Label>
-                <StyledLogin.Input
-                  placeholder="홍길동"
-                  type="text"
-                  {...register("name", {
+              <InputField
+                label="이름"
+                id="name"
+                isEssential
+                placeholder="홍길동"
+                type="text"
+                registerOptions={{
+                  ...register("name", {
                     required: "이름을 입력해주세요.",
                     pattern: {
                       value: REGEXP.name,
                       message:
                         "이름을 정확하게 입력해주세요. 한글 또는 영문 2~15자 이내만 가능합니다.",
                     },
-                  })}
-                  id="name"
-                  defaultValue={name ?? ""}
-                  valid={errors.name}
-                  size={4}
-                />
-                {!isSubmitSuccessful && errors.name && (
-                  <StyledInfo.ErrorMessage>
-                    {errors.name.message}
-                  </StyledInfo.ErrorMessage>
-                )}
-              </StyledInfo.ContentsWrapper>
-              <StyledInfo.ContentsWrapper>
-                <StyledLogin.Label htmlFor="phoneNumber" isEssential>
-                  연락처
-                </StyledLogin.Label>
-                <StyledLogin.Input
-                  placeholder="010-0000-0000"
-                  type="text"
-                  {...register("phoneNumber", {
-                    required: "연락처를 입력해주세요",
+                  }),
+                }}
+                defaultValue={name ?? ""}
+                valid={errors.name}
+                size={4}
+                errors={errors.name}
+                isSubmitSuccessful={isSubmitSuccessful}
+              />
+
+              <InputField
+                label="연락처"
+                id="phoneNumber"
+                isEssential
+                placeholder="010-0000-0000"
+                type="text"
+                registerOptions={{
+                  ...register("phoneNumber", {
+                    required: "연락처를 입력해주세요.",
                     pattern: {
                       value: REGEXP.phone,
                       message:
                         "전화번호를 정확하게 입력해 주세요. (ex: 010-000-0000 or 02-000-0000)",
                     },
-                  })}
-                  id="phoneNumber"
-                  onInput={(e) => formatPhoneNumber(e)}
-                  valid={errors.phoneNumber}
-                  size={12}
-                />
-                {!isSubmitSuccessful && errors.phoneNumber && (
-                  <StyledInfo.ErrorMessage>
-                    {errors.phoneNumber.message}
-                  </StyledInfo.ErrorMessage>
-                )}
-              </StyledInfo.ContentsWrapper>
-              <StyledInfo.ContentsWrapper>
-                <StyledLogin.Label htmlFor="emergencyPhoneNumber">
-                  비상연락처
-                </StyledLogin.Label>
-                <StyledLogin.Input
-                  placeholder="010-0000-0000"
-                  type="text"
-                  {...register("emergencyPhoneNumber", {
+                  }),
+                }}
+                valid={errors.phoneNumber}
+                size={12}
+                onInput={(e) => formatPhoneNumber(e)}
+                errors={errors.phoneNumber}
+                isSubmitSuccessful={isSubmitSuccessful}
+              />
+              <InputField
+                label="비상연락처"
+                id="emergencyPhoneNumber"
+                placeholder="010-0000-0000"
+                type="text"
+                registerOptions={{
+                  ...register("emergencyPhoneNumber", {
                     pattern: {
                       value: REGEXP.phone,
                       message:
                         "전화번호를 정확하게 입력해 주세요. (ex: 010-000-0000 or 02-000-0000)",
                     },
-                  })}
-                  id="emergencyPhoneNumber"
-                  onInput={(e) => formatPhoneNumber(e)}
-                  valid={errors.emergencyPhoneNumber}
-                  size={12}
-                />
-                {!isSubmitSuccessful && errors.emergencyPhoneNumber && (
-                  <StyledInfo.ErrorMessage>
-                    {errors.emergencyPhoneNumber.message}
-                  </StyledInfo.ErrorMessage>
-                )}
-              </StyledInfo.ContentsWrapper>
+                  }),
+                }}
+                valid={errors.emergencyPhoneNumber}
+                size={12}
+                onInput={(e) => formatPhoneNumber(e)}
+                errors={errors.emergencyPhoneNumber}
+                isSubmitSuccessful={isSubmitSuccessful}
+              />
             </StyledInfo.Box>
           </StyledInfo.Wrapper>
           <StyledInfo.SubmitBtnWrapper>
