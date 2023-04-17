@@ -47,13 +47,7 @@ const Table = () => {
   useEffect(() => {
     queryClient.invalidateQueries(["getDayAttendance"]);
   }, [selectedDate, id]);
-  //스크롤 막기
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, []);
+
   const handleDateChange = (date) => {
     setSelectedDate(date);
     queryClient.invalidateQueries(["getDayAttendance"]);
