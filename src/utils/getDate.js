@@ -1,7 +1,19 @@
 const getDate = {
-  isSunday: (date) => {
-    const day = new Date(date).getDay();
-    return day === 0;
+  isSaturday: (selectedDate, day) => {
+    const date = new Date(
+      selectedDate.getFullYear(),
+      selectedDate.getMonth(),
+      day
+    );
+    return date.getDay() === 6;
+  },
+  isSunday: (selectedDate, day) => {
+    const date = new Date(
+      selectedDate.getFullYear(),
+      selectedDate.getMonth(),
+      day
+    );
+    return date.getDay() === 0;
   },
 };
 
