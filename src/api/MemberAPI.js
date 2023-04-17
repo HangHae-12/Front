@@ -1,6 +1,9 @@
 import instance from "./instance";
 
 export const MemberAPI = {
+  getClassesList: (kindergartenId) =>
+    instance.get(`kindergarten/${kindergartenId}`),
+
   getClassesPage: (id) => instance.get(`classroom/${id}`),
 
   getClassesMember: (id, currentPage) =>
@@ -66,6 +69,15 @@ export const MemberAPI = {
       }
     ),
 
+  setClasses: (kindergartenId, name) =>
+    instance.post(`kindergarten/${kindergartenId}/classroom?name=${name}`),
+
+  setClassesModify: (kindergartenId, id, name) =>
+    instance.put(`kindergarten/${kindergartenId}/classroom/${id}?name=${name}`),
+
   removeGallery: (payload) =>
     instance.delete(`/classroom/${payload.id}/gallery/${payload.imageId}`),
+
+  removeClasses: (kindergartenId, id) =>
+    instance.delete(`kindergarten/${kindergartenId}/classroom/${id}`),
 };

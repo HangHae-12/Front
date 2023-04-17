@@ -33,7 +33,7 @@ const ClassMember = () => {
   const [parentAdd, setParentAdd] = useRecoilState(parentAtom);
   const [isChildModify, setIsChildModify] = useState(false);
   const [isChildAdd, setIsChildAdd] = useState(false);
-  const [image, setImage] = useRecoilState(profileImageState)
+  const [image, setImage] = useRecoilState(profileImageState);
   const userRole = useRecoilValue(userProfileAtom);
   const preview = useRecoilValue(profileImageState);
   const [debouncedSearchMember, setDebouncedSearchMember] = useState("");
@@ -144,7 +144,7 @@ const ClassMember = () => {
       onClose: () => {
         setMemberAdd("");
         setParentAdd("");
-        setImage("")
+        setImage("");
       },
     };
   };
@@ -173,7 +173,7 @@ const ClassMember = () => {
         setIsChildModify(false);
         setMemberAdd("");
         setParentAdd("");
-        setImage("")
+        setImage("");
       },
     }));
   };
@@ -220,8 +220,24 @@ const ClassMember = () => {
     }
   }, [memberinfor, parentinfor, isChildAdd, preview]);
 
+  const validateForm = (memberInfo, parentInfo) => {
+    const requiredFields = ["name", "birth", "gender", "parentId"];
+
+    for (const field of requiredFields) {
+      if (!memberInfo[field] && !parentInfo[field]) {
+        return false;
+      }
+    }
+    return true;
+  };
+
   //반별 아이들 인원 등록 버튼
   const handleMemberSubmit = (id) => {
+    if (!validateForm(memberinfor, parentinfor)) {
+      alert("모두 입력해 주세요.");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("name", memberinfor.name);
     formData.append("birth", memberinfor.birth);

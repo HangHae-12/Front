@@ -96,8 +96,11 @@ const Gallery = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    setSearchGallery(e.target.value);
-    queryClient.invalidateQueries(["classesGallery", searchGallery]);
+    const inputValue = e.target.value;
+    if (inputValue.length <= 10) {
+      setSearchGallery(inputValue);
+      queryClient.invalidateQueries(["classesGallery", searchGallery]);
+    }
   };
 
   //날짜변환
@@ -155,6 +158,12 @@ const Gallery = () => {
   // 사진 등록 모달 부분
   const uploadFile = (event) => {
     const fileArr = event.target.files;
+
+    if (fileArr.length > 10) {
+      alert("최대 10개의 이미지만 업로드할 수 있습니다.");
+      return;
+    }
+    
     setSeverImages((prevSeverImages) => [
       ...prevSeverImages,
       ...Array.from(fileArr),
