@@ -15,18 +15,25 @@ import { ClassMangeModal } from "./ClassModal";
 import useModal from "../../hooks/useModal";
 import Modal from "../../components/Modal";
 import { useRecoilValue } from "recoil";
-import { userProfileAtom } from "../../atom/sideBarAtom";
+import { kindergartenAtom, userProfileAtom } from "../../atom/sideBarAtom";
 
 const ClassButton = () => {
   const [selectedButton, setSelectedButton] = useState("");
   const [selectedTab, setSelectedTab] = useState("");
+  const [classInfo, setClassInfo] = useState([]);
   const { openModal, closeModal } = useModal();
   const { id } = useParams();
   const userRole = useRecoilValue(userProfileAtom);
+  const kindergertenId = useRecoilValue(kindergartenAtom)
 
   const { data } = useQuery(
     ["classesPage", id || "1"],
     () => MemberAPI.getClassesPage(id || "1"),
+    {
+      onSuccess: (data) => {
+        console.log(data)
+      }
+    },
     {
       onError: () => {
         console.log("error");
@@ -76,6 +83,19 @@ const ClassButton = () => {
     }
   };
 
+  // useEffect(() => {
+  //   if (data && data.data && data.data.everyClass) {
+  //     setClassInfo(
+  //       data.data.everyClass.map((item) => ({ id: item.id, name: item.name }))
+  //     );
+  //   }
+  // }, [data]);
+
+  // const idToButtonName = (id) => {
+  //   const foundClass = classInfo.find((classItem) => classItem.id === id);
+  //   return foundClass ? foundClass.name : "";
+  // };
+
   const handleMemberClick = () => {
     setSelectedTab("member");
     localStorage.setItem("selectedTab", "member");
@@ -102,6 +122,15 @@ const ClassButton = () => {
         ) : null}
       </StyledInputWrapper>
       <StyledButtonWrapper>
+        {/* {data.data.everyClass.map((item) => {
+          return (
+            <Button.ClassButton
+            selected={item.name}
+            selectedButton={selectedButton}
+            onClick={() => handleButtonClick(item.name, item.id)}
+          />
+          )
+        })} */}
         <Button.ClassButton
           selected={"세빛반"}
           selectedButton={selectedButton}
