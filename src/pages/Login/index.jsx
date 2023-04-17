@@ -20,7 +20,7 @@ const Login = () => {
     <StyledLogin.Background>
       <StyledLogin.Container>
         <StyledLoginPage.Wrapper>
-          <img src={ASSETS.big_logo} alt="킨더그루_로고" />
+          <img src={ASSETS.main_logo} alt="킨더그루_로고" />
           <h3>"안전하고 편리한 유치원 출결관리의 시작"</h3>
           <a href={KAKAO_AUTH_URL}>
             <img src={ASSETS.kakao_login_btn} alt="카카오_로그인_버튼" />

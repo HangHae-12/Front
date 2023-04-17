@@ -21,15 +21,12 @@
   border-radius: 0 12px 0 0;
 }
 
-.rbc-event {
-  background-color: transparent;
-  color: black;
-}
-
-.rbc-event-content {
-  padding: 2px;
-}
-
 .rbc-row-segment {
   pointer-events: none;
+}
+
+.rbc-event {
+  background-color: transparent;
+  position: relative;
+  padding: 16px 12px;
 }

@@ -9,7 +9,7 @@ const PrincipalSideBar = () => {
     const [subMenuSelectedIndex, setSubMenuSelectedIndex] = useState(null);
     const [selectedIndex, setSelectedIndex] = useState(0);
     const handleSideMenu = (id) => {
-        if (id !== 2) {
+        if (id !== 3) {
             setSelectedIndex(id);
             setShowAttendanceMenu(false);
             setSubMenuSelectedIndex(null);
@@ -23,25 +23,38 @@ const PrincipalSideBar = () => {
     }
     return (
         <StyledSideBarBtnWrapper>
-            <CustomButton
-                colorTypes={selectedIndex === 0 ? "primary" : undefined}
-                buttonsTypes="NB_Button"
-                onClick={() => handleSideMenu(0)}
-            >
-                <Link to="/membermanage">멤버 관리</Link>
-            </CustomButton>
-            <CustomButton
-                colorTypes={selectedIndex === 1 ? "primary" : undefined}
-                buttonsTypes="NB_Button"
-                onClick={() => handleSideMenu(1)}
-            >
-                <Link to="/host">등/하원 관리</Link>
-            </CustomButton>
-            <StyledMenuWrapper showBorder={selectedIndex === 2}>
+            <Link to="/classes">
+                <CustomButton
+                    colorTypes={selectedIndex === 0 ? "primary" : undefined}
+                    buttonsTypes="NB_Button"
+                    onClick={() => handleSideMenu(0)}
+                >
+                    학급 관리
+                </CustomButton>
+            </Link>
+            <Link to="/membermanage">
+                <CustomButton
+                    colorTypes={selectedIndex === 1 ? "primary" : undefined}
+                    buttonsTypes="NB_Button"
+                    onClick={() => handleSideMenu(1)}
+                >
+                    멤버 관리
+                </CustomButton>
+            </Link>
+            <Link to="/host">
                 <CustomButton
                     colorTypes={selectedIndex === 2 ? "primary" : undefined}
                     buttonsTypes="NB_Button"
                     onClick={() => handleSideMenu(2)}
+                >
+                    등/하원 관리
+                </CustomButton>
+            </Link>
+            <StyledMenuWrapper showBorder={selectedIndex === 3}>
+                <CustomButton
+                    colorTypes={selectedIndex === 3 ? "primary" : undefined}
+                    buttonsTypes="NB_Button"
+                    onClick={() => handleSideMenu(3)}
                 >
                     출석부 관리
                 </CustomButton>
@@ -64,16 +77,7 @@ const PrincipalSideBar = () => {
                         </Link>
                     </StyledSubMenu>
                 )}
-
-
             </StyledMenuWrapper>
-            <CustomButton
-                colorTypes={selectedIndex === 3 ? "primary" : undefined}
-                buttonsTypes="NB_Button"
-                onClick={() => handleSideMenu(3)}
-            >
-                <Link to="/classes">학급 관리</Link>
-            </CustomButton>
         </StyledSideBarBtnWrapper>
     );
 };

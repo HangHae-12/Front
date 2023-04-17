@@ -99,9 +99,15 @@ const StyledExportButton = styled.button`
         right: 0;
         margin-left: auto;
         padding: 4px 12px;
-
+        cursor: pointer;
+   
   @media ${({ theme }) => theme.device.laptop} {
     display:none;
   }
+  &:hover {
+    background-color: ${({ theme }) => theme.color.green_darker};
+  &:active {
+        cursor: grabbing;
+}
 `;
 

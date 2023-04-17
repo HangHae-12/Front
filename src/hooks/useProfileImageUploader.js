@@ -1,10 +1,10 @@
 import { useRef, useCallback } from "react";
 import { useRecoilState } from "recoil";
-import { profileImageState } from "../atom/profileImageUploaderAtom";
+import { profileImageStateSelector } from "../atom/profileImageUploaderAtom";
 import { DUMMY_URL } from "../helpers/dummyUrl";
 
-export const useProfileImageUploader = (initialPreview) => {
-  const [state, setState] = useRecoilState(profileImageState);
+export const useProfileImageUploader = (id, initialPreview) => {
+  const [state, setState] = useRecoilState(profileImageStateSelector(id));
   const inputRef = useRef();
   const { selectedFile, previewImage, isCancelled } = state;
 

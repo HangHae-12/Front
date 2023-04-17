@@ -49,9 +49,6 @@ const Teacher = () => {
     formData.append("email", data.email ?? null);
     formData.append("resolution", data.resolution ?? null);
 
-    for (const [key, value] of formData.entries()) {
-      console.log(`${key}: ${value}`);
-    }
     const role = location.pathname.split("/")[2];
     mutate({ role: role, info: formData });
   };
@@ -61,7 +58,7 @@ const Teacher = () => {
       <StyledLogin.Title>선생님! 정보를 입력해주세요</StyledLogin.Title>
       <StyledInfo.Form onSubmit={handleSubmit(onSubmit)}>
         <StyledInfo.Wrapper>
-          <ProfileImageUploader prev={profileImageUrl} />
+          <ProfileImageUploader id="Teacher" prev={profileImageUrl} />
           <StyledInfo.Box>
             <StyledInfo.ContentsWrapper>
               <StyledLogin.Label htmlFor="name" isEssential>

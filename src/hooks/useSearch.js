@@ -9,7 +9,7 @@ const useSearch = (api) => {
     ["search", searchText],
     () => api(searchText),
     {
-      enabled: searchText.length > 0,
+      // enabled: searchText.length > 0,
       retry: 1,
       refetchOnWindowFocus: false,
     }
