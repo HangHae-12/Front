@@ -125,5 +125,5 @@ const StyledDustLevel = styled.div`
 const StyledDescription = styled.div`
   ${textVariants.Body3_SemiBold}
   color: ${({ theme }) => theme.color.grayScale[500]};
-  margin-top: 8px; 
+  margin-top: 10px; 
 `;
