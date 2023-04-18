@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
@@ -12,7 +12,7 @@ import { useRecoilValue, useRecoilState } from "recoil";
 import { modalAtom } from "../../atom/modalAtoms";
 import { memberAtom, parentAtom } from "../../atom/memberAtom";
 import Buttons from "../../components/Buttons";
-import { userProfileAtom } from "../../atom/sideBarAtom";
+import { kindergartenAtom, userProfileAtom } from "../../atom/sideBarAtom";
 import { AiOutlineSearch } from "react-icons/ai";
 import debounce from "../../utils/debounce";
 import ProfileImageUploader from "../../components/ProfileImageUploader";
@@ -36,20 +36,30 @@ const ClassMember = () => {
   const [image, setImage] = useRecoilState(profileImageState);
   const userRole = useRecoilValue(userProfileAtom);
   const preview = useRecoilValue(profileImageState);
+  const kindergartenId = useRecoilValue(kindergartenAtom);
   const [debouncedSearchMember, setDebouncedSearchMember] = useState("");
-  const [modalOption, setmodalOption] = useState({
-    padding: "",
-    width: "",
-    height: "",
-  });
 
   const { data } = useQuery(
-    ["classesMember", id || "1", currentPage, debouncedSearchMember],
+    [
+      "classesMember",
+      kindergartenId.id,
+      id,
+      currentPage,
+      debouncedSearchMember,
+    ],
     () => {
       if (debouncedSearchMember) {
-        return MemberAPI.getSearchMember(id || "1", debouncedSearchMember);
+        return MemberAPI.getSearchMember(
+          kindergartenId.id,
+          id,
+          debouncedSearchMember
+        );
       } else {
-        return MemberAPI.getClassesMember(id || "1", currentPage);
+        return MemberAPI.getClassesMember(
+          kindergartenId.id,
+          id,
+          currentPage
+        );
       }
     },
     {
@@ -138,8 +148,14 @@ const ClassMember = () => {
           ) : null}
         </>
       ),
-      width: "660px",
-      height: "837px",
+      width:
+        userRole.role === "PRINCIPAL" || userRole.role === "TEACHER"
+          ? "660px"
+          : "660px",
+      height:
+        userRole.role === "PRINCIPAL" || userRole.role === "TEACHER"
+          ? "837px"
+          : "342px",
       callback: () => alert("modal"),
       onClose: () => {
         setMemberAdd("");
@@ -167,7 +183,7 @@ const ClassMember = () => {
         </>
       ),
       width: "660px",
-      height: "993px",
+      height: "900px",
       callback: () => alert("modal"),
       onClose: () => {
         setIsChildModify(false);
@@ -186,8 +202,8 @@ const ClassMember = () => {
     formData.append("significant", memberinfor.significant);
     formData.append("gender", memberinfor.gender);
     formData.append("parentId", parentinfor.parentId);
-    formData.append("dailyEnterTime", "07시~08시");
-    formData.append("dailyExitTime", "16시~17시");
+    formData.append("dailyEnterTime", memberinfor.dailyEnterTime);
+    formData.append("dailyExitTime", memberinfor.dailyExitTime);
     formData.append("isCancelled", false);
 
     if (preview.selectedFile) {
@@ -195,7 +211,8 @@ const ClassMember = () => {
     }
 
     const payload = {
-      id: id || "1",
+      id: id || "-1",
+      kindergartenId: kindergartenId.id,
       childId: memberinfor.childId,
       formData: formData,
     };
@@ -206,7 +223,8 @@ const ClassMember = () => {
 
   const getDetailMember = (childid) => {
     const payload = {
-      id: id || "1",
+      id: id || "-1",
+      kindergartenId: kindergartenId.id,
       childid: childid,
     };
     detailMemberMutation.mutate(payload);
@@ -244,13 +262,16 @@ const ClassMember = () => {
     formData.append("significant", memberinfor.significant);
     formData.append("gender", memberinfor.gender);
     formData.append("parentId", parentinfor.parentId);
+    formData.append("dailyEnterTime", memberinfor.dailyEnterTime);
+    formData.append("dailyExitTime", memberinfor.dailyExitTime);
 
     if (preview.selectedFile) {
       formData.append("image", preview.selectedFile);
     }
 
     const payload = {
-      id: id || "1",
+      id: id || "-1",
+      kindergartenId: kindergartenId.id,
       formData: formData,
     };
     setMemberSubmitMutation.mutate(payload);
@@ -274,7 +295,7 @@ const ClassMember = () => {
         </StyledModalButton>
       ),
       width: "660px",
-      height: "993px",
+      height: "900px",
       callback: () => alert("modal"),
       onClose: () => {
         setIsChildAdd(false);
@@ -331,7 +352,7 @@ const ClassMember = () => {
           />
         ) : null}
       </StyledChildrenWrapper>
-      <Modal modalOption={modalOption} />
+      <Modal />
     </>
   );
 };

@@ -8,6 +8,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import textVariants from "../../styles/variants/textVariants";
 import TeacherProfile from "./TeacherProfile"
 import { DustInfo } from './DustInfo';
+import { useRecoilValue } from "recoil";
+import { kindergartenAtom, userProfileAtom } from "../../atom/sideBarAtom";
 
 const TeacherInformation = ({ data }) => {
   const queryClient = useQueryClient();
@@ -17,10 +19,12 @@ const TeacherInformation = ({ data }) => {
   const [checkedTeachers, setCheckedTeachers] = useState({});
   const [selectedTeacher, setSelectedTeacher] = useState(null);
   const [searchTeacher, setSearchTeacher] = useState("");
+  const kindergartenId = useRecoilValue(kindergartenAtom);
+
 
   const { data: TeacherData } = useQuery(
-    ["TeacherInformation"],
-    () => MemberAPI.getTeacherInformation(),
+    ["TeacherInformation", kindergartenId.id],
+    () => MemberAPI.getTeacherInformation(kindergartenId.id),
     {
       onError: () => {
         console.log("error");
@@ -76,7 +80,8 @@ const TeacherInformation = ({ data }) => {
 
   const handleTeacherSubmit = async (id) => {
     const payload = {
-      id: id || "1",
+      kindergartenId: kindergartenId.id,
+      id: id || "-1",
       teacherId: selectedTeacher.id,
     };
     setTeacherMutation.mutate(payload);

@@ -4,46 +4,62 @@ export const MemberAPI = {
   getClassesList: (kindergartenId) =>
     instance.get(`kindergarten/${kindergartenId}`),
 
-  getClassesPage: (id) => instance.get(`classroom/${id}`),
+  getClassesPage: (kindergartenId, id) =>
+    instance.get(`kindergarten/${kindergartenId}/classroom/${id}`),
 
-  getClassesMember: (id, currentPage) =>
-    instance.get(`classroom/${id}/children?page=${currentPage}`),
-
-  getClassesGallery: (id, currentPage) =>
-    instance.get(`classroom/${id}/gallery?page=${currentPage}`),
-
-  getSearchGallery: (searchGallery, id, currentPage) =>
+  getClassesMember: (kindergartenId, id, currentPage) =>
     instance.get(
-      `classroom/${id}/gallery?keyword=${searchGallery}&page=${currentPage}`
+      `kindergarten/${kindergartenId}/classroom/${id}/children?page=${currentPage}`
     ),
 
-  getSearchDateGallery: (id, startDate, endDate, currentPage) =>
+  getClassesGallery: (kindergartenId, id, currentPage) =>
     instance.get(
-      `classroom/${id}/gallery?start=${startDate}&end=${endDate}&page=${currentPage}`
+      `kindergarten/${kindergartenId}/classroom/${id}/gallery?page=${currentPage}`
+    ),
+
+  getSearchGallery: (kindergartenId, searchGallery, id, currentPage) =>
+    instance.get(
+      `kindergarten/${kindergartenId}/classroom/${id}/gallery?keyword=${searchGallery}&page=${currentPage}`
+    ),
+
+  getSearchDateGallery: (kindergartenId, id, startDate, endDate, currentPage) =>
+    instance.get(
+      `kindergarten/${kindergartenId}/classroom/${id}/gallery?start=${startDate}&end=${endDate}&page=${currentPage}`
     ),
 
   getDetailGallery: (payload) =>
-    instance.get(`classroom/${payload.id}/gallery/${payload.imageId}`),
+    instance.get(
+      `kindergarten/${payload.kindergartenId}/classroom/${payload.id}/gallery/${payload.imageId}`
+    ),
 
-  getSearchMember: (id, searchMember) =>
-    instance.get(`classroom/${id}/children/search?name=${searchMember}`),
+  getSearchMember: (kindergartenId, id, searchMember) =>
+    instance.get(
+      `kindergarten/${kindergartenId}/classroom/${id}/children/search?name=${searchMember}`
+    ),
 
   getDetailMember: (payload) =>
-    instance.get(`classroom/${payload.id}/child/${payload.childid}`),
+    instance.get(
+      `kindergarten/${payload.kindergartenId}/classroom/${payload.id}/child/${payload.childid}`
+    ),
 
   getSearchParent: (searchParent) =>
     instance.get(`search/parent?name=${searchParent}`),
 
-  getTeacherInformation: () => instance.get("/teacher"),
+  getTeacherInformation: (kindergartenId) =>
+    instance.get(`kindergarten/${kindergartenId}/teacher`),
 
   setGallerySubmit: (payload) =>
-    instance.post(`/classroom/${payload.id}/gallery`, payload.formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    }),
+    instance.post(
+      `kindergarten/${payload.kindergartenId}/classroom/${payload.id}/gallery`,
+      payload.formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      }
+    ),
 
   setGalleryModify: (payload) =>
     instance.put(
-      `/classroom/${payload.id}/gallery/${payload.imageId}`,
+      `kindergarten/${payload.kindergartenId}/classroom/${payload.id}/gallery/${payload.imageId}`,
       payload.formData,
       {
         headers: { "Content-Type": "multipart/form-data" },
@@ -51,33 +67,45 @@ export const MemberAPI = {
     ),
 
   setMemberSubmit: (payload) =>
-    instance.post(`/classroom/${payload.id}/child`, payload.formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    }),
-
-  setTeacher: (payload) =>
-    instance.put(
-      `/classroom/${payload.id}/classroom_teacher/${payload.teacherId}`
-    ),
-
-  setChildModify: (payload) =>
-    instance.put(
-      `/classroom/${payload.id}/child/${payload.childId}`,
+    instance.post(
+      `kindergarten/${payload.kindergartenId}/classroom/${payload.id}/child`,
       payload.formData,
       {
         headers: { "Content-Type": "multipart/form-data" },
       }
     ),
 
-  setClasses: (kindergartenId, name) =>
-    instance.post(`kindergarten/${kindergartenId}/classroom?name=${name}`),
+  setTeacher: (payload) =>
+    instance.put(
+      `kindergarten/${payload.kindergartenId}/classroom/${payload.id}/classroom_teacher/${payload.teacherId}`
+    ),
 
-  setClassesModify: (kindergartenId, id, name) =>
-    instance.put(`kindergarten/${kindergartenId}/classroom/${id}?name=${name}`),
+  setChildModify: (payload) =>
+    instance.put(
+      `kindergarten/${payload.kindergartenId}/classroom/${payload.id}/child/${payload.childId}`,
+      payload.formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      }
+    ),
+
+  setClasses: (payload) =>
+    instance.post(
+      `kindergarten/${payload.kindergartenId}/classroom?name=${payload.name}`
+    ),
+
+  setClassesModify: (payload) =>
+    instance.put(
+      `kindergarten/${payload.kindergartenId}/classroom/${payload.id}?name=${payload.name}`
+    ),
 
   removeGallery: (payload) =>
-    instance.delete(`/classroom/${payload.id}/gallery/${payload.imageId}`),
+    instance.delete(
+      `kindergarten/${payload.kindergartenId}/classroom/${payload.id}/gallery/${payload.imageId}`
+    ),
 
-  removeClasses: (kindergartenId, id) =>
-    instance.delete(`kindergarten/${kindergartenId}/classroom/${id}`),
+  removeClasses: (payload) =>
+    instance.delete(
+      `kindergarten/${payload.kindergartenId}/classroom/${payload.id}`
+    ),
 };
