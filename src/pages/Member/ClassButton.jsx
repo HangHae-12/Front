@@ -138,11 +138,14 @@ const ClassButton = () => {
   return (
     <>
       <StyledInputWrapper>
-        <StyledHeaderFont>학급관리</StyledHeaderFont>
-        {userRole.role === "PRINCIPAL" ? (
-          <StyledGearButton marginLeft="5px" onClick={setClassModal} />
-        ) : null}
+        <StyledHeaderWrapper>
+          <StyledHeaderFont>학급관리</StyledHeaderFont>
+          {userRole.role === "PRINCIPAL" ? (
+            <StyledGearButton marginLeft="5px" onClick={setClassModal} />
+          ) : null}
+        </StyledHeaderWrapper>
       </StyledInputWrapper>
+
       <StyledButtonWrapper>
         {data?.data?.data.everyClass.map((item) => {
           return (
@@ -223,11 +226,16 @@ const StyledButtonWrapper = styled.div`
 `;
 
 const StyledHeaderFont = styled.div`
-  ${textVariants.H1}
-  margin-bottom: 20px;
-  margin-top: 29px;
+  ${textVariants.H2_Bold}
+  display: flex;
+  align-items: center;
 `;
 
+const StyledHeaderWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+`;
 const StyledABBtn = styled(Buttons.AB)`
   color: ${({ theme }) => theme.color.primary};
   background-color: rgba(237, 245, 238, 0.8);
@@ -246,7 +254,7 @@ const StyledGearButton = styled(BsFillGearFill)`
   width: 12px;
   height: 12px;
   color: ${({ theme }) => theme.color.grayScale[500]};
-  margin-left: ${({ marginLeft }) => marginLeft};
+  margin-left: 5px;
 `;
 
 const StyledInputWrapper = styled.div`

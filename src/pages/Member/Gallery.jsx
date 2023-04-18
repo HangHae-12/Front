@@ -463,6 +463,7 @@ export default Gallery;
 const StyledGalleryWrapper = styled.div`
   padding: 20px;
   background: rgba(237, 245, 238, 0.8);
+  box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.12);
   border-radius: 12px;
 `;
 const StyledGridModalContent = styled.div`
@@ -495,10 +496,12 @@ const StyledHeaderRightWrapper = styled.div`
 `;
 
 const SyledAddGalleryButton = styled.button`
+  margin-left: auto;
   border-radius: 4px;
   border: 1px solid ${({ theme }) => theme.color.primary};
   background: ${({ theme }) => theme.color.white};
   padding: 4px 10px;
+  gap: 10px;
   color: ${({ theme }) => theme.color.primary};
   gap: 10px;
   cursor: pointer;
@@ -511,6 +514,12 @@ const SyledAddGalleryButton = styled.button`
   }
   &:active {
     cursor: grabbing;
+  }
+  @media ${({ theme }) => theme.device.mobile} {
+    display:none;
+  }
+  @media ${({ theme }) => theme.device.laptop} {
+    display:none;
   }
 `;
 

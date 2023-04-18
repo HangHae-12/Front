@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useQueryClient, useQuery } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import "react-datepicker/dist/react-datepicker.css";
@@ -8,45 +8,22 @@ import { GoOctoface } from "react-icons/go"
 import { TbDog } from "react-icons/tb"
 import { RiBearSmileLine } from "react-icons/ri"
 import { AiOutlineSmile, AiOutlineDoubleLeft, AiOutlineDoubleRight, AiOutlineLeft, AiOutlineRight } from "react-icons/ai"
+import useGetQuery from '../../../hooks/useGetQuery';
 import textVariants from '../../../styles/variants/textVariants';
 import Buttons from '../../../components/Buttons';
 import ClassButton from './MonthClassButton';
 import CustomDatepicker from '../../../components/CustomDatepicker'
-import { AttendanceAPI } from "../../../api/AttendanceAPI";
 import MonthExcel from './MonthExcel';
 import AnimatedTableRow from '../AnimatedTableRow';
-
+import getDate from '../../../utils/getDate';
 const Table = () => {
     const queryClient = useQueryClient();
-    const { sid = 1 } = useParams();
-    const [selectedDate, setSelectedDate] = useState(new Date());
+    const { id = 1 } = useParams();
+    const { selectedDate, setSelectedDate, handleDateChange, data } = useGetQuery('month');
 
-    const { data } = useQuery(
-        ["getMonthAttendance", selectedDate, sid],
-        () =>
-            AttendanceAPI.getMonthAttendance({
-                classroomId: sid,
-                year: selectedDate.getFullYear(),
-                month: selectedDate.getMonth() + 1,
-            }),
-        {
-            onError: (error) => {
-                console.log("getMonthAttendance error:", error);
-            },
-        }
-    );
-
-
-    const handleDateChange = (date) => {
-        setSelectedDate(date);
-        console.log(selectedDate);
-        queryClient.invalidateQueries(["getMonthAttendance"]);
-    };
     useEffect(() => {
         queryClient.invalidateQueries(["getMonthAttendance"]);
-    }, [selectedDate, sid]);
-
-
+    }, [selectedDate, id]);
     // console.log(filteredAttendanceData);
     const getDaysInMonth = (month, year) => {
         return new Date(year, month + 1, 0).getDate();
@@ -96,42 +73,32 @@ const Table = () => {
             return newDays;
         });
     }, [selectedDate]);
-
     //태이블 전날,다음날로 가는 함수
     const handlePrevDays = () => {
         setVisibleDays((prevVisibleDays) => {
             const firstDay = prevVisibleDays[0] - 1;
             const lastDay = prevVisibleDays[prevVisibleDays.length - 1] - 1;
-
             if (firstDay < 1) {
                 return prevVisibleDays;
             }
-
             const newDays = [];
-
             for (let i = firstDay; i <= lastDay; i++) {
                 newDays.push(i);
             }
-
             return newDays;
         });
     };
-
     const handleNextDays = () => {
         setVisibleDays((prevVisibleDays) => {
             const firstDay = prevVisibleDays[0] + 1;
             const lastDay = prevVisibleDays[prevVisibleDays.length - 1] + 1;
-
             if (lastDay > daysInMonth) {
                 return prevVisibleDays;
             }
-
             const newDays = [];
-
             for (let i = firstDay; i <= lastDay; i++) {
                 newDays.push(i);
             }
-
             return newDays;
         });
     };
@@ -140,13 +107,10 @@ const Table = () => {
         setVisibleDays((prevVisibleDays) => {
             const firstDay = prevVisibleDays[0] - 5;
             const lastDay = prevVisibleDays[prevVisibleDays.length - 1] - 5;
-
             if (firstDay < 1) {
                 return prevVisibleDays;
             }
-
             const newDays = [];
-
             for (let i = firstDay; i <= lastDay; i++) {
                 newDays.push(i);
             }
@@ -154,44 +118,20 @@ const Table = () => {
             return newDays;
         });
     };
-
     const handleFiveNextDays = () => {
         setVisibleDays((prevVisibleDays) => {
             const firstDay = prevVisibleDays[0] + 5;
             const lastDay = prevVisibleDays[prevVisibleDays.length - 1] + 5;
-
             if (lastDay > daysInMonth) {
                 return prevVisibleDays;
             }
-
             const newDays = [];
-
             for (let i = firstDay; i <= lastDay; i++) {
                 newDays.push(i);
             }
-
             return newDays;
         });
     };
-    //토요일,일요일 스타일 다르게 주기위해서 
-    const isSaturday = (day) => {
-        const dayOfWeek = new Date(
-            selectedDate.getFullYear(),
-            selectedDate.getMonth(),
-            day
-        ).getDay();
-        return dayOfWeek === 6;
-    };
-
-    const isSunday = (day) => {
-        const dayOfWeek = new Date(
-            selectedDate.getFullYear(),
-            selectedDate.getMonth(),
-            day
-        ).getDay();
-        return dayOfWeek === 0;
-    };
-
     // 랜덤으로 선택될 아이콘 배열
     const iconOptions = [GoOctoface, TbDog, RiBearSmileLine, AiOutlineSmile];
 
@@ -231,8 +171,8 @@ const Table = () => {
                                     if (day > daysInMonth) {
                                         return <StyledTopStickyHeader isWeekend={false} key={day}></StyledTopStickyHeader>;
                                     }
-                                    return <StyledTopStickyHeader isSaturday={isSaturday(day)}
-                                        isSunday={isSunday(day)} key={day}>{day}</StyledTopStickyHeader>;
+                                    return <StyledTopStickyHeader isSaturday={getDate.isSaturday(selectedDate, day)}
+                                        isSunday={getDate.isSunday(selectedDate, day)} key={day}>{day}</StyledTopStickyHeader>;
                                 })}
                                 <StyledTopStickyHeader onClick={handleNextDays}>
                                     <AiOutlineRight />
@@ -245,8 +185,8 @@ const Table = () => {
                                 <StyledStickyHeader>이름</StyledStickyHeader>
                                 <StyledStickyHeader>출결정보</StyledStickyHeader>
                                 {visibleDays.map((day) => (
-                                    <StyledStickyHeader key={day} isSaturday={isSaturday(day)}
-                                        isSunday={isSunday(day)}>
+                                    <StyledStickyHeader key={day} isSaturday={getDate.isSaturday(selectedDate, day)}
+                                        isSunday={getDate.isSunday(selectedDate, day)}>
                                         {
                                             daysOfWeek[
                                             new Date(
@@ -261,21 +201,18 @@ const Table = () => {
                                 <StyledStickyHeader>출석일수</StyledStickyHeader>
                                 <StyledStickyHeader>결석일수</StyledStickyHeader>
                             </tr>
-
                         </thead>
-
                         <tbody>
                             {data?.data?.data?.map((student, index) => {
                                 return (
                                     <>
-                                        <AnimatedTableRow key={student.id} delay={index * 0.1}>
+                                        <AnimatedTableRow key={student.id} delay={index * 0.05}>
                                             <StyledNameCell rowSpan="3">{getRandomIcon()} {student.name}</StyledNameCell>
                                             <td>출석상태</td>
                                             {visibleDays.map((day) => {
                                                 const attendance = student.monthAttendanceList.find(
                                                     (attendance) => new Date(attendance.date).getDate() === day
                                                 );
-
                                                 return (
                                                     <td key={day}>
                                                         {attendance ? (
@@ -297,7 +234,7 @@ const Table = () => {
                                             <StyledNameCell rowSpan="3">{student.attendanceCount}</StyledNameCell>
                                             <StyledNameCell rowSpan="3">{student.absentCount}</StyledNameCell>
                                         </AnimatedTableRow>
-                                        <AnimatedTableRow delay={index * 0.1}>
+                                        <AnimatedTableRow delay={index * 0.05}>
                                             <td>등원시간</td>
                                             {visibleDays.map((day) => {
                                                 const attendance = student.monthAttendanceList.find(
@@ -307,7 +244,7 @@ const Table = () => {
                                                 return <td key={day}>{attendance ? attendance.enterTime : <></>}</td>;
                                             })}
                                         </AnimatedTableRow>
-                                        <AnimatedTableRow delay={index * 0.1}>
+                                        <AnimatedTableRow delay={index * 0.05}>
                                             <td>하원시간</td>
                                             {visibleDays.map((day) => {
                                                 const attendance = student.monthAttendanceList.find(
