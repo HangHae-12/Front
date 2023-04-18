@@ -12,7 +12,6 @@ import AlertModal from "../../../components/Modals/AlertModal";
 import useModal from "../../../hooks/useModal";
 import { useProfileImageUploader } from "../../../hooks/useProfileImageUploader";
 
-
 import {
   NameInputField,
   PhoneNumberInputField,
@@ -41,7 +40,7 @@ const Principal = () => {
     onSuccess: (res) => {
       if (res.data.StatusCode === 200) {
         session.set("user", res.data.data);
-        navigate("/signup/success");
+        navigate("/signup/registration");
       }
     },
     onError: (error) => {

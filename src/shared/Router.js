@@ -20,6 +20,10 @@ const Router = () => {
             <Route path="principal" element={PAGE.signup.principal} />
             <Route path="parent" element={PAGE.signup.parent} />
             <Route path="success" element={PAGE.signup.success} />
+            <Route path="registration" element={PAGE.signup.registration}>
+              <Route path="info" element={PAGE.signup.info} />
+              <Route path="class" element={PAGE.signup.class} />
+            </Route>
           </Route>
           <Route path="/" element={PAGE.layout}>
             <Route index element={PAGE.member} />

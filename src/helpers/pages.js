@@ -15,9 +15,11 @@ import Parent from "../pages/Login/User/Parent";
 import Principal from "../pages/Login/User/Principal";
 import SignupSuccess from "../pages/Login/Signup/SignupSuccess";
 import Search from "../pages/Login/Search";
-
+import Registration from "../pages/Login/Registration";
 import ChildManage from "../pages/ChildManage";
 import Layout from "../pages/Layout";
+import KindergartenInfo from "../pages/Login/Registration/KindergartenInfo";
+import ClassRegistration from "../pages/Login/Registration/ClassRegistration";
 
 export const PAGE = {
   layout: <Layout />,
@@ -31,8 +33,11 @@ export const PAGE = {
     search: <Search />,
     teacher: <Teacher />,
     parent: <Parent />,
-    principal: <Principal />,
     success: <SignupSuccess />,
+    principal: <Principal />,
+    registration: <Registration />,
+    info: <KindergartenInfo />,
+    class: <ClassRegistration />,
   },
 
   host: <Host />,
