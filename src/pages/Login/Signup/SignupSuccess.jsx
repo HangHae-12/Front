@@ -46,6 +46,7 @@ const SignupSuccess = () => {
       <StyledSignupSuccess.AlertWrapper>
         <IoAlertCircle />
         <p>해당 유치원에서 승인이 완료되면 서비스 이용이 가능합니다.</p>
+        
       </StyledSignupSuccess.AlertWrapper>
     </StyledSignupSuccess.Container>
   );
