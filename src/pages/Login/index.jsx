@@ -1,12 +1,11 @@
+import { useEffect } from "react";
 import styled from "styled-components";
-import useRemoveToken from "../../hooks/useRemoveToken";
 import StyledLogin from "./styled";
 import { ENV } from "../../helpers/envs";
 import ASSETS from "../../helpers/assets";
 import textVariants from "../../styles/variants/textVariants";
 import tokenCookie from "../../utils/tokenCookie";
 import session from "../../utils/session";
-import { useEffect } from "react";
 
 const Login = () => {
   const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${ENV.kakao_key}&redirect_uri=${ENV.kakao_redirect}&response_type=code&scope=profile_nickname,profile_image,friends,talk_message`;
@@ -56,7 +55,7 @@ const StyledLoginPage = {
       ${textVariants.Body2_Bold}
       margin: 20px 0px 64px 0px;
       white-space: nowrap;
-      color: ${({theme})=>theme.color.grayScale[500]}
+      color: ${({ theme }) => theme.color.grayScale[500]};
     }
   `,
 };

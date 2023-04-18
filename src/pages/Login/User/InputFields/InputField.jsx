@@ -1,7 +1,6 @@
-// InputField.js
 import React from "react";
 import StyledLogin from "../../styled";
-import StyledInfo from "./styled";
+import StyledUser from "../styled";
 
 const InputField = ({
   label,
@@ -18,7 +17,7 @@ const InputField = ({
   isSubmitSuccessful,
 }) => {
   return (
-    <StyledInfo.ContentsWrapper>
+    <StyledUser.ContentsWrapper>
       <StyledLogin.Label htmlFor={id} isEssential={isEssential}>
         {label}
       </StyledLogin.Label>
@@ -33,9 +32,9 @@ const InputField = ({
         onInput={onInput}
       />
       {!isSubmitSuccessful && errors && (
-        <StyledInfo.ErrorMessage>{errors.message}</StyledInfo.ErrorMessage>
+        <StyledUser.ErrorMessage>{errors.message}</StyledUser.ErrorMessage>
       )}
-    </StyledInfo.ContentsWrapper>
+    </StyledUser.ContentsWrapper>
   );
 };
 

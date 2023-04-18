@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const StyledInfo = {
+const StyledUser = {
   Container: styled.div`
     display: flex;
     flex-direction: column;
@@ -53,4 +53,4 @@ const StyledInfo = {
   `,
 };
 
-export default StyledInfo;
+export default StyledUser;

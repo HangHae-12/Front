@@ -1,11 +1,10 @@
+import { useEffect } from "react";
 import styled from "styled-components";
 import { IoAlertCircle } from "react-icons/io5";
-import { DUMMY_URL } from "../../../helpers/dummyUrl";
 import StyledLogin from "../styled";
-
+import { DUMMY_URL } from "../../../helpers/dummyUrl";
 import session from "../../../utils/session";
 import textVariants from "../../../styles/variants/textVariants";
-import { useEffect } from "react";
 
 const SignupSuccess = () => {
   const { name, profileImageUrl, kindergartenName, logoImageUrl, role } =

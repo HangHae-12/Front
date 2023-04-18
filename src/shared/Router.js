@@ -11,6 +11,7 @@ const Router = () => {
 
         <Route path="/login" element={PAGE.login} />
         <Route path="/oauth/kakao/callback" element={PAGE.kakaoLogin} />
+        <Route path="/oauth/kakao/callback" element={PAGE.kakaoUnlinked} />
         <Route element={<PrivateRoute />}>
           <Route path="/signup" element={PAGE.signup.layout}>
             <Route index element={PAGE.signup.signup} />

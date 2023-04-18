@@ -5,7 +5,7 @@ import SignAPI from "../../api/SignAPI";
 import tokenCookie from "../../utils/tokenCookie";
 import session from "../../utils/session";
 
-const KakaoLogin = () => {
+const KakaoUnlinked = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [code, setCode] = useState("");
@@ -56,4 +56,4 @@ const KakaoLogin = () => {
   return <></>;
 };
 
-export default KakaoLogin;
+export default KakaoUnlinked;

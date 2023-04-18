@@ -1,19 +1,22 @@
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { useLocation, useNavigate } from "react-router-dom";
-import StyledInfo from "./styled";
-import StyledLogin from "../../styled";
-import { SignAPI } from "../../../../api/SignAPI";
-import Buttons from "../../../../components/Buttons";
-import ProfileImageUploader from "../../../../components/ProfileImageUploader";
-import { useProfileImageUploader } from "../../../../hooks/useProfileImageUploader";
-import session from "../../../../utils/session";
-import useModal from "../../../../hooks/useModal";
-import AlertModal from "../../../../components/Modals/AlertModal";
-import formatPhoneNumber from "../../../../utils/formatPhoneNumber";
-import EmergencyPhoneNumberInputField from "./EmergencyPhoneNumberInputField";
-import PhoneNumberInputField from "./PhoneNumberInputField";
-import NameInputField from "./NameInputField";
+import StyledUser from "./styled";
+import StyledLogin from "../styled";
+import SignAPI from "../../../api/SignAPI";
+import session from "../../../utils/session";
+import formatPhoneNumber from "../../../utils/formatPhoneNumber";
+import Buttons from "../../../components/Buttons";
+import ProfileImageUploader from "../../../components/ProfileImageUploader";
+import AlertModal from "../../../components/Modals/AlertModal";
+import useModal from "../../../hooks/useModal";
+import { useProfileImageUploader } from "../../../hooks/useProfileImageUploader";
+
+import {
+  NameInputField,
+  PhoneNumberInputField,
+  EmergencyPhoneNumberInputField,
+} from "./InputFields";
 
 const Parent = () => {
   const location = useLocation();
@@ -65,12 +68,12 @@ const Parent = () => {
 
   return (
     <>
-      <StyledInfo.Container>
+      <StyledUser.Container>
         <StyledLogin.Title>학부모님! 정보를 입력해주세요</StyledLogin.Title>
-        <StyledInfo.Form onSubmit={handleSubmit(onSubmit)}>
-          <StyledInfo.Wrapper>
+        <StyledUser.Form onSubmit={handleSubmit(onSubmit)}>
+          <StyledUser.Wrapper>
             <ProfileImageUploader id="Parent" prev={profileImageUrl} />
-            <StyledInfo.Box>
+            <StyledUser.Box>
               <NameInputField
                 register={register}
                 errors={errors}
@@ -90,15 +93,15 @@ const Parent = () => {
                 onInput={(e) => formatPhoneNumber(e)}
                 isSubmitSuccessful={isSubmitSuccessful}
               />
-            </StyledInfo.Box>
-          </StyledInfo.Wrapper>
-          <StyledInfo.SubmitBtnWrapper>
+            </StyledUser.Box>
+          </StyledUser.Wrapper>
+          <StyledUser.SubmitBtnWrapper>
             <Buttons.Filter colorTypes="primary" type="submit">
               작성완료
             </Buttons.Filter>
-          </StyledInfo.SubmitBtnWrapper>
-        </StyledInfo.Form>
-      </StyledInfo.Container>
+          </StyledUser.SubmitBtnWrapper>
+        </StyledUser.Form>
+      </StyledUser.Container>
     </>
   );
 };
