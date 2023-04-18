@@ -73,7 +73,7 @@ const Gallery = () => {
           currentPage
         );
       }
-    },
+    }
   );
 
   const detailGalleryMutation = useMutation(MemberAPI.getDetailGallery, {

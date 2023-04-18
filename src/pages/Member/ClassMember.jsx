@@ -15,7 +15,6 @@ import Buttons from "../../components/Buttons";
 import { kindergartenAtom, userProfileAtom } from "../../atom/sideBarAtom";
 import { AiOutlineSearch } from "react-icons/ai";
 import debounce from "../../utils/debounce";
-import ProfileImageUploader from "../../components/ProfileImageUploader";
 import { profileImageState } from "../../atom/profileImageUploaderAtom";
 import { motion } from "framer-motion";
 import { classButtonAtom } from "../../atom/classesAtom";
