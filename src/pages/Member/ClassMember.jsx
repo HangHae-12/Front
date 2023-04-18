@@ -18,6 +18,7 @@ import debounce from "../../utils/debounce";
 import ProfileImageUploader from "../../components/ProfileImageUploader";
 import { profileImageState } from "../../atom/profileImageUploaderAtom";
 import { motion } from "framer-motion";
+import { classButtonAtom } from "../../atom/classesAtom";
 
 const ClassMember = () => {
   const queryClient = useQueryClient();
@@ -38,12 +39,13 @@ const ClassMember = () => {
   const preview = useRecoilValue(profileImageState);
   const kindergartenId = useRecoilValue(kindergartenAtom);
   const [debouncedSearchMember, setDebouncedSearchMember] = useState("");
+  const classinfor = useRecoilValue(classButtonAtom);
 
   const { data } = useQuery(
     [
       "classesMember",
       kindergartenId.id,
-      id,
+      id || classinfor[0].id,
       currentPage,
       debouncedSearchMember,
     ],
@@ -51,21 +53,18 @@ const ClassMember = () => {
       if (debouncedSearchMember) {
         return MemberAPI.getSearchMember(
           kindergartenId.id,
-          id,
+          id || classinfor[0].id,
           debouncedSearchMember
         );
       } else {
         return MemberAPI.getClassesMember(
           kindergartenId.id,
-          id,
+          id || classinfor[0].id,
           currentPage
         );
       }
     },
     {
-      onSuccess: (data) => {
-        console.log(data);
-      },
       onError: () => {
         console.log("error");
       },
@@ -211,7 +210,7 @@ const ClassMember = () => {
     }
 
     const payload = {
-      id: id || "-1",
+      id: id || classinfor[0].id,
       kindergartenId: kindergartenId.id,
       childId: memberinfor.childId,
       formData: formData,
@@ -223,7 +222,7 @@ const ClassMember = () => {
 
   const getDetailMember = (childid) => {
     const payload = {
-      id: id || "-1",
+      id: id || classinfor[0].id,
       kindergartenId: kindergartenId.id,
       childid: childid,
     };
@@ -270,7 +269,7 @@ const ClassMember = () => {
     }
 
     const payload = {
-      id: id || "-1",
+      id: id || classinfor[0].id,
       kindergartenId: kindergartenId.id,
       formData: formData,
     };
@@ -422,15 +421,15 @@ const StyledAddMemberButton = styled.button`
   gap: 10px;
   color: ${({ theme }) => theme.color.primary};
   cursor: pointer;
-   
+
   @media ${({ theme }) => theme.device.laptop} {
-    display:none;
+    display: none;
   }
   &:hover {
     background-color: ${({ theme }) => theme.color.grayScale[50]};
   }
   &:active {
-        cursor: grabbing;
+    cursor: grabbing;
   }
 `;
 

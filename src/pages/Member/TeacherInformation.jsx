@@ -6,10 +6,11 @@ import { MemberAPI } from "../../api/MemberAPI";
 import { DustAPI } from "../../api/DustAPI";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import textVariants from "../../styles/variants/textVariants";
-import TeacherProfile from "./TeacherProfile"
-import { DustInfo } from './DustInfo';
-import { useRecoilValue } from "recoil";
+import TeacherProfile from "./TeacherProfile";
+import { DustInfo } from "./DustInfo";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { kindergartenAtom, userProfileAtom } from "../../atom/sideBarAtom";
+import { classButtonAtom } from "../../atom/classesAtom";
 
 const TeacherInformation = ({ data }) => {
   const queryClient = useQueryClient();
@@ -20,7 +21,7 @@ const TeacherInformation = ({ data }) => {
   const [selectedTeacher, setSelectedTeacher] = useState(null);
   const [searchTeacher, setSearchTeacher] = useState("");
   const kindergartenId = useRecoilValue(kindergartenAtom);
-
+  const classinfor = useRecoilValue(classButtonAtom);
 
   const { data: TeacherData } = useQuery(
     ["TeacherInformation", kindergartenId.id],
@@ -81,7 +82,7 @@ const TeacherInformation = ({ data }) => {
   const handleTeacherSubmit = async (id) => {
     const payload = {
       kindergartenId: kindergartenId.id,
-      id: id || "-1",
+      id: id || classinfor[0].id,
       teacherId: selectedTeacher.id,
     };
     setTeacherMutation.mutate(payload);
@@ -165,7 +166,10 @@ const TeacherInformation = ({ data }) => {
     <>
       <StyledContentWrapper>
         <StyledLeftWrapper>
-          <TeacherProfile data={data?.data?.data} setTeacherAppoint={setTeacherAppoint} />
+          <TeacherProfile
+            data={data?.data?.data}
+            setTeacherAppoint={setTeacherAppoint}
+          />
         </StyledLeftWrapper>
         <StyledRightWrapper>
           <DustInfo data={DustData?.data?.data} />
@@ -177,15 +181,11 @@ const TeacherInformation = ({ data }) => {
 
 export default TeacherInformation;
 
-
-
-
 const StyledContentWrapper = styled.div`
   display: flex;
   flex-direction: row;
   padding: 30px;
   gap: 32px;
-
 `;
 
 const StyledLeftWrapper = styled.div`
@@ -197,7 +197,7 @@ const StyledLeftWrapper = styled.div`
   border: 1px solid ${({ theme }) => theme.color.grayScale[100]};
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   @media ${({ theme }) => theme.device.mobile} {
-    width: 100%; 
+    width: 100%;
   }
 `;
 
@@ -211,10 +211,9 @@ const StyledRightWrapper = styled.div`
   border: 1px solid ${({ theme }) => theme.color.grayScale[100]};
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   @media ${({ theme }) => theme.device.mobile} {
-    display:none;
+    display: none;
   }
 `;
-
 
 const StyledModalHeader = styled.div`
   ${textVariants.Body1_SemiBold}
@@ -354,4 +353,3 @@ const StyledParentInformationBox = styled.div`
   border-radius: 4px;
   margin-left: ${({ marginLeft }) => marginLeft};
 `;
-

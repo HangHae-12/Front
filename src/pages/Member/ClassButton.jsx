@@ -14,36 +14,43 @@ import { useParams } from "react-router-dom";
 import { ClassMangeModal } from "./ClassModal";
 import useModal from "../../hooks/useModal";
 import Modal from "../../components/Modal";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useRecoilState } from "recoil";
 import { motion } from "framer-motion";
 import { kindergartenAtom, userProfileAtom } from "../../atom/sideBarAtom";
 import { classesAtom } from "../../atom/classesAtom";
+import { classButtonAtom } from "../../atom/classesAtom";
 
 const ClassButton = () => {
   const [selectedButton, setSelectedButton] = useState("");
   const [selectedTab, setSelectedTab] = useState("");
-  const [classInfo, setClassInfo] = useState([]);
+  // const [classInfo, setClassInfo] = useState([]);
   const { openModal, closeModal } = useModal();
   const { id } = useParams();
   const userRole = useRecoilValue(userProfileAtom);
   const kindergartenId = useRecoilValue(kindergartenAtom);
   const classesInfor = useRecoilValue(classesAtom);
   const [render, setRender] = useState(true);
+  const [classInfor, setClassInfor] = useRecoilState(classButtonAtom)
+
 
   const { data } = useQuery(
     ["classesPage", kindergartenId.id, id || "-1"],
     () => MemberAPI.getClassesPage(kindergartenId.id, id || "-1"),
     {
       onSuccess: (data) => {
-        console.log(data);
+        const everyClass = data.data.data.everyClass;
+        const classInfo = everyClass.map((classObj) => ({
+          id: classObj.id,
+          name: classObj.name,
+        }));
+        setClassInfor(classInfo);
       },
-    },
-    {
       onError: () => {
         console.log("error");
       },
     }
   );
+  
 
   const setClassModal = () => {
     const modalData = {

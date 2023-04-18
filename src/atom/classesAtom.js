@@ -7,3 +7,11 @@ export const classesAtom = atom({
       name: "",
     },
   });
+
+  export const classButtonAtom = atom({
+    key: "classButton",
+    default: [{
+      id: "",
+      name: "",
+    }],
+  });

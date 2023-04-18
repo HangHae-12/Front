@@ -9,7 +9,7 @@ import debounce from "../../utils/debounce";
 import ProfileImageUploader from "../../components/ProfileImageUploader";
 import { profileImageState } from "../../atom/profileImageUploaderAtom";
 import { kindergartenAtom } from "../../atom/sideBarAtom";
-import { classesAtom } from "../../atom/classesAtom";
+import { classButtonAtom, classesAtom } from "../../atom/classesAtom";
 
 //반별 아이들 상세 조회 모달
 export const ClassModal = ({ response }) => {
@@ -151,9 +151,6 @@ export const MemberAddModal = () => {
     ["searchParent", debouncedSearchParent],
     () => MemberAPI.getSearchParent(debouncedSearchParent),
     {
-      onSuccess: (data) => {
-        console.log(data.data);
-      },
       onError: () => {
         console.log("error");
       },
@@ -411,15 +408,12 @@ export const ClassMangeModal = () => {
   const queryClient = useQueryClient();
   const [isEditing, setIsEditing] = useState(null);
   const [classInfor, setClassInfor] = useRecoilState(classesAtom);
+  const [classButtonInfor, setClassButtonInfor] =
+    useRecoilState(classButtonAtom);
 
   const { data } = useQuery(
     ["getClassesList", kindergartenId.id],
     () => MemberAPI.getClassesList(kindergartenId.id),
-    {
-      onSuccess: (data) => {
-        console.log(data);
-      },
-    },
     {
       onError: () => {
         console.log("error");
@@ -428,8 +422,7 @@ export const ClassMangeModal = () => {
   );
 
   const setClassesMutation = useMutation(MemberAPI.setClasses, {
-    onSuccess: (response) => {
-      console.log(response);
+    onSuccess: () => {
       queryClient.invalidateQueries("getClassesList");
     },
     onError: (response) => {
@@ -438,8 +431,7 @@ export const ClassMangeModal = () => {
   });
 
   const setClassesModifyMutation = useMutation(MemberAPI.setClassesModify, {
-    onSuccess: (response) => {
-      console.log(response);
+    onSuccess: () => {
       queryClient.invalidateQueries("getClassesList");
     },
     onError: (response) => {
@@ -513,7 +505,7 @@ export const ClassMangeModal = () => {
               추가
             </StlyedClassMangeAddButton>
           </StyledInputWrapper>
-          {data?.data.data.classList.map((item) => {
+          {data?.data.data.classList.map((item, index) => {
             return (
               <StyledInputWrapper marginTop="10px" key={item.id}>
                 {isEditing !== item.id ? (
@@ -533,7 +525,7 @@ export const ClassMangeModal = () => {
                 ) : (
                   <>
                     <StyledClassMangeInput
-                      value={item.name}
+                      value={classInfor.name}
                       onChange={(e) =>
                         setClassInfor({ ...classInfor, name: e.target.value })
                       }

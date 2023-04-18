@@ -18,6 +18,7 @@ import { kindergartenAtom, userProfileAtom } from "../../atom/sideBarAtom";
 import CustomPagination from "../../components/CustomPagination";
 import CustomDatepicker from "../../components/CustomDatepicker";
 import { GalleryDetail } from "./GalleryModal";
+import { classButtonAtom } from "../../atom/classesAtom";
 
 const Gallery = () => {
   const queryClient = useQueryClient();
@@ -37,6 +38,7 @@ const Gallery = () => {
   const [modalState, setModalState] = useRecoilState(modalAtom);
   const userRole = useRecoilValue(userProfileAtom);
   const kindergartenId = useRecoilValue(kindergartenAtom);
+  const classinfor = useRecoilValue(classButtonAtom);
 
   const { data } = useQuery(
     [
@@ -44,7 +46,7 @@ const Gallery = () => {
       kindergartenId.id,
       searchGallery,
       currentPage,
-      id || "-1",
+      id || classinfor[0].id,
       formattedEndDate,
       formattedStartDate,
     ],
@@ -53,13 +55,13 @@ const Gallery = () => {
         return MemberAPI.getSearchGallery(
           kindergartenId.id,
           searchGallery,
-          id || "-1",
+          id || classinfor[0].id,
           currentPage
         );
       } else if (formattedEndDate || formattedStartDate) {
         return MemberAPI.getSearchDateGallery(
           kindergartenId.id,
-          id || "-1",
+          id || classinfor[0].id,
           formattedStartDate,
           formattedEndDate,
           currentPage
@@ -67,23 +69,17 @@ const Gallery = () => {
       } else {
         return MemberAPI.getClassesGallery(
           kindergartenId.id,
-          id || "-1",
+          id || classinfor[0].id,
           currentPage
         );
       }
     },
-    {
-      onSuccess: (data) => {
-        console.log(data);
-      },
-    }
   );
 
   const detailGalleryMutation = useMutation(MemberAPI.getDetailGallery, {
     onSuccess: (response) => {
       const GalleryModalData = createGalleryModalData(response);
       openModal(GalleryModalData);
-      console.log(response);
     },
     onError: (response) => {
       console.log(response);
@@ -151,7 +147,7 @@ const Gallery = () => {
 
       const payload = {
         kindergartenId: kindergartenId.id,
-        id: id || "-1",
+        id: id || classinfor[0].id,
         formData: formData,
       };
       setGallerySubmitMutation.mutate(payload);
@@ -313,7 +309,7 @@ const Gallery = () => {
   const getDetailGallery = (imageId) => {
     const payload = {
       kindergartenId: kindergartenId.id,
-      id: id || "-1",
+      id: id || classinfor[0].id,
       imageId: imageId,
     };
     detailGalleryMutation.mutate(payload);
@@ -377,7 +373,7 @@ const Gallery = () => {
   const handleGalleryDelete = (respone) => {
     const payload = {
       kindergartenId: kindergartenId.id,
-      id: id || "-1",
+      id: id || classinfor[0].id,
       imageId: respone.data.data.imagePostId,
     };
     removeGalleryMutation.mutate(payload);
@@ -516,10 +512,10 @@ const SyledAddGalleryButton = styled.button`
     cursor: grabbing;
   }
   @media ${({ theme }) => theme.device.mobile} {
-    display:none;
+    display: none;
   }
   @media ${({ theme }) => theme.device.laptop} {
-    display:none;
+    display: none;
   }
 `;
 
