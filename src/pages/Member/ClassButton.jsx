@@ -17,7 +17,7 @@ import Modal from "../../components/Modal";
 import { useRecoilValue } from "recoil";
 import { motion } from "framer-motion";
 import { kindergartenAtom, userProfileAtom } from "../../atom/sideBarAtom";
-
+import { classesAtom } from "../../atom/classesAtom";
 
 const ClassButton = () => {
   const [selectedButton, setSelectedButton] = useState("");
@@ -26,15 +26,17 @@ const ClassButton = () => {
   const { openModal, closeModal } = useModal();
   const { id } = useParams();
   const userRole = useRecoilValue(userProfileAtom);
-  const kindergertenId = useRecoilValue(kindergartenAtom)
+  const kindergartenId = useRecoilValue(kindergartenAtom);
+  const classesInfor = useRecoilValue(classesAtom);
+  const [render, setRender] = useState(true);
 
   const { data } = useQuery(
-    ["classesPage", id || "1"],
-    () => MemberAPI.getClassesPage(id || "1"),
+    ["classesPage", kindergartenId.id, id || "-1"],
+    () => MemberAPI.getClassesPage(kindergartenId.id, id || "-1"),
     {
       onSuccess: (data) => {
-        console.log(data)
-      }
+        console.log(data);
+      },
     },
     {
       onError: () => {
@@ -43,21 +45,25 @@ const ClassButton = () => {
     }
   );
 
-  const modalOption = {
-    padding: "20px",
-    width: "660px",
-    height: "837px",
-  };
-
   const setClassModal = () => {
     const modalData = {
       title: <StyledClassMangeHeader>반 관리</StyledClassMangeHeader>,
       contents: <ClassMangeModal />,
       footer: null,
+      width: "484px",
+      height: "500px",
       callback: () => alert("modal"),
     };
     openModal(modalData);
   };
+
+  useEffect(() => {
+    if (!render) {
+      setClassModal();
+    } else {
+      setRender(false);
+    }
+  }, [classesInfor]);
 
   useEffect(() => {
     const storedSelectedTab = localStorage.getItem("selectedTab");
@@ -86,9 +92,9 @@ const ClassButton = () => {
   };
 
   // useEffect(() => {
-  //   if (data && data.data && data.data.everyClass) {
+  //   if (data && data.data && data.data.data.everyClass) {
   //     setClassInfo(
-  //       data.data.everyClass.map((item) => ({ id: item.id, name: item.name }))
+  //       data.data.data.everyClass.map((item) => ({ id: item.id, name: item.name }))
   //     );
   //   }
   // }, [data]);
@@ -129,7 +135,6 @@ const ClassButton = () => {
     },
   };
 
-
   return (
     <>
       <StyledInputWrapper>
@@ -139,7 +144,7 @@ const ClassButton = () => {
         ) : null}
       </StyledInputWrapper>
       <StyledButtonWrapper>
-        {/* {data.data.everyClass.map((item) => {
+        {data?.data?.data.everyClass.map((item) => {
           return (
             <Button.ClassButton
             selected={item.name}
@@ -147,8 +152,8 @@ const ClassButton = () => {
             onClick={() => handleButtonClick(item.name, item.id)}
           />
           )
-        })} */}
-        <Button.ClassButton
+        })}
+        {/* <Button.ClassButton
           selected={"세빛반"}
           selectedButton={selectedButton}
           onClick={() => handleButtonClick("세빛반", 1)}
@@ -162,12 +167,22 @@ const ClassButton = () => {
           selected={"빛살반"}
           selectedButton={selectedButton}
           onClick={() => handleButtonClick("빛살반", 3)}
-        />
+        /> */}
       </StyledButtonWrapper>
-      <motion.div variants={fadeInUp} initial="hidden" animate="visible" custom={0.4}>
+      <motion.div
+        variants={fadeInUp}
+        initial="hidden"
+        animate="visible"
+        custom={0.4}
+      >
         <TeacherInformation data={data} />
       </motion.div>
-      <motion.div variants={fadeInUp} initial="hidden" animate="visible" custom={0.6}>
+      <motion.div
+        variants={fadeInUp}
+        initial="hidden"
+        animate="visible"
+        custom={0.6}
+      >
         {selectedTab === "member" ? (
           <StyledABBtn marginLeft="30px" onClick={handleMemberClick}>
             학급인원
@@ -186,18 +201,16 @@ const ClassButton = () => {
             갤러리
           </StyledABButton>
         )}
-        {
-          selectedTab === "member" ? (
-            <ClassMember />
-          ) : selectedTab === "gallery" ? (
-            <Gallery />
-          ) : selectedTab === "" ? (
-            <ClassMember />
-          ) : (
-            <ClassMember />
-          )
-        }
-        <Modal modalOption={modalOption} />
+        {selectedTab === "member" ? (
+          <ClassMember />
+        ) : selectedTab === "gallery" ? (
+          <Gallery />
+        ) : selectedTab === "" ? (
+          <ClassMember />
+        ) : (
+          <ClassMember />
+        )}
+        <Modal />
       </motion.div>
     </>
   );

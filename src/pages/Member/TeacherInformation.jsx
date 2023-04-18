@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import useModal from "../../hooks/useModal";
-import Modal from "../../components/Modal";
 import { useParams } from "react-router-dom";
 import { MemberAPI } from "../../api/MemberAPI";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { BsFillGearFill } from "react-icons/bs";
 import textVariants from "../../styles/variants/textVariants";
 import { useRecoilValue } from "recoil";
-import { userProfileAtom } from "../../atom/sideBarAtom";
+import { kindergartenAtom, userProfileAtom } from "../../atom/sideBarAtom";
 
 const TeacherInformation = ({ data }) => {
   const queryClient = useQueryClient();
@@ -19,10 +18,11 @@ const TeacherInformation = ({ data }) => {
   const [selectedTeacher, setSelectedTeacher] = useState(null);
   const [searchTeacher, setSearchTeacher] = useState("");
   const userRole = useRecoilValue(userProfileAtom);
+  const kindergartenId = useRecoilValue(kindergartenAtom);
 
   const { data: TeacherData } = useQuery(
-    ["TeacherInformation"],
-    () => MemberAPI.getTeacherInformation(),
+    ["TeacherInformation", kindergartenId.id],
+    () => MemberAPI.getTeacherInformation(kindergartenId.id),
     {
       onError: () => {
         console.log("error");
@@ -69,7 +69,8 @@ const TeacherInformation = ({ data }) => {
 
   const handleTeacherSubmit = async (id) => {
     const payload = {
-      id: id || "1",
+      kindergartenId: kindergartenId.id,
+      id: id || "-1",
       teacherId: selectedTeacher.id,
     };
     setTeacherMutation.mutate(payload);
@@ -199,7 +200,6 @@ const TeacherInformation = ({ data }) => {
           </StyledMiddleWrapper>
         </StyledContentWrapper>
       </StyledInfomation>
-      {/* <Modal modalOption={modalOption} /> */}
     </>
   );
 };
