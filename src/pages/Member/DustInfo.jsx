@@ -5,45 +5,46 @@ import { BsCheckCircle, BsEmojiSunglasses, BsEmojiSmile, BsEmojiExpressionless, 
 
 const DustInfo = ({ data }) => {
 
-    const DustEmoji = ({ dust }) => {
-        if (dust <= 15) {
-            return { emoji: <BsEmojiSunglasses />, level: "좋음", color: "green" };
-        } else if (dust <= 35) {
-            return { emoji: <BsEmojiSmile />, level: "보통", color: "blue" };
-        } else if (dust <= 75) {
-            return { emoji: <BsEmojiExpressionless />, level: "나쁨", color: "orange" };
-        } else {
-            return { emoji: <BsEmojiFrown />, level: "매우 나쁨", color: "red" };
-        }
-    };
-    const dustInfo = DustEmoji({ dust: data });
+  const DustEmoji = ({ dust }) => {
+    if (dust <= 15) {
+      return { emoji: <BsEmojiSunglasses />, level: "좋음", color: "green" };
+    } else if (dust <= 35) {
+      return { emoji: <BsEmojiSmile />, level: "보통", color: "blue" };
+    } else if (dust <= 75) {
+      return { emoji: <BsEmojiExpressionless />, level: "나쁨", color: "orange" };
+    } else {
+      return { emoji: <BsEmojiFrown />, level: "매우 나쁨", color: "red" };
+    }
+  };
+  const pm10Info = DustEmoji(data.pm10);
+  const pm25Info = DustEmoji(data.pm25);
 
-    return (
-        <StyledWrapper>
-            <StyledHeader><BsCheckCircle /> 오늘의 미세먼지 정보</StyledHeader>
-            <StyledContent>
-                <StyledBox
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ duration: 0.2 }}>
-                    <StyledMLabel>미세먼지</StyledMLabel>
-                    <StyledLine />
-                    <StyledEmoji color={dustInfo.color}>{dustInfo.emoji}</StyledEmoji>
-                    <StyledDustLevel color={dustInfo.color}>{dustInfo.level} <span>20㎍/㎥</span></StyledDustLevel>
-                </StyledBox>
-                <StyledBox
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ duration: 0.2 }}>
-                    <StyledSLabel>초미세먼지</StyledSLabel>
-                    <StyledLine />
-                    <StyledEmoji color={dustInfo.color}>{dustInfo.emoji}</StyledEmoji>
-                    <StyledDustLevel color={dustInfo.color}>{dustInfo.level} <span>20㎍/㎥</span></StyledDustLevel>
-                </StyledBox>
-            </StyledContent>
-            <StyledDescription>
-                * 미세먼지 수치 정보는 1시간 단위로 업데이트됩니다.
-            </StyledDescription>
-        </StyledWrapper>
-    );
+  return (
+    <StyledWrapper>
+      <StyledHeader><BsCheckCircle /> 오늘의 미세먼지 정보</StyledHeader>
+      <StyledContent>
+        <StyledBox
+          whileHover={{ scale: 1.05 }}
+          transition={{ duration: 0.2 }}>
+          <StyledMLabel>미세먼지</StyledMLabel>
+          <StyledLine />
+          <StyledEmoji color={pm10Info.color}>{pm10Info.emoji}</StyledEmoji>
+          <StyledDustLevel color={pm10Info.color}>{pm10Info.level} <span>{data.pm10}㎍/㎥</span></StyledDustLevel>
+        </StyledBox>
+        <StyledBox
+          whileHover={{ scale: 1.05 }}
+          transition={{ duration: 0.2 }}>
+          <StyledSLabel>초미세먼지</StyledSLabel>
+          <StyledLine />
+          <StyledEmoji color={pm25Info.color}>{pm25Info.emoji}</StyledEmoji>
+          <StyledDustLevel color={pm25Info.color}>{pm25Info.level} <span>{data.pm25}㎍/㎥</span></StyledDustLevel>
+        </StyledBox>
+      </StyledContent>
+      <StyledDescription>
+        * 미세먼지 수치 정보는 1시간 단위로 업데이트됩니다.
+      </StyledDescription>
+    </StyledWrapper>
+  );
 };
 
 export { DustInfo };

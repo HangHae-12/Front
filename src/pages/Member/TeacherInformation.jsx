@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import useModal from "../../hooks/useModal";
-import Modal from "../../components/Modal";
 import { useParams } from "react-router-dom";
 import { MemberAPI } from "../../api/MemberAPI";
+import { DustAPI } from "../../api/DustAPI";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { BsFillGearFill } from "react-icons/bs";
 import textVariants from "../../styles/variants/textVariants";
-import { useRecoilValue } from "recoil";
-import { userProfileAtom } from "../../atom/sideBarAtom";
 import TeacherProfile from "./TeacherProfile"
 import { DustInfo } from './DustInfo';
 
@@ -20,11 +17,19 @@ const TeacherInformation = ({ data }) => {
   const [checkedTeachers, setCheckedTeachers] = useState({});
   const [selectedTeacher, setSelectedTeacher] = useState(null);
   const [searchTeacher, setSearchTeacher] = useState("");
-  const userRole = useRecoilValue(userProfileAtom);
 
   const { data: TeacherData } = useQuery(
     ["TeacherInformation"],
     () => MemberAPI.getTeacherInformation(),
+    {
+      onError: () => {
+        console.log("error");
+      },
+    }
+  );
+  const { data: DustData } = useQuery(
+    ["TeacherInformation"],
+    () => DustAPI.getDustInfo(),
     {
       onError: () => {
         console.log("error");
@@ -158,7 +163,7 @@ const TeacherInformation = ({ data }) => {
           <TeacherProfile data={data?.data?.data} setTeacherAppoint={setTeacherAppoint} />
         </StyledLeftWrapper>
         <StyledRightWrapper>
-          <DustInfo data={data?.data?.data} />
+          <DustInfo data={DustData?.data?.data} />
         </StyledRightWrapper>
       </StyledContentWrapper>
     </>

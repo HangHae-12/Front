@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { HostAPI } from "../../api/HostAPI";
 import textVariants from "../../styles/variants/textVariants";
 import ClassButton from "./ClassButton";
@@ -13,6 +13,7 @@ import EnterTime from "./EnterTime";
 import Children from "./Children";
 import Pagination from "../../components/CustomPagination";
 import { paginationAtom } from "../../atom/hostButtonAtom";
+import { kindergartenAtom } from "../../atom/sideBarAtom"
 import { motion } from 'framer-motion';
 import getDate from '../../utils/getDate';
 
@@ -21,13 +22,14 @@ const ClassButtonGroup = () => {
   const queryClient = useQueryClient();
   const { classroomId = 0, scheduleId = "ENTER", timeId = 0 } = useParams();
   const [page, setPage] = useRecoilState(paginationAtom);
-  const [size, setSize] = useState(14);
+  const kindergartenId = useRecoilValue(kindergartenAtom);
+  const size = 14;
   const date = new Date();
   const isSunday = getDate.isSunday(date);
 
   const time = ["전체시간", "07시~08시", "08시~09시", "09시~10시", "16시~17시", "17시~18시", "18시~19시"][parseInt(timeId)];
   //등원,하원,timea,page param
-  const hostParams = { classroomId, state: scheduleId, time: time, page, size };
+  const hostParams = { kindergartenId, classroomId, state: scheduleId, time: time, page, size };
 
   const { data } = useQuery(
     ["getManageSchedule", hostParams],

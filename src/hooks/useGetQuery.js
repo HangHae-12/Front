@@ -1,12 +1,17 @@
 import { useState, useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
+import { useRecoilValue } from "recoil";
 import { AttendanceAPI } from "../api/AttendanceAPI";
 import formattedDate from "../utils/formattedDate";
+import { kindergartenAtom } from "../atom/sideBarAtom";
+
 const useGetQuery = (type) => {
   const queryClient = useQueryClient();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const { id = 1 } = useParams();
+  const kindergartenId = useRecoilValue(kindergartenAtom);
+
   //리팩토링 떄 모든 get api 추가 해도 좋을것 같다
   const getQueryKey = () => {
     return type === "month" ? "getMonthAttendance" : "getDayAttendance";
@@ -16,12 +21,14 @@ const useGetQuery = (type) => {
     return type === "month"
       ? () =>
           AttendanceAPI.getMonthAttendance({
+            kindergartenId,
             classroomId: id,
             year: selectedDate.getFullYear(),
             month: selectedDate.getMonth() + 1,
           })
       : () =>
           AttendanceAPI.getDayAttendance({
+            kindergartenId,
             classroomId: id,
             date: formattedDate(selectedDate),
           });
