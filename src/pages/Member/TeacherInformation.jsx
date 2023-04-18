@@ -168,7 +168,7 @@ const TeacherInformation = ({ data }) => {
           <TeacherProfile data={data?.data?.data} setTeacherAppoint={setTeacherAppoint} />
         </StyledLeftWrapper>
         <StyledRightWrapper>
-          <DustInfo data={DustData?.data?.data} />
+          <DustInfo data={DustData?.data} />
         </StyledRightWrapper>
       </StyledContentWrapper>
     </>

@@ -29,7 +29,7 @@ const ClassButtonGroup = () => {
 
   const time = ["전체시간", "07시~08시", "08시~09시", "09시~10시", "16시~17시", "17시~18시", "18시~19시"][parseInt(timeId)];
   //등원,하원,timea,page param
-  const hostParams = { kindergartenId, classroomId, state: scheduleId, time: time, page, size };
+  const hostParams = { kindergartenId: kindergartenId.id, classroomId, state: scheduleId, time: time, page, size };
 
   const { data } = useQuery(
     ["getManageSchedule", hostParams],
@@ -71,7 +71,7 @@ const ClassButtonGroup = () => {
     <>
       <StyledAttendanceHeader>출결 관리</StyledAttendanceHeader>
       <motion.div variants={fadeInUp} initial="hidden" animate="visible">
-        <ClassButton hostParams={hostParams} />
+        <ClassButton hostParams={hostParams} everyClass={data.data.data.everyClass} />
       </motion.div>
       <motion.div variants={fadeInUp} initial="hidden" animate="visible" custom={0.2}>
         <Attendee classData={data?.data?.data?.info} />

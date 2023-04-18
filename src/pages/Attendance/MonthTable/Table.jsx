@@ -203,7 +203,7 @@ const Table = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {data?.data?.data?.map((student, index) => {
+                            {data?.data?.data?.content?.map((student, index) => {
                                 return (
                                     <>
                                         <AnimatedTableRow key={student.id} delay={index * 0.05}>

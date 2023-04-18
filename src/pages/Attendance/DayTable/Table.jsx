@@ -60,7 +60,7 @@ const Table = () => {
     <div>
 
       <StyledTableTitle>일별 출석부</StyledTableTitle>
-      <ClassButton />
+      <ClassButton everyClass={data?.data?.data?.everyClass} />
       <StyledHeader>
         <StyledMonthYear>
           <StyledGrPrevious onClick={decreaseDate} size={16} />
@@ -89,8 +89,8 @@ const Table = () => {
                   <td className="sunday" colSpan="6"><BsSun /> 일요일은 쉬는날</td>
                 </AnimatedTableRow>
               ) : (
-                data?.data?.data?.length > 0 &&
-                data.data.data
+                data?.data?.data?.content?.length > 0 &&
+                data.data.data.content
                   .filter((row) => row !== null) // null 값을 걸러내기 위한 추가 작업
                   .map((row, index) => (
                     <AnimatedTableRow key={row.id} delay={index * 0.05} >

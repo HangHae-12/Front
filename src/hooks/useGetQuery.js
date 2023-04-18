@@ -21,14 +21,14 @@ const useGetQuery = (type) => {
     return type === "month"
       ? () =>
           AttendanceAPI.getMonthAttendance({
-            kindergartenId,
+            kindergartenId: kindergartenId.id,
             classroomId: id,
             year: selectedDate.getFullYear(),
             month: selectedDate.getMonth() + 1,
           })
       : () =>
           AttendanceAPI.getDayAttendance({
-            kindergartenId,
+            kindergartenId: kindergartenId.id,
             classroomId: id,
             date: formattedDate(selectedDate),
           });
