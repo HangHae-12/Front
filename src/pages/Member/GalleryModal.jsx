@@ -39,7 +39,6 @@ export const GalleryDetail = ({ response }) => {
 //   );
 // };
 
-
 const StyledModalContent = styled.div`
   display: flex;
   justify-content: center;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import TeacherInformation from "./TeacherInformation";
 import { MemberAPI } from "../../api/MemberAPI";
 import ClassMember from "./ClassMember";
@@ -10,35 +10,37 @@ import { BsFillGearFill } from "react-icons/bs";
 import textVariants from "../../styles/variants/textVariants";
 import Buttons from "../../components/Buttons";
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
 import { ClassMangeModal } from "./ClassModal";
 import useModal from "../../hooks/useModal";
 import Modal from "../../components/Modal";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useRecoilState } from "recoil";
 import { motion } from "framer-motion";
 import { kindergartenAtom, userProfileAtom } from "../../atom/sideBarAtom";
-import { classesAtom } from "../../atom/classesAtom";
+import { classesAtom, classButtonAtom } from "../../atom/classesAtom";
 
 const ClassButton = () => {
   const [selectedButton, setSelectedButton] = useState("");
   const [selectedTab, setSelectedTab] = useState("");
-  const [classInfo, setClassInfo] = useState([]);
   const { openModal, closeModal } = useModal();
   const { id } = useParams();
   const userRole = useRecoilValue(userProfileAtom);
   const kindergartenId = useRecoilValue(kindergartenAtom);
   const classesInfor = useRecoilValue(classesAtom);
   const [render, setRender] = useState(true);
+  const [classInfor, setClassInfor] = useRecoilState(classButtonAtom);
 
   const { data } = useQuery(
     ["classesPage", kindergartenId.id, id || "-1"],
     () => MemberAPI.getClassesPage(kindergartenId.id, id || "-1"),
     {
       onSuccess: (data) => {
-        console.log(data);
+        const everyClass = data.data.data.everyClass;
+        const classInfo = everyClass.map((classObj) => ({
+          id: classObj.id,
+          name: classObj.name,
+        }));
+        setClassInfor(classInfo);
       },
-    },
-    {
       onError: () => {
         console.log("error");
       },
@@ -75,34 +77,22 @@ const ClassButton = () => {
   }, []);
 
   useEffect(() => {
-    setSelectedButton(idToButtonName(id));
-  }, [id]);
+    if (data?.data?.data.everyClass && data?.data?.data.everyClass.length > 0) {
+      const storedSelectedButton = localStorage.getItem("selectedButton");
+      const storedSelectedButtonId = localStorage.getItem("selectedButtonId");
 
-  const idToButtonName = (id) => {
-    switch (id) {
-      case "1":
-        return "세빛반";
-      case "2":
-        return "둥둥반";
-      case "3":
-        return "빛살반";
-      default:
-        return "세빛반";
+      if (storedSelectedButton && storedSelectedButtonId) {
+        setSelectedButton(storedSelectedButton);
+        navigate(`/classes/${storedSelectedButtonId}`);
+      } else {
+        const firstClass = data?.data?.data.everyClass[0];
+        setSelectedButton(firstClass.name);
+        localStorage.setItem("selectedButton", firstClass.name);
+        localStorage.setItem("selectedButtonId", firstClass.id);
+        navigate(`/classes/${firstClass.id}`);
+      }
     }
-  };
-
-  // useEffect(() => {
-  //   if (data && data.data && data.data.data.everyClass) {
-  //     setClassInfo(
-  //       data.data.data.everyClass.map((item) => ({ id: item.id, name: item.name }))
-  //     );
-  //   }
-  // }, [data]);
-
-  // const idToButtonName = (id) => {
-  //   const foundClass = classInfo.find((classItem) => classItem.id === id);
-  //   return foundClass ? foundClass.name : "";
-  // };
+  }, [data]);
 
   const handleMemberClick = () => {
     setSelectedTab("member");
@@ -118,6 +108,8 @@ const ClassButton = () => {
 
   const handleButtonClick = (selected, id) => {
     setSelectedButton(selected);
+    localStorage.setItem("selectedButton", selected);
+    localStorage.setItem("selectedButtonId", id);
     navigate(`/classes/${id}`);
   };
 
@@ -150,27 +142,12 @@ const ClassButton = () => {
         {data?.data?.data.everyClass.map((item) => {
           return (
             <Button.ClassButton
-            selected={item.name}
-            selectedButton={selectedButton}
-            onClick={() => handleButtonClick(item.name, item.id)}
-          />
-          )
+              selected={item.name}
+              selectedButton={selectedButton}
+              onClick={() => handleButtonClick(item.name, item.id)}
+            />
+          );
         })}
-        {/* <Button.ClassButton
-          selected={"세빛반"}
-          selectedButton={selectedButton}
-          onClick={() => handleButtonClick("세빛반", 1)}
-        />
-        <Button.ClassButton
-          selected={"둥둥반"}
-          selectedButton={selectedButton}
-          onClick={() => handleButtonClick("둥둥반", 2)}
-        />
-        <Button.ClassButton
-          selected={"빛살반"}
-          selectedButton={selectedButton}
-          onClick={() => handleButtonClick("빛살반", 3)}
-        /> */}
       </StyledButtonWrapper>
       <motion.div
         variants={fadeInUp}

@@ -1,44 +1,43 @@
 import styled from "styled-components";
-import { DUMMY_IMG_SRC } from "../../assets";
 import textVariants from "../../styles/variants/textVariants";
-import { BsFillGearFill } from 'react-icons/bs';
+import { BsFillGearFill } from "react-icons/bs";
 import { useRecoilValue } from "recoil";
 import { userProfileAtom } from "../../atom/sideBarAtom";
 
 const TeacherProfile = ({ data, setTeacherAppoint }) => {
-    const userRole = useRecoilValue(userProfileAtom);
-    return (
-        <StyledWrapper>
-            <StyledProfileWrapper>
-                <StyledChangeTeacher>
-                    <StyledChangeText>담임 선생님</StyledChangeText>
-                    {userRole.role === "PRINCIPAL" ? (
-                        <StyledGearButton
-                            marginLeft="8px"
-                            onClick={() => setTeacherAppoint()}
-
-                        />
-                    ) : null}
-                </StyledChangeTeacher>
-                <StyledProfileImage src={data?.classroomTeacher?.profileImageUrl} />
-            </StyledProfileWrapper>
-            <StyledInfo>
-                <StyledOneWord>
-                    <StyledOneWordLabel>성함</StyledOneWordLabel>
-                    <StyledOneWordText>{data?.classroomTeacher?.name}</StyledOneWordText>
-                </StyledOneWord>
-                <StyledOneWord>
-                    <StyledOneWordLabel>한 마디</StyledOneWordLabel>
-                    <StyledOneWordText>{data?.classroomTeacher?.resolution} </StyledOneWordText>
-                </StyledOneWord>
-                <StyledOneWord>
-                    <StyledOneWordLabel>이메일</StyledOneWordLabel>
-                    <StyledOneWordText>{data?.classroomTeacher?.email}</StyledOneWordText>
-                </StyledOneWord>
-            </StyledInfo>
-        </StyledWrapper>
-
-    );
+  const userRole = useRecoilValue(userProfileAtom);
+  return (
+    <StyledWrapper>
+      <StyledProfileWrapper>
+        <StyledChangeTeacher>
+          <StyledChangeText>담임 선생님</StyledChangeText>
+          {userRole.role === "PRINCIPAL" ? (
+            <StyledGearButton
+              marginLeft="8px"
+              onClick={() => setTeacherAppoint()}
+            />
+          ) : null}
+        </StyledChangeTeacher>
+        <StyledProfileImage src={data?.classroomTeacher?.profileImageUrl} />
+      </StyledProfileWrapper>
+      <StyledInfo>
+        <StyledOneWord>
+          <StyledOneWordLabel>성함</StyledOneWordLabel>
+          <StyledOneWordText>{data?.classroomTeacher?.name}</StyledOneWordText>
+        </StyledOneWord>
+        <StyledOneWord>
+          <StyledOneWordLabel>한 마디</StyledOneWordLabel>
+          <StyledOneWordText>
+            {data?.classroomTeacher?.resolution}{" "}
+          </StyledOneWordText>
+        </StyledOneWord>
+        <StyledOneWord>
+          <StyledOneWordLabel>이메일</StyledOneWordLabel>
+          <StyledOneWordText>{data?.classroomTeacher?.email}</StyledOneWordText>
+        </StyledOneWord>
+      </StyledInfo>
+    </StyledWrapper>
+  );
 };
 
 export default TeacherProfile;
@@ -46,7 +45,7 @@ export default TeacherProfile;
 const StyledWrapper = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center; 
+  justify-content: center;
   gap: 80px;
   @media ${({ theme }) => theme.device.mobile} {
     flex-direction: column;
@@ -60,10 +59,10 @@ const StyledWrapper = styled.div`
 
 const StyledProfileWrapper = styled.div`
   display: flex;
-  flex-direction:column;
+  flex-direction: column;
   align-items: center;
   margin-right: 100px;
-  @media ${({ theme }) => theme.device.mobile}; {
+  @media ${({ theme }) => theme.device.mobile} {
     margin-right: 0;
     margin-bottom: 16px;
   }
@@ -114,7 +113,7 @@ const StyledOneWord = styled.div`
 `;
 
 const StyledOneWordLabel = styled.div`
-   ${textVariants.Body2_SemiBold}
+  ${textVariants.Body2_SemiBold}
   font-weight: bold;
   color: ${({ theme }) => theme.color.grayScale[500]};
   margin-right: 8px;
@@ -122,7 +121,7 @@ const StyledOneWordLabel = styled.div`
 `;
 
 const StyledOneWordText = styled.div`
-   ${textVariants.Body1_SemiBold}
+  ${textVariants.Body1_SemiBold}
   color: ${({ theme }) => theme.color.grayScale[500]};
   white-space: pre-wrap;
   word-wrap: break-word;
