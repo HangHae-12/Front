@@ -3,11 +3,13 @@ import styled from "styled-components";
 import textVariants from "../../styles/variants/textVariants";
 import { memberAtom, parentAtom } from "../../atom/memberAtom";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { useQuery } from "@tanstack/react-query";
+import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import { MemberAPI } from "../../api/MemberAPI";
 import debounce from "../../utils/debounce";
 import ProfileImageUploader from "../../components/ProfileImageUploader";
 import { profileImageState } from "../../atom/profileImageUploaderAtom";
+import { kindergartenAtom } from "../../atom/sideBarAtom";
+import { classesAtom } from "../../atom/classesAtom";
 
 //반별 아이들 상세 조회 모달
 export const ClassModal = ({ response }) => {
@@ -44,7 +46,7 @@ export const ClassModal = ({ response }) => {
               09시~10시
             </StyledTime>
             <StyledQuestionFont>하원시간 </StyledQuestionFont>
-            <StyledTime marginLeft="50px">09시~10시</StyledTime>
+            <StyledTime marginLeft="50px">17시~18시</StyledTime>
           </StyledInputWrapper>
         </StyledRightWrapper>
       </StyledChildrenProfileWrapper>
@@ -209,11 +211,10 @@ export const MemberAddModal = () => {
         <StyledLeftWrapper>
           <StyledProfileHeaderFont>원생 프로필</StyledProfileHeaderFont>
           {memberinfor.image ? (
-
-          <ProfileImageUploader id="classModal" prev={memberinfor.image} />
+            <ProfileImageUploader id="classModal" prev={memberinfor.image} />
           ) : (
             <ProfileImageUploader id="classModal" prev={preview.previewImage} />
-            )}
+          )}
         </StyledLeftWrapper>
         <StyledRightWrapper>
           <StyledInputWrapper marginTop="20px">
@@ -253,11 +254,29 @@ export const MemberAddModal = () => {
           </StyledInputWrapper>
           <StyledInputWrapper marginTop="25px">
             <StyledQuestionFont>등원시간 </StyledQuestionFont>
-            <StyledTime marginLeft="50px" marginRight="40px">
-              09시~10시
-            </StyledTime>
-            <StyledQuestionFont>하원시간 </StyledQuestionFont>
-            <StyledTime marginLeft="50px">16시~17시</StyledTime>
+            <StyledSelectTimeBox
+              onChange={(e) =>
+                setMemberAdd({ ...memberAdd, dailyEnterTime: e.target.value })
+              }
+              value={memberinfor.dailyEnterTime}
+            >
+              <option value=""></option>
+              <option value="07시~08시">07시~08시</option>
+              <option value="08시~09시">08시~09시</option>
+              <option value="09시~10시">09시~10시</option>
+            </StyledSelectTimeBox>
+            <StyledQuestionFont marginLeft="32px">하원시간 </StyledQuestionFont>
+            <StyledSelectTimeBox
+              onChange={(e) =>
+                setMemberAdd({ ...memberAdd, dailyExitTime: e.target.value })
+              }
+              value={memberinfor.dailyExitTime}
+            >
+              <option value=""></option>
+              <option value="16시~17시">16시~17시</option>
+              <option value="17시~18시">17시~18시</option>
+              <option value="18시~19시">18시~19시</option>
+            </StyledSelectTimeBox>
           </StyledInputWrapper>
         </StyledRightWrapper>
       </StyledChildrenProfileWrapper>
@@ -388,62 +407,150 @@ export const GallerySlider = ({ images }) => {
 
 // 반 관리 모달
 export const ClassMangeModal = () => {
-  const [isEditing, setIsEditing] = useState(false);
+  const kindergartenId = useRecoilValue(kindergartenAtom);
+  const queryClient = useQueryClient();
+  const [isEditing, setIsEditing] = useState(null);
+  const [classInfor, setClassInfor] = useRecoilState(classesAtom);
 
-  const handleModiftButton = () => {
-    setIsEditing(true);
+  const { data } = useQuery(
+    ["getClassesList", kindergartenId.id],
+    () => MemberAPI.getClassesList(kindergartenId.id),
+    {
+      onSuccess: (data) => {
+        console.log(data);
+      },
+    },
+    {
+      onError: () => {
+        console.log("error");
+      },
+    }
+  );
+
+  const setClassesMutation = useMutation(MemberAPI.setClasses, {
+    onSuccess: (response) => {
+      console.log(response);
+      queryClient.invalidateQueries("getClassesList");
+    },
+    onError: (response) => {
+      console.log(response);
+    },
+  });
+
+  const setClassesModifyMutation = useMutation(MemberAPI.setClassesModify, {
+    onSuccess: (response) => {
+      console.log(response);
+      queryClient.invalidateQueries("getClassesList");
+    },
+    onError: (response) => {
+      console.log(response);
+    },
+  });
+
+  const removeClassesMutation = useMutation(MemberAPI.removeClasses, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("getClassesList");
+    },
+  });
+
+  const handleAddButton = () => {
+    const payload = {
+      kindergartenId: kindergartenId.id,
+      name: classInfor.name,
+    };
+    setClassesMutation.mutate(payload);
+    setClassInfor("");
   };
 
-  const handleDeleteButton = () => {
+  const handleModifyButton = (id) => {
+    setIsEditing(id);
+  };
+
+  const handleDeleteButton = (id) => {
     if (
       window.confirm(
         "반을 삭제시 모든 데이터가 삭제됩니다. 그래도 삭제하십니까?"
       )
     ) {
+      const payload = {
+        kindergartenId: kindergartenId.id,
+        id: id,
+      };
+      removeClassesMutation.mutate(payload);
       alert("삭제되었습니다.");
     } else {
       alert("취소합니다.");
     }
   };
 
-  const handleConfirmButton = () => {
-    setIsEditing(false);
+  const handleConfirmButton = (id) => {
+    const payload = {
+      id: id,
+      kindergartenId: kindergartenId.id,
+      name: classInfor.name,
+    };
+    setClassesModifyMutation.mutate(payload);
+    setIsEditing(null);
+    setClassInfor("");
   };
 
   const handleCancelButton = () => {
-    setIsEditing(false);
+    setIsEditing(null);
+    setClassInfor("");
   };
   return (
     <>
       <StyledClassAddModalWrapper>
         <StyledClassMangeBox>
           <StyledInputWrapper marginTop="10px">
-            <StyledClassMangeInput placeholder="반 이름을 적어주세요" />
-            <StlyedClassMangeAddButton>추가</StlyedClassMangeAddButton>
+            <StyledClassMangeInput
+              placeholder="반 이름을 적어주세요"
+              onChange={(e) =>
+                setClassInfor({ ...classInfor, name: e.target.value })
+              }
+            />
+            <StlyedClassMangeAddButton onClick={handleAddButton}>
+              추가
+            </StlyedClassMangeAddButton>
           </StyledInputWrapper>
-          <StyledInputWrapper marginTop="10px">
-            {!isEditing ? (
-              <>
-                <StyledClassMangeDiv>세빛반</StyledClassMangeDiv>
-                <StyledClassMangeButtons onClick={handleModiftButton}>
-                  수정
-                </StyledClassMangeButtons>
-                <StyledClassMangeButtons onClick={handleDeleteButton}>
-                  삭제
-                </StyledClassMangeButtons>
-              </>
-            ) : (
-              <>
-                <StyledClassMangeInput />
-                <StyledClassMangeButtons onClick={handleConfirmButton}>
-                  확인
-                </StyledClassMangeButtons>
-                <StyledClassMangeButtons onClick={handleCancelButton}>
-                  취소
-                </StyledClassMangeButtons>
-              </>
-            )}
-          </StyledInputWrapper>
+          {data?.data.data.classList.map((item) => {
+            return (
+              <StyledInputWrapper marginTop="10px" key={item.id}>
+                {isEditing !== item.id ? (
+                  <>
+                    <StyledClassMangeDiv>{item.name}</StyledClassMangeDiv>
+                    <StyledClassMangeButtons
+                      onClick={() => handleModifyButton(item.id)}
+                    >
+                      수정
+                    </StyledClassMangeButtons>
+                    <StyledClassMangeButtons
+                      onClick={() => handleDeleteButton(item.id)}
+                    >
+                      삭제
+                    </StyledClassMangeButtons>
+                  </>
+                ) : (
+                  <>
+                    <StyledClassMangeInput
+                      value={item.name}
+                      onChange={(e) =>
+                        setClassInfor({ ...classInfor, name: e.target.value })
+                      }
+                    />
+                    <StyledClassMangeButtons
+                      onClick={() => handleConfirmButton(item.id)}
+                    >
+                      확인
+                    </StyledClassMangeButtons>
+                    <StyledClassMangeButtons onClick={handleCancelButton}>
+                      취소
+                    </StyledClassMangeButtons>
+                  </>
+                )}
+              </StyledInputWrapper>
+            );
+          })}
         </StyledClassMangeBox>
       </StyledClassAddModalWrapper>
     </>
@@ -604,7 +711,7 @@ const StyledChoiceparentWrapper = styled.div`
   padding: 18px 12px;
   gap: 9px;
   width: 600px;
-  height: 288px;
+  height: 210px;
   overflow-y: auto;
   background: ${({ theme }) => theme.color.grayScale[50]};
   border-radius: 8px;
@@ -739,7 +846,7 @@ const StyledClassAddModalWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: start;
+  align-items: center;
 `;
 
 const StyleNoteBox = styled.div`
@@ -819,4 +926,16 @@ const StyledInputLength = styled.div`
   font-size: 12px;
   margin-top: 5px;
   color: ${({ theme }) => theme.color.grayScale[500]};
+`;
+
+const StyledSelectTimeBox = styled.select`
+  background: ${({ theme }) => theme.color.grayScale[25]};
+  border: 1px solid #d3d3d3;
+  border-radius: 40px;
+  width: 110px;
+  height: 37px;
+  padding: 8px 12px;
+  gap: 10px;
+  margin-left: 24px;
+  color: #757575;
 `;
