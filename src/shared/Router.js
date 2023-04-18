@@ -12,13 +12,19 @@ const Router = () => {
 
         <Route path="/login" element={PAGE.login} />
         <Route path="/oauth/kakao/callback" element={PAGE.kakaoLogin} />
+        <Route path="/oauth/kakao/callback" element={PAGE.kakaoUnlinked} />
         <Route element={<PrivateRoute />}>
           <Route path="/signup" element={PAGE.signup.layout}>
             <Route index element={PAGE.signup.signup} />
             <Route path="search" element={PAGE.signup.search} />
             <Route path="teacher" element={PAGE.signup.teacher} />
+            <Route path="principal" element={PAGE.signup.principal} />
             <Route path="parent" element={PAGE.signup.parent} />
             <Route path="success" element={PAGE.signup.success} />
+            <Route path="registration" element={PAGE.signup.registration}>
+              <Route path="info" element={PAGE.signup.info} />
+              <Route path="class" element={PAGE.signup.class} />
+            </Route>
           </Route>
           <Route path="/" element={PAGE.layout}>
             <Route index element={PAGE.member} />

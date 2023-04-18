@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import textVariants from "../../../../styles/variants/textVariants";
+import textVariants from "../../../styles/variants/textVariants";
 
 const SearchContent = ({ data, handleSelectKinder }) => {
   return (

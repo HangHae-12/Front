@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { FiX } from "react-icons/fi";
 import Buttons from "../Buttons";
 import textVariants from "../../styles/variants/textVariants";
@@ -29,9 +29,14 @@ const StyledProfileImageUploader = {
     width: min-content;
     height: auto;
     cursor: pointer;
-    &:hover .cancelIcon {
-      display: block;
-    }
+
+    ${({ isFixMode }) =>
+      isFixMode &&
+      css`
+        &:hover .cancelIcon {
+          display: block;
+        }
+      `}
   `,
 
   CancelButton: styled(FiX)`
