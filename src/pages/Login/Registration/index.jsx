@@ -3,12 +3,36 @@ import styled, { css } from "styled-components";
 import StyledLogin from "../styled";
 import { useLocation, Outlet } from "react-router-dom";
 import textVariants from "../../../styles/variants/textVariants";
+import Buttons from "../../../components/Buttons";
+import { useForm } from "react-hook-form";
+import { createContext, useContext } from "react";
+import getConsoleFormData from "../../../utils/getConsoleFormData";
+
+const RegistrationFormContext = createContext();
+export const useRegistrationForm = () => {
+  return useContext(RegistrationFormContext);
+};
 
 const Registration = () => {
   const location = useLocation();
   const navigate = useNavigate();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitSuccessful },
+  } = useForm();
+
   const isInfoPage = location.pathname === "/signup/registration/info";
   const isClassPage = location.pathname === "/signup/registration/class";
+
+  const onSubmit = (data) => {
+    const formData = new FormData();
+    formData.append("name", data.name);
+    formData.append("phoneNumber", data.phoneNumber);
+
+    getConsoleFormData(formData);
+  };
 
   return (
     <StyledRegistration.Container>
@@ -31,7 +55,37 @@ const Registration = () => {
           반 등록
         </StyledRegistration.NavButton>
       </StyledRegistration.Nav>
-      <Outlet />
+      <RegistrationFormContext.Provider
+        value={{ register, errors, isSubmitSuccessful }}
+      >
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Outlet />
+
+          {isInfoPage && (
+            <Buttons.Filter
+              colorTypes="primary"
+              type="button"
+              onClick={() => navigate("./class")}
+            >
+              다음
+            </Buttons.Filter>
+          )}
+          {isClassPage && (
+            <>
+              <Buttons.Filter
+                outlined
+                type="button"
+                onClick={() => navigate("./info")}
+              >
+                이전
+              </Buttons.Filter>
+              <Buttons.Filter colorTypes="primary" type="submit">
+                등록
+              </Buttons.Filter>
+            </>
+          )}
+        </form>
+      </RegistrationFormContext.Provider>
     </StyledRegistration.Container>
   );
 };
