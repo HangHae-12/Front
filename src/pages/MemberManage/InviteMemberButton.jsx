@@ -1,17 +1,16 @@
 import React, { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Button from "../../components/Button";
 
 
 const InviteMemberButton = ({ onPageReset }) => {
 
-    const [selectedButton, setSelectedButton] = useState("학부모");
     const navigate = useNavigate();
+    const { id = "1" } = useParams();
     const queryClient = useQueryClient();
-    const handleButtonClick = async (selected, id) => {
-        setSelectedButton(selected);
+    const handleButtonClick = async (id) => {
         onPageReset();
         navigate(`/memberManage/${id}`);
         queryClient.invalidateQueries(["getMemberManage"]);
@@ -20,13 +19,13 @@ const InviteMemberButton = ({ onPageReset }) => {
         <StyledButtonWrapper>
             <Button.ClassButton
                 selected={"학부모"}
-                selectedButton={selectedButton}
-                onClick={() => handleButtonClick("학부모", 1)}
+                isSelected={"1" === id}
+                onClick={() => handleButtonClick("1")}
             />
             <Button.ClassButton
                 selected={"선생님"}
-                selectedButton={selectedButton}
-                onClick={() => handleButtonClick("선생님", 2)}
+                isSelected={"2" === id}
+                onClick={() => handleButtonClick("2")}
             />
         </StyledButtonWrapper>
     );

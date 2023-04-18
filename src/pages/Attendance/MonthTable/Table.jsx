@@ -146,7 +146,7 @@ const Table = () => {
         <div>
 
             <StyledTableTitle>월별 출석부</StyledTableTitle>
-            <ClassButton />
+            <ClassButton everyClass={data?.data?.data?.everyClass} selectedDate={selectedDate} />
             <StyledHeader>
                 <StyledMonthYear>
                     <StyledGrPrevious style={{ marginRight: "8px" }} onClick={handleDecreaseMonth} size={16} />

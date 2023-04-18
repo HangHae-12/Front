@@ -13,16 +13,10 @@ const ClassButton = ({ hostParams, everyClass }) => {
     const setTime = useSetRecoilState(timeAtom);
     const navigate = useNavigate();
     const queryClient = useQueryClient();
-    const [selectedButton, setSelectedButton] = useState(classroomId);
 
-
-    useEffect(() => {
-        setSelectedButton(classroomId);
-    }, [classroomId]);
 
 
     const loadClassroom = (id) => {
-        setSelectedButton(id);
         setScheduleId("ENTER");
         setTime(0);
         setPage(1);
