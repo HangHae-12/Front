@@ -13,9 +13,6 @@ const ClassButton = ({ hostParams, everyClass }) => {
     const setTime = useSetRecoilState(timeAtom);
     const navigate = useNavigate();
     const queryClient = useQueryClient();
-
-
-
     const loadClassroom = (id) => {
         setScheduleId("ENTER");
         setTime(0);

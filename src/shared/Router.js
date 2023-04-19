@@ -9,7 +9,6 @@ const Router = () => {
       <ScrollToTop />
       <Routes>
         {/* 로그인 페이지는 private route 를 적용하지  */}
-
         <Route path="/login" element={PAGE.login} />
         <Route path="/oauth/kakao/callback" element={PAGE.kakaoLogin} />
         <Route path="/oauth/kakao/callback" element={PAGE.kakaoUnlinked} />
@@ -47,8 +46,8 @@ const Router = () => {
             <Route path="/classes" element={PAGE.member} />
             <Route path="/classes/:id" element={PAGE.member} />
             <Route path="/childmanage" element={PAGE.childmanage} />
-            <Route path="/preview" element={PAGE.preview} />
           </Route>
+          <Route path="/main" element={PAGE.main} />
         </Route>
       </Routes>
     </BrowserRouter>
