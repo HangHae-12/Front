@@ -39,7 +39,7 @@ const KakaoLogin = () => {
             break;
           default:
             //  승인까지 완료
-            navigate("/host");
+            navigate("/classes");
             break;
         }
       })
