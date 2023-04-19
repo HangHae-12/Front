@@ -21,6 +21,7 @@ const StyledProfileImageUploader = {
     border-radius: 50%;
     object-fit: cover;
     cursor: default;
+    ${({ imgStyleProps }) => imgStyleProps}
   `,
 
   ThumbnailWrapper: styled.div`

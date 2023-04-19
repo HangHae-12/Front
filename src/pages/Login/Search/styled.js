@@ -42,7 +42,7 @@ const StyledSearch = {
   `,
   SearchContentsWrapper: styled.div`
     display: grid;
-    height: 100%;
+    height: 210px;
     padding-top: 12px;
     border-top: 1px solid ${({ theme }) => theme.color.grayScale[200]};
     grid-template-columns: repeat(2, 1fr);

@@ -12,7 +12,7 @@ const NameInputField = ({
       label="이름"
       id="name"
       isEssential
-      placeholder="홍길동"
+      placeholder={"홍길동"}
       type="text"
       registerOptions={{
         ...register("name", {
