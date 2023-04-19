@@ -28,9 +28,9 @@ const TeacherInformation = ({ data }) => {
     ["TeacherInformation", kindergartenId.id],
     () => MemberAPI.getTeacherInformation(kindergartenId.id),
    {
-      retry: 1,
-      refetchOnMount: false,
-      refetchOnWindowFocus: false,
+      onError: () => {
+        console.log("error");
+      },
     }
   );
   const { data: DustData } = useQuery(
