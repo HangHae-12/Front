@@ -27,7 +27,7 @@ const StyledMainTopContainer = styled.div`
   justify-content: ${props => (props.center ? 'center' : 'flex-start')};
   align-items: flex-start;
   height: 100%;
-  padding: 0 32px;
+  padding: 16px 32px;
   @media ${({ theme }) => theme.device.laptop} {
     height: fit-content;
   }

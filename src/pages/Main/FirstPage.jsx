@@ -47,7 +47,7 @@ const StyledMainLeftContainer = styled.div`
 `;
 
 const StyledMainRightContainer = styled.div`
-  margin-top: 80px;
+  margin-top: 10px;
   display:flex;
   align-items:center;
   background: url(${props => props.bg}) no-repeat center center/contain;
