@@ -58,7 +58,7 @@ const TeacherInformation = ({ data }) => {
     } else {
       setRender(false);
     }
-  }, [selectedTeacher, teacherData]);
+  }, [selectedTeacher]);
 
   const handleSearch = (e) => {
     e.preventDefault();
