@@ -33,12 +33,13 @@ const TeacherInformation = ({ data }) => {
     }
   );
   const { data: DustData } = useQuery(
-    ["TeacherInformation"],
+    ["getDustInfo"],
     () => DustAPI.getDustInfo(),
     {
       onError: () => {
         console.log("error");
       },
+      refetchInterval: 3600000,
     }
   );
 
