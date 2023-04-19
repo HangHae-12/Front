@@ -24,7 +24,8 @@ const MainWrapper = styled.div`
 `;
 
 const MainTopContainer = styled.div`
-  ${props => props.theme.FlexCol};
+  display:flex;
+  flex-direction:column;
   justify-content: ${props => (props.center ? 'center' : 'flex-start')};
   align-items: flex-start;
   height: 100%;

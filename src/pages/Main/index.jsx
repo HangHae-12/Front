@@ -1,12 +1,11 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import Test from './Test';
-import Login from './Header';
-import ASSETS from "../../helpers/assets";
+import Header from './Header';
 import tokenCookie from "../../utils/tokenCookie";
 import session from "../../utils/session";
 
-const Preview = () => {
+const Main = () => {
 
   useEffect(() => {
     tokenCookie.remove();
@@ -16,11 +15,7 @@ const Preview = () => {
   return (
     <StyledLayout>
       <StyledHeader>
-        <StyledLogo bg={ASSETS.test2}>
-        </StyledLogo>
-        <StyledHeaderBtn>
-          <Login />
-        </StyledHeaderBtn>
+        <Header />
       </StyledHeader>
       <StyledLayoutMain>
         <Test />
@@ -29,7 +24,7 @@ const Preview = () => {
   );
 };
 
-export default Preview;
+export default Main;
 
 const StyledLayout = styled.div`
   display: flex;
@@ -48,25 +43,6 @@ const StyledHeader = styled.div`
   left: 0;
   z-index: 9999;
   background: transparent;
-`;
-const StyledLogo = styled.div`
-  display: flex;
-  justify-content: flex-start;
-  margin-top:20px;
-  width: 250px;
-  height: 130px;
-  background: url(${props => props.bg}) no-repeat center center/contain;
-  flex: 0 0 auto;
-`;
-
-const StyledHeaderBtn = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    margin-left: auto;
-    width: 100%;
-    padding-right: 20px;
-  
 `;
 
 const StyledLayoutMain = styled.div`

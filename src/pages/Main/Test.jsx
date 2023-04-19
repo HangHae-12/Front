@@ -87,7 +87,6 @@ const StyledScrollToTopContainer = styled.div`
 const StyledBsChevronDoubleUp = styled(BsChevronDoubleUp)`
   width: 50px;
   height: 50px;
-  color: ${props => props.theme.color.blue.brandColor6};
   cursor: pointer;
   transition: color 0.2s, opacity 0.2s, transform 0.3s;
   filter: drop-shadow(2px 4px 2px rgba(0, 0, 0, 0.269));
