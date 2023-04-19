@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 import styled from "styled-components";
+import { useRecoilValue } from "recoil";
 import { useParams } from "react-router-dom";
 import { ManageAPI } from "../../api/ManageAPI";
 import textVariants from "../../styles/variants/textVariants";
@@ -8,6 +9,7 @@ import CustomPagination from "../../components/CustomPagination";
 import InviteList from "./InviteList"
 import DoneList from "./DoneList";
 import InviteMemberButton from "./InviteMemberButton"
+import { kindergartenAtom } from "../../atom/sideBarAtom";
 
 const List = () => {
 
@@ -17,7 +19,7 @@ const List = () => {
   const [searchText, setSearchText] = useState("");
   const [debouncedSearchText, setDebouncedSearchText] = useState(searchText);
   const [searchTimeout, setSearchTimeout] = useState(null);
-
+  const kindergartenId = useRecoilValue(kindergartenAtom);
   //받아온 파람값-> api payload로 
   const [userRole, setUserRole] = useState("PARENT");
 
@@ -29,7 +31,7 @@ const List = () => {
     ["getMemberManage", page, userRole],
     () =>
       ManageAPI.getMemberManage({
-        kindergartenId: 1,
+        kindergartenId: kindergartenId.id,
         userRole: userRole,
         page: page - 1,
         size: 15,
