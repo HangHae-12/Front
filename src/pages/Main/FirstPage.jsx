@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { styles } from './MainPageStyled';
-import FirstImg from '../../assets/MainImage/FirstImg.png';
+import FirstImg from '../../assets/MainImage/FirstImg2.png';
 import Typing from './Typing';
 import textVariants from "../../styles/variants/textVariants";
 

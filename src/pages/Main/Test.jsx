@@ -4,6 +4,7 @@ import { useSearchParams } from 'react-router-dom';
 import SecondPage from './SecondPage';
 import FirstPage from './FirstPage';
 import ThirdPage from './ThirdPage';
+import FourPage from './FourPage';
 import FifthPage from './FifthPage';
 import RendingDots from './MainDots';
 import { BsChevronDoubleUp } from 'react-icons/bs'
@@ -19,6 +20,7 @@ const Test = () => {
     <FirstPage setPageIndex={setPageIndex} />,
     <SecondPage />,
     <ThirdPage />,
+    <FourPage />,
     <FifthPage />,
   ];
 
@@ -53,7 +55,7 @@ const Test = () => {
       </StyledScrollContainer>
       <RendingDots
         pageIndex={pageIndex}
-        totalPages={4}
+        totalPages={5}
         setPageIndex={setPageIndex} />
       <StyledScrollToTopContainer>
         <StyledBsChevronDoubleUp onClick={handleBackToFirstPage} />

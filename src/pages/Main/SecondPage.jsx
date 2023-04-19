@@ -10,7 +10,7 @@ const SecondPage = () => {
         <StyledMainWrapper>
           <StyledMainTopContainer>
             <StyledDescriptiontitle>
-              내아이의 안전한 등/하원 ,  <span>실시간으로 알림</span> 을 받을수 있어요
+              내아이의 안전한 등/하원 ,  <span>카톡으로 실시간 알림</span> 받을수 있어요
             </StyledDescriptiontitle>
           </StyledMainTopContainer>
           <StyledMainBottomContainer bg={SecondImg}></StyledMainBottomContainer>

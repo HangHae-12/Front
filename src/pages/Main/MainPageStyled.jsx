@@ -36,12 +36,12 @@ const MainTopContainer = styled.div`
 
 const MainBottomContainer = styled.div`
   position: relative;
-  width: ${props => (props.small ? '50%' : '80%')};
+  width: 100%;
   height: 100%;
   background: url(${props => props.bg}) no-repeat center center/contain;
   @media ${({ theme }) => theme.device.laptop} {
     width: 100%;
-    height: 50%;
+    height: 100%;
   }
 `;
 

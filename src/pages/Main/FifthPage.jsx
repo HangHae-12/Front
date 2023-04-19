@@ -1,46 +1,54 @@
 import React from 'react';
 import styled from 'styled-components';
-import FirstImg from '../../assets/MainImage/FirstImg.png';
-import { styles } from './MainPageStyled';
+import FifthImg from '../../assets/MainImage/FifthImg.png';
+import textVariants from "../../styles/variants/textVariants";
 
-const FirstPage = () => {
-  return (
-    <>
-      <StyledMainContainer>
-        <styles.MainWrapper reverse>
-          <StyledMainTopContainer>
-            DDD
-          </StyledMainTopContainer>
-          <StyledMainBottomContainer bg={FirstImg}></StyledMainBottomContainer>
-        </styles.MainWrapper>
-      </StyledMainContainer>
-    </>
-  );
+const FifthPage = () => {
+    return (
+        <>
+            <StyledMainContainer>
+                <StyledMainWrapper>
+                    <StyledMainTopContainer>
+                        <StyledDescriptiontitle>
+                            선생님은 힘든 문서 작업을 ,  <span>손쉽게 엑셀로</span> 출력 할수 있어요
+                        </StyledDescriptiontitle>
+                    </StyledMainTopContainer>
+                    <StyledMainBottomContainer bg={FifthImg}></StyledMainBottomContainer>
+                </StyledMainWrapper>
+            </StyledMainContainer>
+        </>
+    );
 }
-export default FirstPage;
+export default FifthPage;
 
 const StyledMainContainer = styled.div`
   width: 100vw;
 `;
 
+const StyledMainWrapper = styled.div`
+  flex-direction: column;
+`;
 const StyledMainTopContainer = styled.div`
-  justify-content: ${props => (props.center ? 'center' : 'flex-start')};
-  align-items: flex-start;
-  height: 100%;
-  padding: 16px 32px;
-  @media ${({ theme }) => theme.device.laptop} {
-    height: fit-content;
+  display:flex;
+  justify-content:center;
+  align-items: flex-end;
+  padding: 10px;
+`;
+
+const StyledDescriptiontitle = styled.span`
+
+  ${textVariants.H1}
+  span {
+    font-size: 40px;
   }
-  
 `;
 
 const StyledMainBottomContainer = styled.div`
   position: relative;
-  width: ${props => (props.small ? '50%' : '80%')};
-  height: 100%;
+  height: calc(100vh - 232px);
+  width: 100%;
   background: url(${props => props.bg}) no-repeat center center/contain;
   @media ${({ theme }) => theme.device.laptop} {
     width: 100%;
-    height: 50%;
   }
 `;
