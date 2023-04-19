@@ -23,7 +23,6 @@ const TeacherInformation = ({ data }) => {
   const [searchTeacher, setSearchTeacher] = useState("");
   const kindergartenId = useRecoilValue(kindergartenAtom);
   const classinfor = useRecoilValue(classButtonAtom);
-  const queryEnabled = useDelayedQuery();
 
   const { data: TeacherData } = useQuery(
     ["TeacherInformation", kindergartenId.id],
@@ -32,7 +31,6 @@ const TeacherInformation = ({ data }) => {
       retry: 1,
       refetchOnMount: false,
       refetchOnWindowFocus: false,
-      enabled: queryEnabled,
     }
   );
   const { data: DustData } = useQuery(
