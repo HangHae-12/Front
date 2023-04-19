@@ -33,13 +33,14 @@ const Registration = () => {
 
   const isInfoPage = location.pathname === "/signup/registration/info";
   const isClassPage = location.pathname === "/signup/registration/class";
-  console.log(errors);
+
   const onSubmit = (data) => {
     const formData = new FormData();
     formData.append("kindergartenName", data.kindergartenName);
     formData.append("contactNumber", data.contactNumber);
     formData.append("address", `${data.address} ${data.restAddress}`);
     formData.append("isCancelled", isCancelled);
+    formData.append("classroomList", data.classroomList);
     selectedFile && formData.append("logoImage", selectedFile);
 
     getConsoleFormData(formData);
