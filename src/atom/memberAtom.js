@@ -10,6 +10,8 @@ export const memberAtom = atom({
     gender:"",
     image: "",
     preview: "",
+    dailyEnterTime: "",
+    dailyExitTime: "",
   },
 });
 

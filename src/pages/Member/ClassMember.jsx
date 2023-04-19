@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
@@ -12,12 +12,13 @@ import { useRecoilValue, useRecoilState } from "recoil";
 import { modalAtom } from "../../atom/modalAtoms";
 import { memberAtom, parentAtom } from "../../atom/memberAtom";
 import Buttons from "../../components/Buttons";
-import { userProfileAtom } from "../../atom/sideBarAtom";
+import { kindergartenAtom, userProfileAtom } from "../../atom/sideBarAtom";
 import { AiOutlineSearch } from "react-icons/ai";
 import debounce from "../../utils/debounce";
-import ProfileImageUploader from "../../components/ProfileImageUploader";
 import { profileImageState } from "../../atom/profileImageUploaderAtom";
 import { motion } from "framer-motion";
+import { classButtonAtom } from "../../atom/classesAtom";
+import useDelayedQuery from "../../hooks/useDelayedQuery";
 
 const ClassMember = () => {
   const queryClient = useQueryClient();
@@ -36,32 +37,39 @@ const ClassMember = () => {
   const [image, setImage] = useRecoilState(profileImageState);
   const userRole = useRecoilValue(userProfileAtom);
   const preview = useRecoilValue(profileImageState);
+  const kindergartenId = useRecoilValue(kindergartenAtom);
   const [debouncedSearchMember, setDebouncedSearchMember] = useState("");
-  const [modalOption, setmodalOption] = useState({
-    padding: "",
-    width: "",
-    height: "",
-  });
+  const classinfor = useRecoilValue(classButtonAtom);
+  const queryEnabled = useDelayedQuery();
 
   const { data } = useQuery(
-    ["classesMember", id || "1", currentPage, debouncedSearchMember],
+    [
+      "classesMember",
+      kindergartenId.id,
+      id || classinfor[0].id,
+      currentPage,
+      debouncedSearchMember,
+    ],
     () => {
       if (debouncedSearchMember) {
-        return MemberAPI.getSearchMember(id || "1", debouncedSearchMember);
+        return MemberAPI.getSearchMember(
+          kindergartenId.id,
+          id || classinfor[0].id,
+          debouncedSearchMember
+        );
       } else {
-        return MemberAPI.getClassesMember(id || "1", currentPage);
+        return MemberAPI.getClassesMember(
+          kindergartenId.id,
+          id || classinfor[0].id,
+          currentPage
+        );
       }
     },
     {
-      onSuccess: (data) => {
-        console.log(data);
-      },
-      onError: () => {
-        console.log("error");
-      },
-      retry: 1,
+      retry: 0,
       refetchOnMount: false,
       refetchOnWindowFocus: false,
+      enabled: queryEnabled,
     }
   );
 
@@ -107,6 +115,8 @@ const ClassMember = () => {
       significant: response.data.data.significant,
       image: response.data.data.profileImageUrl,
       birth: response.data.data.birth,
+      dailyEnterTime: response.data.data.dailyEnterTime,
+      dailyExitTime: response.data.data.dailyExitTime,
     }));
     setParentAdd((prev) => ({
       ...prev,
@@ -115,6 +125,14 @@ const ClassMember = () => {
       phone: response.data.data.parentProfileResponseDto.phoneNumber,
       imgSrc: response.data.data.parentProfileResponseDto.profileImageUrl,
     }));
+
+    const viewportWidth = window.innerWidth;
+    const modalHeight =
+      viewportWidth <= 1500
+        ? "100%"
+        : userRole.role === "PRINCIPAL" || userRole.role === "TEACHER"
+        ? "837px"
+        : "342px";
 
     return {
       title: <StyledModalHeader>인원정보</StyledModalHeader>,
@@ -139,7 +157,7 @@ const ClassMember = () => {
         </>
       ),
       width: "660px",
-      height: "837px",
+      height: modalHeight,
       callback: () => alert("modal"),
       onClose: () => {
         setMemberAdd("");
@@ -151,6 +169,8 @@ const ClassMember = () => {
 
   //반별 아이들 인원 수정 모달
   const handleClickModify = () => {
+    const viewportWidth = window.innerWidth;
+    const modalHeight = viewportWidth <= 1500 ? "100%" : "900px";
     setIsChildModify(true);
     setModalState((prevState) => ({
       ...prevState,
@@ -167,7 +187,7 @@ const ClassMember = () => {
         </>
       ),
       width: "660px",
-      height: "993px",
+      height: modalHeight,
       callback: () => alert("modal"),
       onClose: () => {
         setIsChildModify(false);
@@ -186,16 +206,17 @@ const ClassMember = () => {
     formData.append("significant", memberinfor.significant);
     formData.append("gender", memberinfor.gender);
     formData.append("parentId", parentinfor.parentId);
-    formData.append("dailyEnterTime", "07시~08시");
-    formData.append("dailyExitTime", "16시~17시");
+    formData.append("dailyEnterTime", memberinfor.dailyEnterTime);
+    formData.append("dailyExitTime", memberinfor.dailyExitTime);
     formData.append("isCancelled", false);
 
-    if (preview.selectedFile) {
-      formData.append("profileImage", preview.selectedFile);
+    if (memberinfor.image[0] !== "h") {
+      formData.append("image", memberinfor.image);
     }
 
     const payload = {
-      id: id || "1",
+      id: id || classinfor[0].id,
+      kindergartenId: kindergartenId.id,
       childId: memberinfor.childId,
       formData: formData,
     };
@@ -206,7 +227,8 @@ const ClassMember = () => {
 
   const getDetailMember = (childid) => {
     const payload = {
-      id: id || "1",
+      id: id || classinfor[0].id,
+      kindergartenId: kindergartenId.id,
       childid: childid,
     };
     detailMemberMutation.mutate(payload);
@@ -244,13 +266,16 @@ const ClassMember = () => {
     formData.append("significant", memberinfor.significant);
     formData.append("gender", memberinfor.gender);
     formData.append("parentId", parentinfor.parentId);
+    formData.append("dailyEnterTime", memberinfor.dailyEnterTime);
+    formData.append("dailyExitTime", memberinfor.dailyExitTime);
 
-    if (preview.selectedFile) {
-      formData.append("image", preview.selectedFile);
+    if (memberinfor.image) {
+      formData.append("image", memberinfor.image);
     }
 
     const payload = {
-      id: id || "1",
+      id: id || classinfor[0].id,
+      kindergartenId: kindergartenId.id,
       formData: formData,
     };
     setMemberSubmitMutation.mutate(payload);
@@ -261,6 +286,8 @@ const ClassMember = () => {
   //반별 아이들 인원 등록 모달
   const setChildInformation = () => {
     setIsChildAdd(true);
+    const viewportWidth = window.innerWidth;
+    const modalHeight = viewportWidth <= 1500 ? "100%" : "900px";
     const modalData = {
       title: <StyledModalHeader>인원등록</StyledModalHeader>,
       contents: <MemberAddModal />,
@@ -274,7 +301,7 @@ const ClassMember = () => {
         </StyledModalButton>
       ),
       width: "660px",
-      height: "993px",
+      height: modalHeight,
       callback: () => alert("modal"),
       onClose: () => {
         setIsChildAdd(false);
@@ -331,7 +358,7 @@ const ClassMember = () => {
           />
         ) : null}
       </StyledChildrenWrapper>
-      <Modal modalOption={modalOption} />
+      <Modal />
     </>
   );
 };
@@ -342,6 +369,7 @@ const StyledChildrenWrapper = styled.div`
   padding: 0px 20px 20px;
   gap: 40px;
   background: rgba(237, 245, 238, 0.8);
+  box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.12);
   border-radius: 12px;
 `;
 
@@ -399,6 +427,17 @@ const StyledAddMemberButton = styled.button`
   padding: 4px 10px;
   gap: 10px;
   color: ${({ theme }) => theme.color.primary};
+  cursor: pointer;
+
+  @media ${({ theme }) => theme.device.laptop} {
+    display: none;
+  }
+  &:hover {
+    background-color: ${({ theme }) => theme.color.grayScale[50]};
+  }
+  &:active {
+    cursor: grabbing;
+  }
 `;
 
 const StyledMemberSearchInput = styled.input`

@@ -2,14 +2,17 @@ import instance from "./instance";
 
 export const HostAPI = {
   getManageSchedule: (payload) =>
-    instance.get(`/manager/classroom/${payload.classroomId}`, {
-      params: {
-        page: payload.page,
-        size: payload.size,
-        state: payload.state,
-        time: payload.time,
-      },
-    }),
+    instance.get(
+      `/manager/kindergarten/${payload.kindergartenId}/classroom/${payload.classroomId}`,
+      {
+        params: {
+          page: payload.page,
+          size: payload.size,
+          state: payload.state,
+          time: payload.time,
+        },
+      }
+    ),
 
   getManageAbsent: () => instance.get("/manager/schedule/absent"),
 

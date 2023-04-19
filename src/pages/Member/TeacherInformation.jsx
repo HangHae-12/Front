@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import useModal from "../../hooks/useModal";
-import Modal from "../../components/Modal";
 import { useParams } from "react-router-dom";
 import { MemberAPI } from "../../api/MemberAPI";
+import { DustAPI } from "../../api/DustAPI";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { BsFillGearFill } from "react-icons/bs";
 import textVariants from "../../styles/variants/textVariants";
-import { useRecoilValue } from "recoil";
-import { userProfileAtom } from "../../atom/sideBarAtom";
+import TeacherProfile from "./TeacherProfile";
+import { DustInfo } from "./DustInfo";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { kindergartenAtom, userProfileAtom } from "../../atom/sideBarAtom";
+import { classButtonAtom } from "../../atom/classesAtom";
+import useDelayedQuery from "../../hooks/useDelayedQuery";
 
 const TeacherInformation = ({ data }) => {
   const queryClient = useQueryClient();
@@ -18,15 +21,28 @@ const TeacherInformation = ({ data }) => {
   const [checkedTeachers, setCheckedTeachers] = useState({});
   const [selectedTeacher, setSelectedTeacher] = useState(null);
   const [searchTeacher, setSearchTeacher] = useState("");
-  const userRole = useRecoilValue(userProfileAtom);
+  const kindergartenId = useRecoilValue(kindergartenAtom);
+  const classinfor = useRecoilValue(classButtonAtom);
+  const queryEnabled = useDelayedQuery();
 
   const { data: TeacherData } = useQuery(
-    ["TeacherInformation"],
-    () => MemberAPI.getTeacherInformation(),
+    ["TeacherInformation", kindergartenId.id],
+    () => MemberAPI.getTeacherInformation(kindergartenId.id),
+   {
+      retry: 1,
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+      enabled: queryEnabled,
+    }
+  );
+  const { data: DustData } = useQuery(
+    ["getDustInfo"],
+    () => DustAPI.getDustInfo(),
     {
       onError: () => {
         console.log("error");
       },
+      refetchInterval: 3600000,
     }
   );
 
@@ -69,7 +85,8 @@ const TeacherInformation = ({ data }) => {
 
   const handleTeacherSubmit = async (id) => {
     const payload = {
-      id: id || "1",
+      kindergartenId: kindergartenId.id,
+      id: id || classinfor[0].id,
       teacherId: selectedTeacher.id,
     };
     setTeacherMutation.mutate(payload);
@@ -151,110 +168,55 @@ const TeacherInformation = ({ data }) => {
 
   return (
     <>
-      <StyledInfomation>
-        <StyledContentWrapper>
-          <StyledLeftWrapper>
-            <StyledInputWrapper marginTop="0px">
-              <StyledQuestionFont marginLeft="5px">
-                담임선생님
-              </StyledQuestionFont>
-              {userRole.role === "PRINCIPAL" ? (
-                <StyledGearButton
-                  marginLeft="5px"
-                  onClick={setTeacherAppoint}
-                />
-              ) : null}
-            </StyledInputWrapper>
-            <StyledTeacherImage
-              src={data?.data?.data?.classroomTeacher?.profileImageUrl}
-            />
-          </StyledLeftWrapper>
-          <StyledMiddleWrapper>
-            <StyledHeaderInputWrapper>
-              <StyledQuestionFont>한마디 </StyledQuestionFont>
-              <StyledAnswerFont marginLeft="30px">
-                {data?.data?.data?.classroomTeacher?.resolution}
-              </StyledAnswerFont>
-            </StyledHeaderInputWrapper>
-            <StyledInputWrapper>
-              <StyledQuestionFont>이름</StyledQuestionFont>
-              <StyledAnswerFont marginLeft="190px">
-                {data?.data?.data?.classroomTeacher?.name}
-              </StyledAnswerFont>
-              <StyledQuestionFont marginLeft="90px">연락처</StyledQuestionFont>
-              <StyledAnswerFont marginLeft="110px">
-                {data?.data?.data?.classroomTeacher?.phoneNumber}
-              </StyledAnswerFont>
-            </StyledInputWrapper>
-            <StyledInputWrapper>
-              <StyledQuestionFont>생년월일</StyledQuestionFont>
-              <StyledAnswerFont marginLeft="135px">
-                {data?.data?.data?.classroomTeacher?.birth}
-              </StyledAnswerFont>
-              <StyledQuestionFont marginLeft="87px">메일</StyledQuestionFont>
-              <StyledAnswerFont marginLeft="80px">
-                {data?.data?.data?.classroomTeacher?.email}
-              </StyledAnswerFont>
-            </StyledInputWrapper>
-          </StyledMiddleWrapper>
-        </StyledContentWrapper>
-      </StyledInfomation>
-      {/* <Modal modalOption={modalOption} /> */}
+      <StyledContentWrapper>
+        <StyledLeftWrapper>
+          <TeacherProfile
+            data={data?.data?.data}
+            setTeacherAppoint={setTeacherAppoint}
+          />
+        </StyledLeftWrapper>
+        <StyledRightWrapper>
+          <DustInfo data={DustData?.data} />
+        </StyledRightWrapper>
+      </StyledContentWrapper>
     </>
   );
 };
 
 export default TeacherInformation;
 
-const StyledInfomation = styled.div`
-  background: ${({ theme }) => theme.color.white};
-  border-radius: 12px;
-  border: 1px solid ${({ theme }) => theme.color.grayScale[200]};
-  box-sizing: border-box;
-  margin-top: 10px;
-`;
-
 const StyledContentWrapper = styled.div`
   display: flex;
   flex-direction: row;
   padding: 30px;
-  gap: 26px;
-`;
-
-const StyledMiddleWrapper = styled.div`
-  margin-left: 40px;
-`;
-
-const StyledInputWrapper = styled.div`
-  display: flex;
-  margin-top: ${({ marginTop }) => marginTop || "30px"};
+  gap: 32px;
 `;
 
 const StyledLeftWrapper = styled.div`
   display: flex;
-  flex-direction: column;
   align-items: center;
-  text-align: center;
-  margin-left: 40px;
+  justify-content: center;
+  width: 60%; /* 가로 길이를 조정 */
+  border-radius: 12px;
+  border: 1px solid ${({ theme }) => theme.color.grayScale[100]};
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  @media ${({ theme }) => theme.device.mobile} {
+    width: 100%;
+  }
 `;
 
-const StyledQuestionFont = styled.div`
-  ${textVariants.Body3_SemiBold}
-  color: ${({ theme }) => theme.color.grayScale[400]};
-  margin-left: ${({ marginLeft }) => marginLeft};
-`;
-
-const StyledTeacherImage = styled.img`
-  width: 120px;
-  height: 120px;
-  border-radius: 70%;
-  margin-top: 12px;
-`;
-
-const StyledAnswerFont = styled.div`
-  ${textVariants.Body1_SemiBold}
-  color: ${({ theme }) => theme.color.grayScale[400]};
-  margin-left: ${({ marginLeft }) => marginLeft};
+const StyledRightWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 40%; /* 가로 길이를 조정 */
+  border-radius: 12px;
+  border: 1px solid ${({ theme }) => theme.color.grayScale[100]};
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  @media ${({ theme }) => theme.device.mobile} {
+    display: none;
+  }
 `;
 
 const StyledModalHeader = styled.div`
@@ -266,13 +228,10 @@ const StyledModalHeader = styled.div`
   margin-top: 10px;
 `;
 
-const StyledGearButton = styled(BsFillGearFill)`
-  width: 12px;
-  height: 12px;
-  color: ${({ theme }) => theme.color.grayScale[500]};
-  margin-left: ${({ marginLeft }) => marginLeft};
+const StyledInputWrapper = styled.div`
+  display: flex;
+  margin-top: ${({ marginTop }) => marginTop || "30px"};
 `;
-
 const StyledModalButton = styled.button`
   padding: 5px 8px;
   gap: 10px;
@@ -397,9 +356,4 @@ const StyledParentInformationBox = styled.div`
   border: 1px solid ${({ theme }) => theme.color.grayScale[200]};
   border-radius: 4px;
   margin-left: ${({ marginLeft }) => marginLeft};
-`;
-
-const StyledHeaderInputWrapper = styled.div`
-  display: flex;
-  margin-top: ${({ marginTop }) => marginTop || "30px"};
 `;

@@ -1,8 +1,7 @@
-const formatPhoneNumber = (value) => {
-  return value
-    .replace(/\D+/g, "")
-    .replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3")
-    .substring(0, 13);
+const formatPhoneNumber = (e) => {
+  e.target.value = e.target.value
+    .replace(/[^0-9]/g, "")
+    .replace(/(^02.{0}|^01.{1}|[0-9]{3,4})([0-9]{3,4})([0-9]{4})/g, "$1-$2-$3");
 };
 
 export default formatPhoneNumber;

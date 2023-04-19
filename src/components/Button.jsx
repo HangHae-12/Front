@@ -2,8 +2,7 @@ import styled from "styled-components";
 import textVariants from "../styles/variants/textVariants";
 
 const Button = {
-  ClassButton: ({ selected, onClick, selectedButton }) => {
-    const isSelected = selected === selectedButton;
+  ClassButton: ({ selected, onClick, isSelected }) => {
     return (
       <StyledClassButton
         isSelected={isSelected}
@@ -17,8 +16,8 @@ const Button = {
   NormalButton: () => { },
 };
 
-
 export default Button;
+
 const StyledClassButton = styled.button`
   ${textVariants.Body1_Bold}
   background-color: ${({ theme }) => theme.color.white};

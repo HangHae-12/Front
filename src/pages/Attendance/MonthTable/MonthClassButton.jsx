@@ -1,38 +1,33 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { useQueryClient } from "@tanstack/react-query";
+import { useNavigate, useParams } from "react-router-dom";
 import Button from "../../../components/Button";
 
-
-const ClassButton = () => {
-
+const ClassButton = ({ everyClass }) => {
+    const firstClass = everyClass?.[0]?.id?.toString();
+    const { id = firstClass } = useParams();
+    console.log(id);
     const navigate = useNavigate();
-    const [selectedButton, setSelectedButton] = useState("새빛반");
+    const queryClient = useQueryClient();
 
 
-
-    const loadClassroom = (selected, id) => {
-        setSelectedButton(selected)
-        navigate(`/monthAttendance/${id}`)
+    const loadClassroom = (id) => {
+        navigate(`/monthAttendance/${id}`, () => {
+            queryClient.invalidateQueries(["getMonthAttendance"]);
+        });
     };
 
     return (
         <StyledClassButtonGroup>
-            <Button.ClassButton
-                selected={"새빛반"}
-                selectedButton={selectedButton}
-                onClick={() => loadClassroom("새빛반", 1)}
-            />
-            <Button.ClassButton
-                selected={"동동반"}
-                selectedButton={selectedButton}
-                onClick={() => loadClassroom("동동반", 2)}
-            />
-            <Button.ClassButton
-                selected={"빗살반"}
-                selectedButton={selectedButton}
-                onClick={() => loadClassroom("빗살반", 3)}
-            />
+            {everyClass?.map((classroom) => (
+                <Button.ClassButton
+                    key={classroom.id}
+                    selected={classroom.name}
+                    isSelected={id === classroom.id.toString()}
+                    onClick={() => loadClassroom(classroom.id.toString())}
+                />
+            ))}
         </StyledClassButtonGroup>
     );
 };
@@ -40,5 +35,5 @@ const ClassButton = () => {
 export default ClassButton;
 
 const StyledClassButtonGroup = styled.div`
-padding-bottom: 10px;
+  padding-bottom: 10px;
 `;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import TeacherInformation from "./TeacherInformation";
 import { MemberAPI } from "../../api/MemberAPI";
 import ClassMember from "./ClassMember";
@@ -10,54 +10,69 @@ import { BsFillGearFill } from "react-icons/bs";
 import textVariants from "../../styles/variants/textVariants";
 import Buttons from "../../components/Buttons";
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
 import { ClassMangeModal } from "./ClassModal";
 import useModal from "../../hooks/useModal";
 import Modal from "../../components/Modal";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useRecoilState } from "recoil";
 import { motion } from "framer-motion";
 import { kindergartenAtom, userProfileAtom } from "../../atom/sideBarAtom";
-
+import { classesAtom, classButtonAtom } from "../../atom/classesAtom";
+import useDelayedQuery from "../../hooks/useDelayedQuery";
 
 const ClassButton = () => {
-  const [selectedButton, setSelectedButton] = useState("");
   const [selectedTab, setSelectedTab] = useState("");
-  const [classInfo, setClassInfo] = useState([]);
   const { openModal, closeModal } = useModal();
   const { id } = useParams();
   const userRole = useRecoilValue(userProfileAtom);
-  const kindergertenId = useRecoilValue(kindergartenAtom)
+  const kindergartenId = useRecoilValue(kindergartenAtom);
+  const classesInfor = useRecoilValue(classesAtom);
+  const [render, setRender] = useState(true);
+  const [classInfor, setClassInfor] = useRecoilState(classButtonAtom);
+  const [selectedButton, setSelectedButton] = useState(null);
+  const navigate = useNavigate();
+  const queryEnabled = useDelayedQuery();
 
   const { data } = useQuery(
-    ["classesPage", id || "1"],
-    () => MemberAPI.getClassesPage(id || "1"),
+    ["classesPage", kindergartenId.id, id || "-1"],
+    () => MemberAPI.getClassesPage(kindergartenId.id, id || "-1"),
     {
       onSuccess: (data) => {
-        console.log(data)
-      }
-    },
-    {
-      onError: () => {
-        console.log("error");
+        const everyClass = data.data.data.everyClass;
+        const classInfo = everyClass.map((classObj) => ({
+          id: classObj.id,
+          name: classObj.name,
+        }));
+        setClassInfor(classInfo);
       },
+      retry: 1,
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+      enabled: queryEnabled,
     }
   );
-
-  const modalOption = {
-    padding: "20px",
-    width: "660px",
-    height: "837px",
-  };
 
   const setClassModal = () => {
     const modalData = {
       title: <StyledClassMangeHeader>반 관리</StyledClassMangeHeader>,
       contents: <ClassMangeModal />,
       footer: null,
+      width: "484px",
+      height: "500px",
       callback: () => alert("modal"),
+      onClose: () => {
+        navigate(`/classes/${data?.data?.data?.everyClass[0].id}`);
+      },
     };
     openModal(modalData);
   };
+
+  useEffect(() => {
+    if (!render) {
+      setClassModal();
+    } else {
+      setRender(false);
+    }
+  }, [classesInfor]);
 
   useEffect(() => {
     const storedSelectedTab = localStorage.getItem("selectedTab");
@@ -69,34 +84,19 @@ const ClassButton = () => {
   }, []);
 
   useEffect(() => {
-    setSelectedButton(idToButtonName(id));
+    setSelectedButton(id);
   }, [id]);
 
-  const idToButtonName = (id) => {
-    switch (id) {
-      case "1":
-        return "세빛반";
-      case "2":
-        return "둥둥반";
-      case "3":
-        return "빛살반";
-      default:
-        return "세빛반";
+  useEffect(() => {
+    if (
+      data?.data?.data?.everyClass &&
+      data?.data?.data?.everyClass.length > 0
+    ) {
+      const selectedClassId =
+        id || data?.data?.data?.everyClass[0].id.toString();
+      setSelectedButton(selectedClassId);
     }
-  };
-
-  // useEffect(() => {
-  //   if (data && data.data && data.data.everyClass) {
-  //     setClassInfo(
-  //       data.data.everyClass.map((item) => ({ id: item.id, name: item.name }))
-  //     );
-  //   }
-  // }, [data]);
-
-  // const idToButtonName = (id) => {
-  //   const foundClass = classInfo.find((classItem) => classItem.id === id);
-  //   return foundClass ? foundClass.name : "";
-  // };
+  }, [data, id]);
 
   const handleMemberClick = () => {
     setSelectedTab("member");
@@ -108,10 +108,8 @@ const ClassButton = () => {
     localStorage.setItem("selectedTab", "gallery");
   };
 
-  const navigate = useNavigate();
-
-  const handleButtonClick = (selected, id) => {
-    setSelectedButton(selected);
+  const handleButtonClick = (id) => {
+    setSelectedButton(id);
     navigate(`/classes/${id}`);
   };
 
@@ -129,45 +127,43 @@ const ClassButton = () => {
     },
   };
 
-
   return (
     <>
       <StyledInputWrapper>
-        <StyledHeaderFont>학급관리</StyledHeaderFont>
-        {userRole.role === "PRINCIPAL" ? (
-          <StyledGearButton marginLeft="5px" onClick={setClassModal} />
-        ) : null}
+        <StyledHeaderWrapper>
+          <StyledHeaderFont>학급관리</StyledHeaderFont>
+          {userRole.role === "PRINCIPAL" ? (
+            <StyledGearButton marginLeft="5px" onClick={setClassModal} />
+          ) : null}
+        </StyledHeaderWrapper>
       </StyledInputWrapper>
+
       <StyledButtonWrapper>
-        {/* {data.data.everyClass.map((item) => {
+        {data?.data?.data.everyClass.map((item) => {
           return (
             <Button.ClassButton
-            selected={item.name}
-            selectedButton={selectedButton}
-            onClick={() => handleButtonClick(item.name, item.id)}
-          />
-          )
-        })} */}
-        <Button.ClassButton
-          selected={"세빛반"}
-          selectedButton={selectedButton}
-          onClick={() => handleButtonClick("세빛반", 1)}
-        />
-        <Button.ClassButton
-          selected={"둥둥반"}
-          selectedButton={selectedButton}
-          onClick={() => handleButtonClick("둥둥반", 2)}
-        />
-        <Button.ClassButton
-          selected={"빛살반"}
-          selectedButton={selectedButton}
-          onClick={() => handleButtonClick("빛살반", 3)}
-        />
+              key={item.id}
+              selected={item.name}
+              isSelected={selectedButton === item.id.toString()}
+              onClick={() => handleButtonClick(item.id.toString())}
+            />
+          );
+        })}
       </StyledButtonWrapper>
-      <motion.div variants={fadeInUp} initial="hidden" animate="visible" custom={0.4}>
+      <motion.div
+        variants={fadeInUp}
+        initial="hidden"
+        animate="visible"
+        custom={0.4}
+      >
         <TeacherInformation data={data} />
       </motion.div>
-      <motion.div variants={fadeInUp} initial="hidden" animate="visible" custom={0.6}>
+      <motion.div
+        variants={fadeInUp}
+        initial="hidden"
+        animate="visible"
+        custom={0.6}
+      >
         {selectedTab === "member" ? (
           <StyledABBtn marginLeft="30px" onClick={handleMemberClick}>
             학급인원
@@ -186,18 +182,16 @@ const ClassButton = () => {
             갤러리
           </StyledABButton>
         )}
-        {
-          selectedTab === "member" ? (
-            <ClassMember />
-          ) : selectedTab === "gallery" ? (
-            <Gallery />
-          ) : selectedTab === "" ? (
-            <ClassMember />
-          ) : (
-            <ClassMember />
-          )
-        }
-        <Modal modalOption={modalOption} />
+        {selectedTab === "member" ? (
+          <ClassMember />
+        ) : selectedTab === "gallery" ? (
+          <Gallery />
+        ) : selectedTab === "" ? (
+          <ClassMember />
+        ) : (
+          <ClassMember />
+        )}
+        <Modal />
       </motion.div>
     </>
   );
@@ -210,11 +204,16 @@ const StyledButtonWrapper = styled.div`
 `;
 
 const StyledHeaderFont = styled.div`
-  ${textVariants.H1}
-  margin-bottom: 20px;
-  margin-top: 29px;
+  ${textVariants.H2_Bold}
+  display: flex;
+  align-items: center;
 `;
 
+const StyledHeaderWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+`;
 const StyledABBtn = styled(Buttons.AB)`
   color: ${({ theme }) => theme.color.primary};
   background-color: rgba(237, 245, 238, 0.8);
@@ -233,7 +232,7 @@ const StyledGearButton = styled(BsFillGearFill)`
   width: 12px;
   height: 12px;
   color: ${({ theme }) => theme.color.grayScale[500]};
-  margin-left: ${({ marginLeft }) => marginLeft};
+  margin-left: 5px;
 `;
 
 const StyledInputWrapper = styled.div`

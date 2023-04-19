@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { StyledButton } from "./styled";
 
 export const CustomButton = ({

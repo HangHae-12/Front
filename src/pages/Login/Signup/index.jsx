@@ -1,9 +1,8 @@
-import { Link, useNavigate } from "react-router-dom";
-import styled from "styled-components";
-import Buttons from "../../../components/Buttons";
+import { useNavigate } from "react-router-dom";
 import StyledLogin from "../styled";
-import { DUMMY_URL } from "../../../helpers/dummyUrl";
+import StyledSignup from "./styled";
 import session from "../../../utils/session";
+import { DUMMY_URL } from "../../../helpers/dummyUrl";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -12,8 +11,7 @@ const Signup = () => {
   const role = [
     { role: "parent", label: "학부모" },
     { role: "teacher", label: "선생님" },
-    // { role: "principal", label: "원장선생님" },
-    // 원장선생님 가입 로직은 차후 추가 예정
+    { role: "principal", label: "원장선생님" },
   ];
 
   const handleLinkNextPage = (role) => {
@@ -60,55 +58,3 @@ const Signup = () => {
   );
 };
 export default Signup;
-
-const StyledSignup = {
-  Container: styled.section`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    padding: 80px 200px;
-
-    img {
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-    }
-  `,
-  ProfileWrapper: styled.div`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 8px;
-  `,
-
-  TitleWrapper: styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  `,
-
-  LinkWrapper: styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-
-    h3 {
-      text-align: end;
-    }
-  `,
-
-  BtnBox: styled.div`
-    display: flex;
-    flex-direction: row;
-    gap: 12px;
-    margin-top: 36px;
-  `,
-
-  Btn: styled(Buttons.NB)`
-    border-radius: 8px;
-    width: min-content;
-  `,
-};

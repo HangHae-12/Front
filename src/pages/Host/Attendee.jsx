@@ -34,11 +34,13 @@ const Attendee = ({ classData }) => {
         <StyledInfoLabel>하원</StyledInfoLabel>
         <StyledInfoValue>{classData?.exited}</StyledInfoValue>
         <StyleddateLabel>명</StyleddateLabel>
-        {/* <StyledInfoLabel>결석</StyledInfoLabel>
-        <StyledInfoValue>{classData?.absented}</StyledInfoValue>
-        <StyleddateLabel>명</StyleddateLabel> */}
       </StyledInfoRow>
-    </StyledInfoContainer>
+      <StyledInfoRow>
+        <StyledInfoLabel>결석</StyledInfoLabel>
+        <StyledInfoValue>{classData?.absented}</StyledInfoValue>
+        <StyleddateLabel>명</StyleddateLabel>
+      </StyledInfoRow>
+    </StyledInfoContainer >
   );
 };
 
@@ -46,13 +48,13 @@ export default Attendee;
 
 const StyledInfoContainer = styled.div`
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   align-items: center;
   margin: 24px auto;
-  border: 2px solid ${({ theme }) => theme.color.grayScale[200]};
-  box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.04);
+  border: 1px solid ${({ theme }) => theme.color.grayScale[100]};
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   border-radius: 12px;
-  padding: 40px 64px 40px 25px;
+  padding: 40px 0px 40px 0px;
 `;
 const StyledInfoRow = styled.div`
   display: flex;
@@ -60,9 +62,8 @@ const StyledInfoRow = styled.div`
   align-items: center;
   justify-content: center;
   border-radius: 8px;
-  gap: 24px;
-  width: 200px;
-  height: 80px;
+  gap: 20px;
+  
 `;
 const StyledInfoColomn = styled.div`
   display: flex;
@@ -77,7 +78,7 @@ const StyledInfoLabel = styled.div`
   color: ${({ theme }) => theme.color.grayScale[400]};
 `;
 const StyledInfoValue = styled.div`
-  ${textVariants.H1}
+  ${textVariants.H2_SemiBold}
   color: ${({ theme }) => theme.color.grayScale[500]};
 `;
 
