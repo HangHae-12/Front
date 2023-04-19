@@ -8,6 +8,8 @@ const Layout = () => {
     "/signup/search": ["name", "profileImageUrl", "role"],
     "/signup/teacher": ["name", "profileImageUrl", "role"],
     "/signup/parent": ["name", "profileImageUrl", "role"],
+    "/signup/principal": ["name", "profileImageUrl", "role"],
+    "/signup/registration": ["name", "profileImageUrl", "role"],
     "/signup/success": [
       "name",
       "profileImageUrl",

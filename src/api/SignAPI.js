@@ -13,7 +13,7 @@ const SignAPI = {
   signup: ({ role, info }) => instance.put(`/${role}/info`, info),
   search: (keyword) => instance.get(`/search/kindergarten?keyword=${keyword}`),
   selectKinder: (id) => instance.put(`/kindergarten/${id}`),
-  registrationKinder: (payload) => instance.post("/kindergargen", payload),
+  registrationKinder: (payload) => instance.post("/kindergarten", payload),
 };
 
 export default SignAPI;

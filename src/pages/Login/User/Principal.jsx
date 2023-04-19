@@ -18,7 +18,6 @@ import {
   BirthInputField,
   EmailInputField,
 } from "./InputFields";
-import getConsoleFormData from "../../../utils/getConsoleFormData";
 
 const Principal = () => {
   const location = useLocation();
@@ -39,17 +38,17 @@ const Principal = () => {
 
   const { mutate } = useMutation(SignAPI.signup, {
     onSuccess: (res) => {
-      if (res.data.StatusCode === 200) {
+      if (res.data.statusCode === 200) {
         session.set("user", res.data.data);
-        navigate("/signup/registration");
+        navigate("/signup/registration/info");
       }
     },
-    onError: (error) => {
+    onError: () => {
       openModal({
         contents: (
           <AlertModal
             title="회원가입에 실패하였습니다"
-            message="연락처가 중복이거나 잘못된 생년월일일 수 있습니다. 확인하고 다시 요청해주세요."
+            message="연락처가 중복이거나 잘못된 생년월일일 수 있습니다."
           />
         ),
       });
@@ -68,7 +67,6 @@ const Principal = () => {
     const role = location.pathname.split("/")[2];
 
     mutate({ role: role, info: formData });
-
   };
 
   return (

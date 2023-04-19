@@ -5,8 +5,11 @@ import StyledLogin from "../styled";
 import { DUMMY_URL } from "../../../helpers/dummyUrl";
 import session from "../../../utils/session";
 import textVariants from "../../../styles/variants/textVariants";
+import Buttons from "../../../components/Buttons";
+import { useNavigate } from "react-router-dom";
 
 const SignupSuccess = () => {
+  const navigate = useNavigate();
   const { name, profileImageUrl, kindergartenName, logoImageUrl, role } =
     session.get("user");
 
@@ -15,6 +18,10 @@ const SignupSuccess = () => {
       session.clear();
     };
   }, []);
+
+  const handleNavigateLoginPage = () => {
+    navigate("/login");
+  };
 
   return (
     <StyledSignupSuccess.Container>
@@ -44,9 +51,15 @@ const SignupSuccess = () => {
         </StyledSignupSuccess.InfoContents>
       </StyledSignupSuccess.InfoWrapper>
       <StyledSignupSuccess.AlertWrapper>
-        <IoAlertCircle />
-        <p>해당 유치원에서 승인이 완료되면 서비스 이용이 가능합니다.</p>
-        
+        {/* <IoAlertCircle /> */}
+        {/* <p>해당 유치원에서 승인이 완료되면 서비스 이용이 가능합니다.</p> */}
+        <Buttons.Filter
+          colorTypes="primary"
+          outlined
+          onClick={handleNavigateLoginPage}
+        >
+          킨더그루 이용하러 가기
+        </Buttons.Filter>
       </StyledSignupSuccess.AlertWrapper>
     </StyledSignupSuccess.Container>
   );
@@ -138,15 +151,18 @@ const StyledSignupSuccess = {
   `,
 
   AlertWrapper: styled.div`
-    ${textVariants.Body2_Bold}
+    /* ${textVariants.Body2_Bold} */
     display: flex;
-    align-items: center;
-    gap: 8px;
+    width: 100%;
+    justify-content: end;
+    margin-top: 20px;
+    /* align-items: flex-end; */
+    /* gap: 8px;
     color: ${({ theme }) => theme.color.primary};
 
     svg {
       width: 24px;
       height: 24px;
-    }
+    } */
   `,
 };

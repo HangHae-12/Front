@@ -8,10 +8,14 @@ import styled, { css } from "styled-components";
 import AddressInputField from "../User/InputFields/AddressInputField";
 import ProfileImageUploader from "../../../components/ProfileImageUploader";
 import ASSETS from "../../../helpers/assets";
+import useConfirmPrevPage from "../../../hooks/useConfirmPrevPage";
+import { DUMMY_URL } from "../../../helpers/dummyUrl";
 
 const KindergartenInfo = () => {
   const { register, errors, isSubmitSuccessful, setValue } =
     useRegistrationForm();
+
+  useConfirmPrevPage();
 
   const imgStyle = css`
     width: 240px;
@@ -24,7 +28,7 @@ const KindergartenInfo = () => {
       <ProfileImageUploader
         id="logoImage"
         imgStyleProps={imgStyle}
-        prev={ASSETS.default_kinder_logo}
+        prev={DUMMY_URL.not_kindergarten_logo}
       />
       <StyledKindergartenInfo.TextContentsWrapper>
         <KinderNameInputField

@@ -10,6 +10,11 @@ import getConsoleFormData from "../../../utils/getConsoleFormData";
 import { useProfileImageUploader } from "../../../hooks/useProfileImageUploader";
 import { useMutation } from "@tanstack/react-query";
 import SignAPI from "../../../api/SignAPI";
+import useModal from "../../../hooks/useModal";
+import AlertModal from "../../../components/Modals/AlertModal";
+import session from "../../../utils/session";
+import { DUMMY_URL } from "../../../helpers/dummyUrl";
+import { useEffect } from "react";
 
 const RegistrationFormContext = createContext();
 export const useRegistrationForm = () => {
@@ -19,12 +24,19 @@ export const useRegistrationForm = () => {
 const Registration = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { openModal } = useModal();
   const isInfoPage = location.pathname === "/signup/registration/info";
   const isClassPage = location.pathname === "/signup/registration/class";
 
+  useEffect(() => {
+    return () => {
+      session.clear();
+    };
+  }, []);
+
   const { selectedFile, isCancelled } = useProfileImageUploader(
     "logoImage",
-    "default_logo"
+    DUMMY_URL.not_kindergarten_logo
   );
 
   const {
@@ -36,8 +48,27 @@ const Registration = () => {
   } = useForm();
 
   const { mutate } = useMutation(SignAPI.registrationKinder, {
-    onSuccess: () => {},
-    onError: () => {},
+    onSuccess: (res) => {
+      if (res.data.statusCode === 200) {
+        navigate("/classes");
+      }
+    },
+    onError: () => {
+      openModal({
+        contents: (
+          <AlertModal
+            title="유치원 등록에 실패하였습니다."
+            message={
+              <>
+                유치원의 반을 등록하지 않았거나 연락처가 중복일 수 있습니다.
+                <br />
+                확인하고 다시 요청해주세요.{" "}
+              </>
+            }
+          />
+        ),
+      });
+    },
   });
 
   const onSubmit = (data) => {
@@ -49,7 +80,6 @@ const Registration = () => {
     formData.append("classroomList", data.classroomList);
     selectedFile && formData.append("logoImage", selectedFile);
 
-    // getConsoleFormData(formData);
     mutate(formData);
   };
 
