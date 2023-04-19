@@ -9,7 +9,7 @@ import debounce from "../../utils/debounce";
 import ProfileImageUploader from "../../components/ProfileImageUploader";
 import { profileImageState } from "../../atom/profileImageUploaderAtom";
 import { kindergartenAtom } from "../../atom/sideBarAtom";
-import { classButtonAtom, classesAtom } from "../../atom/classesAtom";
+import { classesAtom } from "../../atom/classesAtom";
 
 //반별 아이들 상세 조회 모달
 export const ClassModal = ({ response }) => {
@@ -43,10 +43,12 @@ export const ClassModal = ({ response }) => {
           <StyledInputWrapper>
             <StyledQuestionFont>등원시간 </StyledQuestionFont>
             <StyledTime marginLeft="50px" marginRight="40px">
-              09시~10시
+              {response?.data.data.dailyEnterTime}
             </StyledTime>
             <StyledQuestionFont>하원시간 </StyledQuestionFont>
-            <StyledTime marginLeft="50px">17시~18시</StyledTime>
+            <StyledTime marginLeft="50px">
+              {response?.data.data.dailyExitTime}
+            </StyledTime>
           </StyledInputWrapper>
         </StyledRightWrapper>
       </StyledChildrenProfileWrapper>
@@ -151,9 +153,6 @@ export const MemberAddModal = () => {
     ["searchParent", debouncedSearchParent],
     () => MemberAPI.getSearchParent(debouncedSearchParent),
     {
-      onError: () => {
-        console.log("error");
-      },
       refetchOnMount: false,
       refetchOnWindowFocus: false,
     }
@@ -188,6 +187,16 @@ export const MemberAddModal = () => {
     }
   };
 
+  const saveImgFile = (e) => {
+    e.preventDefault();
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = () => {
+      setMemberAdd({ ...memberAdd, preview: reader.result, image: file });
+    };
+  };
+
   //생년월일 자동 하이픈 생성
   const handleBirthInput = (e) => {
     let input = e.target.value.replace(/[^\d]/g, "").substring(0, 8);
@@ -207,11 +216,29 @@ export const MemberAddModal = () => {
       <StyledChildrenProfileWrapper>
         <StyledLeftWrapper>
           <StyledProfileHeaderFont>원생 프로필</StyledProfileHeaderFont>
-          {memberinfor.image ? (
-            <ProfileImageUploader id="classModal" prev={memberinfor.image} />
+          {memberAdd.preview ? (
+            <StyledProfileImage src={memberAdd.preview} />
           ) : (
-            <ProfileImageUploader id="classModal" prev={preview.previewImage} />
+            <StyledProfileImg
+              src={
+                memberinfor.image
+                  ? memberinfor.image
+                  : "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg"
+              }
+            />
           )}
+          <StyledAddInput
+            type="file"
+            name="upload-img"
+            id="upload-img"
+            accept="image/*"
+            aria-hidden="false"
+            tabIndex="0"
+            onChange={saveImgFile}
+          />
+          <StyledProfileButton htmlFor="upload-img" id="upload-img-label">
+            이미지 추가
+          </StyledProfileButton>
         </StyledLeftWrapper>
         <StyledRightWrapper>
           <StyledInputWrapper marginTop="20px">
@@ -408,15 +435,19 @@ export const ClassMangeModal = () => {
   const queryClient = useQueryClient();
   const [isEditing, setIsEditing] = useState(null);
   const [classInfor, setClassInfor] = useRecoilState(classesAtom);
-  const [classButtonInfor, setClassButtonInfor] =
-    useRecoilState(classButtonAtom);
+  const [classAdd, setClassAdd] = useState("");
 
   const { data } = useQuery(
     ["getClassesList", kindergartenId.id],
     () => MemberAPI.getClassesList(kindergartenId.id),
     {
-      onError: () => {
-        console.log("error");
+      onSuccess: (data) => {
+        const everyClass = data?.data?.data?.classList;
+        const classInfo = everyClass.map((classObj) => ({
+          id: classObj.id,
+          name: classObj.name,
+        }));
+        setClassInfor(classInfo);
       },
     }
   );
@@ -425,17 +456,11 @@ export const ClassMangeModal = () => {
     onSuccess: () => {
       queryClient.invalidateQueries("getClassesList");
     },
-    onError: (response) => {
-      console.log(response);
-    },
   });
 
   const setClassesModifyMutation = useMutation(MemberAPI.setClassesModify, {
     onSuccess: () => {
       queryClient.invalidateQueries("getClassesList");
-    },
-    onError: (response) => {
-      console.log(response);
     },
   });
 
@@ -446,12 +471,25 @@ export const ClassMangeModal = () => {
   });
 
   const handleAddButton = () => {
+    if (!classAdd) {
+      alert("반 이름을 입력 해주세요");
+      return;
+    }
+
+    const isDuplicate = classInfor.some(
+      (classObj) => classObj.name === classAdd
+    );
+    if (isDuplicate) {
+      alert("반 이름 중복입니다");
+      return;
+    }
+
     const payload = {
       kindergartenId: kindergartenId.id,
-      name: classInfor.name,
+      name: classAdd,
     };
     setClassesMutation.mutate(payload);
-    setClassInfor("");
+    setClassAdd("");
   };
 
   const handleModifyButton = (id) => {
@@ -475,20 +513,26 @@ export const ClassMangeModal = () => {
     }
   };
 
-  const handleConfirmButton = (id) => {
+  const handleConfirmButton = (id, index) => {
+    const isDuplicate = classInfor.some(
+      (classObj) =>
+        classObj.name === classInfor[index].name && classObj.id !== id
+    );
+    if (isDuplicate) {
+      alert("반 이름 중복입니다");
+      return;
+    }
     const payload = {
       id: id,
       kindergartenId: kindergartenId.id,
-      name: classInfor.name,
+      name: classInfor[index].name,
     };
     setClassesModifyMutation.mutate(payload);
     setIsEditing(null);
-    setClassInfor("");
   };
 
   const handleCancelButton = () => {
     setIsEditing(null);
-    setClassInfor("");
   };
   return (
     <>
@@ -496,10 +540,9 @@ export const ClassMangeModal = () => {
         <StyledClassMangeBox>
           <StyledInputWrapper marginTop="10px">
             <StyledClassMangeInput
+              value={classAdd}
               placeholder="반 이름을 적어주세요"
-              onChange={(e) =>
-                setClassInfor({ ...classInfor, name: e.target.value })
-              }
+              onChange={(e) => setClassAdd(e.target.value)}
             />
             <StlyedClassMangeAddButton onClick={handleAddButton}>
               추가
@@ -525,13 +568,18 @@ export const ClassMangeModal = () => {
                 ) : (
                   <>
                     <StyledClassMangeInput
-                      value={classInfor.name}
-                      onChange={(e) =>
-                        setClassInfor({ ...classInfor, name: e.target.value })
-                      }
+                      value={classInfor[index].name}
+                      onChange={(e) => {
+                        const newClassInfor = [...classInfor];
+                        newClassInfor[index] = {
+                          ...newClassInfor[index],
+                          name: e.target.value,
+                        };
+                        setClassInfor(newClassInfor);
+                      }}
                     />
                     <StyledClassMangeButtons
-                      onClick={() => handleConfirmButton(item.id)}
+                      onClick={() => handleConfirmButton(item.id, index)}
                     >
                       확인
                     </StyledClassMangeButtons>
@@ -568,6 +616,7 @@ const StyledProfileHeaderFont = styled.div`
   ${textVariants.Body1_SemiBold}
   margin-top: ${({ marginTop }) => marginTop};
 `;
+
 const StyledProfileImage = styled.img`
   width: ${({ width }) => width || "120px"};
   height: ${({ height }) => height || "120px"};
@@ -587,6 +636,10 @@ const StyledInputWrapper = styled.div`
   margin-top: ${({ marginTop }) => marginTop || "30px"};
   justify-content: space-between;
   margin-left: ${({ marginLeft }) => marginLeft};
+
+  @media screen and (max-width: 1500px) {
+    margin-top: 15px;
+  }
 `;
 
 const StyledLeftWrapper = styled.div`
@@ -639,6 +692,9 @@ const StyledInputBox = styled.input`
   outline: none;
   background-color: ${({ theme }) => theme.color.grayScale[50]};
   margin-top: 10px;
+  @media screen and (max-width: 1500px) {
+    height: 80px;
+  }
 `;
 
 const StyledParentProfileWrapper = styled.div`
@@ -854,6 +910,9 @@ const StyleNoteBox = styled.div`
   align-items: center;
   justify-content: center;
   display: flex;
+  @media screen and (max-width: 1500px) {
+    height: 90px;
+  }
 `;
 
 const StyledClassMangeBox = styled.div`
@@ -929,5 +988,4 @@ const StyledSelectTimeBox = styled.select`
   padding: 8px 12px;
   gap: 10px;
   margin-left: 24px;
-  color: #757575;
 `;

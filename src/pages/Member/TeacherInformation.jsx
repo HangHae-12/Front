@@ -11,6 +11,7 @@ import { DustInfo } from "./DustInfo";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { kindergartenAtom, userProfileAtom } from "../../atom/sideBarAtom";
 import { classButtonAtom } from "../../atom/classesAtom";
+import useDelayedQuery from "../../hooks/useDelayedQuery";
 
 const TeacherInformation = ({ data }) => {
   const queryClient = useQueryClient();
@@ -22,14 +23,16 @@ const TeacherInformation = ({ data }) => {
   const [searchTeacher, setSearchTeacher] = useState("");
   const kindergartenId = useRecoilValue(kindergartenAtom);
   const classinfor = useRecoilValue(classButtonAtom);
+  const queryEnabled = useDelayedQuery();
 
   const { data: TeacherData } = useQuery(
     ["TeacherInformation", kindergartenId.id],
     () => MemberAPI.getTeacherInformation(kindergartenId.id),
-    {
-      onError: () => {
-        console.log("error");
-      },
+   {
+      retry: 1,
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+      enabled: queryEnabled,
     }
   );
   const { data: DustData } = useQuery(
