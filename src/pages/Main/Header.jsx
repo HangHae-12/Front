@@ -1,42 +1,50 @@
-import { ENV } from "../../helpers/envs";
+import { useNavigate } from "react-router-dom";
 import ASSETS from "../../helpers/assets";
-import styled from 'styled-components';
+import styled from "styled-components";
+import buttonVariants from "../../styles/variants/buttonVariants";
 
 const Header = () => {
-  const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${ENV.kakao_key}&redirect_uri=${ENV.kakao_redirect}&response_type=code&scope=profile_nickname,profile_image,friends,talk_message`;
+  const navigate = useNavigate();
+  const handleNavigateLogin = () => {
+    navigate("/login");
+  };
+
   return (
     <>
-      <StyledLogo bg={ASSETS.test2}>
-      </StyledLogo>
-      <StyledHeaderBtn>
-        <a href={KAKAO_AUTH_URL}>
-          <img src={ASSETS.kakaologin_btn} alt="카카오_로그인_버튼" />
-        </a>
-      </StyledHeaderBtn>
+      <StyledLogo bg={ASSETS.test2}></StyledLogo>
+      <StyledHeaderBtnWrapper>
+        <StyledHeaderBtn onClick={handleNavigateLogin}>
+          킨더그루 이용하기
+        </StyledHeaderBtn>
+      </StyledHeaderBtnWrapper>
     </>
-
   );
 };
 
 export default Header;
 
 const StyledLogo = styled.div`
-  display: flex;
-  justify-content: flex-start;
-  margin-top:20px;
+  margin-top: 20px;
   width: 250px;
   height: 130px;
-  background: url(${props => props.bg}) no-repeat center center/contain;
+  background: url(${(props) => props.bg}) no-repeat center center/contain;
   flex: 0 0 auto;
 `;
 
-const StyledHeaderBtn = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    margin-left: auto;
-    width: 100%;
-    padding-right: 20px;
-  
+const StyledHeaderBtnWrapper = styled.div`
+  padding: 20px 30px;
 `;
 
+const StyledHeaderBtn = styled.button`
+  ${buttonVariants.AB_Button}
+  display: flex;
+  width: min-content;
+  justify-content: center;
+  align-items: center;
+  color: ${({ theme }) => theme.color.primary};
+  background: ${({ theme }) => theme.color.green_darker};
+  border: none;
+  border-radius: 8px;
+  white-space: nowrap;
+  cursor: pointer;
+`;

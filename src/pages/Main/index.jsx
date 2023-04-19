@@ -1,12 +1,11 @@
-import React, { useEffect } from 'react';
-import styled from 'styled-components';
-import Test from './Test';
-import Header from './Header';
+import React, { useEffect } from "react";
+import styled from "styled-components";
+import Test from "./Test";
+import Header from "./Header";
 import tokenCookie from "../../utils/tokenCookie";
 import session from "../../utils/session";
 
 const Main = () => {
-
   useEffect(() => {
     tokenCookie.remove();
     session.clear();
@@ -35,7 +34,7 @@ const StyledLayout = styled.div`
 //스크롤 내려도 킨더그루로고랑 카카오로그인은 그대로 고정시키기
 const StyledHeader = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   width: 100%;
   height: 165px;
   position: fixed;
@@ -52,4 +51,3 @@ const StyledLayoutMain = styled.div`
   width: 100%;
   height: calc(100% - 100px);
 `;
-
