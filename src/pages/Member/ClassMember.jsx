@@ -18,6 +18,7 @@ import debounce from "../../utils/debounce";
 import { profileImageState } from "../../atom/profileImageUploaderAtom";
 import { motion } from "framer-motion";
 import { classButtonAtom } from "../../atom/classesAtom";
+import useDelayedQuery from "../../hooks/useDelayedQuery";
 
 const ClassMember = () => {
   const queryClient = useQueryClient();
@@ -39,6 +40,7 @@ const ClassMember = () => {
   const kindergartenId = useRecoilValue(kindergartenAtom);
   const [debouncedSearchMember, setDebouncedSearchMember] = useState("");
   const classinfor = useRecoilValue(classButtonAtom);
+  const queryEnabled = useDelayedQuery();
 
   const { data } = useQuery(
     [
@@ -64,12 +66,10 @@ const ClassMember = () => {
       }
     },
     {
-      onError: () => {
-        console.log("error");
-      },
-      retry: 1,
+      retry: 0,
       refetchOnMount: false,
       refetchOnWindowFocus: false,
+      enabled: queryEnabled,
     }
   );
 
@@ -126,6 +126,14 @@ const ClassMember = () => {
       imgSrc: response.data.data.parentProfileResponseDto.profileImageUrl,
     }));
 
+    const viewportWidth = window.innerWidth;
+    const modalHeight =
+      viewportWidth <= 1500
+        ? "100%"
+        : userRole.role === "PRINCIPAL" || userRole.role === "TEACHER"
+        ? "837px"
+        : "342px";
+
     return {
       title: <StyledModalHeader>인원정보</StyledModalHeader>,
       contents: (
@@ -148,14 +156,8 @@ const ClassMember = () => {
           ) : null}
         </>
       ),
-      width:
-        userRole.role === "PRINCIPAL" || userRole.role === "TEACHER"
-          ? "660px"
-          : "660px",
-      height:
-        userRole.role === "PRINCIPAL" || userRole.role === "TEACHER"
-          ? "837px"
-          : "342px",
+      width: "660px",
+      height: modalHeight,
       callback: () => alert("modal"),
       onClose: () => {
         setMemberAdd("");
@@ -167,6 +169,8 @@ const ClassMember = () => {
 
   //반별 아이들 인원 수정 모달
   const handleClickModify = () => {
+    const viewportWidth = window.innerWidth;
+    const modalHeight = viewportWidth <= 1500 ? "100%" : "900px";
     setIsChildModify(true);
     setModalState((prevState) => ({
       ...prevState,
@@ -183,7 +187,7 @@ const ClassMember = () => {
         </>
       ),
       width: "660px",
-      height: "900px",
+      height: modalHeight,
       callback: () => alert("modal"),
       onClose: () => {
         setIsChildModify(false);
@@ -206,8 +210,8 @@ const ClassMember = () => {
     formData.append("dailyExitTime", memberinfor.dailyExitTime);
     formData.append("isCancelled", false);
 
-    if (preview.selectedFile) {
-      formData.append("profileImage", preview.selectedFile);
+    if (memberinfor.image[0] !== "h") {
+      formData.append("image", memberinfor.image);
     }
 
     const payload = {
@@ -265,8 +269,8 @@ const ClassMember = () => {
     formData.append("dailyEnterTime", memberinfor.dailyEnterTime);
     formData.append("dailyExitTime", memberinfor.dailyExitTime);
 
-    if (preview.selectedFile) {
-      formData.append("image", preview.selectedFile);
+    if (memberinfor.image) {
+      formData.append("image", memberinfor.image);
     }
 
     const payload = {
@@ -282,6 +286,8 @@ const ClassMember = () => {
   //반별 아이들 인원 등록 모달
   const setChildInformation = () => {
     setIsChildAdd(true);
+    const viewportWidth = window.innerWidth;
+    const modalHeight = viewportWidth <= 1500 ? "100%" : "900px";
     const modalData = {
       title: <StyledModalHeader>인원등록</StyledModalHeader>,
       contents: <MemberAddModal />,
@@ -295,7 +301,7 @@ const ClassMember = () => {
         </StyledModalButton>
       ),
       width: "660px",
-      height: "900px",
+      height: modalHeight,
       callback: () => alert("modal"),
       onClose: () => {
         setIsChildAdd(false);

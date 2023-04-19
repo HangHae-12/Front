@@ -19,6 +19,7 @@ import CustomPagination from "../../components/CustomPagination";
 import CustomDatepicker from "../../components/CustomDatepicker";
 import { GalleryDetail } from "./GalleryModal";
 import { classButtonAtom } from "../../atom/classesAtom";
+import useDelayedQuery from "../../hooks/useDelayedQuery";
 
 const Gallery = () => {
   const queryClient = useQueryClient();
@@ -39,6 +40,7 @@ const Gallery = () => {
   const userRole = useRecoilValue(userProfileAtom);
   const kindergartenId = useRecoilValue(kindergartenAtom);
   const classinfor = useRecoilValue(classButtonAtom);
+  const queryEnabled = useDelayedQuery();
 
   const { data } = useQuery(
     [
@@ -73,6 +75,12 @@ const Gallery = () => {
           currentPage
         );
       }
+    },
+    {
+      retry: 0,
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+      enabled: queryEnabled,
     }
   );
 
@@ -80,9 +88,6 @@ const Gallery = () => {
     onSuccess: (response) => {
       const GalleryModalData = createGalleryModalData(response);
       openModal(GalleryModalData);
-    },
-    onError: (response) => {
-      console.log(response);
     },
   });
 
@@ -192,10 +197,21 @@ const Gallery = () => {
   const calculateModalHeight = (previewImagesLength) => {
     const baseHeight = 598;
     const addHeight = 598 + 320;
+    const viewportWidth = window.innerWidth;
 
     if (previewImagesLength > 1) {
-      return `${addHeight}px`;
-    } else return `${baseHeight}px`;
+      if (viewportWidth <= 1500) {
+        return "90%";
+      } else {
+        return `${addHeight}px`;
+      }
+    } else {
+      if (viewportWidth <= 1500) {
+        return "90%";
+      } else {
+        return `${baseHeight}px`;
+      }
+    }
   };
 
   const modalData = {
@@ -472,6 +488,9 @@ const StyledGridModalContent = styled.div`
   margin: 10px 84px;
   overflow-y: auto;
   max-height: 640px;
+  @media screen and (max-width: 1500px) {
+    max-height: 390px;
+  }
 `;
 
 const StyledGalleryHeader = styled.div`

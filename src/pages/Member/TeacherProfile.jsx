@@ -61,7 +61,7 @@ const StyledProfileWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-right: 100px;
+  margin-right: 20px;
   @media ${({ theme }) => theme.device.mobile} {
     margin-right: 0;
     margin-bottom: 16px;

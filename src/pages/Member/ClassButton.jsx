@@ -17,6 +17,7 @@ import { useRecoilValue, useRecoilState } from "recoil";
 import { motion } from "framer-motion";
 import { kindergartenAtom, userProfileAtom } from "../../atom/sideBarAtom";
 import { classesAtom, classButtonAtom } from "../../atom/classesAtom";
+import useDelayedQuery from "../../hooks/useDelayedQuery";
 
 const ClassButton = () => {
   const [selectedTab, setSelectedTab] = useState("");
@@ -29,6 +30,7 @@ const ClassButton = () => {
   const [classInfor, setClassInfor] = useRecoilState(classButtonAtom);
   const [selectedButton, setSelectedButton] = useState(null);
   const navigate = useNavigate();
+  const queryEnabled = useDelayedQuery();
 
   const { data } = useQuery(
     ["classesPage", kindergartenId.id, id || "-1"],
@@ -42,9 +44,10 @@ const ClassButton = () => {
         }));
         setClassInfor(classInfo);
       },
-      onError: () => {
-        console.log("error");
-      },
+      retry: 1,
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+      enabled: queryEnabled,
     }
   );
 
@@ -56,6 +59,9 @@ const ClassButton = () => {
       width: "484px",
       height: "500px",
       callback: () => alert("modal"),
+      onClose: () => {
+        navigate(`/classes/${data?.data?.data?.everyClass[0].id}`);
+      },
     };
     openModal(modalData);
   };
