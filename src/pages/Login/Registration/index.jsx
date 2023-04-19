@@ -33,7 +33,7 @@ const Registration = () => {
 
   const isInfoPage = location.pathname === "/signup/registration/info";
   const isClassPage = location.pathname === "/signup/registration/class";
-
+  console.log(errors);
   const onSubmit = (data) => {
     const formData = new FormData();
     formData.append("kindergartenName", data.kindergartenName);

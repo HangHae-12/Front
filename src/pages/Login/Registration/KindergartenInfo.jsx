@@ -7,6 +7,7 @@ import formatPhoneNumber from "../../../utils/formatPhoneNumber";
 import styled, { css } from "styled-components";
 import AddressInputField from "../User/InputFields/AddressInputField";
 import ProfileImageUploader from "../../../components/ProfileImageUploader";
+import ASSETS from "../../../helpers/assets";
 
 const KindergartenInfo = () => {
   const { register, errors, isSubmitSuccessful, setValue } =
@@ -20,21 +21,32 @@ const KindergartenInfo = () => {
   `;
   return (
     <StyledKindergartenInfo.Container>
-      <ProfileImageUploader id="logoImage" imgStyleProps={imgStyle} />
-      <KinderNameInputField
-        register={register}
-        errors={errors}
-        size="8"
-        placeholder="세빛 유치원"
-        isSubmitSuccessful={isSubmitSuccessful}
+      <ProfileImageUploader
+        id="logoImage"
+        imgStyleProps={imgStyle}
+        prev={ASSETS.default_kinder_logo}
       />
-      <ContactNumberInputField
-        register={register}
-        errors={errors}
-        onInput={(e) => formatPhoneNumber(e)}
-        isSubmitSuccessful={isSubmitSuccessful}
-      />
-      <AddressInputField register={register} setValue={setValue} />
+      <StyledKindergartenInfo.TextContentsWrapper>
+        <KinderNameInputField
+          register={register}
+          errors={errors}
+          size="8"
+          placeholder="세빛 유치원"
+          isSubmitSuccessful={isSubmitSuccessful}
+        />
+        <ContactNumberInputField
+          register={register}
+          errors={errors}
+          onInput={(e) => formatPhoneNumber(e)}
+          isSubmitSuccessful={isSubmitSuccessful}
+        />
+        <AddressInputField
+          register={register}
+          setValue={setValue}
+          errors={errors}
+          isSubmitSuccessful={isSubmitSuccessful}
+        />
+      </StyledKindergartenInfo.TextContentsWrapper>
     </StyledKindergartenInfo.Container>
   );
 };
@@ -45,6 +57,15 @@ const StyledKindergartenInfo = {
   Container: styled.div`
     width: 100%;
     height: 100%;
-    border: 1px solid black;
+    display: flex;
+    flex-direction: row;
+    gap: 60px;
+  `,
+
+  TextContentsWrapper: styled.div`
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
   `,
 };
