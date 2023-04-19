@@ -1,7 +1,7 @@
 import Login from "../pages/Login";
 import KakaoLogin from "../pages/Login/KakaoLogin";
 import KakaoUnlinked from "../pages/Login/KakaoUnlinked";
-import Preview from "../pages/Preview";
+import Main from "../pages/Main";
 import Host from "../pages/Host";
 import DayTable from "../pages/Attendance/DayTable";
 import MonthTable from "../pages/Attendance/MonthTable";
@@ -23,7 +23,7 @@ import ClassRegistration from "../pages/Login/Registration/ClassRegistration";
 
 export const PAGE = {
   layout: <Layout />,
-  preview: <Preview />,
+  main: <Main />,
   login: <Login />,
   kakaoLogin: <KakaoLogin />,
   KakaoUnlinked: <KakaoUnlinked />,

@@ -3,7 +3,7 @@ import tokenCookie from "../utils/tokenCookie";
 
 const PrivateRoute = () => {
   const token = tokenCookie.get();
-  return token ? <Outlet /> : <Navigate to="/login" />;
+  return token ? <Outlet /> : <Navigate to="/main" />;
 };
 
 export default PrivateRoute;

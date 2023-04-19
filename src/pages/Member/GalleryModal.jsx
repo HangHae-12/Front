@@ -47,6 +47,9 @@ const StyledModalContent = styled.div`
   gap: 10px;
   overflow-y: auto;
   max-height: 640px;
+   @media screen and (max-width: 1500px) {
+    max-height: 320px;
+  }
 `;
 
 const StyledAddGallery = styled.div`
