@@ -23,11 +23,13 @@ const TeacherInformation = ({ data }) => {
   const [searchTeacher, setSearchTeacher] = useState("");
   const kindergartenId = useRecoilValue(kindergartenAtom);
   const classinfor = useRecoilValue(classButtonAtom);
+  const [teacherData, setTeacherData] = useState(false);
 
   const { data: TeacherData } = useQuery(
     ["TeacherInformation", kindergartenId.id],
     () => MemberAPI.getTeacherInformation(kindergartenId.id),
-   {
+    {
+      enabled: teacherData,
       onError: () => {
         console.log("error");
       },
@@ -94,6 +96,7 @@ const TeacherInformation = ({ data }) => {
   };
 
   const setTeacherAppoint = () => {
+    setTeacherData(true);
     const modalData = {
       title: <StyledModalHeader>담임선생님 지정</StyledModalHeader>,
       contents: (
@@ -160,6 +163,9 @@ const TeacherInformation = ({ data }) => {
       width: "660px",
       height: "504px",
       callback: () => alert("modal"),
+      onClose: () => {
+        setTeacherData(false);
+      },
     };
     openModal(modalData);
   };
