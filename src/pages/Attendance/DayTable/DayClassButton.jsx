@@ -5,25 +5,18 @@ import { useNavigate, useParams } from "react-router-dom";
 import Button from "../../../components/Button";
 
 const ClassButton = ({ everyClass }) => {
-
-    const firstClass = everyClass?.[0].id.toString();
-    const { classroomId = firstClass } = useParams();
-
+    const firstClass = everyClass?.[0]?.id?.toString();
+    const { id = firstClass } = useParams();
+    console.log(id);
     const navigate = useNavigate();
     const queryClient = useQueryClient();
-    const [selectedButton, setSelectedButton] = useState(classroomId);
 
-    useEffect(() => {
-        setSelectedButton(classroomId);
-    }, [classroomId]);
 
     const loadClassroom = (id) => {
-        setSelectedButton(id);
-        queryClient.invalidateQueries(["getDayAttendance"]);
-        navigate(`/dayAttendance/${id}`);
+        navigate(`/dayAttendance/${id}`, () => {
+            queryClient.invalidateQueries(["getDayAttendance"]);
+        });
     };
-
-
 
     return (
         <StyledClassButtonGroup>
@@ -31,7 +24,7 @@ const ClassButton = ({ everyClass }) => {
                 <Button.ClassButton
                     key={classroom.id}
                     selected={classroom.name}
-                    isSelected={selectedButton === classroom.id.toString()}
+                    isSelected={id === classroom.id.toString()}
                     onClick={() => loadClassroom(classroom.id.toString())}
                 />
             ))}
@@ -42,6 +35,5 @@ const ClassButton = ({ everyClass }) => {
 export default ClassButton;
 
 const StyledClassButtonGroup = styled.div`
-    padding-bottom: 10px;
-  `;
-
+  padding-bottom: 10px;
+`;

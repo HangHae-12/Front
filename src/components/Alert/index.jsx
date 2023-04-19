@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
 
-const CustomAlert = ({ show, message, onClose, duration = 2000 }) => {
+const CustomAlert = ({ show, message, onClose, duration = 800 }) => {
   useEffect(() => {
     if (show) {
       const timer = setTimeout(() => {
