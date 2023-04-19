@@ -39,8 +39,7 @@ const AddressInputField = ({
   const handleAdressSearch = () => {
     open({ onComplete: handleComplete });
   };
-  console.log(errors);
-
+  
   return (
     <StyledAddressInputField.Container>
       <StyledLogin.Label htmlFor={"address"} isEssential>

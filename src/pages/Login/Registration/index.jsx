@@ -8,6 +8,8 @@ import { useForm } from "react-hook-form";
 import { createContext, useContext } from "react";
 import getConsoleFormData from "../../../utils/getConsoleFormData";
 import { useProfileImageUploader } from "../../../hooks/useProfileImageUploader";
+import { useMutation } from "@tanstack/react-query";
+import SignAPI from "../../../api/SignAPI";
 
 const RegistrationFormContext = createContext();
 export const useRegistrationForm = () => {
@@ -17,6 +19,13 @@ export const useRegistrationForm = () => {
 const Registration = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const isInfoPage = location.pathname === "/signup/registration/info";
+  const isClassPage = location.pathname === "/signup/registration/class";
+
+  const { selectedFile, isCancelled } = useProfileImageUploader(
+    "logoImage",
+    "default_logo"
+  );
 
   const {
     register,
@@ -26,13 +35,10 @@ const Registration = () => {
     setValue,
   } = useForm();
 
-  const { selectedFile, isCancelled } = useProfileImageUploader(
-    "logoImage",
-    "default_logo"
-  );
-
-  const isInfoPage = location.pathname === "/signup/registration/info";
-  const isClassPage = location.pathname === "/signup/registration/class";
+  const { mutate } = useMutation(SignAPI.registrationKinder, {
+    onSuccess: () => {},
+    onError: () => {},
+  });
 
   const onSubmit = (data) => {
     const formData = new FormData();
@@ -43,7 +49,8 @@ const Registration = () => {
     formData.append("classroomList", data.classroomList);
     selectedFile && formData.append("logoImage", selectedFile);
 
-    getConsoleFormData(formData);
+    // getConsoleFormData(formData);
+    mutate(formData);
   };
 
   const handleNextButtonValidationCheck = async () => {

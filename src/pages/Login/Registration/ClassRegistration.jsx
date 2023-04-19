@@ -63,14 +63,14 @@ const ClassRegistration = () => {
     setClassroomLists(classroomLists.filter((_, i) => i !== index));
 
   return (
-    <StyledClassRegistration>
-      <Wrapper>
-        <LabelWrapper>
+    <StyledClassRegistration.Container>
+      <StyledClassRegistration.Wrapper>
+        <StyledClassRegistration.LabelWrapper>
           <StyledLogin.Label isEssential>반 등록</StyledLogin.Label>
-        </LabelWrapper>
-        <ContentsWrapper>
-          <Box>
-            <Input
+        </StyledClassRegistration.LabelWrapper>
+        <StyledClassRegistration.ContentsWrapper>
+          <StyledClassRegistration.Box>
+            <StyledClassRegistration.Input
               type="text"
               placeholder="반 이름을 적어주세요."
               value={inputText}
@@ -85,10 +85,12 @@ const ClassRegistration = () => {
             >
               추가
             </Buttons.Filter>
-          </Box>
+          </StyledClassRegistration.Box>
           {classroomLists.map((classroom, index) => (
-            <Box key={classroom + index}>
-              <Classroom>{classroom}</Classroom>
+            <StyledClassRegistration.Box key={classroom + index}>
+              <StyledClassRegistration.Classroom Classroom>
+                {classroom}
+              </StyledClassRegistration.Classroom>
               <Buttons.Filter
                 type="button"
                 onClick={() => removeClassroom(index)}
@@ -96,29 +98,14 @@ const ClassRegistration = () => {
               >
                 삭제
               </Buttons.Filter>
-            </Box>
+            </StyledClassRegistration.Box>
           ))}
-        </ContentsWrapper>
-      </Wrapper>
-    </StyledClassRegistration>
+        </StyledClassRegistration.ContentsWrapper>
+      </StyledClassRegistration.Wrapper>
+    </StyledClassRegistration.Container>
   );
 };
 export default ClassRegistration;
-
-const StyledClassRegistration = styled.div`
-  width: 100%;
-  height: 100%;
-  padding: 0 150px 30px;
-`;
-
-const Wrapper = styled.div`
-  width: 100%;
-  height: 100%;
-  border: 1px solid ${({ theme }) => theme.color.grayScale[200]};
-  border-radius: 8px;
-  background: ${({ theme }) => theme.color.grayScale[25]};
-  padding: 20px;
-`;
 
 const BoxStyle = css`
   ${textVariants.Body1_SemiBold}
@@ -129,40 +116,55 @@ const BoxStyle = css`
   background: ${({ theme }) => theme.color.grayScale[50]};
 `;
 
-const LabelWrapper = styled.div`
-  padding: 7px 25px;
-  border-bottom: 1px solid ${({ theme }) => theme.color.grayScale[200]};
-  margin-bottom: 22px;
-`;
+const StyledClassRegistration = {
+  Container: styled.div`
+    width: 100%;
+    height: 100%;
+    padding: 0 150px 30px;
+  `,
+  Wrapper: styled.div`
+    width: 100%;
+    height: 100%;
+    border: 1px solid ${({ theme }) => theme.color.grayScale[200]};
+    border-radius: 8px;
+    background: ${({ theme }) => theme.color.grayScale[25]};
+    padding: 20px;
+  `,
 
-const Input = styled.input`
-  ${BoxStyle}
-  outline: none;
-  transition: 0.3s ease-in-out;
+  LabelWrapper: styled.div`
+    padding: 7px 25px;
+    border-bottom: 1px solid ${({ theme }) => theme.color.grayScale[200]};
+    margin-bottom: 22px;
+  `,
 
-  &:focus {
-    box-shadow: 0 0 4px 1px rgba(60, 180, 120, 0.4);
-  }
+  ContentsWrapper: styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  `,
 
-  &::placeholder {
-    opacity: 0.3;
-  }
-`;
+  Box: styled.div`
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+  `,
 
-const Classroom = styled.span`
-  ${BoxStyle}
-  display: flex;
-  align-items: center;
-`;
+  Input: styled.input`
+    ${BoxStyle}
+    outline: none;
+    transition: 0.3s ease-in-out;
 
-const Box = styled.div`
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-`;
+    &:focus {
+      box-shadow: 0 0 4px 1px rgba(60, 180, 120, 0.4);
+    }
+    &::placeholder {
+      opacity: 0.3;
+    }
+  `,
 
-const ContentsWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-`;
+  Classroom: styled.span`
+    ${BoxStyle}
+    display: flex;
+    align-items: center;
+  `,
+};
