@@ -8,7 +8,7 @@ import { MemberAPI } from "../../api/MemberAPI";
 import debounce from "../../utils/debounce";
 import ProfileImageUploader from "../../components/ProfileImageUploader";
 import { profileImageState } from "../../atom/profileImageUploaderAtom";
-import { kindergartenAtom } from "../../atom/sideBarAtom";
+import { kindergartenAtom, userProfileAtom } from "../../atom/sideBarAtom";
 import { classesAtom } from "../../atom/classesAtom";
 
 //반별 아이들 상세 조회 모달
@@ -148,13 +148,13 @@ export const MemberAddModal = () => {
   const memberinfor = useRecoilValue(memberAtom);
   const parentInfor = useRecoilValue(parentAtom);
   const preview = useRecoilValue(profileImageState);
+  const userRole = useRecoilValue(userProfileAtom);
 
   const { data } = useQuery(
     ["searchParent", debouncedSearchParent],
     () => MemberAPI.getSearchParent(debouncedSearchParent),
     {
-      refetchOnMount: false,
-      refetchOnWindowFocus: false,
+      enabled: userRole.role === "PRINCIPAL" || userRole.role === "TEACHER",
     }
   );
 
@@ -436,10 +436,14 @@ export const ClassMangeModal = () => {
   const [isEditing, setIsEditing] = useState(null);
   const [classInfor, setClassInfor] = useRecoilState(classesAtom);
   const [classAdd, setClassAdd] = useState("");
+  const userRole = useRecoilValue(userProfileAtom);
 
   const { data } = useQuery(
     ["getClassesList", kindergartenId.id],
     () => MemberAPI.getClassesList(kindergartenId.id),
+    {
+      enabled: userRole.role === "PRINCIPAL",
+    },
     {
       onSuccess: (data) => {
         const everyClass = data?.data?.data?.classList;

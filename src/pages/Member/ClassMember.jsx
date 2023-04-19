@@ -18,7 +18,6 @@ import debounce from "../../utils/debounce";
 import { profileImageState } from "../../atom/profileImageUploaderAtom";
 import { motion } from "framer-motion";
 import { classButtonAtom } from "../../atom/classesAtom";
-import useDelayedQuery from "../../hooks/useDelayedQuery";
 
 const ClassMember = () => {
   const queryClient = useQueryClient();
@@ -40,7 +39,6 @@ const ClassMember = () => {
   const kindergartenId = useRecoilValue(kindergartenAtom);
   const [debouncedSearchMember, setDebouncedSearchMember] = useState("");
   const classinfor = useRecoilValue(classButtonAtom);
-  const queryEnabled = useDelayedQuery();
 
   const { data } = useQuery(
     [
@@ -66,10 +64,9 @@ const ClassMember = () => {
       }
     },
     {
-      retry: 0,
       refetchOnMount: false,
       refetchOnWindowFocus: false,
-      enabled: queryEnabled,
+      enabled: !!classinfor[0].id,
     }
   );
 
