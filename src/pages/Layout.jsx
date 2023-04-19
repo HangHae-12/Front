@@ -51,7 +51,5 @@ const StyledRightContainer = styled.div`
   }
   @media ${({ theme }) => theme.device.mobile} {
     width: 100%;
-    
   }
-
 `;
