@@ -18,6 +18,7 @@ import {
   BirthInputField,
   EmailInputField,
 } from "./InputFields";
+import getConsoleFormData from "../../../utils/getConsoleFormData";
 
 const Principal = () => {
   const location = useLocation();
@@ -63,11 +64,11 @@ const Principal = () => {
     formData.append("isCancelled", isCancelled);
     selectedFile && formData.append("profileImage", selectedFile);
     formData.append("email", data.email ?? null);
-    formData.append("resolution", data.resolution ?? null);
 
     const role = location.pathname.split("/")[2];
 
     mutate({ role: role, info: formData });
+
   };
 
   return (
