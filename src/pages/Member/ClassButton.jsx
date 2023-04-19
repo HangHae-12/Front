@@ -19,7 +19,6 @@ import { kindergartenAtom, userProfileAtom } from "../../atom/sideBarAtom";
 import { classesAtom, classButtonAtom } from "../../atom/classesAtom";
 
 const ClassButton = () => {
-  const [selectedButton, setSelectedButton] = useState("");
   const [selectedTab, setSelectedTab] = useState("");
   const { openModal, closeModal } = useModal();
   const { id } = useParams();
@@ -28,6 +27,8 @@ const ClassButton = () => {
   const classesInfor = useRecoilValue(classesAtom);
   const [render, setRender] = useState(true);
   const [classInfor, setClassInfor] = useRecoilState(classButtonAtom);
+  const [selectedButton, setSelectedButton] = useState(null);
+  const navigate = useNavigate();
 
   const { data } = useQuery(
     ["classesPage", kindergartenId.id, id || "-1"],
@@ -77,22 +78,19 @@ const ClassButton = () => {
   }, []);
 
   useEffect(() => {
-    if (data?.data?.data.everyClass && data?.data?.data.everyClass.length > 0) {
-      const storedSelectedButton = localStorage.getItem("selectedButton");
-      const storedSelectedButtonId = localStorage.getItem("selectedButtonId");
+    setSelectedButton(id);
+  }, [id]);
 
-      if (storedSelectedButton && storedSelectedButtonId) {
-        setSelectedButton(storedSelectedButton);
-        navigate(`/classes/${storedSelectedButtonId}`);
-      } else {
-        const firstClass = data?.data?.data.everyClass[0];
-        setSelectedButton(firstClass.name);
-        localStorage.setItem("selectedButton", firstClass.name);
-        localStorage.setItem("selectedButtonId", firstClass.id);
-        navigate(`/classes/${firstClass.id}`);
-      }
+  useEffect(() => {
+    if (
+      data?.data?.data?.everyClass &&
+      data?.data?.data?.everyClass.length > 0
+    ) {
+      const selectedClassId =
+        id || data?.data?.data?.everyClass[0].id.toString();
+      setSelectedButton(selectedClassId);
     }
-  }, [data]);
+  }, [data, id]);
 
   const handleMemberClick = () => {
     setSelectedTab("member");
@@ -104,12 +102,8 @@ const ClassButton = () => {
     localStorage.setItem("selectedTab", "gallery");
   };
 
-  const navigate = useNavigate();
-
-  const handleButtonClick = (selected, id) => {
-    setSelectedButton(selected);
-    localStorage.setItem("selectedButton", selected);
-    localStorage.setItem("selectedButtonId", id);
+  const handleButtonClick = (id) => {
+    setSelectedButton(id);
     navigate(`/classes/${id}`);
   };
 
@@ -142,9 +136,10 @@ const ClassButton = () => {
         {data?.data?.data.everyClass.map((item) => {
           return (
             <Button.ClassButton
+              key={item.id}
               selected={item.name}
-              selectedButton={selectedButton}
-              onClick={() => handleButtonClick(item.name, item.id)}
+              isSelected={selectedButton === item.id.toString()}
+              onClick={() => handleButtonClick(item.id.toString())}
             />
           );
         })}

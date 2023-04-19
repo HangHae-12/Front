@@ -43,10 +43,12 @@ export const ClassModal = ({ response }) => {
           <StyledInputWrapper>
             <StyledQuestionFont>등원시간 </StyledQuestionFont>
             <StyledTime marginLeft="50px" marginRight="40px">
-              09시~10시
+              {response?.data.data.dailyEnterTime}
             </StyledTime>
             <StyledQuestionFont>하원시간 </StyledQuestionFont>
-            <StyledTime marginLeft="50px">17시~18시</StyledTime>
+            <StyledTime marginLeft="50px">
+              {response?.data.data.dailyExitTime}
+            </StyledTime>
           </StyledInputWrapper>
         </StyledRightWrapper>
       </StyledChildrenProfileWrapper>
@@ -408,13 +410,20 @@ export const ClassMangeModal = () => {
   const queryClient = useQueryClient();
   const [isEditing, setIsEditing] = useState(null);
   const [classInfor, setClassInfor] = useRecoilState(classesAtom);
-  const [classButtonInfor, setClassButtonInfor] =
-    useRecoilState(classButtonAtom);
+  const [classAdd, setClassAdd] = useState("");
 
   const { data } = useQuery(
     ["getClassesList", kindergartenId.id],
     () => MemberAPI.getClassesList(kindergartenId.id),
     {
+      onSuccess: (data) => {
+        const everyClass = data?.data?.data?.classList;
+        const classInfo = everyClass.map((classObj) => ({
+          id: classObj.id,
+          name: classObj.name,
+        }));
+        setClassInfor(classInfo);
+      },
       onError: () => {
         console.log("error");
       },
@@ -448,10 +457,10 @@ export const ClassMangeModal = () => {
   const handleAddButton = () => {
     const payload = {
       kindergartenId: kindergartenId.id,
-      name: classInfor.name,
+      name: classAdd,
     };
     setClassesMutation.mutate(payload);
-    setClassInfor("");
+    setClassAdd("");
   };
 
   const handleModifyButton = (id) => {
@@ -475,20 +484,18 @@ export const ClassMangeModal = () => {
     }
   };
 
-  const handleConfirmButton = (id) => {
+  const handleConfirmButton = (id, index) => {
     const payload = {
       id: id,
       kindergartenId: kindergartenId.id,
-      name: classInfor.name,
+      name: classInfor[index].name,
     };
     setClassesModifyMutation.mutate(payload);
     setIsEditing(null);
-    setClassInfor("");
   };
 
   const handleCancelButton = () => {
     setIsEditing(null);
-    setClassInfor("");
   };
   return (
     <>
@@ -496,10 +503,9 @@ export const ClassMangeModal = () => {
         <StyledClassMangeBox>
           <StyledInputWrapper marginTop="10px">
             <StyledClassMangeInput
+              value={classAdd}
               placeholder="반 이름을 적어주세요"
-              onChange={(e) =>
-                setClassInfor({ ...classInfor, name: e.target.value })
-              }
+              onChange={(e) => setClassAdd(e.target.value)}
             />
             <StlyedClassMangeAddButton onClick={handleAddButton}>
               추가
@@ -525,13 +531,18 @@ export const ClassMangeModal = () => {
                 ) : (
                   <>
                     <StyledClassMangeInput
-                      value={classInfor.name}
-                      onChange={(e) =>
-                        setClassInfor({ ...classInfor, name: e.target.value })
-                      }
+                      value={classInfor[index].name}
+                      onChange={(e) => {
+                        const newClassInfor = [...classInfor];
+                        newClassInfor[index] = {
+                          ...newClassInfor[index],
+                          name: e.target.value,
+                        };
+                        setClassInfor(newClassInfor);
+                      }}
                     />
                     <StyledClassMangeButtons
-                      onClick={() => handleConfirmButton(item.id)}
+                      onClick={() => handleConfirmButton(item.id, index)}
                     >
                       확인
                     </StyledClassMangeButtons>
@@ -929,5 +940,4 @@ const StyledSelectTimeBox = styled.select`
   padding: 8px 12px;
   gap: 10px;
   margin-left: 24px;
-  color: #757575;
 `;

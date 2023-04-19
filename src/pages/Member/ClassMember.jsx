@@ -115,6 +115,8 @@ const ClassMember = () => {
       significant: response.data.data.significant,
       image: response.data.data.profileImageUrl,
       birth: response.data.data.birth,
+      dailyEnterTime: response.data.data.dailyEnterTime,
+      dailyExitTime: response.data.data.dailyExitTime,
     }));
     setParentAdd((prev) => ({
       ...prev,

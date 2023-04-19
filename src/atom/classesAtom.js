@@ -2,10 +2,10 @@ import { atom } from "recoil";
 
 export const classesAtom = atom({
     key: "classInfor",
-    default: {
+    default: [{
       id: "",
       name: "",
-    },
+    }],
   });
 
   export const classButtonAtom = atom({
