@@ -4,6 +4,7 @@ import SideBar from "../components/SideBar";
 import ReloadRoute from "../shared/ReloadRoute";
 
 const Layout = () => {
+
   return (
     <>
       <ReloadRoute />
@@ -29,7 +30,8 @@ const StyledContainer = styled.div`
 const StyledLeftContainer = styled.div`
   width: 200px;
   height: 100vh;
-  margin: 0px;
+  margin:0px;
+  
   @media ${({ theme }) => theme.device.laptop} {
     display: none;
   }

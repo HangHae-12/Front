@@ -6,33 +6,14 @@ import Button from "../../components/Button";
 import { useSetRecoilState } from "recoil";
 import { scheduledIdAtom, timeAtom, paginationAtom } from "../../atom/hostButtonAtom";
 
-const ClassButton = ({ hostParams }) => {
-    const { classroomId = 0 } = useParams();
+const ClassButton = ({ hostParams, everyClass }) => {
+    const { classroomId = "0" } = useParams();
     const setPage = useSetRecoilState(paginationAtom);
     const setScheduleId = useSetRecoilState(scheduledIdAtom);
     const setTime = useSetRecoilState(timeAtom);
     const navigate = useNavigate();
-    const [selectedButton, setSelectedButton] = useState("모든반");
     const queryClient = useQueryClient();
-    useEffect(() => {
-        switch (classroomId) {
-            case "1":
-                setSelectedButton("새빛반");
-                break;
-            case "2":
-                setSelectedButton("동동반");
-                break;
-            case "3":
-                setSelectedButton("빗살반");
-                break;
-            default:
-                setSelectedButton("모든반");
-                break;
-        }
-    }, [classroomId]);
-
-    const loadClassroom = (selected, id) => {
-        setSelectedButton(selected);
+    const loadClassroom = (id) => {
         setScheduleId("ENTER");
         setTime(0);
         setPage(1);
@@ -44,25 +25,19 @@ const ClassButton = ({ hostParams }) => {
     return (
         <StyledClassButtonGroup>
             <Button.ClassButton
-                selected={"모든반"}
-                selectedButton={selectedButton}
-                onClick={() => loadClassroom("모든반", 0)}
+                key={0}
+                selected="모든반"
+                isSelected={classroomId === '0'}
+                onClick={() => loadClassroom('0')}
             />
-            <Button.ClassButton
-                selected={"새빛반"}
-                selectedButton={selectedButton}
-                onClick={() => loadClassroom("새빛반", 1)}
-            />
-            <Button.ClassButton
-                selected={"동동반"}
-                selectedButton={selectedButton}
-                onClick={() => loadClassroom("동동반", 2)}
-            />
-            <Button.ClassButton
-                selected={"빗살반"}
-                selectedButton={selectedButton}
-                onClick={() => loadClassroom("빗살반", 3)}
-            />
+            {everyClass.map((classroom) => (
+                <Button.ClassButton
+                    key={classroom.id}
+                    selected={classroom.name}
+                    isSelected={classroomId === classroom.id.toString()}
+                    onClick={() => loadClassroom(classroom.id.toString())}
+                />
+            ))}
         </StyledClassButtonGroup>
     );
 };
@@ -70,5 +45,5 @@ const ClassButton = ({ hostParams }) => {
 export default ClassButton;
 
 const StyledClassButtonGroup = styled.div`
-padding-bottom: 10px;
+  padding-bottom: 10px;
 `;

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { SignAPI } from "../../api/SignAPI";
+import SignAPI from "../../api/SignAPI";
 import tokenCookie from "../../utils/tokenCookie";
 import session from "../../utils/session";
 
@@ -32,6 +32,10 @@ const KakaoLogin = () => {
           case 202:
             // 정보입력 후 미승인 상태
             navigate("/signup/success");
+            break;
+          case 203:
+            // 원장 선생님이 정보를 입력했지만 유치원은 생성하지 않은 상태
+            navigate("/signup/registration/info");
             break;
           default:
             //  승인까지 완료

@@ -14,10 +14,12 @@ import textVariants from "../../styles/variants/textVariants";
 import { GallerySlider } from "./ClassModal";
 import { useRecoilValue, useRecoilState } from "recoil";
 import { modalAtom } from "../../atom/modalAtoms";
-import { userProfileAtom } from "../../atom/sideBarAtom";
+import { kindergartenAtom, userProfileAtom } from "../../atom/sideBarAtom";
 import CustomPagination from "../../components/CustomPagination";
 import CustomDatepicker from "../../components/CustomDatepicker";
 import { GalleryDetail } from "./GalleryModal";
+import { classButtonAtom } from "../../atom/classesAtom";
+import useDelayedQuery from "../../hooks/useDelayedQuery";
 
 const Gallery = () => {
   const queryClient = useQueryClient();
@@ -36,38 +38,49 @@ const Gallery = () => {
   const [isGalleryAdd, setIsGalleryAdd] = useState(false);
   const [modalState, setModalState] = useRecoilState(modalAtom);
   const userRole = useRecoilValue(userProfileAtom);
+  const kindergartenId = useRecoilValue(kindergartenAtom);
+  const classinfor = useRecoilValue(classButtonAtom);
+  const queryEnabled = useDelayedQuery();
 
   const { data } = useQuery(
     [
       "classesGallery",
+      kindergartenId.id,
       searchGallery,
       currentPage,
-      id || "1",
+      id || classinfor[0].id,
       formattedEndDate,
       formattedStartDate,
     ],
     () => {
       if (searchGallery) {
         return MemberAPI.getSearchGallery(
+          kindergartenId.id,
           searchGallery,
-          id || "1",
+          id || classinfor[0].id,
           currentPage
         );
       } else if (formattedEndDate || formattedStartDate) {
         return MemberAPI.getSearchDateGallery(
-          id || "1",
+          kindergartenId.id,
+          id || classinfor[0].id,
           formattedStartDate,
           formattedEndDate,
           currentPage
         );
       } else {
-        return MemberAPI.getClassesGallery(id || "1", currentPage);
+        return MemberAPI.getClassesGallery(
+          kindergartenId.id,
+          id || classinfor[0].id,
+          currentPage
+        );
       }
     },
     {
-      onSuccess: (data) => {
-        console.log(data);
-      },
+      retry: 0,
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+      enabled: queryEnabled,
     }
   );
 
@@ -75,10 +88,6 @@ const Gallery = () => {
     onSuccess: (response) => {
       const GalleryModalData = createGalleryModalData(response);
       openModal(GalleryModalData);
-      console.log(response);
-    },
-    onError: (response) => {
-      console.log(response);
     },
   });
 
@@ -142,7 +151,8 @@ const Gallery = () => {
       formData.append("title", title);
 
       const payload = {
-        id: id || "1",
+        kindergartenId: kindergartenId.id,
+        id: id || classinfor[0].id,
         formData: formData,
       };
       setGallerySubmitMutation.mutate(payload);
@@ -163,7 +173,7 @@ const Gallery = () => {
       alert("최대 10개의 이미지만 업로드할 수 있습니다.");
       return;
     }
-    
+
     setSeverImages((prevSeverImages) => [
       ...prevSeverImages,
       ...Array.from(fileArr),
@@ -187,10 +197,21 @@ const Gallery = () => {
   const calculateModalHeight = (previewImagesLength) => {
     const baseHeight = 598;
     const addHeight = 598 + 320;
+    const viewportWidth = window.innerWidth;
 
     if (previewImagesLength > 1) {
-      return `${addHeight}px`;
-    } else return `${baseHeight}px`;
+      if (viewportWidth <= 1500) {
+        return "90%";
+      } else {
+        return `${addHeight}px`;
+      }
+    } else {
+      if (viewportWidth <= 1500) {
+        return "90%";
+      } else {
+        return `${baseHeight}px`;
+      }
+    }
   };
 
   const modalData = {
@@ -303,7 +324,8 @@ const Gallery = () => {
 
   const getDetailGallery = (imageId) => {
     const payload = {
-      id: id || "1",
+      kindergartenId: kindergartenId.id,
+      id: id || classinfor[0].id,
       imageId: imageId,
     };
     detailGalleryMutation.mutate(payload);
@@ -366,7 +388,8 @@ const Gallery = () => {
   //갤러리 삭제
   const handleGalleryDelete = (respone) => {
     const payload = {
-      id: id || "1",
+      kindergartenId: kindergartenId.id,
+      id: id || classinfor[0].id,
       imageId: respone.data.data.imagePostId,
     };
     removeGalleryMutation.mutate(payload);
@@ -395,7 +418,8 @@ const Gallery = () => {
                 selectedDate={endDate}
                 onDateChange={(date) => setEndDate(date)}
               />
-              {endDate.getFullYear()}.{endDate.getMonth() + 1}.{endDate.getDate()}
+              {endDate.getFullYear()}.{endDate.getMonth() + 1}.
+              {endDate.getDate()}
             </StyledDateBox>
             <Buttons.Filter colorTypes="primary" onClick={handleDateSearch}>
               적용하기
@@ -418,7 +442,6 @@ const Gallery = () => {
           {data?.data.data.imagePostResponseDtoList.map((item) => {
             return (
               <StyledGalleryCard
-
                 key={item.imagePostId}
                 onClick={() => getDetailGallery(item.imagePostId)}
                 whileHover={{ scale: 1.05 }}
@@ -452,6 +475,7 @@ export default Gallery;
 const StyledGalleryWrapper = styled.div`
   padding: 20px;
   background: rgba(237, 245, 238, 0.8);
+  box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.12);
   border-radius: 12px;
 `;
 const StyledGridModalContent = styled.div`
@@ -464,6 +488,9 @@ const StyledGridModalContent = styled.div`
   margin: 10px 84px;
   overflow-y: auto;
   max-height: 640px;
+  @media screen and (max-width: 1500px) {
+    max-height: 390px;
+  }
 `;
 
 const StyledGalleryHeader = styled.div`
@@ -475,32 +502,39 @@ const StyledGalleryHeader = styled.div`
 const StyledHeaderLeftWrapper = styled.div`
   display: flex;
   align-items: center;
-  justify-content:center;
-`
+  justify-content: center;
+`;
 const StyledHeaderRightWrapper = styled.div`
   display: flex;
   align-items: center;
-  justify-content:center;
-`
+  justify-content: center;
+`;
 
 const SyledAddGalleryButton = styled.button`
-  width: 79px;
-  height: 32px;
+  margin-left: auto;
   border-radius: 4px;
   border: 1px solid ${({ theme }) => theme.color.primary};
   background: ${({ theme }) => theme.color.white};
   padding: 4px 10px;
+  gap: 10px;
   color: ${({ theme }) => theme.color.primary};
+  gap: 10px;
   cursor: pointer;
-   
+
   @media ${({ theme }) => theme.device.laptop} {
-    display:none;
+    display: none;
   }
   &:hover {
     background-color: ${({ theme }) => theme.color.grayScale[50]};
   }
   &:active {
-        cursor: grabbing;
+    cursor: grabbing;
+  }
+  @media ${({ theme }) => theme.device.mobile} {
+    display: none;
+  }
+  @media ${({ theme }) => theme.device.laptop} {
+    display: none;
   }
 `;
 
@@ -511,8 +545,7 @@ const StyledGalleryContainer = styled.div`
   margin-left: 24px;
   margin-right: auto;
   margin-top: 24px;
-  gap:8.8px;
-  
+  gap: 8.8px;
 `;
 
 const StyledGalleryCard = styled(motion.div)`
@@ -536,7 +569,6 @@ const StyledGalleryCard = styled(motion.div)`
     width: 216px;
     height: 286px;
   }
-
 `;
 
 const StyledGalleryImage = styled.img`
@@ -580,7 +612,6 @@ const StyledFont = styled.div`
   display: flex;
   justify-content: space-between;
 `;
-
 
 const StyledAddIcon = styled(IoIosAdd)`
   width: 66px;
@@ -631,8 +662,6 @@ const StyledPreviewImage = styled.img`
   border-radius: 8px;
   margin-top: 30px;
 `;
-
-
 
 const StyledGallerySearchInput = styled.input`
   width: 200px;

@@ -2,10 +2,7 @@ import React from "react";
 import ClassButton from "./ClassButton";
 
 const Member = () => {
-  return (
-    <ClassButton />
-  );
+  return <ClassButton />;
 };
 
 export default Member;
-

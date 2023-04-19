@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 import styled from "styled-components";
+import { useRecoilValue } from "recoil";
 import { useParams } from "react-router-dom";
 import { ManageAPI } from "../../api/ManageAPI";
 import textVariants from "../../styles/variants/textVariants";
@@ -8,6 +9,7 @@ import CustomPagination from "../../components/CustomPagination";
 import InviteList from "./InviteList"
 import DoneList from "./DoneList";
 import InviteMemberButton from "./InviteMemberButton"
+import { kindergartenAtom } from "../../atom/sideBarAtom";
 
 const List = () => {
 
@@ -17,7 +19,7 @@ const List = () => {
   const [searchText, setSearchText] = useState("");
   const [debouncedSearchText, setDebouncedSearchText] = useState(searchText);
   const [searchTimeout, setSearchTimeout] = useState(null);
-
+  const kindergartenId = useRecoilValue(kindergartenAtom);
   //받아온 파람값-> api payload로 
   const [userRole, setUserRole] = useState("PARENT");
 
@@ -29,7 +31,7 @@ const List = () => {
     ["getMemberManage", page, userRole],
     () =>
       ManageAPI.getMemberManage({
-        kindergartenId: 1,
+        kindergartenId: kindergartenId.id,
         userRole: userRole,
         page: page - 1,
         size: 15,
@@ -40,17 +42,6 @@ const List = () => {
       },
     }
   );
-  // const { isLoading, isError, data } = useQuery(
-  //   ["getMemberManage", page, userRole, debouncedSearchText],
-  //   () =>
-  //     ManageAPI.getMemberManage({
-  //       kindergartenId: 1,
-  //       userRole: userRole,
-  //       page: page - 1,
-  //       size: 15,
-  //       searchText: debouncedSearchText,
-  //     })
-  // );
 
   const handleMemberSearch = (e) => {
     const searchText = e.target.value;
@@ -86,9 +77,6 @@ const List = () => {
             <StyledTotalLabel>
               총원 <StyledTotalCount>{data2?.memberCount}</StyledTotalCount>명
             </StyledTotalLabel>
-            <StyledMemberSearchInputWrapper>
-              <StyledMemberSearchInput type="text" onChange={handleMemberSearch} />
-            </StyledMemberSearchInputWrapper>
           </StyledMemberHeader>
           <DoneList data={data2} />
           <CustomPagination
@@ -103,9 +91,6 @@ const List = () => {
             <StyledInviteLabel>
               승인 대기 인원
             </StyledInviteLabel>
-            <StyledMemberSearchInputWrapper>
-              <StyledInviteSearchInput type="text" onChange={handleMemberSearch} />
-            </StyledMemberSearchInputWrapper>
           </StyledInviteHeader>
           <InviteList data={data2} page={page} userRole={userRole} />
         </StyledInviteContainer>
@@ -188,18 +173,6 @@ const StyledTotalCount = styled.span`
   color: ${({ theme }) => theme.color.grayScale[600]};
 `;
 
-const StyledMemberSearchInputWrapper = styled.div`
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  
-`;
-
-const StyledMemberSearchInput = styled.input`
-  padding-left: 30px;
-  border: 1px solid ${({ theme }) => theme.color.grayScale[100]};
-  border-radius: 4px;
-`;
 
 const StyledInviteHeader = styled.div`
   ${textVariants.Body1_Bold}

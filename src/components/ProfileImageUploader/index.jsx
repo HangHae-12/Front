@@ -2,7 +2,7 @@ import { useProfileImageUploader } from "../../hooks/useProfileImageUploader";
 import { DUMMY_URL } from "../../helpers/dummyUrl";
 import StyledProfileImageUploader from "./styled";
 
-const ProfileImageUploader = ({ id, prev, isFixMode }) => {
+const ProfileImageUploader = ({ id, prev, isFixMode, imgStyleProps }) => {
   const {
     inputRef,
     previewImage,
@@ -31,11 +31,13 @@ const ProfileImageUploader = ({ id, prev, isFixMode }) => {
         onChange={handleImageChange}
         ref={inputRef}
       />
-      <StyledProfileImageUploader.ThumbnailWrapper>
+      <StyledProfileImageUploader.ThumbnailWrapper isFixMode={!isFixMode}>
         <StyledProfileImageUploader.Thumbnail
+          imgStyleProps={imgStyleProps}
           src={previewImage ?? prev ?? DUMMY_URL.not_profile_img}
           alt="Profile thumbnail"
         />
+
         <StyledProfileImageUploader.CancelButton
           className="cancelIcon"
           onClick={handleProfileImageCancel}
