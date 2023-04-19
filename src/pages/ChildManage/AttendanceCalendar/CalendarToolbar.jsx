@@ -43,11 +43,11 @@ const CalendarToolbar = ({ label, onNavigate }) => {
       <StyledCalendarToolbar.AttendanceInfoWrapper>
         <StyledCalendarToolbar.AttendanceInfo boxColor="primary">
           <h3>출석</h3>
-          <span>{info?.absentCount}</span>
+          <span>{info?.attendanceCount}</span>
         </StyledCalendarToolbar.AttendanceInfo>
         <StyledCalendarToolbar.AttendanceInfo boxColor="perple">
           <h3>결석</h3>
-          <span>{info.attendanceCount}</span>
+          <span>{info.absentCount}</span>
         </StyledCalendarToolbar.AttendanceInfo>
       </StyledCalendarToolbar.AttendanceInfoWrapper>
     </StyledCalendarToolbar.Container>
