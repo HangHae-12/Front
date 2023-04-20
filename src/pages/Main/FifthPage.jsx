@@ -4,20 +4,20 @@ import FifthImg from '../../assets/MainImage/FifthImg.png';
 import textVariants from "../../styles/variants/textVariants";
 
 const FifthPage = () => {
-    return (
-        <>
-            <StyledMainContainer>
-                <StyledMainWrapper>
-                    <StyledMainTopContainer>
-                        <StyledDescriptiontitle>
-                            선생님은 힘든 문서 작업을 ,  <span>손쉽게 엑셀로</span> 출력 할수 있어요
-                        </StyledDescriptiontitle>
-                    </StyledMainTopContainer>
-                    <StyledMainBottomContainer bg={FifthImg}></StyledMainBottomContainer>
-                </StyledMainWrapper>
-            </StyledMainContainer>
-        </>
-    );
+  return (
+    <>
+      <StyledMainContainer>
+        <StyledMainWrapper>
+          <StyledMainTopContainer>
+            <StyledDescriptiontitle>
+              선생님은 힘든 문서 작업을 ,  <span>손쉽게 엑셀로</span> 출력 할수 있어요
+            </StyledDescriptiontitle>
+          </StyledMainTopContainer>
+          <StyledMainBottomContainer bg={FifthImg}></StyledMainBottomContainer>
+        </StyledMainWrapper>
+      </StyledMainContainer>
+    </>
+  );
 }
 export default FifthPage;
 

@@ -154,7 +154,7 @@ const Table = () => {
                     <StyledGrNext style={{ marginLeft: "8px" }} onClick={handleIncreaseMonth} size={16} />
                     <CustomDatepicker mode="month" selectedDate={selectedDate} onDateChange={handleDateChange} />
                 </StyledMonthYear>
-                <MonthExcel data={data?.data} selectedDate={selectedDate} />
+                <MonthExcel data={data?.data?.data?.content} selectedDate={selectedDate} />
             </StyledHeader>
             <StyledTableContainer>
                 <StyledTableWrapper>

@@ -68,7 +68,7 @@ const Table = () => {
           <StyledGrNext onClick={increaseDate} size={16} />
           <CustomDatepicker selectedDate={selectedDate} onDateChange={handleDateChange} />
         </StyledMonthYear>
-        <DayExcel data={data?.data} selectedDate={selectedDate} />
+        <DayExcel data={data?.data?.data?.content} selectedDate={selectedDate} />
       </StyledHeader>
       <StyledTableContainer>
         <StyledTableWrapper>
