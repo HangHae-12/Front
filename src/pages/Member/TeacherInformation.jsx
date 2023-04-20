@@ -8,7 +8,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import textVariants from "../../styles/variants/textVariants";
 import TeacherProfile from "./TeacherProfile";
 import { DustInfo } from "./DustInfo";
-import { useRecoilState, useRecoilValue } from "recoil";
+import {  useRecoilValue } from "recoil";
 import { kindergartenAtom, userProfileAtom } from "../../atom/sideBarAtom";
 import { classButtonAtom } from "../../atom/classesAtom";
 
@@ -56,19 +56,28 @@ const TeacherInformation = ({ data }) => {
     } else {
       setRender(false);
     }
-  }, [selectedTeacher]);
+  }, [selectedTeacher, searchTeacher]);
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    setSearchTeacher(e.target.value);
-    queryClient.invalidateQueries(["TeacherInformation", searchTeacher]);
-  };
+  // const handleSearch = (e) => {
+  //   e.preventDefault();
+  //   setSearchTeacher(e.target.value);
+  //   queryClient.invalidateQueries(["TeacherInformation", searchTeacher]);
+  // };
 
   const handleCheckBoxChange = (e, item) => {
+    const updatedCheckedTeachers = Object.keys(checkedTeachers).reduce(
+      (acc, teacherId) => {
+        acc[teacherId] = false;
+        return acc;
+      },
+      {}
+    );
+
     setCheckedTeachers({
-      ...checkedTeachers,
+      ...updatedCheckedTeachers,
       [item.id]: e.target.checked,
     });
+
     if (e.target.checked) {
       setSelectedTeacher({
         id: item.id,
@@ -100,7 +109,7 @@ const TeacherInformation = ({ data }) => {
         <StyledParentProfileWrapper>
           <StyledParentBox flexDirection="column" padding="0px">
             <StyledInputWrapper marginTop="20px">
-              {selectedTeacher ? (
+              {selectedTeacher && Object.keys(checkedTeachers).length > 0 ? (
                 <>
                   <StyledCheckInformationBox marginLeft="12px">
                     <StyledProfileImage
@@ -120,7 +129,7 @@ const TeacherInformation = ({ data }) => {
               )}
               <StyledSearchInput
                 type="text"
-                onChange={handleSearch}
+                // onChange={handleSearch}
                 value={searchTeacher}
               />
             </StyledInputWrapper>
@@ -160,6 +169,10 @@ const TeacherInformation = ({ data }) => {
       width: "660px",
       height: "504px",
       callback: () => alert("modal"),
+      onClose: () => {
+        setCheckedTeachers({});
+        // setSelectedTeacher(null);
+      },
     };
     openModal(modalData);
   };
