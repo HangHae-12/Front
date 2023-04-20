@@ -86,7 +86,7 @@ const ChildProfile = () => {
       Object.entries(formState).forEach(([key, value]) => {
         formData.append(key, value);
       });
-      selectedFile && formData.append("profileImage", selectedFile);
+      selectedFile && formData.append("image", selectedFile);
       formData.append("isCancelled", isCancelled);
 
       for (const [key, value] of formData.entries()) {

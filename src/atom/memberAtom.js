@@ -12,6 +12,7 @@ export const memberAtom = atom({
     preview: "",
     dailyEnterTime: "",
     dailyExitTime: "",
+    isCancelled: false,
   },
 });
 

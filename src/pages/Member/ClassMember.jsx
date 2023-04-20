@@ -15,10 +15,8 @@ import Buttons from "../../components/Buttons";
 import { kindergartenAtom, userProfileAtom } from "../../atom/sideBarAtom";
 import { AiOutlineSearch } from "react-icons/ai";
 import debounce from "../../utils/debounce";
-import { profileImageState } from "../../atom/profileImageUploaderAtom";
 import { motion } from "framer-motion";
 import { classButtonAtom } from "../../atom/classesAtom";
-import useDelayedQuery from "../../hooks/useDelayedQuery";
 
 const ClassMember = () => {
   const queryClient = useQueryClient();
@@ -34,13 +32,10 @@ const ClassMember = () => {
   const [parentAdd, setParentAdd] = useRecoilState(parentAtom);
   const [isChildModify, setIsChildModify] = useState(false);
   const [isChildAdd, setIsChildAdd] = useState(false);
-  const [image, setImage] = useRecoilState(profileImageState);
   const userRole = useRecoilValue(userProfileAtom);
-  const preview = useRecoilValue(profileImageState);
   const kindergartenId = useRecoilValue(kindergartenAtom);
   const [debouncedSearchMember, setDebouncedSearchMember] = useState("");
   const classinfor = useRecoilValue(classButtonAtom);
-  const queryEnabled = useDelayedQuery();
 
   const { data } = useQuery(
     [
@@ -66,10 +61,9 @@ const ClassMember = () => {
       }
     },
     {
-      retry: 0,
       refetchOnMount: false,
       refetchOnWindowFocus: false,
-      enabled: queryEnabled,
+      enabled: !!classinfor[0].id,
     }
   );
 
@@ -103,7 +97,7 @@ const ClassMember = () => {
     } else {
       setRender(false);
     }
-  }, [memberinfor, isChildModify, parentinfor, preview]);
+  }, [memberinfor, isChildModify, parentinfor]);
 
   //아이 상세 조회 모달
   const getChildInformation = (response) => {
@@ -117,6 +111,7 @@ const ClassMember = () => {
       birth: response.data.data.birth,
       dailyEnterTime: response.data.data.dailyEnterTime,
       dailyExitTime: response.data.data.dailyExitTime,
+      isCancelled: false,
     }));
     setParentAdd((prev) => ({
       ...prev,
@@ -162,7 +157,6 @@ const ClassMember = () => {
       onClose: () => {
         setMemberAdd("");
         setParentAdd("");
-        setImage("");
       },
     };
   };
@@ -193,7 +187,6 @@ const ClassMember = () => {
         setIsChildModify(false);
         setMemberAdd("");
         setParentAdd("");
-        setImage("");
       },
     }));
   };
@@ -208,9 +201,9 @@ const ClassMember = () => {
     formData.append("parentId", parentinfor.parentId);
     formData.append("dailyEnterTime", memberinfor.dailyEnterTime);
     formData.append("dailyExitTime", memberinfor.dailyExitTime);
-    formData.append("isCancelled", false);
+    formData.append("isCancelled", memberinfor.isCancelled);
 
-    if (memberinfor.image[0] !== "h") {
+    if (memberinfor.image[0] !== "h" && memberinfor.isCancelled === false) {
       formData.append("image", memberinfor.image);
     }
 
@@ -240,7 +233,7 @@ const ClassMember = () => {
     } else {
       setRender(false);
     }
-  }, [memberinfor, parentinfor, isChildAdd, preview]);
+  }, [memberinfor, parentinfor, isChildAdd]);
 
   const validateForm = (memberInfo, parentInfo) => {
     const requiredFields = ["name", "birth", "gender", "parentId"];
@@ -307,7 +300,6 @@ const ClassMember = () => {
         setIsChildAdd(false);
         setMemberAdd("");
         setParentAdd("");
-        setImage("");
       },
     };
     openModal(modalData);
