@@ -13,7 +13,7 @@ const DayExcel = ({ data, selectedDate }) => {
     }
 
     const exportToExcel = () => {
-        const filteredData = data.data.filter((row) => row !== null);
+        const filteredData = data.filter((row) => row !== null);
 
         const formattedData = filteredData.map((row, rowIndex) => {
             return {

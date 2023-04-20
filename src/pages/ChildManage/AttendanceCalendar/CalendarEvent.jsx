@@ -3,10 +3,12 @@ import textVariants from "../../../styles/variants/textVariants";
 
 const CalendarEvent = ({ event }) => {
   const { enterTime, exitTime, status } = event;
+  // 출석, 미등원, 등원, 하원, 결석
+  console.log(status);
 
   return (
     <CalandarEvent.Container>
-      <AttendanceLabel isAttendance={status === "출석"} />
+      <AttendanceLabel status={status} />
       <CalandarEvent.Wrapper isEnterTime>
         <span>등원</span>
         <p>{enterTime}</p>
@@ -63,24 +65,62 @@ const AttendanceLabel = styled.div`
   position: absolute;
   top: -35px;
   right: 10px;
-  width: 36px;
-  height: 36px;
+  width: 45px;
+  height: 45px;
+
   border-radius: 50%;
   transform: rotate(-30deg);
   border: 2px solid
-    ${({ theme, isAttendance }) =>
-      isAttendance ? theme.color.primary : theme.color.perple};
+    ${({ theme, status }) => {
+      switch (status) {
+        case "미등원":
+          return theme.color.red;
+        case "등원":
+          return theme.color.blue;
+        case "하원":
+          return theme.color.orange;
+        case "결석":
+          return theme.color.perple;
+        default:
+          return theme.color.primary;
+      }
+    }};
 
   &::before {
     ${textVariants.Body2_SemiBold}
-    content: ${({ isAttendance }) => (isAttendance ? `"출석"` : `"결석"`)};
+    content: ${({ status }) => {
+      switch (status) {
+        case "미등원":
+          return `"미등원"`;
+        case "등원":
+          return `"등원"`;
+        case "하원":
+          return `"하원"`;
+        case "결석":
+          return `"결석"`;
+        default:
+          return `"출석"`;
+      }
+    }};
     display: block;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    color: ${({ theme, isAttendance }) =>
-      isAttendance ? theme.color.primary : theme.color.perple};
+    color: ${({ theme, status }) => {
+      switch (status) {
+        case "미등원":
+          return theme.color.red;
+        case "등원":
+          return theme.color.blue;
+        case "하원":
+          return theme.color.orange;
+        case "결석":
+          return theme.color.perple;
+        default:
+          return theme.color.primary;
+      }
+    }};
     white-space: nowrap;
   }
 `;

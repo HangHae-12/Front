@@ -6,9 +6,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import { MemberAPI } from "../../api/MemberAPI";
 import debounce from "../../utils/debounce";
-import ProfileImageUploader from "../../components/ProfileImageUploader";
-import { profileImageState } from "../../atom/profileImageUploaderAtom";
-import { kindergartenAtom } from "../../atom/sideBarAtom";
+import { kindergartenAtom, userProfileAtom } from "../../atom/sideBarAtom";
 import { classesAtom } from "../../atom/classesAtom";
 
 //반별 아이들 상세 조회 모달
@@ -147,14 +145,13 @@ export const MemberAddModal = () => {
   const [searchParent, setSearchParent] = useState("");
   const memberinfor = useRecoilValue(memberAtom);
   const parentInfor = useRecoilValue(parentAtom);
-  const preview = useRecoilValue(profileImageState);
+  const userRole = useRecoilValue(userProfileAtom);
 
   const { data } = useQuery(
     ["searchParent", debouncedSearchParent],
     () => MemberAPI.getSearchParent(debouncedSearchParent),
     {
-      refetchOnMount: false,
-      refetchOnWindowFocus: false,
+      enabled: userRole.role === "PRINCIPAL" || userRole.role === "TEACHER",
     }
   );
 
@@ -211,22 +208,36 @@ export const MemberAddModal = () => {
     setMemberAdd({ ...memberAdd, birth: input });
   };
 
+  const removeImg = () => {
+    setMemberAdd({ ...memberAdd, preview: "", image: "", isCancelled: true });
+  };
+
   return (
     <StyledModalWrapper>
       <StyledChildrenProfileWrapper>
         <StyledLeftWrapper>
           <StyledProfileHeaderFont>원생 프로필</StyledProfileHeaderFont>
-          {memberAdd.preview ? (
-            <StyledProfileImage src={memberAdd.preview} />
-          ) : (
-            <StyledProfileImg
-              src={
-                memberinfor.image
-                  ? memberinfor.image
-                  : "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg"
-              }
-            />
-          )}
+          <ParentContainer>
+            {memberAdd.preview ? (
+              <StyledProfileImage src={memberAdd.preview}>
+                {memberAdd.preview && (
+                  <StyledRemoveButton onClick={removeImg}>X</StyledRemoveButton>
+                )}
+              </StyledProfileImage>
+            ) : (
+              <StyledProfileImage
+                src={
+                  memberinfor.image
+                    ? memberinfor.image
+                    : "https://hanghaefinals3.s3.ap-northeast-2.amazonaws.com/profile-image/default_profile_image.jpeg"
+                }
+              >
+                {memberinfor.image && (
+                  <StyledRemoveButton onClick={removeImg}>X</StyledRemoveButton>
+                )}
+              </StyledProfileImage>
+            )}
+          </ParentContainer>
           <StyledAddInput
             type="file"
             name="upload-img"
@@ -436,10 +447,14 @@ export const ClassMangeModal = () => {
   const [isEditing, setIsEditing] = useState(null);
   const [classInfor, setClassInfor] = useRecoilState(classesAtom);
   const [classAdd, setClassAdd] = useState("");
+  const userRole = useRecoilValue(userProfileAtom);
 
   const { data } = useQuery(
     ["getClassesList", kindergartenId.id],
     () => MemberAPI.getClassesList(kindergartenId.id),
+    {
+      enabled: userRole.role === "PRINCIPAL",
+    },
     {
       onSuccess: (data) => {
         const everyClass = data?.data?.data?.classList;
@@ -617,12 +632,12 @@ const StyledProfileHeaderFont = styled.div`
   margin-top: ${({ marginTop }) => marginTop};
 `;
 
-const StyledProfileImage = styled.img`
-  width: ${({ width }) => width || "120px"};
-  height: ${({ height }) => height || "120px"};
-  border-radius: 70%;
-  margin-top: ${({ marginTop }) => marginTop || "20px"};
-`;
+// const StyledProfileImage = styled.img`
+//   width: ${({ width }) => width || "120px"};
+//   height: ${({ height }) => height || "120px"};
+//   border-radius: 70%;
+//   margin-top: ${({ marginTop }) => marginTop || "20px"};
+// `;
 
 const StyledQuestionFont = styled.div`
   ${textVariants.Body3_SemiBold}
@@ -882,14 +897,6 @@ const StyledAddInput = styled.input`
   display: none;
 `;
 
-const StyledProfileImg = styled.img`
-  width: 120px;
-  height: 120px;
-  background: ${({ theme }) => theme.color.grayScale[300]};
-  border-radius: 70%;
-  margin-top: 20px;
-`;
-
 const StyledClassAddModalWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -988,4 +995,44 @@ const StyledSelectTimeBox = styled.select`
   padding: 8px 12px;
   gap: 10px;
   margin-left: 24px;
+`;
+
+const StyledProfileImage = styled.div`
+  position: relative;
+  width: ${({ width }) => width || "120px"};
+  height: ${({ height }) => height || "120px"};
+  border-radius: 70%;
+  margin-top: ${({ marginTop }) => marginTop || "20px"};
+  background-image: ${({ src }) => (src ? `url(${src})` : "")};
+  background-size: cover;
+`;
+
+const StyledRemoveButton = styled.div`
+  position: absolute;
+  top: 0px;
+  right: 10px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: ${({ theme }) => theme.color.grayScale[500]};
+  color: ${({ theme }) => theme.color.white};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  font-size: 12px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+
+  &:hover {
+    opacity: 1;
+  }
+`;
+
+const ParentContainer = styled.div`
+  position: relative;
+
+  &:hover ${StyledRemoveButton} {
+    opacity: 1;
+  }
 `;
