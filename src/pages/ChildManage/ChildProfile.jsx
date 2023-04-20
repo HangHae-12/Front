@@ -124,7 +124,7 @@ const ChildProfile = () => {
             <li>
               <StyledChildManage.SubTitle>성별</StyledChildManage.SubTitle>
               <AutoResizeInput
-                defaultValue={data?.data?.data?.gender}
+                defaultValue={data?.data?.data?.gender ==="MALE" ? "남자" : "여자"}
                 readOnly={!isFixMode}
                 onChange={(e) =>
                   dispatch({
