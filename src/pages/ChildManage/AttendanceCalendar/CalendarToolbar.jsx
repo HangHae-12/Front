@@ -44,7 +44,6 @@ const CalendarToolbar = ({ label, onNavigate }) => {
         <StyledCalendarToolbar.AttendanceInfo boxColor="primary">
           <h3>출석</h3>
           <span>{info?.attendanceCount}</span>
-          <span>{info?.attendanceCount}</span>
         </StyledCalendarToolbar.AttendanceInfo>
         <StyledCalendarToolbar.AttendanceInfo boxColor="perple">
           <h3>결석</h3>
