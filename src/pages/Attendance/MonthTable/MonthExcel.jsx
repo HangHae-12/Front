@@ -31,7 +31,7 @@ const MonthExcel = ({ data, selectedDate }) => {
 
         // 시트 데이터 행 추가
         const rowIndex = 3;
-        data?.data?.forEach((student, index) => {
+        data?.forEach((student, index) => {
 
             const rowData = [
                 student.id,

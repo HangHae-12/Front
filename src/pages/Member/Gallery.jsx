@@ -19,7 +19,6 @@ import CustomPagination from "../../components/CustomPagination";
 import CustomDatepicker from "../../components/CustomDatepicker";
 import { GalleryDetail } from "./GalleryModal";
 import { classButtonAtom } from "../../atom/classesAtom";
-import useDelayedQuery from "../../hooks/useDelayedQuery";
 
 const Gallery = () => {
   const queryClient = useQueryClient();
@@ -40,7 +39,6 @@ const Gallery = () => {
   const userRole = useRecoilValue(userProfileAtom);
   const kindergartenId = useRecoilValue(kindergartenAtom);
   const classinfor = useRecoilValue(classButtonAtom);
-  const queryEnabled = useDelayedQuery();
 
   const { data } = useQuery(
     [
@@ -77,10 +75,9 @@ const Gallery = () => {
       }
     },
     {
-      retry: 0,
       refetchOnMount: false,
       refetchOnWindowFocus: false,
-      enabled: queryEnabled,
+      enabled: !!classinfor[0].id,
     }
   );
 
