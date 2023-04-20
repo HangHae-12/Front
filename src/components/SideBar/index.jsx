@@ -17,43 +17,46 @@ import {
 import TeacherSideBar from "./TeacherSideBar";
 import PrincipalSideBar from "./PrincipalSideBar";
 import ParentSidBar from "./ParentSideBar";
+import Buttons from "../Buttons";
+import { useNavigate } from "react-router-dom";
 
 const SideBar = () => {
+  const navigate = useNavigate();
   const [userProfile, setUserProfile] = useRecoilState(userProfileAtom);
   const [kindergarten, setKindergarten] = useRecoilState(kindergartenAtom);
   const setChildList = useSetRecoilState(childListAtom);
   const { openModal } = useModal();
-  const { data } = useQuery(
-    ["getUserProfile"],
-    () => SideBarAPI.getUserProfile(),
-    {
-      onSuccess: (data) => {
-        const bindData = data.data.data;
+  const handleLogout = () => {
+    navigate("/main");
+  };
 
-        setUserProfile({
-          ...userProfile,
-          birthday: bindData.userProfile.birthday,
-          email: bindData.userProfile.email,
-          name: bindData.userProfile.name,
-          phoneNumber: bindData.userProfile.phoneNumber,
-          profileImageUrl: bindData.userProfile.profileImageUrl,
-          resolution: bindData.userProfile.resolution,
-          role: bindData.userProfile.role,
-        });
-        setKindergarten({
-          ...kindergarten,
-          address: bindData.kindergarten.address,
-          id: bindData.kindergarten.id,
-          logoImageUrl: bindData.kindergarten.logoImageUrl,
-          name: bindData.kindergarten.name,
-        });
-        setChildList(bindData.childList);
-      },
-      onError: () => {
-        console.log("error");
-      },
-    }
-  );
+  const {} = useQuery(["getUserProfile"], () => SideBarAPI.getUserProfile(), {
+    onSuccess: (data) => {
+      const bindData = data.data.data;
+
+      setUserProfile({
+        ...userProfile,
+        birthday: bindData.userProfile.birthday,
+        email: bindData.userProfile.email,
+        name: bindData.userProfile.name,
+        phoneNumber: bindData.userProfile.phoneNumber,
+        profileImageUrl: bindData.userProfile.profileImageUrl,
+        resolution: bindData.userProfile.resolution,
+        role: bindData.userProfile.role,
+      });
+      setKindergarten({
+        ...kindergarten,
+        address: bindData.kindergarten.address,
+        id: bindData.kindergarten.id,
+        logoImageUrl: bindData.kindergarten.logoImageUrl,
+        name: bindData.kindergarten.name,
+      });
+      setChildList(bindData.childList);
+    },
+    onError: () => {
+      console.log("error");
+    },
+  });
   const setProfileModal = () => {
     const modalData = {
       title: <StyledModalHeader>사용자 프로필</StyledModalHeader>,
@@ -82,8 +85,8 @@ const SideBar = () => {
             {userProfile.role === "PRINCIPAL"
               ? "원장선생님"
               : userProfile.role === "TEACHER"
-                ? "선생님"
-                : "학부모"}
+              ? "선생님"
+              : "학부모"}
           </p>
           <h3>
             <span>{userProfile.name}</span>
@@ -97,6 +100,13 @@ const SideBar = () => {
         ) : (
           <ParentSidBar />
         )}
+        <StyledLogoutButton
+          colorTypes="primary"
+          outlined
+          onClick={handleLogout}
+        >
+          로그아웃
+        </StyledLogoutButton>
       </StyledSideBarContainer>
       <Modal />
     </>
@@ -200,4 +210,9 @@ const StyledModalHeader = styled.div`
   align-items: center;
   justify-content: center;
   margin-top: 10px;
+`;
+
+const StyledLogoutButton = styled(Buttons.Time)`
+  position: absolute;
+  bottom: 20px;
 `;
