@@ -13,6 +13,7 @@ import AlertModal from "../../components/Modals/AlertModal";
 import { useProfileImageUploader } from "../../hooks/useProfileImageUploader";
 import { useRecoilState } from "recoil";
 import { childListAtom } from "../../atom/sideBarAtom";
+import textVariants from "../../styles/variants/textVariants";
 
 const ChildProfile = () => {
   const queryClient = useQueryClient();
@@ -40,7 +41,8 @@ const ChildProfile = () => {
   });
 
   const { selectedFile, isCancelled } = useProfileImageUploader(
-    "ChildProfile",data?.data?.data?.profilImageUrl
+    "ChildProfile",
+    data?.data?.data?.profilImageUrl
   );
 
   const reduceFormData = (state, action) => {
@@ -102,7 +104,7 @@ const ChildProfile = () => {
         <StyledChildManage.Title>원생 프로필</StyledChildManage.Title>
         <StyledProfile.ProfileWrapper>
           <ProfileImageUploader
-          id="ChildProfile"
+            id="ChildProfile"
             isFixMode={!isFixMode}
             prev={data?.data?.data?.profileImageUrl}
           />
@@ -123,9 +125,12 @@ const ChildProfile = () => {
             </li>
             <li>
               <StyledChildManage.SubTitle>성별</StyledChildManage.SubTitle>
-              <AutoResizeInput
-                defaultValue={data?.data?.data?.gender ==="MALE" ? "남자" : "여자"}
-                readOnly={!isFixMode}
+              <StyledSelect
+                value={
+                  formState.gender ||
+                  (data?.data?.data?.gender === "MALE" ? "남자" : "여자")
+                }
+                disabled={!isFixMode}
                 onChange={(e) =>
                   dispatch({
                     type: "SET_FORM_DATA",
@@ -133,7 +138,10 @@ const ChildProfile = () => {
                     value: e.target.value,
                   })
                 }
-              />
+              >
+                <option value="MALE">남자</option>
+                <option value="FEMALE">여자</option>
+              </StyledSelect>
             </li>
             <li>
               <StyledChildManage.SubTitle>생년월일</StyledChildManage.SubTitle>
@@ -229,3 +237,15 @@ const StyledProfile = {
     margin-top: 22px;
   `,
 };
+
+const StyledSelect = styled.select`
+  ${textVariants.Body1_SemiBold}
+  padding: 4px 8px;
+  border: none;
+  color: ${({ theme }) => theme.color.grayScale[500]};
+  background-color: ${({ theme }) => theme.color.grayScale[50]};
+  outline: none;
+  pointer-events: ${({ disabled }) => (disabled ? "none" : "auto")};
+  opacity: 1;
+  appearance: none;
+`;
