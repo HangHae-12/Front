@@ -10,7 +10,7 @@
 
 ✨ 안전하고 편리한 유치원 출결관리의 시작 <strong>킨더그루</strong> 입니다.
 
-👉🏻[킨더그루 이용해보기!](front-omega-vert.vercel.app) <br>
+👉🏻[킨더그루 이용해보기!](https://front-omega-vert.vercel.app/main) <br>
 👉🏻[킨더그루 팀 노션!](https://magenta-monarch-eb7.notion.site/9797fcf526d2448db99459f44c5b5a40) <br>
 👉🏻[킨더그루 프론트엔드 컨벤션](https://desert-drain-4d3.notion.site/FE-Convention-Docs-07893d6b6a9a40469326ce1a9d04ba8b)
 <br>
