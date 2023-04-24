@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
@@ -44,7 +44,7 @@ const Children = ({ bindData }) => {
       show: false,
     });
   };
-  const handleScheduleUpdate = (type, childId) => {
+  const handleScheduleUpdate = useCallback((type, childId) => {
     const currentTime = new Date();
     const childData = bindData.find((item) => item.id === childId);
 
@@ -91,7 +91,7 @@ const Children = ({ bindData }) => {
             ? "하원 처리 되었습니다."
             : "하원 취소 되었습니다.",
     });
-  };
+  }, [bindData, updateEnterMutation, updateExitMutation, queryClient]);
 
 
 
@@ -100,8 +100,7 @@ const Children = ({ bindData }) => {
       <StyledStudentGrid>
 
         {
-          //서버 연결되면  id값 변경 및 데이터 바인딩,옵셔널 체이닝
-          Array.isArray(bindData) && bindData?.map((item) => {
+          bindData?.map((item) => {
             return (
               <StyledStudentCard
                 key={item.id}
@@ -160,9 +159,10 @@ const Children = ({ bindData }) => {
       />
     </>
   );
-};
+}
 
 export default Children;
+
 const StyledStudentGrid = styled.div`
   display: grid;
   flex-direction: column;

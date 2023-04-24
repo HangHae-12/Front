@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { PAGE } from "../helpers/pages";
 import PrivateRoute from "./PrivateRoute";
 import ScrollToTop from "./ScrollToTop";
-import LoadingModal from "./components/Modals/LoadingModal";
+import LoadingModal from "../components/Modals/LoadingModal";
 
 const Router = () => {
   return (

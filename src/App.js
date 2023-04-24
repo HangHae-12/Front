@@ -2,10 +2,8 @@ import {
   QueryClient,
   QueryClientProvider,
   QueryErrorResetBoundary,
-  useIsFetching,
 } from "@tanstack/react-query";
 import { ErrorBoundary } from "react-error-boundary";
-import LoadingModal from "./components/Modals/LoadingModal";
 import ErrorModal from "./components/Modals/AlertModal";
 import { ThemeProvider } from "styled-components";
 import { RecoilRoot } from "recoil";
