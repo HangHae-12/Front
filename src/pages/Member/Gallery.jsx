@@ -19,6 +19,7 @@ import CustomPagination from "../../components/CustomPagination";
 import CustomDatepicker from "../../components/CustomDatepicker";
 import { GalleryDetail } from "./GalleryModal";
 import { classButtonAtom } from "../../atom/classesAtom";
+import { compressImage } from "../../hooks/useImageCompressor";
 
 const Gallery = () => {
   const queryClient = useQueryClient();
@@ -163,7 +164,7 @@ const Gallery = () => {
   };
 
   // 사진 등록 모달 부분
-  const uploadFile = (event) => {
+  const uploadFile = async (event) => {
     const fileArr = event.target.files;
 
     if (fileArr.length > 10) {
@@ -171,15 +172,15 @@ const Gallery = () => {
       return;
     }
 
-    setSeverImages((prevSeverImages) => [
-      ...prevSeverImages,
-      ...Array.from(fileArr),
-    ]);
+    for (let i = 0; i < fileArr.length; i++) {
+      const originalFile = fileArr[i];
+      const compressedFile = await compressImage(originalFile);
 
-    const filesLength = fileArr.length > 10 ? 10 : fileArr.length;
+      setSeverImages((prevServerImages) => [
+        ...prevServerImages,
+        compressedFile,
+      ]);
 
-    for (let i = 0; i < filesLength; i++) {
-      const file = fileArr[i];
       const reader = new FileReader();
       reader.onload = () => {
         setPreviewImages((prevPreviewImages) => [
@@ -187,7 +188,7 @@ const Gallery = () => {
           reader.result,
         ]);
       };
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(compressedFile);
     }
   };
   //갤러리 추가 동적 높이 함수
