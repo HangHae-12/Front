@@ -23,7 +23,7 @@ const Login = () => {
           <h3>"안전하고 편리한 유치원 출결관리의 시작"</h3>
           <span>
             원활한 서비스 이용을 위하여 카카오 로그인 옵션을 모두 동의해주시길
-            부탁드립니다.{" "}
+            부탁드립니다.
           </span>
           <a href={KAKAO_AUTH_URL}>
             <img src={ASSETS.kakao_login_btn} alt="카카오_로그인_버튼" />
