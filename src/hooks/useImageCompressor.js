@@ -1,6 +1,6 @@
 import imageCompression from "browser-image-compression";
 
-export async function compressImage(file) {
+const compressImage = async (file) => {
   const options = {
     maxSizeMB: 0.5, // 결과 이미지의 최대 파일 크기 (MB)
     maxWidthOrHeight: 200, // 결과 이미지의 최대 너비 또는 높이 (px)
@@ -9,7 +9,7 @@ export async function compressImage(file) {
 
   try {
     const compressedFile = await imageCompression(file, options);
-    
+
     // 압축 후의 이미지 크기가 더 작은 경우에만 압축된 이미지를 사용하도록 함
     if (compressedFile.size < file.size) {
       return compressedFile;
@@ -20,4 +20,6 @@ export async function compressImage(file) {
     console.error("이미지 압축 오류:", error);
     return file;
   }
-}
+};
+
+export default compressImage;

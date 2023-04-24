@@ -19,7 +19,7 @@ import CustomPagination from "../../components/CustomPagination";
 import CustomDatepicker from "../../components/CustomDatepicker";
 import { GalleryDetail } from "./GalleryModal";
 import { classButtonAtom } from "../../atom/classesAtom";
-import { compressImage } from "../../hooks/useImageCompressor";
+import compressImage from "../../hooks/useImageCompressor";
 
 const Gallery = () => {
   const queryClient = useQueryClient();
