@@ -29,12 +29,6 @@ const queryClient = new QueryClient({
   },
 });
 
-const GlobalLoader = () => {
-  const isFetching = useIsFetching();
-
-  return isFetching ? <LoadingModal /> : null;
-};
-
 const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
@@ -46,7 +40,6 @@ const App = () => {
               <ErrorModal error={error} onReset={reset} />
             )}
           >
-            <GlobalLoader />
             <ThemeProvider theme={theme}>
               <RecoilRoot>
                 <GlobalStyle />

@@ -1,25 +1,30 @@
-import Login from "../pages/Login";
-import KakaoLogin from "../pages/Login/KakaoLogin";
-import KakaoUnlinked from "../pages/Login/KakaoUnlinked";
-import Main from "../pages/Main";
-import Host from "../pages/Host";
-import DayTable from "../pages/Attendance/DayTable";
-import MonthTable from "../pages/Attendance/MonthTable";
-import MemberManage from "../pages/MemberManage";
-import Member from "../pages/Member/Member";
+import React, { lazy } from "react";
 
-import SignupLayout from "../pages/Login/Signup/Layout";
-import Signup from "../pages/Login/Signup";
-import Teacher from "../pages/Login/User/Teacher";
-import Parent from "../pages/Login/User/Parent";
-import Principal from "../pages/Login/User/Principal";
-import SignupSuccess from "../pages/Login/Signup/SignupSuccess";
-import Search from "../pages/Login/Search";
-import Registration from "../pages/Login/Registration";
-import ChildManage from "../pages/ChildManage";
-import Layout from "../pages/Layout";
-import KindergartenInfo from "../pages/Login/Registration/KindergartenInfo";
-import ClassRegistration from "../pages/Login/Registration/ClassRegistration";
+const Login = lazy(() => import("../pages/Login"));
+const KakaoLogin = lazy(() => import("../pages/Login/KakaoLogin"));
+const KakaoUnlinked = lazy(() => import("../pages/Login/KakaoUnlinked"));
+const Main = lazy(() => import("../pages/Main"));
+const Host = lazy(() => import("../pages/Host"));
+const DayTable = lazy(() => import("../pages/Attendance/DayTable"));
+const MonthTable = lazy(() => import("../pages/Attendance/MonthTable"));
+const MemberManage = lazy(() => import("../pages/MemberManage"));
+const Member = lazy(() => import("../pages/Member/Member"));
+const SignupLayout = lazy(() => import("../pages/Login/Signup/Layout"));
+const Signup = lazy(() => import("../pages/Login/Signup"));
+const Teacher = lazy(() => import("../pages/Login/User/Teacher"));
+const Parent = lazy(() => import("../pages/Login/User/Parent"));
+const Principal = lazy(() => import("../pages/Login/User/Principal"));
+const SignupSuccess = lazy(() => import("../pages/Login/Signup/SignupSuccess"));
+const Search = lazy(() => import("../pages/Login/Search"));
+const Registration = lazy(() => import("../pages/Login/Registration"));
+const ChildManage = lazy(() => import("../pages/ChildManage"));
+const Layout = lazy(() => import("../pages/Layout"));
+const KindergartenInfo = lazy(() =>
+  import("../pages/Login/Registration/KindergartenInfo")
+);
+const ClassRegistration = lazy(() =>
+  import("../pages/Login/Registration/ClassRegistration")
+);
 
 export const PAGE = {
   layout: <Layout />,
