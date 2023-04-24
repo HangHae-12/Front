@@ -2,10 +2,8 @@ import {
   QueryClient,
   QueryClientProvider,
   QueryErrorResetBoundary,
-  useIsFetching,
 } from "@tanstack/react-query";
 import { ErrorBoundary } from "react-error-boundary";
-import LoadingModal from "./components/Modals/LoadingModal";
 import ErrorModal from "./components/Modals/AlertModal";
 import { ThemeProvider } from "styled-components";
 import { RecoilRoot } from "recoil";
@@ -29,12 +27,6 @@ const queryClient = new QueryClient({
   },
 });
 
-const GlobalLoader = () => {
-  const isFetching = useIsFetching();
-
-  return isFetching ? <LoadingModal /> : null;
-};
-
 const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
@@ -46,7 +38,6 @@ const App = () => {
               <ErrorModal error={error} onReset={reset} />
             )}
           >
-            <GlobalLoader />
             <ThemeProvider theme={theme}>
               <RecoilRoot>
                 <GlobalStyle />

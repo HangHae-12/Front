@@ -1,3 +1,5 @@
+import { css } from "styled-components";
+
 const grayScale = {
   800: "#2c2c2c",
   700: "#383838",
@@ -53,11 +55,54 @@ const device = {
   laptop: "(min-width: 768px) and (max-width: 1400px)",
   desktop: "(min-width: 1800px)",
 };
+
+const FlexCol = css`
+  display: flex;
+  flex-direction: column;
+`;
+
+const FlexRow = css`
+  display: flex;
+  flex-direction: row;
+`;
+
+const FlexCenter = css`
+  justify-content: center;
+  align-items: center;
+`;
+
+const wh100 = css`
+  width: 100%;
+  height: 100%;
+`;
+
+const AbsoluteTL = css`
+  position: absolute;
+  top: 0;
+  left: 0;
+`;
+
+const CursorActive = css`
+  pointer-events: auto;
+  cursor: pointer;
+`;
+
+const Boxshadow = css`
+  box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.12);
+  border-radius: 12px;
+`;
 const defaultTheme = {
   color,
   fontSize,
   fontWeight,
   device,
+  FlexCol,
+  FlexRow,
+  FlexCenter,
+  wh100,
+  AbsoluteTL,
+  CursorActive,
+  Boxshadow,
 };
 
 export default defaultTheme;
