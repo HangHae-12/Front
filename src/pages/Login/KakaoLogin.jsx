@@ -2,7 +2,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import tokenCookie from "../../utils/tokenCookie";
 import session from "../../utils/session";
-import useKakaoAuth from "../../hooks/useKakaoAuth";
+import SignAPI from "../../api/SignAPI";
+import useKakaoAPI from "../../hooks/useKakaoAPI";
 
 const KakaoLogin = () => {
   const navigate = useNavigate();
@@ -37,7 +38,7 @@ const KakaoLogin = () => {
     }
   };
 
-  useKakaoAuth(onSuccess, onError);
+  useKakaoAPI(onSuccess, onError, SignAPI.kakaoAuth);
 
   return <></>;
 };

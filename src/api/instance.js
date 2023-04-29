@@ -27,10 +27,7 @@ instance.interceptors.response.use(
   },
 
   function (error) {
-    if (
-      error.response &&
-      error.response.data.message === "인가되지 않은 사용자입니다."
-    ) {
+    if (error.status === "401") {
       tokenCookie.remove();
       if (!isAlertDisplayed) {
         isAlertDisplayed = true;

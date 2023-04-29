@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
-import SignAPI from "../api/SignAPI";
 
-const useKakaoAuth = (onSuccess, onError) => {
+const useKakaoAPI = (onSuccess, onError, api) => {
   const location = useLocation();
   const [code, setCode] = useState("");
 
@@ -15,7 +14,7 @@ const useKakaoAuth = (onSuccess, onError) => {
   useEffect(() => {
     if (!code) return;
     const source = axios.CancelToken.source();
-    const request = SignAPI.kakaoAuth(code, source.token);
+    const request = api(code, source.token);
 
     request
       .then((res) => {
@@ -31,4 +30,4 @@ const useKakaoAuth = (onSuccess, onError) => {
   }, [code]);
 };
 
-export default useKakaoAuth;
+export default useKakaoAPI;

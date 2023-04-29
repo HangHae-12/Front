@@ -89,9 +89,6 @@ const ChildProfile = () => {
       selectedFile && formData.append("image", selectedFile);
       formData.append("isCancelled", isCancelled);
 
-      for (const [key, value] of formData.entries()) {
-        console.log(`${key}: ${value}`);
-      }
       mutate({ childId: childId, data: formData });
     }
   };

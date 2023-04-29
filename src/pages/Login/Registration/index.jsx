@@ -6,7 +6,6 @@ import textVariants from "../../../styles/variants/textVariants";
 import Buttons from "../../../components/Buttons";
 import { useForm } from "react-hook-form";
 import { createContext, useContext } from "react";
-import getConsoleFormData from "../../../utils/getConsoleFormData";
 import { useProfileImageUploader } from "../../../hooks/useProfileImageUploader";
 import { useMutation } from "@tanstack/react-query";
 import SignAPI from "../../../api/SignAPI";

@@ -19,6 +19,7 @@ import PrincipalSideBar from "./PrincipalSideBar";
 import ParentSidBar from "./ParentSideBar";
 import Buttons from "../Buttons";
 import { useNavigate } from "react-router-dom";
+import { ENV } from "../../helpers/envs";
 
 const SideBar = () => {
   const navigate = useNavigate();
@@ -29,6 +30,9 @@ const SideBar = () => {
   const handleLogout = () => {
     navigate("/main");
   };
+
+  
+  const LINK = `https://kauth.kakao.com/oauth/authorize?client_id=${ENV.kakao_key}&redirect_uri=${ENV.kakao_redirect}&response_type=code&scope=profile_nickname,profile_image,friends,talk_message`;
 
   const {} = useQuery(["getUserProfile"], () => SideBarAPI.getUserProfile(), {
     onSuccess: (data) => {
@@ -100,13 +104,14 @@ const SideBar = () => {
         ) : (
           <ParentSidBar />
         )}
-        <StyledLogoutButton
-          colorTypes="primary"
-          outlined
-          onClick={handleLogout}
-        >
-          로그아웃
-        </StyledLogoutButton>
+        <StyledBtnWrapper>
+          <Buttons.Time colorTypes="primary" outlined onClick={handleLogout}>
+            로그아웃
+          </Buttons.Time>
+          <a href={LINK}>
+            <Buttons.Time outlined>회원탈퇴</Buttons.Time>
+          </a>
+        </StyledBtnWrapper>
       </StyledSideBarContainer>
       <Modal />
     </>
@@ -212,7 +217,12 @@ const StyledModalHeader = styled.div`
   margin-top: 10px;
 `;
 
-const StyledLogoutButton = styled(Buttons.Time)`
+const StyledBtnWrapper = styled.div`
   position: absolute;
   bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
 `;

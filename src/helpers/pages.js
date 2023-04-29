@@ -26,7 +26,7 @@ export const PAGE = {
   main: <Main />,
   login: <Login />,
   kakaoLogin: <KakaoLogin />,
-  KakaoUnlinked: <KakaoUnlinked />,
+  kakaoUnlinked: <KakaoUnlinked />,
   signup: {
     layout: <SignupLayout />,
     signup: <Signup />,

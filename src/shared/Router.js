@@ -13,7 +13,7 @@ const Router = () => {
         {/* 로그인 페이지는 private route 를 적용하지  */}
         <Route path="/login" element={PAGE.login} />
         <Route path="/oauth/kakao/callback" element={PAGE.kakaoLogin} />
-        <Route path="/oauth/kakao/callback" element={PAGE.kakaoUnlinked} />
+        <Route path="/kakao/unlinked" element={PAGE.kakaoUnlinked} />
         {/* 카카오로그인후 추가정보 페이지 */}
         <Route element={<PrivateRoute />}>
           <Route path="/signup" element={PAGE.signup.layout}>

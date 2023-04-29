@@ -18,7 +18,7 @@ const KakaoUnlinked = () => {
   useEffect(() => {
     if (!code) return;
     const source = axios.CancelToken.source();
-    const request = SignAPI.kakaoAuth(code, source.token);
+    const request = SignAPI.kakaoUnlinked(code, source.token);
 
     request
       .then((res) => {

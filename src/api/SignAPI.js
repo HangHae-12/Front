@@ -6,7 +6,7 @@ const SignAPI = {
       cancelToken: cancelToken,
     }),
   kakaoUnlinked: (code, cancelToken) =>
-    instance.get(`/oauth/kakao/callback?code=${code}`, null, {
+    instance.get(`/kakao/unlinked?code=${code}`, null, {
       cancelToken: cancelToken,
     }),
 
